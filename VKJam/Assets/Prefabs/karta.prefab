@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 5834245140473609300}
   - component: {fileID: 8580360330904504479}
   - component: {fileID: 3678777065180372741}
+  - component: {fileID: 2209354829038574178}
+  - component: {fileID: -7509633871533451797}
   m_Layer: 0
   m_Name: karta
   m_TagString: Untagged
@@ -27,7 +29,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5474014826769800577}
-  m_LocalRotation: {x: 0.7071068, y: 0.0000020191073, z: -0.7071068, w: 0.0000020191073}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 0.348, y: 0.297, z: -1.543}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -119,5 +121,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d04091efaad0902478a939de57c482e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Word:
+  - sfhsr
+  Ingridients:
+  - {fileID: 0}
+--- !u!114 &2209354829038574178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5474014826769800577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d04091efaad0902478a939de57c482e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   Word: []
   Ingridients: []
+--- !u!65 &-7509633871533451797
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5474014826769800577}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5711733, y: 0.014612814, z: 0.40991822}
+  m_Center: {x: 0.00000020861631, y: -0.000000016298152, z: 4.9737985e-14}
