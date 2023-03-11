@@ -336,12 +336,13 @@ MonoBehaviour:
   _textureSize: 512
   _baseColor: {r: 0, g: 0, b: 0, a: 1}
   _textureWrapMode: 1
-  _filterMode: 1
+  _filterMode: 0
   _texture: {fileID: 2089646524}
   _material: {fileID: 2100000, guid: 745a40811cb47dd48a69a4d4c0a94f35, type: 2}
   _camera: {fileID: 100265464}
   _collider: {fileID: 606401697}
   _color: {r: 1, g: 0, b: 0, a: 1}
+  _brushMode: 0
   _brushSize: 8
 --- !u!64 &606401697
 MeshCollider:
@@ -453,7 +454,7 @@ Texture2D:
   m_TextureDimension: 2
   m_TextureSettings:
     serializedVersion: 2
-    m_FilterMode: 1
+    m_FilterMode: 0
     m_Aniso: 1
     m_MipBias: 0
     m_WrapU: 1
