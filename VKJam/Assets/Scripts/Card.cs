@@ -9,6 +9,7 @@ public class Card : MonoBehaviour
     private List<GameObject> cardOnScene = new List<GameObject>();
     private List<string> activIngridientList;
     private GameObject activeCardPrefab;
+    private List<Sprite> activeIngridients;
     private bool searchForCard;
 
     public void Start()
@@ -43,6 +44,7 @@ public class Card : MonoBehaviour
                         if (cardOnScene.Contains(hit.collider.gameObject))
                         {
                             activIngridientList = hit.collider.gameObject.GetComponent<ScriptOnCard>().Word;
+                            activeIngridients = hit.collider.gameObject.GetComponent<ScriptOnCard>().Ingridients;
                             activeCardPrefab = hit.collider.gameObject;
                             searchForCard = false;
                             for (int i = 0; i < cardOnScene.Count; i++)
