@@ -23,7 +23,7 @@ public class Card : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             int cardNumber = Random.Range(0, AllCardPrefab.Count);
-            cardOnScene.Add(Instantiate(AllCardPrefab[cardNumber], Spawn[i].transform.position, Quaternion.identity));
+            cardOnScene.Add(Instantiate(AllCardPrefab[cardNumber],  Spawn[i].transform.position, Spawn[i].transform.rotation, Spawn[i].transform));
             AllCardPrefab.RemoveAt(cardNumber);
             searchForCard = true;
         }
