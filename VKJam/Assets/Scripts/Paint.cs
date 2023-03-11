@@ -1,8 +1,14 @@
-using System.Runtime.ExceptionServices;
+using System;
 using UnityEngine;
 
 public class Paint : MonoBehaviour
 {
+    [Serializable] private enum BrushMode
+    {
+        Draw,
+        Erase
+    }
+
     [SerializeField, Range(2, 1024)] private int _textureSize = 512;
     [SerializeField] private Color _baseColor = Color.white;
     [SerializeField] private TextureWrapMode _textureWrapMode;
@@ -13,6 +19,7 @@ public class Paint : MonoBehaviour
     [SerializeField] private Camera _camera;
     [SerializeField] private Collider _collider;
     [SerializeField] private Color _color;
+    [SerializeField] private BrushMode _brushMode;
     [SerializeField] private int _brushSize = 8;
     private int _halfBrushSize;
 
@@ -33,12 +40,12 @@ public class Paint : MonoBehaviour
         if (_texture == null)
         {
             _texture = new Texture2D(_textureSize, _textureSize);
-            FillBaseColor();
+            Fill(_baseColor);
         }
         else if (_texture.width != _textureSize)
         {
             _texture.Reinitialize(_textureSize, _textureSize);
-            FillBaseColor();
+            Fill(_baseColor);
         }
         _texture.wrapMode = _textureWrapMode;
         _texture.filterMode = _filterMode;
@@ -65,25 +72,32 @@ public class Paint : MonoBehaviour
                 int rayX = (int)(hitInfo.textureCoord.x * _textureSize);
                 int rayY = (int)(hitInfo.textureCoord.y * _textureSize);
 
-                DrawCircle(rayX, rayY);
-
+                switch (_brushMode)
+                {
+                    case BrushMode.Draw:
+                        DrawCircle(rayX, rayY, _color);
+                        break;
+                    case BrushMode.Erase:
+                        DrawCircle(rayX, rayY, _baseColor);
+                        break;
+                }
                 _texture.Apply();
             }
         }
     }
 
-    private void FillBaseColor()
+    private void Fill(Color color)
     {
         for (int x = 0; x < _textureSize; x++)
         {
             for (int y = 0; y < _textureSize; y++)
             {
-                _texture.SetPixel(x, y, _baseColor);
+                _texture.SetPixel(x, y, color);
             }
         }
     }
     
-    private void DrawCircle(int rayX, int rayY)
+    private void DrawCircle(int rayX, int rayY, Color color)
     {
         for (int x = 0; x < _brushSize; x++)
         {
@@ -94,7 +108,7 @@ public class Paint : MonoBehaviour
                 float r2 = Mathf.Pow(_halfBrushSize - 0.5f, 2);
 
                 if (x2 + y2 < r2)
-                    _texture.SetPixel(rayX + x - _halfBrushSize, rayY + y - _halfBrushSize, _color);
+                    _texture.SetPixel(rayX + x - _halfBrushSize, rayY + y - _halfBrushSize, color);
             }
         }
     }
