@@ -25,25 +25,26 @@ public class Card : MonoBehaviour
             cardOnScene.Add(Instantiate(AllCardPrefab[cardNumber], Spawn[i].transform.position, Quaternion.identity));
             AllCardPrefab.RemoveAt(cardNumber);
             searchForCard = true;
-        }   
+        }
     }
-    void Update()
+
+    private void Update()
     {
-        if (searchForCard==true)
+        if (Input.GetMouseButtonDown(0))
         {
-            if ((Input.touchCount > 0) && (Input.touches[0].phase == TouchPhase.Began))
+            Debug.Log("g");
+            if (searchForCard == true)
             {
-                Debug.Log("q");
-                Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
+                Debug.Log("k");
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit))
                 {
+                    Debug.Log("b");
                     if (hit.collider != null)
                     {
-                        Debug.Log("a");
                         if (cardOnScene.Contains(hit.collider.gameObject))
                         {
-                            Debug.Log("r");
                             activeWord = hit.collider.gameObject.GetComponent<ScriptOnCard>().Word;
                             activeCardPrefab = hit.collider.gameObject;
                             searchForCard = false;
@@ -55,7 +56,9 @@ public class Card : MonoBehaviour
 
                     }
                 }
+
             }
         }
     }
+
 }
