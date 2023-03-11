@@ -7,8 +7,9 @@ public class Card : MonoBehaviour
     public List<GameObject> AllCardPrefab;
     public List<GameObject> Spawn;
     private List<GameObject> cardOnScene = new List<GameObject>();
-    private string activeWord;
+    private List<string> activIngridientList;
     private GameObject activeCardPrefab;
+    private List<Sprite> activeIngridients;
     private bool searchForCard;
 
     public void Start()
@@ -32,20 +33,18 @@ public class Card : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("g");
             if (searchForCard == true)
             {
-                Debug.Log("k");
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit))
                 {
-                    Debug.Log("b");
                     if (hit.collider != null)
                     {
                         if (cardOnScene.Contains(hit.collider.gameObject))
                         {
-                            activeWord = hit.collider.gameObject.GetComponent<ScriptOnCard>().Word;
+                            activIngridientList = hit.collider.gameObject.GetComponent<ScriptOnCard>().Word;
+                            activeIngridients = hit.collider.gameObject.GetComponent<ScriptOnCard>().Ingridients;
                             activeCardPrefab = hit.collider.gameObject;
                             searchForCard = false;
                             for (int i = 0; i < cardOnScene.Count; i++)
