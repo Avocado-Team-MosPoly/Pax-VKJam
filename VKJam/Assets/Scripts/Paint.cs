@@ -1,0 +1,112 @@
+using System.Runtime.ExceptionServices;
+using UnityEngine;
+
+public class Paint : MonoBehaviour
+{
+    [SerializeField, Range(2, 1024)] private int _textureSize = 512;
+    [SerializeField] private Color _baseColor = Color.white;
+    [SerializeField] private TextureWrapMode _textureWrapMode;
+    [SerializeField] private FilterMode _filterMode;
+    [SerializeField] private Texture2D _texture;
+    [SerializeField] private Material _material;
+
+    [SerializeField] private Camera _camera;
+    [SerializeField] private Collider _collider;
+    [SerializeField] private Color _color;
+    [SerializeField] private int _brushSize = 8;
+    private int _halfBrushSize;
+
+    private void OnValidate()
+    {
+        CreateTexture();
+
+        _halfBrushSize = _brushSize / 2;
+    }
+
+    private void Start()
+    {
+        CreateTexture();
+    }
+
+    private void CreateTexture()
+    {
+        if (_texture == null)
+        {
+            _texture = new Texture2D(_textureSize, _textureSize);
+            FillBaseColor();
+        }
+        else if (_texture.width != _textureSize)
+        {
+            _texture.Reinitialize(_textureSize, _textureSize);
+            FillBaseColor();
+        }
+        _texture.wrapMode = _textureWrapMode;
+        _texture.filterMode = _filterMode;
+        
+        if (_material)
+            _material.mainTexture = _texture;
+
+        _texture.Apply();
+    }
+
+    private void Update()
+    {
+        Draw();
+    }
+
+    private void Draw()
+    {
+        if (Input.GetKey(KeyCode.Mouse0))
+        {
+            Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+
+            if (_collider.Raycast(ray, out RaycastHit hitInfo, 1000f))
+            {
+                int rayX = (int)(hitInfo.textureCoord.x * _textureSize);
+                int rayY = (int)(hitInfo.textureCoord.y * _textureSize);
+
+                DrawCircle(rayX, rayY);
+
+                _texture.Apply();
+            }
+        }
+    }
+
+    private void FillBaseColor()
+    {
+        for (int x = 0; x < _textureSize; x++)
+        {
+            for (int y = 0; y < _textureSize; y++)
+            {
+                _texture.SetPixel(x, y, _baseColor);
+            }
+        }
+    }
+    
+    private void DrawCircle(int rayX, int rayY)
+    {
+        for (int x = 0; x < _brushSize; x++)
+        {
+            for (int y = 0; y < _brushSize; y++)
+            {
+                float x2 = Mathf.Pow(x - _halfBrushSize, 2);
+                float y2 = Mathf.Pow(y - _halfBrushSize, 2);
+                float r2 = Mathf.Pow(_halfBrushSize - 0.5f, 2);
+
+                if (x2 + y2 < r2)
+                    _texture.SetPixel(rayX + x - _halfBrushSize, rayY + y - _halfBrushSize, _color);
+            }
+        }
+    }
+
+    private void DrawSquare(int rayX, int rayY)
+    {
+        for (int x = 0; x < _brushSize; x++)
+        {
+            for (int y = 0; y < _brushSize; y++)
+            {
+                _texture.SetPixel(rayX + x - _halfBrushSize, rayY + y - _halfBrushSize, _color);
+            }
+        }
+    }
+}
