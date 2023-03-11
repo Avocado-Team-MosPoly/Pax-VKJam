@@ -2,23 +2,27 @@ using UnityEngine;
 
 public class MoveCamera : MonoBehaviour
 {
-    [SerializeField] private float Sensitivity;
-    [SerializeField] private float TopLimit = -45;
-    [SerializeField] private float BotLimit = 45;
-    [SerializeField] private float RightLimit = 45;
-    [SerializeField] private float LeftLimit = -45;
-    // Update is called once per frame
-    void Update()
+    [SerializeField] private float YminClamp, YmaxClamp;
+    [SerializeField] private float XminClamp, XmaxClamp;
+
+    public float mouseSensitivity = 100f;
+
+    private Vector2 Rotation;
+
+    private void OnEnable()
     {
-        Debug.Log(transform.rotation);
-        if (Input.mousePosition.x >= Screen.width - 5.3f && transform.rotation.y < Mathf.Deg2Rad * RightLimit)
-            transform.Rotate(Vector3.up * Sensitivity * Time.deltaTime); 
-        if (Input.mousePosition.x <= 0.1f && transform.rotation.y > Mathf.Deg2Rad * LeftLimit)
-            transform.Rotate(Vector3.down * Sensitivity * Time.deltaTime);
-        if (Input.mousePosition.y >= Screen.height - 2.3f && transform.rotation.x > Mathf.Deg2Rad * TopLimit)
-            transform.Rotate(Vector3.left * Sensitivity * Time.deltaTime);
-        if (Input.mousePosition.y <= 0.1f && transform.rotation.x < Mathf.Deg2Rad * BotLimit)
-            transform.Rotate(Vector3.right * Sensitivity * Time.deltaTime);
-        if(transform.rotation.w < 0.975f) transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, 0, 0.975f);
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    private void Update()
+    {
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime * -1;
+        Rotation.y += mouseX;
+        Rotation.y = Mathf.Clamp(Rotation.y, YminClamp, YmaxClamp);
+        Rotation.x += mouseY;
+        Rotation.x = Mathf.Clamp(Rotation.x, XminClamp, XmaxClamp);
+
+        transform.localRotation = Quaternion.Euler(Rotation.x, Rotation.y, 0f);
     }
 }
