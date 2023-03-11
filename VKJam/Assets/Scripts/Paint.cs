@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Paint : MonoBehaviour
 {
@@ -19,9 +21,12 @@ public class Paint : MonoBehaviour
     [SerializeField] private Camera _camera;
     [SerializeField] private Collider _collider;
     [SerializeField] private Color _color;
-    [SerializeField] private BrushMode _brushMode;
-    [SerializeField] private int _brushSize = 8;
+    [SerializeField] private BrushMode _brushMode = BrushMode.Draw;
+    [SerializeField] private int _brushSize = 16;
     private int _halfBrushSize;
+
+    [SerializeField] private Button saveAsPNGButton;
+    [SerializeField] private Button switchBrushButton;
 
     private void OnValidate()
     {
@@ -32,6 +37,11 @@ public class Paint : MonoBehaviour
 
     private void Start()
     {
+        if (saveAsPNGButton)
+            saveAsPNGButton.onClick.AddListener(SavePaintingAsPng);
+        if (switchBrushButton)
+            switchBrushButton.onClick.AddListener(SwitchBrush);
+
         CreateTexture();
     }
 
@@ -122,5 +132,25 @@ public class Paint : MonoBehaviour
                 _texture.SetPixel(rayX + x - _halfBrushSize, rayY + y - _halfBrushSize, _color);
             }
         }
+    }
+
+    public void SavePaintingAsPng()
+    {
+        byte[] bytes = _texture.EncodeToPNG();
+        string dirPath = Application.dataPath + "/Paint Images/";
+        if (!Directory.Exists(dirPath))
+        {
+            Directory.CreateDirectory(dirPath);
+        }
+        File.WriteAllBytes($"{dirPath}IMG_{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.png", bytes);
+        Debug.Log("Path: " + dirPath);
+    }
+
+    public void SwitchBrush()
+    {
+        if (_brushMode == BrushMode.Draw)
+            _brushMode = BrushMode.Erase;
+        else
+            _brushMode = BrushMode.Draw;
     }
 }
