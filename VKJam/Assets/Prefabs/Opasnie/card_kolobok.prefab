@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -7509633871533451797}
   - component: {fileID: 2889388206229436696}
   - component: {fileID: 878379070563648508}
+  - component: {fileID: 4903164269147298554}
   m_Layer: 0
   m_Name: card_kolobok
   m_TagString: Untagged
@@ -168,6 +169,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 4903164269147298554}
+        m_TargetAssemblyTypeName: CardInstance, Assembly-CSharp
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   ActivityInteractable: 1
 --- !u!114 &878379070563648508
 MonoBehaviour:
@@ -183,3 +196,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardSpawner: {fileID: 0}
   animator: {fileID: 0}
+--- !u!114 &4903164269147298554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5474014826769800577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7897a239d090e0f48b521fa892f1886a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Monster: {fileID: 0}

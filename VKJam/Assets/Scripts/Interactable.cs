@@ -29,4 +29,10 @@ public class Interactable : MonoBehaviour
         if (!ActivityInteractable) return;
         m_OnClick.Invoke();
     }
+
+    public void SetInteractable(bool check)
+    {
+       ActivityInteractable = check;
+    }
+
 }
