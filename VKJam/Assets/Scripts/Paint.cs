@@ -12,22 +12,24 @@ public class Paint : MonoBehaviour
     }
 
     [SerializeField, Range(2, 1024)] private int _textureSize = 512;
-    [SerializeField] private Color _baseColor = Color.white;
+    [SerializeField] private Color _baseColor = Color.black;
     [SerializeField] private TextureWrapMode _textureWrapMode;
     [SerializeField] private FilterMode _filterMode;
     [SerializeField] private Texture2D _texture;
     [SerializeField] private Material _material;
-    [SerializeField] private Scrollbar _scrollbar;
 
     [SerializeField] private Camera _camera;
     [SerializeField] private Collider _collider;
-    [SerializeField] private Color _color;
+    [SerializeField] private Color _drawColor = Color.white;
     [SerializeField] private BrushMode _brushMode = BrushMode.Draw;
     [SerializeField] private int _brushSize = 16;
     private int _halfBrushSize;
 
+    [Header("Просто закинуть ссылку(если не нужен функционал, не ставить)")]
+    [SerializeField] private Button clearCanvasButton;
     [SerializeField] private Button saveAsPNGButton;
     [SerializeField] private Button switchBrushButton;
+    [SerializeField] private Slider _brushSizeSlider;
 
     private void OnValidate()
     {
@@ -38,17 +40,27 @@ public class Paint : MonoBehaviour
 
     private void Start()
     {
+        if (clearCanvasButton)
+            clearCanvasButton.onClick.AddListener(() => Fill(_baseColor));
         if (saveAsPNGButton)
             saveAsPNGButton.onClick.AddListener(SavePaintingAsPng);
         if (switchBrushButton)
             switchBrushButton.onClick.AddListener(SwitchBrush);
+        if (_brushSizeSlider)
+            _brushSizeSlider.onValueChanged.AddListener(ChangeSize);
 
         CreateTexture();
     }
 
     private void CreateTexture()
     {
-        if (_texture == null)
+        if (!_material)
+        {
+            Debug.LogError("Material isn't set");
+            return;
+        }
+
+        if (!_texture)
         {
             _texture = new Texture2D(_textureSize, _textureSize);
             Fill(_baseColor);
@@ -58,12 +70,12 @@ public class Paint : MonoBehaviour
             _texture.Reinitialize(_textureSize, _textureSize);
             Fill(_baseColor);
         }
+
         _texture.wrapMode = _textureWrapMode;
         _texture.filterMode = _filterMode;
-        
-        if (_material)
-            _material.mainTexture = _texture;
 
+        _material.mainTexture = _texture;
+        
         _texture.Apply();
     }
 
@@ -86,7 +98,7 @@ public class Paint : MonoBehaviour
                 switch (_brushMode)
                 {
                     case BrushMode.Draw:
-                        DrawCircle(rayX, rayY, _color);
+                        DrawCircle(rayX, rayY, _drawColor);
                         break;
                     case BrushMode.Erase:
                         DrawCircle(rayX, rayY, _baseColor);
@@ -119,7 +131,9 @@ public class Paint : MonoBehaviour
                 float r2 = Mathf.Pow(_halfBrushSize - 0.5f, 2);
 
                 if (x2 + y2 < r2)
+                {
                     _texture.SetPixel(rayX + x - _halfBrushSize, rayY + y - _halfBrushSize, color);
+                }
             }
         }
     }
@@ -130,7 +144,7 @@ public class Paint : MonoBehaviour
         {
             for (int y = 0; y < _brushSize; y++)
             {
-                _texture.SetPixel(rayX + x - _halfBrushSize, rayY + y - _halfBrushSize, _color);
+                _texture.SetPixel(rayX + x - _halfBrushSize, rayY + y - _halfBrushSize, _drawColor);
             }
         }
     }
@@ -154,8 +168,9 @@ public class Paint : MonoBehaviour
         else
             _brushMode = BrushMode.Draw;
     }
-    public void ChangeSize()
+
+    public void ChangeSize(float value)
     {
-        _brushSize = Mathf.RoundToInt(_scrollbar.value * 100);
+        _brushSize = Mathf.RoundToInt(value * _textureSize);
     }
 }
