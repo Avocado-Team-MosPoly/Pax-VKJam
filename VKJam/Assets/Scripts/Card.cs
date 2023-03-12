@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    public List<GameObject> AllCardPrefab;
+    public List<GameObject> AllNormalCardPrefab;
+    public List<GameObject> AllUebyCardPrefab;
     public List<GameObject> Spawn;
     private List<GameObject> cardOnScene = new List<GameObject>();
     private List<string> activIngridientList;
@@ -20,11 +21,16 @@ public class Card : MonoBehaviour
     public void NewCard()
     {
         cardOnScene.Clear();
-        for (int i = 0; i < 3; i++)
+
+        int cardNumber = Random.Range(0, AllUebyCardPrefab.Count);
+        cardOnScene.Add(Instantiate(AllUebyCardPrefab[cardNumber], Spawn[2].transform.position, Spawn[2].transform.rotation, Spawn[2].transform));
+        AllUebyCardPrefab.RemoveAt(cardNumber);
+
+        for (int i = 0; i < 2; i++)
         {
-            int cardNumber = Random.Range(0, AllCardPrefab.Count);
-            cardOnScene.Add(Instantiate(AllCardPrefab[cardNumber],  Spawn[i].transform.position, Spawn[i].transform.rotation, Spawn[i].transform));
-            AllCardPrefab.RemoveAt(cardNumber);
+            cardNumber = Random.Range(0, AllNormalCardPrefab.Count);
+            cardOnScene.Add(Instantiate(AllNormalCardPrefab[cardNumber],  Spawn[i].transform.position, Spawn[i].transform.rotation, Spawn[i].transform));
+            AllNormalCardPrefab.RemoveAt(cardNumber);
             searchForCard = true;
         }
     }

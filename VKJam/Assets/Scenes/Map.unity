@@ -2955,10 +2955,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 380555f90ba76f548bfcad16ce3f6414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AllCardPrefab:
-  - {fileID: 5474014826769800577, guid: b5e52c14eac7f7441a562bf0faceffac, type: 3}
-  - {fileID: 5474014826769800577, guid: b5e52c14eac7f7441a562bf0faceffac, type: 3}
-  - {fileID: 5474014826769800577, guid: b5e52c14eac7f7441a562bf0faceffac, type: 3}
+  AllNormalCardPrefab: []
+  AllUebyCardPrefab: []
   Spawn:
   - {fileID: 1661917171}
   - {fileID: 1764462895}
@@ -3439,6 +3437,7 @@ GameObject:
   - component: {fileID: 1657236792}
   - component: {fileID: 1657236794}
   - component: {fileID: 1657236793}
+  - component: {fileID: 1657236795}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -3563,6 +3562,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1657236791}
   m_CullTransparentMesh: 1
+--- !u!114 &1657236795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1657236791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f22b3d72f267fd4c933091bfd58c3de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Fishka: {fileID: 1657236793}
 --- !u!1 &1661917171
 GameObject:
   m_ObjectHideFlags: 0
