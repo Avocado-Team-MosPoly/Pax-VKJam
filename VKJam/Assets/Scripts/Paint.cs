@@ -12,7 +12,7 @@ public class Paint : MonoBehaviour
     }
 
     [SerializeField, Range(2, 1024)] private int _textureSize = 512;
-    [SerializeField] private Color _baseColor = Color.black;
+    [SerializeField] private Color _baseColor;
     [SerializeField] private TextureWrapMode _textureWrapMode;
     [SerializeField] private FilterMode _filterMode;
     [SerializeField] private Texture2D _texture;
@@ -20,7 +20,7 @@ public class Paint : MonoBehaviour
 
     [SerializeField] private Camera _camera;
     [SerializeField] private Collider _collider;
-    [SerializeField] private Color _drawColor = Color.white;
+    [SerializeField] private Color _drawColor;
     [SerializeField] private BrushMode _brushMode = BrushMode.Draw;
     [SerializeField] private int _brushSize = 16;
     private int _halfBrushSize;
@@ -33,8 +33,6 @@ public class Paint : MonoBehaviour
 
     private void OnValidate()
     {
-        CreateTexture();
-
         _halfBrushSize = _brushSize / 2;
     }
 
@@ -60,16 +58,8 @@ public class Paint : MonoBehaviour
             return;
         }
 
-        if (!_texture)
-        {
-            _texture = new Texture2D(_textureSize, _textureSize);
-            Fill(_baseColor);
-        }
-        else if (_texture.width != _textureSize)
-        {
-            _texture.Reinitialize(_textureSize, _textureSize);
-            Fill(_baseColor);
-        }
+        _texture = new Texture2D(_textureSize, _textureSize);
+        Fill(_baseColor);
 
         _texture.wrapMode = _textureWrapMode;
         _texture.filterMode = _filterMode;
