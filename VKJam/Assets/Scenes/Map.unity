@@ -2955,8 +2955,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 380555f90ba76f548bfcad16ce3f6414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AllNormalCardPrefab: []
-  AllUebyCardPrefab: []
+  AllNormalCardPrefab:
+  - {fileID: 5474014826769800577, guid: b5e52c14eac7f7441a562bf0faceffac, type: 3}
+  - {fileID: 5474014826769800577, guid: b5e52c14eac7f7441a562bf0faceffac, type: 3}
+  - {fileID: 5474014826769800577, guid: b5e52c14eac7f7441a562bf0faceffac, type: 3}
+  AllUebyCardPrefab:
+  - {fileID: 435907502309177321, guid: 77dd597cc35141c478090ac79df4c292, type: 3}
+  - {fileID: 435907502309177321, guid: 77dd597cc35141c478090ac79df4c292, type: 3}
+  - {fileID: 435907502309177321, guid: 77dd597cc35141c478090ac79df4c292, type: 3}
   Spawn:
   - {fileID: 1661917171}
   - {fileID: 1764462895}
@@ -3950,6 +3956,7 @@ GameObject:
   - component: {fileID: 1759243712}
   - component: {fileID: 1759243714}
   - component: {fileID: 1759243713}
+  - component: {fileID: 1759243715}
   m_Layer: 5
   m_Name: Text (TMP) (1)
   m_TagString: Untagged
@@ -4028,8 +4035,8 @@ MonoBehaviour:
   m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 0
+  m_fontSizeMax: 408.57
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -4074,6 +4081,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1759243711}
   m_CullTransparentMesh: 1
+--- !u!114 &1759243715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1759243711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bbf26d9d5531c24eb2b21dfb712689a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTime: {fileID: 1759243713}
+  time: 60
 --- !u!1001 &1759382289
 PrefabInstance:
   m_ObjectHideFlags: 0
