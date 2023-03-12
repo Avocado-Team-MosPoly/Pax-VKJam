@@ -3,7 +3,7 @@ using TMPro;
 
 public class ScoreManager : MonoBehaviour
 {
-    public TMP_Text Fishka;
+    [SerializeField] private TMP_Text Fishka;
     private static TMP_Text fishka;
     public static int Score { get; private set; }
 
@@ -14,7 +14,7 @@ public class ScoreManager : MonoBehaviour
     public static void AddScore(int value)
     {
         Score += value;
-        fishka.text = Score.ToString();
+        fishka.text = Score.ToString() + "X";
     }
     public static void RemoveScore(int value)
     {
@@ -23,6 +23,6 @@ public class ScoreManager : MonoBehaviour
         {
             Score = 0;
         }
-        fishka.text = Score.ToString();
+        fishka.text = Score.ToString() + "X";
     }
 }

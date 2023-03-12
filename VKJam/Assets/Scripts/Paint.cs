@@ -17,6 +17,7 @@ public class Paint : MonoBehaviour
     [SerializeField] private FilterMode _filterMode;
     [SerializeField] private Texture2D _texture;
     [SerializeField] private Material _material;
+    [SerializeField] private Scrollbar _scrollbar;
 
     [SerializeField] private Camera _camera;
     [SerializeField] private Collider _collider;
@@ -152,5 +153,9 @@ public class Paint : MonoBehaviour
             _brushMode = BrushMode.Erase;
         else
             _brushMode = BrushMode.Draw;
+    }
+    public void ChangeSize()
+    {
+        _brushSize = Mathf.RoundToInt(_scrollbar.value * 100);
     }
 }
