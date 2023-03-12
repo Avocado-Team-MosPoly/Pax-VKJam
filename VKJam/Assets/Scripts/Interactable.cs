@@ -27,6 +27,6 @@ public class Interactable : MonoBehaviour
     void OnMouseDown()
     {
         if (!ActivityInteractable) return;
-            m_OnClick.Invoke();
+        m_OnClick.Invoke();
     }
 }
