@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3678777065180372741}
   - component: {fileID: -7509633871533451797}
   - component: {fileID: 2889388206229436696}
+  - component: {fileID: 878379070563648508}
   m_Layer: 0
   m_Name: card_kolobok
   m_TagString: Untagged
@@ -29,14 +30,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5474014826769800577}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: -0.7071068, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.348, y: 0.297, z: -1.543}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: -180}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8580360330904504478
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -97,7 +98,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5474014826769800577}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 27843704704e49843a9d6d9d3c6150a9, type: 2}
   m_CullingMode: 0
@@ -151,7 +152,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TargetMaterialID: 000000000100000002000000
-  NewColor: {r: 0, g: 0, b: 0, a: 0}
+  NewColor: {r: 0.7924528, g: 0.7905272, b: 0.15998574, a: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 878379070563648508}
+        m_TargetAssemblyTypeName: CardInstance, Assembly-CSharp
+        m_MethodName: Choose
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  ActivityInteractable: 1
+--- !u!114 &878379070563648508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5474014826769800577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba0403a6e2f77f44297cc179db17ed61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CardSpawner: {fileID: 0}
+  animator: {fileID: 0}

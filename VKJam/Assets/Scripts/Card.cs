@@ -23,13 +23,17 @@ public class Card : MonoBehaviour
         cardOnScene.Clear();
 
         int cardNumber = Random.Range(0, AllUebyCardPrefab.Count);
-        cardOnScene.Add(Instantiate(AllUebyCardPrefab[cardNumber], Spawn[2].transform.position, Spawn[2].transform.rotation, Spawn[2].transform));
+        GameObject card = Instantiate(AllUebyCardPrefab[cardNumber], Spawn[2].transform.position, Spawn[2].transform.rotation, Spawn[2].transform);
+        card.GetComponent<CardInstance>().CardSpawner = this;
+        cardOnScene.Add(card);
         AllUebyCardPrefab.RemoveAt(cardNumber);
 
         for (int i = 0; i < 2; i++)
         {
             cardNumber = Random.Range(0, AllNormalCardPrefab.Count);
-            cardOnScene.Add(Instantiate(AllNormalCardPrefab[cardNumber],  Spawn[i].transform.position, Spawn[i].transform.rotation, Spawn[i].transform));
+            card = Instantiate(AllNormalCardPrefab[cardNumber], Spawn[i].transform.position, Spawn[i].transform.rotation, Spawn[i].transform);
+            card.GetComponent<CardInstance>().CardSpawner = this;
+            cardOnScene.Add(card);
             AllNormalCardPrefab.RemoveAt(cardNumber);
             searchForCard = true;
         }
@@ -37,33 +41,45 @@ public class Card : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+
+    }
+
+    public void ChooseIngredients()
+    {
+        if (searchForCard == true)
         {
-            if (searchForCard == true)
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit))
+                if (hit.collider != null)
                 {
-                    if (hit.collider != null)
+                    if (cardOnScene.Contains(hit.collider.gameObject))
                     {
-                        if (cardOnScene.Contains(hit.collider.gameObject))
+                        activIngridientList = hit.collider.gameObject.GetComponent<ScriptOnCard>().Word;
+                        activeIngridients = hit.collider.gameObject.GetComponent<ScriptOnCard>().Ingridients;
+                        activeCardPrefab = hit.collider.gameObject;
+                        searchForCard = false;
+                        for (int i = 0; i < cardOnScene.Count; i++)
                         {
-                            activIngridientList = hit.collider.gameObject.GetComponent<ScriptOnCard>().Word;
-                            activeIngridients = hit.collider.gameObject.GetComponent<ScriptOnCard>().Ingridients;
-                            activeCardPrefab = hit.collider.gameObject;
-                            searchForCard = false;
-                            for (int i = 0; i < cardOnScene.Count; i++)
-                            {
-                                Destroy(cardOnScene[i]);
-                            }
+                            Destroy(cardOnScene[i]);
                         }
-
                     }
-                }
 
+                }
             }
+
         }
     }
 
+    public void DisableInteract(GameObject exception)
+    {
+        for (int i = 0; i < cardOnScene.Count; i++)
+        {
+            if (cardOnScene[i] != exception)
+            {
+                cardOnScene[i].GetComponent<Interactable>().ActivityInteractable = false;
+            }
+        }
+    }    
 }
