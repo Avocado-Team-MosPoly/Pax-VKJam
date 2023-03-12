@@ -14,7 +14,6 @@ public class CardInstance : MonoBehaviour
 
     public void Choose()
     {
-        Debug.Log("Click: " + isFirst);
         if (isFirst)
         {
             animator.Play("card-rotate");
