@@ -10,13 +10,10 @@ public class MoveCamera : MonoBehaviour
 
     private Vector2 Rotation;
 
-    private void OnEnable()
-    {
-        //Cursor.lockState = CursorLockMode.Locked;
-    }
     public void SetActivity(bool Target)
     {
         ActiveMove = Target;
+        if (Target == false) transform.localRotation = Quaternion.Euler((XminClamp + XmaxClamp) / 2, (YminClamp + YmaxClamp) / 2, 0f);
     }
 
     private void Update()

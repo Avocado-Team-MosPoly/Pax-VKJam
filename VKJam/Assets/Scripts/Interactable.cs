@@ -7,22 +7,26 @@ public class Interactable : MonoBehaviour
     [SerializeField] private Color NewColor;
     private Renderer Rend;
     public UnityEvent m_OnClick;
+    public bool ActivityInteractable;
     private void Awake()
     {
         Rend = GetComponent<Renderer>();
     }
     void OnMouseEnter()
     {
+        if (!ActivityInteractable) return;
         foreach (int current in TargetMaterialID)
             Rend.materials[current].color = NewColor;
     }
     void OnMouseExit()
     {
+        if (!ActivityInteractable) return;
         foreach (int current in TargetMaterialID)
             Rend.materials[current].color = Color.white;
     }
     void OnMouseDown()
     {
-        m_OnClick.Invoke();
+        if (!ActivityInteractable) return;
+            m_OnClick.Invoke();
     }
 }
