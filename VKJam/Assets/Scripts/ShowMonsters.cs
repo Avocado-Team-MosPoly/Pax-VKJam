@@ -8,7 +8,7 @@ public class ShowMonsters : MonoBehaviour
 
     void Show()
     {
-        Monster.SetActive(true);
+        Sprite.SetActive(true);
     }
 
 }

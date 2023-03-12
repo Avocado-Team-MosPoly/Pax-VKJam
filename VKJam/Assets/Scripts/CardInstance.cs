@@ -3,6 +3,7 @@ using UnityEngine;
 public class CardInstance : MonoBehaviour
 {
     public Card CardSpawner;
+    public GameObject Monster;
 
     public Animator animator;
     private static bool isFirst = true;
@@ -21,6 +22,9 @@ public class CardInstance : MonoBehaviour
             isFirst = false;
         }
         else
+        {
+            Monster.SetActive(true);
             CardSpawner.ChooseIngredients();
+        }
     }
 }
