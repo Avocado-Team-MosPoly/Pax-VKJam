@@ -4,6 +4,7 @@ public class MoveCamera : MonoBehaviour
 {
     [SerializeField] private float YminClamp, YmaxClamp;
     [SerializeField] private float XminClamp, XmaxClamp;
+    public bool ActiveMove = true;
 
     public float mouseSensitivity = 100f;
 
@@ -13,9 +14,14 @@ public class MoveCamera : MonoBehaviour
     {
         //Cursor.lockState = CursorLockMode.Locked;
     }
+    public void SetActivity(bool Target)
+    {
+        ActiveMove = Target;
+    }
 
     private void Update()
     {
+        if (!ActiveMove) return;
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime * -1;
         Rotation.y += mouseX;
