@@ -463,11 +463,14 @@ MonoBehaviour:
   _material: {fileID: 2100000, guid: 745a40811cb47dd48a69a4d4c0a94f35, type: 2}
   _camera: {fileID: 100265464}
   _collider: {fileID: 606401697}
-  _color: {r: 1, g: 0, b: 0, a: 1}
+  _drawColor: {r: 1, g: 1, b: 1, a: 0}
   _brushMode: 0
   _brushSize: 8
+  clearCanvasButton: {fileID: 0}
   saveAsPNGButton: {fileID: 708488421}
   switchBrushButton: {fileID: 395032856}
+  _brushSizeSlider: {fileID: 0}
+  log: {fileID: 0}
 --- !u!64 &606401697
 MeshCollider:
   m_ObjectHideFlags: 0
