@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,11 +31,7 @@ public class Paint : MonoBehaviour
     [SerializeField] private Button saveAsPNGButton;
     [SerializeField] private Button switchBrushButton;
     [SerializeField] private Slider _brushSizeSlider;
-
-    private void OnValidate()
-    {
-        _halfBrushSize = _brushSize / 2;
-    }
+    [SerializeField] private TextMeshProUGUI log;
 
     private void Start()
     {
@@ -48,6 +45,7 @@ public class Paint : MonoBehaviour
             _brushSizeSlider.onValueChanged.AddListener(ChangeSize);
 
         CreateTexture();
+        _halfBrushSize = _brushSize / 2;
     }
 
     private void CreateTexture()
@@ -57,7 +55,6 @@ public class Paint : MonoBehaviour
             Debug.LogError("Material isn't set");
             return;
         }
-
         _texture = new Texture2D(_textureSize, _textureSize);
         Fill(_baseColor);
 
@@ -65,13 +62,17 @@ public class Paint : MonoBehaviour
         _texture.filterMode = _filterMode;
 
         _material.mainTexture = _texture;
-        
         _texture.Apply();
     }
 
     private void Update()
     {
         Draw();
+
+        if(Input.GetKeyDown(KeyCode.Tab))
+        {
+            Fill(_baseColor);
+        }
     }
 
     private void Draw()
@@ -84,6 +85,8 @@ public class Paint : MonoBehaviour
             {
                 int rayX = (int)(hitInfo.textureCoord.x * _textureSize);
                 int rayY = (int)(hitInfo.textureCoord.y * _textureSize);
+                if (log)
+                    log.text = $"{rayX} : {rayY}";
 
                 switch (_brushMode)
                 {
@@ -162,5 +165,10 @@ public class Paint : MonoBehaviour
     public void ChangeSize(float value)
     {
         _brushSize = Mathf.RoundToInt(value * _textureSize);
+    }
+
+    private void OnApplicationQuit()
+    {
+        Fill(_baseColor);
     }
 }
