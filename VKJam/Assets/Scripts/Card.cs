@@ -7,7 +7,7 @@ public class Card : MonoBehaviour
     public List<GameObject> AllNormalCardPrefab;
     public List<GameObject> AllUebyCardPrefab;
     public List<GameObject> AllNormalSprites;
-    public List<GameObject> AllUedySprites;
+    public List<GameObject> AllUebySprites;
 
     public List<GameObject> Spawn;
     private List<GameObject> cardOnScene = new List<GameObject>();
@@ -33,9 +33,10 @@ public class Card : MonoBehaviour
         int cardNumber = Random.Range(0, AllUebyCardPrefab.Count);
         CardInstance cardInstance = Instantiate(AllUebyCardPrefab[cardNumber], Spawn[2].transform.position, Spawn[2].transform.rotation, Spawn[2].transform).GetComponent<CardInstance>();
         cardInstance.CardSpawner = this;
-        cardInstance.Monster = AllUedySprites[cardNumber];
+        cardInstance.Monster = AllUebySprites[cardNumber];
         cardOnScene.Add(cardInstance.gameObject);
         AllUebyCardPrefab.RemoveAt(cardNumber);
+        AllUebySprites.RemoveAt(cardNumber);
 
         for (int i = 0; i < 2; i++)
         {
@@ -45,6 +46,7 @@ public class Card : MonoBehaviour
             cardInstance.Monster = AllNormalSprites[cardNumber];
             cardOnScene.Add(cardInstance.gameObject);
             AllNormalCardPrefab.RemoveAt(cardNumber);
+            AllNormalSprites.RemoveAt(cardNumber);
             searchForCard = true;
         }
     }
