@@ -8,6 +8,7 @@ public class ShowRecepiesUI : MonoBehaviour
 
     public void SpawnRecepies()
     {
+        Hide();
         int cardNumber = Random.Range(0, Recepies.Length);
         Recepies[cardNumber].SetActive(true);
     }

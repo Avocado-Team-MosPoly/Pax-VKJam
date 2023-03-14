@@ -98,7 +98,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5474014826769800577}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 27843704704e49843a9d6d9d3c6150a9, type: 2}
   m_CullingMode: 0
@@ -155,7 +155,19 @@ MonoBehaviour:
   NewColor: {r: 0.89019614, g: 0.82745105, b: 0.4901961, a: 0.77254903}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -8168106219305426268}
+        m_TargetAssemblyTypeName: CardInstance, Assembly-CSharp
+        m_MethodName: Choose
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   ActivityInteractable: 1
 --- !u!114 &-8168106219305426268
 MonoBehaviour:

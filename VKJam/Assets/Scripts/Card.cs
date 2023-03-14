@@ -15,6 +15,11 @@ public class Card : MonoBehaviour
     private GameObject activeCardPrefab;
     private List<Sprite> activeIngridients;
     private bool searchForCard;
+
+
+    //временное решение
+    public GameObject CameraBackButton;
+    public GameObject CameraButtonAfterChoosingCard;
     
     public void Start()
     {
@@ -69,6 +74,9 @@ public class Card : MonoBehaviour
                         {
                             Destroy(cardOnScene[i]);
                         }
+                        CameraBackButton.SetActive(false);
+                        CameraButtonAfterChoosingCard.SetActive(true);
+
                     }
 
                 }
