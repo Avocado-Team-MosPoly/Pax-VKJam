@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3823,14 +3823,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.14901961}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.36078432}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a13fc64ecc075934bbe357085c314ecf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f84ca183ef77e694ea2c92b726c7124b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5153,6 +5153,7 @@ GameObject:
   - component: {fileID: 1245305769}
   - component: {fileID: 1245305771}
   - component: {fileID: 1245305770}
+  - component: {fileID: 1245305772}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -5169,7 +5170,7 @@ RectTransform:
   m_GameObject: {fileID: 1245305768}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.0843244, y: 3.0843244, z: 3.0843244}
+  m_LocalScale: {x: 2.8879302, y: 2.8879302, z: 2.8879302}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 526505397}
@@ -5177,7 +5178,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.33556253, y: 0}
   m_AnchorMax: {x: 0.73860425, y: 0.2915185}
-  m_AnchoredPosition: {x: 1.5, y: 19.5}
+  m_AnchoredPosition: {x: -28, y: 0}
   m_SizeDelta: {x: -545.2187, y: -265}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1245305770
@@ -5277,6 +5278,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1245305768}
   m_CullTransparentMesh: 1
+--- !u!95 &1245305772
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245305768}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: cfa1f312ea72d5341aae964e30dc2784, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &1273172641
 GameObject:
   m_ObjectHideFlags: 0
