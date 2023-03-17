@@ -29,9 +29,11 @@ public class Card : MonoBehaviour
     public void NewCard()
     {
         cardOnScene.Clear();
-
+        List<GameObject> localSpawn =  Spawn;
         int cardNumber = Random.Range(0, AllUebyCardPrefab.Count);
-        CardInstance cardInstance = Instantiate(AllUebyCardPrefab[cardNumber], Spawn[2].transform.position, Spawn[2].transform.rotation, Spawn[2].transform).GetComponent<CardInstance>();
+        int spawnNumber = Random.Range(0, localSpawn.Count);
+        CardInstance cardInstance = Instantiate(AllUebyCardPrefab[cardNumber], localSpawn[spawnNumber].transform.position, localSpawn[spawnNumber].transform.rotation, localSpawn[spawnNumber].transform).GetComponent<CardInstance>();
+        localSpawn.RemoveAt(spawnNumber);
         cardInstance.CardSpawner = this;
         cardInstance.Monster = AllUebySprites[cardNumber];
         cardOnScene.Add(cardInstance.gameObject);
@@ -41,7 +43,9 @@ public class Card : MonoBehaviour
         for (int i = 0; i < 2; i++)
         {
             cardNumber = Random.Range(0, AllNormalCardPrefab.Count);
-            cardInstance = Instantiate(AllNormalCardPrefab[cardNumber], Spawn[i].transform.position, Spawn[i].transform.rotation, Spawn[i].transform).GetComponent<CardInstance>();
+            spawnNumber = Random.Range(0, localSpawn.Count);
+            cardInstance = Instantiate(AllNormalCardPrefab[cardNumber], localSpawn[spawnNumber].transform.position, localSpawn[spawnNumber].transform.rotation, localSpawn[spawnNumber].transform).GetComponent<CardInstance>();
+            localSpawn.RemoveAt(spawnNumber);
             cardInstance.CardSpawner = this;
             cardInstance.Monster = AllNormalSprites[cardNumber];
             cardOnScene.Add(cardInstance.gameObject);
