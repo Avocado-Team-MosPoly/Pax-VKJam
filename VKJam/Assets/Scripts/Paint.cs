@@ -25,6 +25,8 @@ public class Paint : MonoBehaviour
     [SerializeField] private BrushMode _brushMode = BrushMode.Draw;
     [SerializeField] private int _brushSize = 16;
     private int _halfBrushSize;
+    private int _prevRayX = -1, _prevRayY;
+    private bool _isDraw = false;
 
     [Header("Просто закинуть ссылку(если не нужен функционал, не ставить)")]
     [SerializeField] private Button clearCanvasButton;
@@ -77,7 +79,15 @@ public class Paint : MonoBehaviour
 
     private void Draw()
     {
-        if (Input.GetKey(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+            _isDraw = true;
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            _prevRayX = -1;
+            _isDraw = false;
+        }
+
+        if (_isDraw)
         {
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
@@ -85,8 +95,6 @@ public class Paint : MonoBehaviour
             {
                 int rayX = (int)(hitInfo.textureCoord.x * _textureSize);
                 int rayY = (int)(hitInfo.textureCoord.y * _textureSize);
-                if (log)
-                    log.text = $"{rayX} : {rayY}";
 
                 switch (_brushMode)
                 {
@@ -97,6 +105,13 @@ public class Paint : MonoBehaviour
                         DrawCircle(rayX, rayY, _baseColor);
                         break;
                 }
+
+                if (_prevRayX != -1)
+                    SmoothDrawCircle(rayX, rayY);
+                
+                _prevRayX = rayX;
+                _prevRayY = rayY;
+
                 _texture.Apply();
             }
         }
@@ -142,6 +157,21 @@ public class Paint : MonoBehaviour
         }
     }
 
+    private void SmoothDrawCircle(int rayX, int rayY)
+    {
+        Vector2Int prevPoint = new Vector2Int(_prevRayX, _prevRayY);
+        Vector2Int newPoint = new Vector2Int(rayX, rayY);
+        Vector2Int currentPoint = new Vector2Int();
+        float step = 1f / Vector2Int.Distance(prevPoint, newPoint) / _halfBrushSize;
+
+        for (float t = 0; t <= 1f; t += step)
+        {
+            currentPoint.x = (int)Mathf.Lerp(prevPoint.x, newPoint.x, t);
+            currentPoint.y = (int)Mathf.Lerp(prevPoint.y, newPoint.y, t);
+            DrawCircle(currentPoint.x, currentPoint.y, _drawColor);
+        }
+    }
+
     public void SavePaintingAsPng()
     {
         byte[] bytes = _texture.EncodeToPNG();
@@ -167,8 +197,8 @@ public class Paint : MonoBehaviour
         _brushSize = Mathf.RoundToInt(value * _textureSize);
     }
 
-    private void OnApplicationQuit()
+    public Texture2D GetTexture()
     {
-        Fill(_baseColor);
+        return _texture;
     }
 }

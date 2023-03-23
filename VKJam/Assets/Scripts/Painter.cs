@@ -21,9 +21,9 @@ public class Painter : MonoBehaviour
 
     private static void LoseRound()
     {
-        ScoreManager.AddScore(-1);
+        TokensManager.AddScore(-1);
         
-        if (ScoreManager.Score <= 0)
+        if (TokensManager.TokensCount <= 0)
             LoseGame();
         else
             // Сообщить всем игрокам о проигрыше
@@ -37,9 +37,9 @@ public class Painter : MonoBehaviour
 
     public static void WinRound()
     {
-        ScoreManager.AddScore(1);
+        TokensManager.AddScore(1);
 
-        if (ScoreManager.Score <= 0)
+        if (TokensManager.TokensCount <= 0)
             WinGame();
         else
             // Сообщить всем игрокам об отгадывании
