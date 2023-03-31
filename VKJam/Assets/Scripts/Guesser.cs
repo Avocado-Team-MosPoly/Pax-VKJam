@@ -1,25 +1,36 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Guesser : MonoBehaviour
 {
-    public string guess;
+    [SerializeField] private TMP_InputField guessInputField;
+    [SerializeField] private Button guessButton;
 
-    public void ChangeGuess(string value)
+    private string guess;
+
+    private void Start()
+    {
+        guessInputField.onValueChanged.AddListener(ChangeGuess);
+        guessButton.onClick.AddListener(SubmitGuess);
+    }
+
+    private void ChangeGuess(string value)
     {
         guess = value;
     }
 
-    public void SubmitGuess()
+    private void SubmitGuess()
     {
         if (Painter.CompareAnswer(guess))
         {
-            Debug.Log("Wrong guess");
+            Debug.Log("Correct guess");
             Painter.WinRound();
             // Сообщить всем игрокам о правильном ответе
         }
         else
         {
-            Debug.Log("Correct guess");
+            Debug.Log("Wrong guess");
             // Неправильный ответ
         }
     }

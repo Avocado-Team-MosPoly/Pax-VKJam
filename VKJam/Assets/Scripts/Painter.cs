@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Painter : MonoBehaviour
 {
-    private static string answer = "Carrot";
+    private static string answer = "святая вода";
     private static float timer;
 
     private void Update()
@@ -59,6 +59,6 @@ public class Painter : MonoBehaviour
     /// <summary> Временно </summary>
     public static bool CompareAnswer(string guess)
     {
-        return guess != answer;
+        return guess == answer;
     }
 }
