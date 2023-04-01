@@ -168,7 +168,17 @@ public class Paint : MonoBehaviour
         {
             currentPoint.x = (int)Mathf.Lerp(prevPoint.x, newPoint.x, t);
             currentPoint.y = (int)Mathf.Lerp(prevPoint.y, newPoint.y, t);
-            DrawCircle(currentPoint.x, currentPoint.y, _drawColor);
+            switch (_brushMode)
+            {
+                case BrushMode.Draw:
+                    Debug.Log(BrushMode.Erase.ToString() + " : " + _drawColor);
+                    DrawCircle(currentPoint.x, currentPoint.y, _drawColor);
+                    break;
+                case BrushMode.Erase:
+                    Debug.Log(BrushMode.Erase.ToString() + " : " + _baseColor);
+                    DrawCircle(currentPoint.x, currentPoint.y, _baseColor);
+                    break;
+            }
         }
     }
 
