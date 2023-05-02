@@ -9,7 +9,7 @@ public class WarehouseScript : MonoBehaviour
 
     private void Awake()
     {
-		SortListByName();
+		//SortListByName();
 	}
 
     void Start()
@@ -22,10 +22,8 @@ public class WarehouseScript : MonoBehaviour
 		{
 			g = Instantiate(itemTemplate, transform);
 			g.transform.GetChild(0).GetComponent<Image>().sprite = warehouseData[i].icon;
-			g.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = warehouseData[i].productName.ToString();
-			g.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Amount: " + warehouseData[i].productAmount.ToString() + " pcs";
-			g.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = warehouseData[i].productPricePerOneUnit.ToString() + " rub/pcs";
-
+			g.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "X" + warehouseData[i].productPrice.ToString();
+            g.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = warehouseData[i].productName.ToString();
 		}
 
 		Destroy(itemTemplate);
