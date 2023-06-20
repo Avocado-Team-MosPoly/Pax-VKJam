@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    public List<GameObject> AllNormalCardPrefab;
-    public List<GameObject> AllUebyCardPrefab;
-    public List<GameObject> AllNormalSprites;
-    public List<GameObject> AllUebySprites;
+    [SerializeField] private List<GameObject> AllNormalCardPrefab;
+    [SerializeField] private List<GameObject> AllUebyCardPrefab;
+    [SerializeField] private List<GameObject> AllNormalSprites;
+    [SerializeField] private List<GameObject> AllUebySprites;
 
-    public List<GameObject> Spawn;
+    [SerializeField] private List<GameObject> Spawn;
     private List<GameObject> cardOnScene = new List<GameObject>();
-    private List<string> activIngridientList;
     private GameObject activeCardPrefab;
-    private List<Sprite> activeIngridients;
+    static public List<string> activeIngridients;
     private bool searchForCard;
 
 
@@ -55,11 +54,6 @@ public class Card : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-
-    }
-
     public void ChooseIngredients()
     {
         if (searchForCard == true)
@@ -72,8 +66,8 @@ public class Card : MonoBehaviour
                 {
                     if (cardOnScene.Contains(hit.collider.gameObject))
                     {
-                        activIngridientList = hit.collider.gameObject.GetComponent<ScriptOnCard>().Word;
-                        activeIngridients = hit.collider.gameObject.GetComponent<ScriptOnCard>().Ingridients;
+                        activeIngridients = hit.collider.gameObject.GetComponent<ScriptOnCard>().Word;
+                        Debug.Log("word on card = " + hit.collider.gameObject);
                         activeCardPrefab = hit.collider.gameObject;
                         searchForCard = false;
                         for (int i = 0; i < cardOnScene.Count; i++)
