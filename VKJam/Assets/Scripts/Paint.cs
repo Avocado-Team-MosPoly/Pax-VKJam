@@ -107,7 +107,7 @@ public class Paint : NetworkBehaviour
 
     private bool isDraw = false;
 
-    [Header("Просто закинуть ссылку(если не нужен функционал, не ставить)")]
+    [Header("ГЏГ°Г®Г±ГІГ® Г§Г ГЄГЁГ­ГіГІГј Г±Г±Г»Г«ГЄГі(ГҐГ±Г«ГЁ Г­ГҐ Г­ГіГ¦ГҐГ­ ГґГіГ­ГЄГ¶ГЁГ®Г­Г Г«, Г­ГҐ Г±ГІГ ГўГЁГІГј)")]
     [SerializeField] private Slider brushSizeSlider;
     [SerializeField] private Button switchBrushButton;
     [SerializeField] private Button saveAsPNGButton;
@@ -302,6 +302,21 @@ public class Paint : NetworkBehaviour
             currentPoint.y = (short)Mathf.Lerp(prevPoint.y, newPoint.y, t);
 
             DrawCircle(currentPoint.x, currentPoint.y);
+/* Main
+            currentPoint.x = (int)Mathf.Lerp(prevPoint.x, newPoint.x, t);
+            currentPoint.y = (int)Mathf.Lerp(prevPoint.y, newPoint.y, t);
+            switch (_brushMode)
+            {
+                case BrushMode.Draw:
+                    //Debug.Log(BrushMode.Erase.ToString() + " : " + _drawColor);
+                    DrawCircle(currentPoint.x, currentPoint.y, _drawColor);
+                    break;
+                case BrushMode.Erase:
+                    //Debug.Log(BrushMode.Erase.ToString() + " : " + _baseColor);
+                    DrawCircle(currentPoint.x, currentPoint.y, _baseColor);
+                    break;
+            }
+*/
         }
     }
 

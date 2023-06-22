@@ -1,23 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class ShowRecepiesUI : MonoBehaviour
 {
-    public GameObject[] Recepies;
+    [SerializeField] private GameObject Recept;
 
-    public void SpawnRecepies()
+    public void SpawnRecept()
     {
-        Hide();
-        int cardNumber = Random.Range(0, Recepies.Length);
-        Recepies[cardNumber].SetActive(true);
+        if (Card.activeIngridients.Count>0)
+        {
+            int rundomNumber = Random.Range(0, Card.activeIngridients.Count - 1);
+            Recept.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Card.activeIngridients[rundomNumber];
+            Card.activeIngridients.Remove(Card.activeIngridients[rundomNumber]);
+            Debug.Log("SpawnRecept");
+        }
+        else
+        {
+            Debug.Log("Рецепты кончились");
+        }
     }
     public void Hide()
     {
-        foreach (GameObject hide in Recepies)
-        {
-            hide.SetActive(false);
-        }
+        Recept.SetActive(false);
     }
-
 }
