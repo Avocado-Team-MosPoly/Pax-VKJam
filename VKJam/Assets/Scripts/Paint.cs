@@ -1,171 +1,308 @@
 using System;
 using System.IO;
-using TMPro;
+using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Paint : MonoBehaviour
+public class Paint : NetworkBehaviour
 {
-    [Serializable] private enum BrushMode
+    [Serializable]
+    private struct TextureSettings
+    {
+        [Range(2, 1024)] public int size;
+        public TextureWrapMode wrapMode;
+        public FilterMode filterMode;
+    }
+    private struct Vector2Short : INetworkSerializable
+    {
+        public short x;
+        public short y;
+
+        public Vector2Short(int x, int y)
+        {
+            this.x = (short)x;
+            this.y = (short)y;
+        }
+        public Vector2Short(short x, short y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+
+        public static float Distance(Vector2Short a, Vector2Short b)
+        {
+            Vector2Short direction = b - a;
+            float distance = Mathf.Sqrt(direction.x * direction.x + direction.y * direction.y);
+            
+            return distance;
+        }
+
+        public static Vector2Short operator - (Vector2Short a, Vector2Short b)
+        {
+            return new Vector2Short
+            {
+                x = (short)(b.x - a.x),
+                y = (short)(b.y - a.y)
+            };
+        }
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref x);
+            serializer.SerializeValue(ref y);
+        }
+    }
+    private struct DrawingParams : INetworkSerializable
+    {
+        public short prevX;
+        public short prevY;
+        public short newX;
+        public short newY;
+
+        public BrushMode brushMode;
+        public bool isConnectedToLast;
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref prevX);
+            serializer.SerializeValue(ref prevY);
+            serializer.SerializeValue(ref newX);
+            serializer.SerializeValue(ref newY);
+            serializer.SerializeValue(ref brushMode);
+            serializer.SerializeValue(ref isConnectedToLast);
+        }
+    }
+
+    [Serializable]
+    private enum BrushMode
     {
         Draw,
         Erase
     }
 
-    [SerializeField, Range(2, 1024)] private int _textureSize = 512;
-    [SerializeField] private Color _baseColor;
-    [SerializeField] private TextureWrapMode _textureWrapMode;
-    [SerializeField] private FilterMode _filterMode;
-    [SerializeField] private Texture2D _texture;
-    [SerializeField] private Material _material;
+
+    [SerializeField] private TextureSettings textureSettings = new TextureSettings
+    {
+        size = 512,
+        wrapMode = TextureWrapMode.Clamp,
+        filterMode = FilterMode.Point
+    };
+    [SerializeField] private Texture2D texture;
+
+    [SerializeField] private Color baseColor = Color.white;
+    [SerializeField] private Material material;
 
     [SerializeField] private Camera _camera;
     [SerializeField] private Collider _collider;
-    [SerializeField] private Color _drawColor;
-    [SerializeField] private BrushMode _brushMode = BrushMode.Draw;
-    [SerializeField] private int _brushSize = 16;
-    private int _halfBrushSize;
-    private int _prevRayX = -1, _prevRayY;
-    private bool _isDraw = false;
+    [SerializeField] private Color drawColor;
+    [SerializeField] private BrushMode brushMode = BrushMode.Draw;
+    [SerializeField] private int brushSize = 16;
+    private int halfBrushSize;
+    private bool isConnectedToLast;
+    private bool isPainter;
 
-    [Header("Просто закинуть ссылку(если не нужен функционал, не ставить)")]
-    [SerializeField] private Button clearCanvasButton;
-    [SerializeField] private Button saveAsPNGButton;
+    private NetworkVariable<Vector2Short> rayPos = new NetworkVariable<Vector2Short>(new Vector2Short(), NetworkVariableReadPermission.Everyone);
+    private Vector2Short localRayPos;
+    private DrawingParams drawingParams;
+
+    private bool isDraw = false;
+
+    [Header("ГЏГ°Г®Г±ГІГ® Г§Г ГЄГЁГ­ГіГІГј Г±Г±Г»Г«ГЄГі(ГҐГ±Г«ГЁ Г­ГҐ Г­ГіГ¦ГҐГ­ ГґГіГ­ГЄГ¶ГЁГ®Г­Г Г«, Г­ГҐ Г±ГІГ ГўГЁГІГј)")]
+    [SerializeField] private Slider brushSizeSlider;
     [SerializeField] private Button switchBrushButton;
-    [SerializeField] private Slider _brushSizeSlider;
-    [SerializeField] private TextMeshProUGUI log;
+    [SerializeField] private Button saveAsPNGButton;
+    [SerializeField] private Button clearCanvasButton;
 
     private void Start()
     {
         if (clearCanvasButton)
-            clearCanvasButton.onClick.AddListener(() => Fill(_baseColor));
+            clearCanvasButton.onClick.AddListener(() => Fill(baseColor));
         if (saveAsPNGButton)
             saveAsPNGButton.onClick.AddListener(SavePaintingAsPng);
         if (switchBrushButton)
             switchBrushButton.onClick.AddListener(SwitchBrush);
-        if (_brushSizeSlider)
-            _brushSizeSlider.onValueChanged.AddListener(ChangeSize);
+        if (brushSizeSlider)
+            brushSizeSlider.onValueChanged.AddListener(ChangeSize);
+
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer)
+        {
+            isPainter = true;
+            rayPos.OnValueChanged += OnMousePositionValueChanged;
+        }
 
         CreateTexture();
-        _halfBrushSize = _brushSize / 2;
+        halfBrushSize = brushSize / 2;
+    }
+
+    private void OnMousePositionValueChanged(Vector2Short previousValue, Vector2Short newValue)
+    {
+        drawingParams.prevX = previousValue.x;
+        drawingParams.prevY = previousValue.y;
+        drawingParams.newX = newValue.x;
+        drawingParams.newY = newValue.y;
+        drawingParams.brushMode = brushMode;
+        drawingParams.isConnectedToLast = isConnectedToLast;
+
+        DrawCircleClientRpc(drawingParams);
+
+        isConnectedToLast = true;
     }
 
     private void CreateTexture()
     {
-        if (!_material)
+        if (!material)
         {
             Debug.LogError("Material isn't set");
             return;
         }
-        _texture = new Texture2D(_textureSize, _textureSize);
-        Fill(_baseColor);
+        texture = new Texture2D(textureSettings.size, textureSettings.size);
+        Fill(baseColor);
 
-        _texture.wrapMode = _textureWrapMode;
-        _texture.filterMode = _filterMode;
+        texture.wrapMode = textureSettings.wrapMode;
+        texture.filterMode = textureSettings.filterMode;
 
-        _material.mainTexture = _texture;
-        _texture.Apply();
+        material.mainTexture = texture;
+        texture.Apply();
     }
 
     private void Update()
     {
         Draw();
-
-        if(Input.GetKeyDown(KeyCode.Tab))
-        {
-            Fill(_baseColor);
-        }
     }
 
     private void Draw()
     {
+        if (!isPainter)
+            return;
+
         if (Input.GetKeyDown(KeyCode.Mouse0))
-            _isDraw = true;
-        if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            _prevRayX = -1;
-            _isDraw = false;
+            isDraw = true;
         }
 
-        if (_isDraw)
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            isConnectedToLast = false;
+            isDraw = false;
+        }
+
+        if (isDraw)
         {
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
             if (_collider.Raycast(ray, out RaycastHit hitInfo, 1000f))
             {
-                int rayX = (int)(hitInfo.textureCoord.x * _textureSize);
-                int rayY = (int)(hitInfo.textureCoord.y * _textureSize);
+                int rayX = (int)(hitInfo.textureCoord.x * textureSettings.size);
+                int rayY = (int)(hitInfo.textureCoord.y * textureSettings.size);
 
-                switch (_brushMode)
+                Vector2Short newRayPos = new Vector2Short(rayX, rayY);
+
+                if (Vector2Short.Distance(rayPos.Value, newRayPos) >= halfBrushSize)
                 {
-                    case BrushMode.Draw:
-                        DrawCircle(rayX, rayY, _drawColor);
-                        break;
-                    case BrushMode.Erase:
-                        DrawCircle(rayX, rayY, _baseColor);
-                        break;
+                    if (IsServer)
+                        rayPos.Value = newRayPos;
+                    else
+                    {
+                        SendRayPosServerRpc(newRayPos.x, newRayPos.y, isConnectedToLast);
+                        
+                        isConnectedToLast = true;
+                    }
                 }
 
-                if (_prevRayX != -1)
-                    SmoothDrawCircle(rayX, rayY);
-                
-                _prevRayX = rayX;
-                _prevRayY = rayY;
+                //prevRayX = rayX;
+                //prevRayY = rayY;
 
-                _texture.Apply();
+                //switch (brushMode)
+                //{
+                //    case BrushMode.Draw:
+                //        DrawCircleServerRpc(Convert.ToInt16(rayX), Convert.ToInt16(rayY));
+                //        //DrawCircle(rayX, rayY, drawColor);
+                //        break;
+                //    case BrushMode.Erase:
+                //        DrawCircle(rayX, rayY, baseColor);
+                //        break;
+                //}
+
+                //if (prevRayX != -1)
+                //    SmoothDrawCircle(rayX, rayY);
+
+                //prevRayX = rayX;
+                //prevRayY = rayY;
+
+                //texture.Apply();
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SendRayPosServerRpc(short x, short y, bool isConnectedToLast)
+    {
+        rayPos.Value = new Vector2Short(x, y);
+        this.isConnectedToLast = isConnectedToLast;
     }
 
     private void Fill(Color color)
     {
-        for (int x = 0; x < _textureSize; x++)
+        for (int x = 0; x < textureSettings.size; x++)
         {
-            for (int y = 0; y < _textureSize; y++)
+            for (int y = 0; y < textureSettings.size; y++)
             {
-                _texture.SetPixel(x, y, color);
+                texture.SetPixel(x, y, color);
             }
         }
     }
     
-    private void DrawCircle(int rayX, int rayY, Color color)
+    private void DrawCircle(short rayX, short rayY)
     {
-        for (int x = 0; x < _brushSize; x++)
+        float r2 = Mathf.Pow(halfBrushSize - 0.5f, 2);
+        Color color = brushMode == BrushMode.Draw ? drawColor : baseColor;
+
+        for (int x = 0; x < brushSize; x++)
         {
-            for (int y = 0; y < _brushSize; y++)
+            for (int y = 0; y < brushSize; y++)
             {
-                float x2 = Mathf.Pow(x - _halfBrushSize, 2);
-                float y2 = Mathf.Pow(y - _halfBrushSize, 2);
-                float r2 = Mathf.Pow(_halfBrushSize - 0.5f, 2);
+                float x2 = Mathf.Pow(x - halfBrushSize, 2);
+                float y2 = Mathf.Pow(y - halfBrushSize, 2);
 
                 if (x2 + y2 < r2)
                 {
-                    _texture.SetPixel(rayX + x - _halfBrushSize, rayY + y - _halfBrushSize, color);
+                    texture.SetPixel(rayX + x - halfBrushSize, rayY + y - halfBrushSize, color);
                 }
             }
         }
     }
 
-    private void DrawSquare(int rayX, int rayY)
+    [ClientRpc]
+    private void DrawCircleClientRpc(DrawingParams drawingParams)
     {
-        for (int x = 0; x < _brushSize; x++)
-        {
-            for (int y = 0; y < _brushSize; y++)
-            {
-                _texture.SetPixel(rayX + x - _halfBrushSize, rayY + y - _halfBrushSize, _drawColor);
-            }
-        }
+        if (drawingParams.isConnectedToLast)
+            SmoothDrawCircle(drawingParams.prevX, drawingParams.prevY, drawingParams.newX, drawingParams.newY);
+        else
+            DrawCircle(drawingParams.newX, drawingParams.newY);
+
+        //Debug.Log($"{drawingParams.prevX}, {drawingParams.prevY}, {drawingParams.newX}, {drawingParams.newY}, {drawingParams.isConnectedToLast}");
+
+        texture.Apply();
     }
 
-    private void SmoothDrawCircle(int rayX, int rayY)
+    private void SmoothDrawCircle(short pRayX, short pRayY, short rayX, short rayY)
     {
-        Vector2Int prevPoint = new Vector2Int(_prevRayX, _prevRayY);
-        Vector2Int newPoint = new Vector2Int(rayX, rayY);
-        Vector2Int currentPoint = new Vector2Int();
-        float step = 1f / Vector2Int.Distance(prevPoint, newPoint) / _halfBrushSize;
+        Vector2Short prevPoint = new Vector2Short(pRayX, pRayY);
+        Vector2Short newPoint = new Vector2Short(rayX, rayY);
+        Vector2Short currentPoint = new Vector2Short();
+        float step = 1f / Vector2Short.Distance(prevPoint, newPoint) / halfBrushSize;
 
         for (float t = 0; t <= 1f; t += step)
         {
+            currentPoint.x = (short)Mathf.Lerp(prevPoint.x, newPoint.x, t);
+            currentPoint.y = (short)Mathf.Lerp(prevPoint.y, newPoint.y, t);
+
+            DrawCircle(currentPoint.x, currentPoint.y);
+/* Main
             currentPoint.x = (int)Mathf.Lerp(prevPoint.x, newPoint.x, t);
             currentPoint.y = (int)Mathf.Lerp(prevPoint.y, newPoint.y, t);
             switch (_brushMode)
@@ -179,36 +316,64 @@ public class Paint : MonoBehaviour
                     DrawCircle(currentPoint.x, currentPoint.y, _baseColor);
                     break;
             }
+*/
         }
     }
 
     public void SavePaintingAsPng()
     {
-        byte[] bytes = _texture.EncodeToPNG();
+        byte[] bytes = texture.EncodeToPNG();
         string dirPath = Application.dataPath + "/Paint Images/";
+        
         if (!Directory.Exists(dirPath))
         {
             Directory.CreateDirectory(dirPath);
         }
+        
         File.WriteAllBytes($"{dirPath}IMG_{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.png", bytes);
+        
         Debug.Log("Path: " + dirPath);
     }
 
     public void SwitchBrush()
     {
-        if (_brushMode == BrushMode.Draw)
-            _brushMode = BrushMode.Erase;
+        if (brushMode == BrushMode.Draw)
+            SwitchBrushServerRpc(BrushMode.Erase);
         else
-            _brushMode = BrushMode.Draw;
+            SwitchBrushServerRpc(BrushMode.Draw);
     }
 
-    public void ChangeSize(float value)
+    [ServerRpc(RequireOwnership = false)]
+    private void SwitchBrushServerRpc(BrushMode brushMode)
     {
-        _brushSize = Mathf.RoundToInt(value * _textureSize);
+        SwitchBrushClientRpc(brushMode);
+    }
+
+    [ClientRpc]
+    private void SwitchBrushClientRpc(BrushMode brushMode)
+    {
+        this.brushMode = brushMode;
+    }
+
+    public void ChangeSize(float brushSize)
+    {
+        ChangeSizeServerRpc(brushSize);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ChangeSizeServerRpc(float brushSize)
+    {
+        ChangeSizeClientRpc(brushSize);
+    }
+
+    [ClientRpc]
+    private void ChangeSizeClientRpc(float brushSize)
+    {
+        this.brushSize = Mathf.RoundToInt(brushSize * textureSettings.size);
     }
 
     public Texture2D GetTexture()
     {
-        return _texture;
+        return texture;
     }
 }
