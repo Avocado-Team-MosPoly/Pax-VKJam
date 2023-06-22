@@ -42,14 +42,14 @@ public class GuesserPainting : MonoBehaviour
             _material.mainTexture = _texture;
     }
 
-    private void Update()
-    {
-        if (_paint)
-        {
-            _texture = _paint.GetTexture();
+    //private void Update()
+    //{
+    //    if (_paint)
+    //    {
+    //        _texture = _paint.GetTexture();
 
-            if (_material)
-                _material.mainTexture = _texture;
-        }
-    }
+    //        if (_material)
+    //            _material.mainTexture = _texture;
+    //    }
+    //}
 }
