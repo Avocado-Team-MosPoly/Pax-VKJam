@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
@@ -8,86 +7,91 @@ public class taimer : NetworkBehaviour
 {
     [SerializeField] private TMP_Text ShowTime;
     [SerializeField] private int time;
-    private NetworkVariable<int> networkTime = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<int> NetworkTime = new(0);
     [SerializeField] private ShowRecepiesUI showRecepiesUI;
     private int reloadtime;
 
+    private Coroutine serverClockCoroutine = null;
     private Coroutine clockCoroutine = null;
+
+    public static taimer Instance { get; private set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
         reloadtime = time;
     }
 
-    private void OnEnable()
+    public override void OnNetworkSpawn()
     {
         if (IsServer)
-        {
-            clockCoroutine = StartCoroutine(Clock());
-            NetworkManager.Singleton.OnClientConnectedCallback += (ulong id) => { StartTimerClientRpc(); };
-        }
-        else
-        {
-            Debug.LogWarning("Not Host");
-        }
+            serverClockCoroutine = StartCoroutine(Clock());
+
+        StartTimerServerRpc();
     }
 
-    IEnumerator Clock()
+    private IEnumerator Clock()
     {
-        while (IsHost)
+        while (IsServer)
         {
             if (time <= 0)
             {
-                transform.parent.gameObject.SetActive(false);
-                showRecepiesUI.Hide();
-                time = reloadtime + 3;
+                ResetTimer();
             }
 
             time -= 1;
-            if (time / 60 <= 10)
-            {
-                ShowTime.text = "0" + time / 60 + ":" + time % 60;
-                if (time % 60 < 10)
-                {
-                    ShowTime.text = "0" + time / 60 + ":" + "0" + time % 60;
-                }
-            }
-            else
-            {
-                ShowTime.text = time / 60 + ":" + time % 60;
-                if (time % 60 < 10)
-                {
-                    ShowTime.text = time / 60 + ":" + "0" + time % 60;
-                    
-                    networkTime.Value = time;
-                }
-            }
+            NetworkTime.Value = time;
+
             yield return new WaitForSeconds(1);
         }
+    }
 
-        clockCoroutine = null;
+    [ServerRpc(RequireOwnership = false)]
+    public void StartTimerServerRpc()
+    {
+        StartTimerClientRpc();
     }
 
     [ClientRpc]
     public void StartTimerClientRpc()
     {
-        if (!IsHost)
-        {
-            if (clockCoroutine == null)
-                clockCoroutine = StartCoroutine(ClientClock());
-        }
+        clockCoroutine ??= StartCoroutine(ClientClock());
     }
 
     private IEnumerator ClientClock()
     {
         while (IsClient)
         {
-            time = networkTime.Value;
-            ShowTime.text = time / 60 + ":" + "0" + time % 60;
+            time = NetworkTime.Value;
+
+            if (time / 60 <= 10)
+            {
+                if (time % 60 < 10)
+                    ShowTime.text = "0" + time / 60 + ":" + "0" + time % 60;
+                else
+                    ShowTime.text = "0" + time / 60 + ":" + time % 60;
+            }
+            else
+            {
+                if (time % 60 < 10)
+                    ShowTime.text = time / 60 + ":" + "0" + time % 60;
+                else
+                    ShowTime.text = time / 60 + ":" + time % 60;
+            }
 
             yield return new WaitForSeconds(1);
         }
+    }
 
-        clockCoroutine = null;
+    // call on Server
+    public void ResetTimer()
+    {
+        transform.parent.gameObject.SetActive(false);
+        showRecepiesUI.Hide();
+        time = reloadtime + 3;
     }
 }
