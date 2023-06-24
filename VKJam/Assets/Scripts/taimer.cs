@@ -6,10 +6,10 @@ using Unity.Netcode;
 public class taimer : NetworkBehaviour
 {
     [SerializeField] private TMP_Text ShowTime;
-    [SerializeField] private int time;
+
+    [SerializeField] private int roundTime = 30;
     public NetworkVariable<int> NetworkTime = new(0);
     [SerializeField] private ShowRecepiesUI showRecepiesUI;
-    private int reloadtime;
 
     private Coroutine serverClockCoroutine = null;
     private Coroutine clockCoroutine = null;
@@ -21,15 +21,10 @@ public class taimer : NetworkBehaviour
         Instance = this;
     }
 
-    private void Start()
-    {
-        reloadtime = time;
-    }
-
     public override void OnNetworkSpawn()
     {
         if (IsServer)
-            serverClockCoroutine = StartCoroutine(Clock());
+            serverClockCoroutine ??= StartCoroutine(Clock());
 
         StartTimerServerRpc();
     }
@@ -38,13 +33,12 @@ public class taimer : NetworkBehaviour
     {
         while (IsServer)
         {
-            if (time <= 0)
+            if (NetworkTime.Value <= 0)
             {
                 ResetTimer();
             }
 
-            time -= 1;
-            NetworkTime.Value = time;
+            NetworkTime.Value -= 1;
 
             yield return new WaitForSeconds(1);
         }
@@ -66,21 +60,19 @@ public class taimer : NetworkBehaviour
     {
         while (IsClient)
         {
-            time = NetworkTime.Value;
-
-            if (time / 60 <= 10)
+            if (NetworkTime.Value / 60 <= 10)
             {
-                if (time % 60 < 10)
-                    ShowTime.text = "0" + time / 60 + ":" + "0" + time % 60;
+                if (NetworkTime.Value % 60 < 10)
+                    ShowTime.text = "0" + NetworkTime.Value / 60 + ":" + "0" + NetworkTime.Value % 60;
                 else
-                    ShowTime.text = "0" + time / 60 + ":" + time % 60;
+                    ShowTime.text = "0" + NetworkTime.Value / 60 + ":" + NetworkTime.Value % 60;
             }
             else
             {
-                if (time % 60 < 10)
-                    ShowTime.text = time / 60 + ":" + "0" + time % 60;
+                if (NetworkTime.Value % 60 < 10)
+                    ShowTime.text = NetworkTime.Value / 60 + ":" + "0" + NetworkTime.Value % 60;
                 else
-                    ShowTime.text = time / 60 + ":" + time % 60;
+                    ShowTime.text = NetworkTime.Value / 60 + ":" + NetworkTime.Value % 60;
             }
 
             yield return new WaitForSeconds(1);
@@ -92,6 +84,6 @@ public class taimer : NetworkBehaviour
     {
         transform.parent.gameObject.SetActive(false);
         showRecepiesUI.Hide();
-        time = reloadtime + 3;
+        NetworkTime.Value = roundTime;
     }
 }
