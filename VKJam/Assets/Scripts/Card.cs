@@ -78,10 +78,8 @@ public class Card : MonoBehaviour
                         CameraButtonAfterChoosingCard.SetActive(true);
 
                     }
-
                 }
             }
-
         }
     }
 
