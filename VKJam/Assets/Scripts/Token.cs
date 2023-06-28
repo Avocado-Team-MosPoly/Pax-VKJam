@@ -2,12 +2,17 @@ using UnityEngine;
 
 public class Token : MonoBehaviour
 {
-    public void OnSpawn()
+    private void Start()
+    {
+        Spawn();
+    }
+
+    private void Spawn()
     {
         // что происходит при спавне
     }
 
-    public void OnDestruct()
+    public void Destruct()
     {
         // что происходит при уничтожении
         Destroy(gameObject);

@@ -1,12 +1,16 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class TokensManager : MonoBehaviour
 {
     public static int TokensCount { get; private set; }
-    
+
+    public static UnityEvent OnAddTokens;
+    public static UnityEvent OnRemoveTokens;
+
     [SerializeField] private GameObject tokenPrefab;
     [SerializeField] private Transform tokenSpawnTransform;
     
@@ -33,25 +37,41 @@ public class TokensManager : MonoBehaviour
         tokensCountTMPro = GetComponent<TextMeshProUGUI>();
     }
 
-    public static void AddScore(int value)
+    private void SpawnTokens(int count)
     {
-        TokensCount += value;
-
-        instance.tokensCountTMPro.text = "X" + TokensCount.ToString();
-
         if (instance.tokenPrefab && instance.tokenSpawnTransform)
         {
             Token token;
-            for (int i = 0; i < value; i++)
+            for (int i = 0; i < count; i++)
             {
                 token = Instantiate(instance.tokenPrefab, instance.tokenSpawnTransform).GetComponent<Token>();
-                token.OnSpawn();
+                //token.Spawn();
                 tokensOnScene.Add(token);
             }
         }
     }
 
-    public static void RemoveScore(int value)
+    private void DeleteExcessTokens()
+    {
+        if (tokensOnScene.Count > 0)
+        {
+            for (int i = tokensOnScene.Count - 1; i >= TokensCount; i--)
+            {
+                tokensOnScene[i].Destruct();
+                tokensOnScene.RemoveAt(i);
+            }
+        }
+    }
+
+    public static void AddTokens(int value)
+    {
+        TokensCount += value;
+
+        instance.tokensCountTMPro.text = "X" + TokensCount.ToString();
+        instance.SpawnTokens(value);
+    }
+
+    public static void RemoveTokens(int value)
     {
         TokensCount -= value;
 
@@ -61,14 +81,6 @@ public class TokensManager : MonoBehaviour
         }
 
         instance.tokensCountTMPro.text = "X" + TokensCount.ToString();
-
-        if (tokensOnScene.Count > 0)
-        {
-            for (int i = tokensOnScene.Count - 1; i >= TokensCount; i--)
-            {
-                tokensOnScene[i].OnDestruct();
-                tokensOnScene.RemoveAt(i);
-            }
-        }
+        instance.DeleteExcessTokens();
     }
 }

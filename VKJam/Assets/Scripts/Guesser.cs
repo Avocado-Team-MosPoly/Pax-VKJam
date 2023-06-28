@@ -22,16 +22,6 @@ public class Guesser : MonoBehaviour
 
     private void SubmitGuess()
     {
-        if (Painter.CompareAnswer(guess))
-        {
-            Debug.Log("Correct guess");
-            Painter.WinRound();
-            // Сообщить всем игрокам о правильном ответе
-        }
-        else
-        {
-            Debug.Log("Wrong guess");
-            // Неправильный ответ
-        }
+        GameManager.Instance.CompareIngredient(guess);
     }
 }
