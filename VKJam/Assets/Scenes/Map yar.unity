@@ -2033,6 +2033,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2e165dd6a8527ed4fabdeb065d29f8db, type: 3}
   m_PrefabInstance: {fileID: 448556284}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &453696522 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1669253588456345075, guid: c64535ad2b30bc442aba6fc8aaffe3c9, type: 3}
+  m_PrefabInstance: {fileID: 158901174}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &475235476
 GameObject:
   m_ObjectHideFlags: 0
@@ -5711,7 +5716,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 961149038785906872, guid: c64535ad2b30bc442aba6fc8aaffe3c9, type: 3}
   m_PrefabInstance: {fileID: 158901174}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 453696522}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5e7f719566fc7a746857199146a3265f, type: 3}
@@ -7639,7 +7644,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2011711118484025510, guid: c64535ad2b30bc442aba6fc8aaffe3c9, type: 3}
   m_PrefabInstance: {fileID: 158901174}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 453696522}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f13c20d4e5f169a4ca84a3779a35757b, type: 3}
@@ -9063,8 +9068,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTime: {fileID: 1759243713}
-  time: 30
+  NetworkTime:
+    m_InternalValue: 0
   showRecepiesUI: {fileID: 526505399}
+  reloadtime: 0
 --- !u!1 &1766431224
 GameObject:
   m_ObjectHideFlags: 0
@@ -10273,6 +10280,7 @@ GameObject:
   - component: {fileID: 2060414255}
   - component: {fileID: 2060414254}
   - component: {fileID: 2060414256}
+  - component: {fileID: 2060414257}
   m_Layer: 5
   m_Name: CameraBack
   m_TagString: Untagged
@@ -10287,7 +10295,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2060414252}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.24919552, y: 0.18481256, z: 0.18481256}
   m_ConstrainProportionsScale: 0
@@ -10299,7 +10307,7 @@ RectTransform:
   m_AnchorMin: {x: 0.02679438, y: 0}
   m_AnchorMax: {x: 0.3084383, y: 0.273}
   m_AnchoredPosition: {x: -8.5, y: -8.000977}
-  m_SizeDelta: {x: 1289, y: 862}
+  m_SizeDelta: {x: 1289, y: 861.9999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2060414254
 MonoBehaviour:
@@ -10431,6 +10439,29 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &2060414257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2060414252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b91fae0184afa64d86c7e8aabe1f85b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  setActiveFalseOnBack:
+  - {fileID: 1245305768}
+  setActiveTrueOnBack:
+  - {fileID: 385979678}
+  book: {fileID: 453696522}
+  mainCamera: {fileID: 385979678}
+  animationObject: {fileID: 565480254}
+  animationName: CameraAnimBack
+  setActiveFalseOnBackWithoutChosenCard: []
+  setActiveTrueOnBackWithoutChosenCard:
+  - {fileID: 385979678}
 --- !u!1 &2063246155
 GameObject:
   m_ObjectHideFlags: 0
@@ -11933,22 +11964,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 782fd76500f4b9e4cb61caff4755f2ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _textureSize: 512
-  _baseColor: {r: 1, g: 1, b: 1, a: 1}
-  _textureWrapMode: 1
-  _filterMode: 1
-  _texture: {fileID: 0}
-  _material: {fileID: 2100000, guid: f38295ad12d428d4aae65b790df42022, type: 2}
+  textureSettings:
+    size: 512
+    wrapMode: 1
+    filterMode: 0
+  texture: {fileID: 0}
+  baseColor: {r: 1, g: 1, b: 1, a: 1}
+  material: {fileID: 0}
   _camera: {fileID: 385979680}
   _collider: {fileID: 7751093537230117298}
-  _drawColor: {r: 0, g: 0, b: 0, a: 1}
-  _brushMode: 0
-  _brushSize: 10
-  clearCanvasButton: {fileID: 0}
-  saveAsPNGButton: {fileID: 0}
+  drawColor: {r: 0, g: 0, b: 0, a: 0}
+  brushMode: 0
+  brushSize: 16
+  brushSizeSlider: {fileID: 0}
   switchBrushButton: {fileID: 1828553528}
-  _brushSizeSlider: {fileID: 0}
-  log: {fileID: 0}
+  saveAsPNGButton: {fileID: 0}
+  clearCanvasButton: {fileID: 0}
 --- !u!4 &7790053061071082798
 Transform:
   m_ObjectHideFlags: 0
