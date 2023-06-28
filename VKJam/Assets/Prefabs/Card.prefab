@@ -15,9 +15,8 @@ GameObject:
   - component: {fileID: 3678777065180372741}
   - component: {fileID: -7509633871533451797}
   - component: {fileID: 2889388206229436696}
-  - component: {fileID: 878379070563648508}
   m_Layer: 0
-  m_Name: card_kolobok
+  m_Name: Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,14 +29,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5474014826769800577}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 0.348, y: 0.297, z: -1.543}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: -180}
 --- !u!33 &8580360330904504478
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -67,7 +66,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 8748892135801146194, guid: 9e8bc96abf468d143898240811827778, type: 3}
-  - {fileID: 2100000, guid: cdea9d88c357f5e46994379e26589aaa, type: 2}
+  - {fileID: 2100000, guid: 75331c57482259a4b8728f3fd2550857, type: 2}
   - {fileID: 2100000, guid: b7910d95d67caf74fa6a36efe575d399, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -122,7 +121,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d04091efaad0902478a939de57c482e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterMaterial: {fileID: 0}
+  monsterMaterial: {fileID: 2100000, guid: 75331c57482259a4b8728f3fd2550857, type: 2}
+  frontMaterialIndex: 1
 --- !u!65 &-7509633871533451797
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -153,8 +153,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 878379070563648508}
-        m_TargetAssemblyTypeName: CardInstance, Assembly-CSharp
+      - m_Target: {fileID: 3678777065180372741}
+        m_TargetAssemblyTypeName: ScriptOnCard, Assembly-CSharp
         m_MethodName: Choose
         m_Mode: 1
         m_Arguments:
@@ -166,18 +166,3 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   ActivityInteractable: 1
---- !u!114 &878379070563648508
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5474014826769800577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba0403a6e2f77f44297cc179db17ed61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CardSpawner: {fileID: 0}
-  Monster: {fileID: 0}
-  animator: {fileID: 0}

@@ -33,6 +33,6 @@ public class Menu_Multiplayer : MonoBehaviour
     {
         NetworkManager.Singleton.StartClient();
 
-        SceneLoader.Load(lobbySceneName);
+        //SceneLoader.Load(lobbySceneName);
     }
 }

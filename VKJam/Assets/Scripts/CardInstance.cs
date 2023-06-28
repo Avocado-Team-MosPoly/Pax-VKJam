@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CardInstance : MonoBehaviour
 {
-    public Card CardSpawner;
+    public Cards CardSpawner;
     public GameObject Monster;
 
     public Animator animator;

@@ -9,11 +9,11 @@ public class ShowRecepiesUI : MonoBehaviour
 
     public void SpawnRecept()
     {
-        if (Card.activeIngridients.Count>0)
+        if (Cards.activeIngridients.Count>0)
         {
-            int rundomNumber = Random.Range(0, Card.activeIngridients.Count - 1);
-            Recept.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Card.activeIngridients[rundomNumber];
-            Card.activeIngridients.Remove(Card.activeIngridients[rundomNumber]);
+            int rundomNumber = Random.Range(0, Cards.activeIngridients.Count - 1);
+            Recept.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Cards.activeIngridients[rundomNumber];
+            Cards.activeIngridients.Remove(Cards.activeIngridients[rundomNumber]);
             Debug.Log("SpawnRecept");
         }
         else

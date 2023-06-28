@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+
 [RequireComponent(typeof(Collider))]
 public class Interactable : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class Interactable : MonoBehaviour
     private Renderer Rend;
     public UnityEvent m_OnClick;
     public bool ActivityInteractable;
+    
     private void Awake()
     {
         Rend = GetComponent<Renderer>();
