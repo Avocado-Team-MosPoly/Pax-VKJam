@@ -7,12 +7,11 @@ public class Timer : NetworkBehaviour
 {
     [SerializeField] private TMP_Text ShowTime;
     public NetworkVariable<int> NetworkTime = new(0);
-    private bool isTimePause = false;
+    private bool isTimePaused = false;
     [SerializeField] private ShowRecepiesUI showRecepiesUI;
-    [SerializeField] private int reloadtime;
+    [SerializeField] private int roundTime = 30;
 
     private Coroutine serverClockCoroutine = null;
-    private Coroutine clockCoroutine = null;
 
     public static Timer Instance { get; private set; }
 
@@ -24,26 +23,26 @@ public class Timer : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         NetworkTime.OnValueChanged += OnTaimerChange;
-        if (IsServer){
-            
-            NetworkTime.Value = reloadtime;
-        }        
+        
+        if (IsServer)
+            NetworkTime.Value = roundTime;
     }
+
     [ServerRpc]
     public void StartTimerServerRpc()
     {
         if (serverClockCoroutine==null)
             serverClockCoroutine = StartCoroutine(Clock());
     }
+
     private IEnumerator Clock()
     {
         while (IsServer)
         {
             if (NetworkTime.Value <= 0)
-            {
                 ResetTimer();
-            }
-            if (isTimePause==false)
+
+            if (isTimePaused == false)
                 NetworkTime.Value -= 1;
 
             yield return new WaitForSeconds(1);
@@ -55,9 +54,10 @@ public class Timer : NetworkBehaviour
     {
         transform.parent.gameObject.SetActive(false);
         showRecepiesUI.Hide();
-        NetworkTime.Value = reloadtime;
+        NetworkTime.Value = roundTime;
         TimerEndClientRpc();
     }
+
     private void OnTaimerChange(int preveusValue, int newValue)
     {
         
@@ -86,6 +86,6 @@ public class Timer : NetworkBehaviour
 
     public void SetPause(bool state)
     {
-        isTimePause = state;
+        isTimePaused = state;
     }
 }

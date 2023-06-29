@@ -1,96 +1,51 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Card : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> AllNormalCardPrefab;
-    [SerializeField] private List<GameObject> AllUebyCardPrefab;
-    [SerializeField] private List<GameObject> AllNormalSprites;
-    [SerializeField] private List<GameObject> AllUebySprites;
+    [SerializeField] private int frontMaterialIndex = 1;
 
-    [SerializeField] private List<GameObject> Spawn;
-    private List<GameObject> cardOnScene = new List<GameObject>();
-    private GameObject activeCardPrefab;
-    static public List<string> activeIngridients;
-    private bool searchForCard;
+    public CardSO CardSO { get; private set; }
 
+    public static UnityEvent<Card> OnSelect = new();
+    public static UnityEvent<Card> OnChoose = new();
 
-    //временное решение
-    public GameObject CameraBackButton;
-    public GameObject CameraButtonAfterChoosingCard;
-    
-    public void Start()
+    private Animator animator;
+    private MeshRenderer meshRenderer;
+
+    private static Card firstSelectedCard;
+
+    private void Awake()
     {
-        NewCard();
+        animator = GetComponent<Animator>();
+        meshRenderer = GetComponent<MeshRenderer>();
     }
 
-    public void NewCard()
+    private void UpdateCardSO()
     {
-        cardOnScene.Clear();
-        List<GameObject> localSpawn =  Spawn;
-        int cardNumber = Random.Range(0, AllUebyCardPrefab.Count);
-        int spawnNumber = Random.Range(0, localSpawn.Count);
-        CardInstance cardInstance = Instantiate(AllUebyCardPrefab[cardNumber], localSpawn[spawnNumber].transform.position, localSpawn[spawnNumber].transform.rotation, localSpawn[spawnNumber].transform).GetComponent<CardInstance>();
-        localSpawn.RemoveAt(spawnNumber);
-        cardInstance.CardSpawner = this;
-        cardInstance.Monster = AllUebySprites[cardNumber];
-        cardOnScene.Add(cardInstance.gameObject);
-        AllUebyCardPrefab.RemoveAt(cardNumber);
-        AllUebySprites.RemoveAt(cardNumber);
+        gameObject.name = CardSO.Id + " (Instance)";
 
-        for (int i = 0; i < 2; i++)
+        if (meshRenderer != null || TryGetComponent(out meshRenderer))
+            meshRenderer.materials[frontMaterialIndex].mainTexture = CardSO.CardTexture;
+    }
+
+    public void Choose()
+    {
+        if (firstSelectedCard == null)
         {
-            cardNumber = Random.Range(0, AllNormalCardPrefab.Count);
-            spawnNumber = Random.Range(0, localSpawn.Count);
-            cardInstance = Instantiate(AllNormalCardPrefab[cardNumber], localSpawn[spawnNumber].transform.position, localSpawn[spawnNumber].transform.rotation, localSpawn[spawnNumber].transform).GetComponent<CardInstance>();
-            localSpawn.RemoveAt(spawnNumber);
-            cardInstance.CardSpawner = this;
-            cardInstance.Monster = AllNormalSprites[cardNumber];
-            cardOnScene.Add(cardInstance.gameObject);
-            AllNormalCardPrefab.RemoveAt(cardNumber);
-            AllNormalSprites.RemoveAt(cardNumber);
-            searchForCard = true;
+            animator.Play("card-rotate");
+            firstSelectedCard = this;
+            OnSelect.Invoke(this);
+        }
+        else
+        {
+            OnChoose.Invoke(this);
         }
     }
 
-    public void ChooseIngredients()
+    public void SetCardSO(CardSO cardSO)
     {
-        if (searchForCard == true)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (hit.collider != null)
-                {
-                    if (cardOnScene.Contains(hit.collider.gameObject))
-                    {
-                        activeIngridients = hit.collider.gameObject.GetComponent<ScriptOnCard>().Word;
-                        Debug.Log("word on card = " + hit.collider.gameObject);
-                        activeCardPrefab = hit.collider.gameObject;
-                        searchForCard = false;
-                        for (int i = 0; i < cardOnScene.Count; i++)
-                        {
-                            Destroy(cardOnScene[i]);
-                        }
-                        CameraBackButton.SetActive(false);
-                        CameraButtonAfterChoosingCard.SetActive(true);
-
-                    }
-                }
-            }
-        }
+        CardSO = cardSO;
+        UpdateCardSO();
     }
-
-    public void DisableInteract(GameObject exception)
-    {
-        for (int i = 0; i < cardOnScene.Count; i++)
-        {
-            if (cardOnScene[i] != exception)
-            {
-                cardOnScene[i].GetComponent<Interactable>().ActivityInteractable = false;
-            }
-        }
-    }    
 }
