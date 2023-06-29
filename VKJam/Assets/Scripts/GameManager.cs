@@ -88,7 +88,7 @@ public class GameManager : NetworkBehaviour
         if (!IsServer)
             return;
 
-        if (taimer.Instance.NetworkTime.Value <= 0f)
+        if (Timer.Instance.NetworkTime.Value <= 0f)
             LoseRound();
     }
 
