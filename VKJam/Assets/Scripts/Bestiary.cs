@@ -18,8 +18,11 @@ public class Bestiary : MonoBehaviour
         public string[] ingredients;
     }
 
-    [SerializeField] private List<Monster> monsters;
+    [SerializeField] private List<CardSO> monsters;
     [SerializeField] private Button[] pageButtons;
+
+    [SerializeField] private Sprite dangerousIcon;
+    [SerializeField] private Sprite murderousIcon;
 
     [SerializeField] private Image imageHolder;
     [SerializeField] private Image typeHolder;
@@ -32,12 +35,12 @@ public class Bestiary : MonoBehaviour
 
 
     [SerializeField] private GameObject catalougeCanvas;
+    [SerializeField] private GameObject templateCanvas;
 
     private int currentMonster;
 
     private void Awake()
     {
-
         previousMonsterButton.onClick.AddListener(PreviousMoster);
         nextMonsterButton.onClick.AddListener(NextMoster);
 
@@ -61,7 +64,7 @@ public class Bestiary : MonoBehaviour
         if (currentMonster <= 0)
         {
             catalougeCanvas.SetActive(true);
-            gameObject.SetActive(false);
+            templateCanvas.SetActive(false);
             return;
         }
 
@@ -74,7 +77,7 @@ public class Bestiary : MonoBehaviour
         if (currentMonster >= monsters.Count - 1)
         {
             catalougeCanvas.SetActive(true);
-            gameObject.SetActive(false);
+            templateCanvas.SetActive(false);
             return;
         }
 
@@ -84,11 +87,11 @@ public class Bestiary : MonoBehaviour
 
     private void UpdateUIMonster()
     {
-        imageHolder.sprite = monsters[currentMonster].sprite;
-        typeHolder.sprite = monsters[currentMonster].type;
-        nameHolder.text = monsters[currentMonster].name;
-        descriptionHolder.text = monsters[currentMonster].description;
-        ingredientsHolder.text = monsters[currentMonster].ingredientstext;
+        imageHolder.sprite = monsters[currentMonster].MonsterSprite;
+        typeHolder.sprite = (monsters[currentMonster].Difficulty == CardDifficulty.Dangerous ? dangerousIcon : murderousIcon);
+        nameHolder.text = monsters[currentMonster].Id;
+        descriptionHolder.text = monsters[currentMonster].Description;
+        ingredientsHolder.text = monsters[currentMonster].GetIngredientsAsString();
     }
 
     private void GoToPage(int pageIndex)
@@ -96,10 +99,9 @@ public class Bestiary : MonoBehaviour
         if (pageIndex >= 0 && pageIndex < monsters.Count)
         {
             catalougeCanvas.SetActive(false);
-            gameObject.SetActive(true);
+            templateCanvas.SetActive(true);
             currentMonster = pageIndex;
             UpdateUIMonster();
         }
     }
-
 }
