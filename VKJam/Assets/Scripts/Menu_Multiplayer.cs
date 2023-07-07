@@ -10,7 +10,6 @@ public class Menu_Multiplayer : MonoBehaviour
     }
 
     [SerializeField] private string lobbySceneName;
-    [SerializeField] private string guesserSceneName;
 
     [SerializeField] private Button createRoomButton;
     [SerializeField] private Button joinRoomButton;
