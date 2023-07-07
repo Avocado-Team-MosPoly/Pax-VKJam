@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -30,7 +29,7 @@ public class CardManager : MonoBehaviour
     private List<Transform> occupiedSpawnTransforms = new();
     private List<Card> cardInstances = new();
 
-    public UnityEvent<List<string>> OnChooseCard = new();
+    public UnityEvent<ushort> OnChooseCard = new();
 
     private void OnValidate()
     {
@@ -43,11 +42,10 @@ public class CardManager : MonoBehaviour
         foreach (CardDifficulty cardDifficulty in Enum.GetValues(typeof(CardDifficulty)))
             cardSODictionary.Add(cardDifficulty, new List<CardSO>());
         foreach (CardSO cardSO in cardSOArray)
-        {
             cardSODictionary[cardSO.Difficulty].Add(cardSO);
-        }
+        
         cardSOCount = cardSOArray.Length;
-        Array.Clear(cardSOArray, 0, cardSOCount);
+        //Array.Clear(cardSOArray, 0, cardSOCount);
 
         Card.OnChoose.AddListener(ChooseCardInstance);
         Card.OnSelect.AddListener(DisableInteractable);
@@ -136,57 +134,11 @@ public class CardManager : MonoBehaviour
         return cardSOs[cardIndex];
     }
 
-    //private CardSO GetUnusedDangerousCardSO()
-    //{
-    //    if (usedCardSO.Count - cardSODictionary[CardDifficulty.Dangerous].Length >= dangerousCardSO.Length)
-    //        return null;
-
-    //    int cardIndex = UnityEngine.Random.Range(0, dangerousCardSO.Length);
-    //    Log(cardIndex.ToString());
-
-    //    while (usedCardSO.Contains(dangerousCardSO[cardIndex]))
-    //    {
-    //        cardIndex++;
-    //        if (cardIndex >= dangerousCardSO.Length)
-    //            cardIndex = 0;
-    //    }
-
-    //    return dangerousCardSO[cardIndex];
-    //}
-
-    //private CardSO GetUnusedMurderousCardSO()
-    //{
-    //    if (usedCardSO.Count - dangerousCardSO.Length >= murderousCardSO.Length)
-    //        return null;
-
-    //    int cardIndex = UnityEngine.Random.Range(0, murderousCardSO.Length);
-    //    Log(cardIndex.ToString());
-    //    while (usedCardSO.Contains(murderousCardSO[cardIndex]))
-    //    {
-    //        cardIndex++;
-    //        if (cardIndex >= murderousCardSO.Length)
-    //            cardIndex = 0;
-    //    }
-
-    //    return murderousCardSO[cardIndex];
-    //}
-
-    //private T GetRandomFreeElement<T>(List<T> occupedObjectsList, T[] allObjectsArray)
-    //{
-    //    if (occupedObjectsList.Count == allObjectsArray.Length)
-    //        return default(T);
-
-    //    int cardIndex = Random.Range(0, allObjectsArray.Length);
-
-    //    while (occupedObjectsList.Contains(allObjectsArray[cardIndex]))
-    //    {
-    //        cardIndex++;
-    //        if (cardIndex >= allObjectsArray.Length)
-    //            cardIndex = 0;
-    //    }
-    //}
+    public ushort GetCardSOIndex(CardSO cardSO) => (ushort)Array.IndexOf(cardSOArray, cardSO);
+    public CardSO GetCardSOByIndex(ushort cardSOIndex) => cardSOArray[cardSOIndex];
 
     #endregion
+    #region Interaction
 
     public void ChooseCardInstance(Card card)
     {
@@ -195,7 +147,10 @@ public class CardManager : MonoBehaviour
             choosedCardSO = card.CardSO;
             usedCardSO.Add(card.CardSO);
             monsterSpriteRenderer.sprite = card.CardSO.MonsterSprite;
-            OnChooseCard.Invoke(card.CardSO.Ingredients.ToList());
+            
+            OnChooseCard.Invoke(GetCardSOIndex(card.CardSO));
+            Log(card.CardSO.Id);
+
             DestroyCardInstances();
             //CameraBackButton.SetActive(false);
             //CameraButtonAfterChoosingCard.SetActive(true);
@@ -216,6 +171,7 @@ public class CardManager : MonoBehaviour
                 cardInstance.GetComponent<Interactable>().SetInteractable(false);
     }
 
+    #endregion
     #region Logs
 
     private void Log(string message) => Debug.Log($"[CardManager] {message}");

@@ -6,7 +6,6 @@ public class SceneLoader : MonoBehaviour
 {
     public static void ServerLoad(string sceneName)
     {
-        //SceneManager.LoadScene(sceneName);
         NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
     }
 

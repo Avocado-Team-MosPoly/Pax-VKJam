@@ -113,17 +113,12 @@ public class Paint : NetworkBehaviour
     [SerializeField] private Button saveAsPNGButton;
     [SerializeField] private Button clearCanvasButton;
 
-    private void Start()
+    private void Awake()
     {
-        if (clearCanvasButton)
-            clearCanvasButton.onClick.AddListener(() => Fill(baseColor));
-        if (saveAsPNGButton)
-            saveAsPNGButton.onClick.AddListener(SavePaintingAsPng);
-        if (switchBrushButton)
-            switchBrushButton.onClick.AddListener(SwitchBrush);
-        if (brushSizeSlider)
-            brushSizeSlider.onValueChanged.AddListener(ChangeSize);
-
+        clearCanvasButton?.onClick.AddListener(() => Fill(baseColor));
+        saveAsPNGButton?.onClick.AddListener(SavePaintingAsPng);
+        switchBrushButton?.onClick.AddListener(SwitchBrush);
+        brushSizeSlider?.onValueChanged.AddListener(ChangeSize);
     }
 
     public override void OnNetworkSpawn()
@@ -212,28 +207,6 @@ public class Paint : NetworkBehaviour
                         isConnectedToLast = true;
                     }
                 }
-
-                //prevRayX = rayX;
-                //prevRayY = rayY;
-
-                //switch (brushMode)
-                //{
-                //    case BrushMode.Draw:
-                //        DrawCircleServerRpc(Convert.ToInt16(rayX), Convert.ToInt16(rayY));
-                //        //DrawCircle(rayX, rayY, drawColor);
-                //        break;
-                //    case BrushMode.Erase:
-                //        DrawCircle(rayX, rayY, baseColor);
-                //        break;
-                //}
-
-                //if (prevRayX != -1)
-                //    SmoothDrawCircle(rayX, rayY);
-
-                //prevRayX = rayX;
-                //prevRayY = rayY;
-
-                //texture.Apply();
             }
         }
     }
