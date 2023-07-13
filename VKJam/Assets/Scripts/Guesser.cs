@@ -17,7 +17,6 @@ public class Guesser : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(guessButton.gameObject.activeInHierarchy);
         if (Input.GetKeyDown(KeyCode.KeypadEnter) && guessButton.gameObject.activeInHierarchy)
         {
             SubmitGuess();

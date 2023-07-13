@@ -345,6 +345,16 @@ public class Paint : NetworkBehaviour
         this.brushSize = Mathf.RoundToInt(brushSize * textureSettings.size);
     }
 
+    public void ClearCanvas()
+    {
+        Fill(baseColor);
+    }
+
+    public void SetMode(bool isPainter)
+    {
+        this.isPainter = isPainter;
+    }
+
     public Texture2D GetTexture()
     {
         return texture;

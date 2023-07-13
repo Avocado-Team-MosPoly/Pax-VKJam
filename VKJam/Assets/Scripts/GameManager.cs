@@ -4,34 +4,48 @@ using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 // Реализован командный режим на 2 и более игроков
 /// <summary> Все методы должны выполняться только на сервере, с клиента можно вызывать [ CompareAnswer(string guess), CompareMonster(string guess) ] </summary>
 public class GameManager : NetworkBehaviour
 {
+    #region Fields
+
+    [SerializeField] private Paint paint;
+    [SerializeField] private Bestiary bestiary;
+    [SerializeField] private GameObject mainCards;
+    [SerializeField] private GameObject guesserUI;
+
     [SerializeField] private GameObject[] painterGameObjects;
     [SerializeField] private GameObject[] guesserGameObjects;
 
     [SerializeField] private CardManager cardManager;
-    [SerializeField] private int monstersPerGame = 4;
+
+    // temp
+    private int roundCount = 2;
+    private int currentRound = 1;
+    // temp
 
     private CardSO answerCardSO;
     private int currentIngredientIndex;
 
     private NetworkVariable<ushort> painterId = new(ushort.MaxValue);
     private List<ulong> lastPainterIds = new();
+    public bool IsPainter => painterId.Value == NetworkManager.Singleton.LocalClientId;
 
     public static GameManager Instance { get; private set; }
 
-    [HideInInspector] public UnityEvent OnCorrectIngredientGuess;
-    [HideInInspector] public UnityEvent OnWrongIngredientGuess;
-    [HideInInspector] public UnityEvent OnIngredientsEnd;
+    [HideInInspector] public UnityEvent OnCorrectIngredientGuess; // При верном предположении ингредиента
+    [HideInInspector] public UnityEvent OnWrongIngredientGuess; // При неверном предположении ингредиента
+    [HideInInspector] public UnityEvent OnIngredientsEnd; // Когда закончились ингредиенты на карточке
 
-    [HideInInspector] public UnityEvent OnWinRound;
-    [HideInInspector] public UnityEvent OnLoseRound;
+    [HideInInspector] public UnityEvent OnWinRound; // Когда монстр отгадан
+    [HideInInspector] public UnityEvent OnLoseRound; // Когда монстр не отгадан
 
-    [HideInInspector] public UnityEvent OnEndGame;
+    [HideInInspector] public UnityEvent OnEndGame; // Все монстры отгаданы
 
+    #endregion
     #region Initialization
 
     private void Awake()
@@ -46,6 +60,8 @@ public class GameManager : NetworkBehaviour
 
         cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
         Timer.Instance.OnExpired.AddListener(LoseRound);
+
+        bestiary.OnChooseMonster.AddListener(CompareMonster);
     }
 
     public override void OnNetworkSpawn()
@@ -55,16 +71,25 @@ public class GameManager : NetworkBehaviour
         Log($"IsServer : {IsServer}");
 
         if (IsServer)
+        {
             painterId.Value = (ushort)NetworkManager.ConnectedClientsIds[0];
+            OnIngredientsEnd.AddListener(ActivateGuessMonsterStageClientRpc);
+        }
         else
-            StartCoroutine(ChooseRole(painterId.Value));
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => { SceneManager.LoadScene("Menu"); };
+            StartCoroutine(ChooseRole());
+        }
     }
+
+    #endregion
+    #region Roles
 
     private void PainterId_OnValueChanged(ushort previousValue, ushort newValue)
     {
         Log("PainterId_OnValueChanged");
         lastPainterIds.Add(newValue);
-        StartCoroutine(ChooseRole(newValue));
+        StartCoroutine(ChooseRole());
     }
 
     private void SetPainter()
@@ -74,7 +99,12 @@ public class GameManager : NetworkBehaviour
             obj.SetActive(true);
         foreach (GameObject obj in guesserGameObjects)
             obj.SetActive(false);
+
+        mainCards.SetActive(true);
+        paint.ClearCanvas();
+        paint.SetMode(true);
     }
+
     private void SetGuesser()
     {
         Log("Guesser");
@@ -82,16 +112,19 @@ public class GameManager : NetworkBehaviour
             obj.SetActive(false);
         foreach (GameObject obj in guesserGameObjects)
             obj.SetActive(true);
+
+        cardManager.enabled = false;
+        paint.SetMode(false);
     }
-    
-    #endregion
 
     // не работает [ NetworkManager.Singleton.LocalClientId ], с IEnumerator почему-то работает
-    private IEnumerator ChooseRole(ushort clientId)
+    private IEnumerator ChooseRole()
     {
         yield return new WaitForSeconds(0f);
 
-        if (clientId == NetworkManager.Singleton.LocalClientId)
+        bestiary.gameObject.SetActive(false);
+
+        if (IsPainter)
             SetPainter();
         else
             SetGuesser();
@@ -119,10 +152,53 @@ public class GameManager : NetworkBehaviour
         lastPainterIds.Clear();
     }
 
+    #endregion
     #region Base
+
+    private void CorrectIngredientGuess()
+    {
+        Log("Correct guess");
+
+        OnCorrectIngredientGuess?.Invoke();
+        NextIngredient();
+    }
+
+    private void WrongIngredientGuess()
+    {
+        Log("Wrong guess");
+        OnWrongIngredientGuess?.Invoke();
+    }
+
+    private void NextIngredient()
+    {
+        currentIngredientIndex++;
+
+        if (currentIngredientIndex >= answerCardSO.Ingredients.Length)
+        {
+            OnIngredientsEnd?.Invoke();
+            return;
+        }
+    }
+
+    [ClientRpc]
+    private void ActivateGuessMonsterStageClientRpc()
+    {
+        if (!IsPainter)
+        {
+            bestiary.gameObject.SetActive(true);
+            guesserUI.SetActive(false);
+        }
+    }
 
     private void NextRound()
     {
+        currentRound++;
+
+        if (currentRound > roundCount)
+        {
+            EndGame();
+            return;
+        }
         ChangeRoles();
         Timer.Instance.ResetToDefault();
     }
@@ -138,10 +214,16 @@ public class GameManager : NetworkBehaviour
          */
 
         Log("WinRound");
-        TokensManager.AddTokens(1);
+        AddTokenClientRpc();
         NextRound();
         OnWinRound?.Invoke();
         // сообщить игрокам о смен раунда
+    }
+
+    [ClientRpc]
+    private void AddTokenClientRpc()
+    {
+        TokensManager.AddTokens(1);
     }
 
     private void LoseRound()
@@ -159,6 +241,8 @@ public class GameManager : NetworkBehaviour
         // сообщить игрокам о смен раунда
     }
 
+
+
     private void EndGame()
     {
         /* Условие: Монстры закончились (угаданы/не угаданы)
@@ -167,43 +251,23 @@ public class GameManager : NetworkBehaviour
          *  - Выход в лобби
          */
 
+        OnEndGame?.Invoke();
+        NetworkManager.Singleton.DisconnectClient(1);
+        NetworkManager.Singleton.Shutdown();
+        SceneManager.LoadScene("Menu");
         // Сообщить всем игрокам о выигрыше/проигрыше
     }
 
     #endregion
-
-    private void NextIngredient()
-    {
-        if (currentIngredientIndex >= answerCardSO.Ingredients.Length)
-        {
-            OnIngredientsEnd?.Invoke();
-            return;
-        }
-
-        currentIngredientIndex++;
-    }
-
     #region Compare
-
-    private void CorrectIngredientGuess()
-    {
-        Log("Correct guess");
-
-        OnCorrectIngredientGuess?.Invoke();
-        NextIngredient();
-    }
-    
-    private void WrongIngredientGuess()
-    {
-        Log("Wrong guess");
-        OnWrongIngredientGuess?.Invoke();
-    }
 
     [ServerRpc (RequireOwnership = false)]
     private void CompareIngredientServerRpc(FixedString32Bytes guess, ServerRpcParams serverRpcParams)
     {
         string stringGuess = guess.ToString();
         GuessHistory.Instance.AddGuess(serverRpcParams.Receive.SenderClientId, stringGuess);
+
+        Log($"Current Ingredient: {answerCardSO.Ingredients[currentIngredientIndex]}, Guess: {stringGuess}");
 
         if (answerCardSO.Ingredients[currentIngredientIndex] == stringGuess.ToLower())
             CorrectIngredientGuess();
@@ -215,6 +279,8 @@ public class GameManager : NetworkBehaviour
     private void CompareMonsterServerRpc(ushort guessCardSOIndex)
     {
         CardSO guessCardSO = cardManager.GetCardSOByIndex(guessCardSOIndex);
+
+        Log($"Current Monster: {answerCardSO.Id}, Guess: {guessCardSO.Id}");
 
         if (answerCardSO == guessCardSO)
             WinRound();
@@ -232,7 +298,11 @@ public class GameManager : NetworkBehaviour
 
     public void CompareMonster(CardSO guessCardSO)
     {
-        CompareMonsterServerRpc(cardManager.GetCardSOIndex(guessCardSO));
+        ushort guessCardSOIndex = cardManager.GetCardSOIndex(guessCardSO);
+
+        Log("Compare Monster");
+
+        CompareMonsterServerRpc(guessCardSOIndex);
     }
 
     #endregion
@@ -241,6 +311,7 @@ public class GameManager : NetworkBehaviour
     private void OnCardSOUpdate()
     {
         Log("CardSO Updated");
+        currentIngredientIndex = 0;
         Timer.Instance.StartTimerServerRpc();
     }
 
