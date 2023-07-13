@@ -51,7 +51,7 @@ public class CardManager : MonoBehaviour
         Card.OnSelect.AddListener(DisableInteractable);
     }
 
-    private void Start()
+    private void OnEnable()
     {
         foreach (CardDifficulty cardDifficulty in spawnedCardDifficulties)
             SpawnCard(cardDifficulty);
@@ -140,6 +140,24 @@ public class CardManager : MonoBehaviour
     #endregion
     #region Interaction
 
+    private void DestroyCardInstances()
+    {
+        occupiedSpawnTransforms = new();
+
+        foreach (Card instance in cardInstances)
+        {
+            Destroy(instance.gameObject);
+        }
+    }
+
+    /// <summary> Disable [ Interactable ] on all spawned cards excluding parameter </summary>
+    private void DisableInteractable(Card excludedCard)
+    {
+        foreach (Card cardInstance in cardInstances)
+            if (cardInstance != excludedCard)
+                cardInstance.GetComponent<Interactable>().SetInteractable(false);
+    }
+
     public void ChooseCardInstance(Card card)
     {
         if (cardInstances.Contains(card))
@@ -147,7 +165,7 @@ public class CardManager : MonoBehaviour
             choosedCardSO = card.CardSO;
             usedCardSO.Add(card.CardSO);
             monsterSpriteRenderer.sprite = card.CardSO.MonsterSprite;
-            
+
             OnChooseCard.Invoke(GetCardSOIndex(card.CardSO));
             Log(card.CardSO.Id);
 
@@ -155,20 +173,6 @@ public class CardManager : MonoBehaviour
             //CameraBackButton.SetActive(false);
             //CameraButtonAfterChoosingCard.SetActive(true);
         }
-    }
-
-    private void DestroyCardInstances()
-    {
-        foreach (Card instnace in cardInstances)
-            Destroy(instnace.gameObject);
-    }
-
-    /// <summary> Disable [ Interactable ] on all spawned cards excluding parameter </summary>
-    public void DisableInteractable(Card excludedCard)
-    {
-        foreach (Card cardInstance in cardInstances)
-            if (cardInstance != excludedCard)
-                cardInstance.GetComponent<Interactable>().SetInteractable(false);
     }
 
     #endregion

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 using System;
-using Unity.VisualScripting;
+using UnityEngine.Events;
 
 public class Bestiary : MonoBehaviour
 {
@@ -39,6 +39,8 @@ public class Bestiary : MonoBehaviour
 
     private int currentMonster;
 
+    public UnityEvent<CardSO> OnChooseMonster;
+
     private void Awake()
     {
         previousMonsterButton.onClick.AddListener(PreviousMoster);
@@ -47,7 +49,7 @@ public class Bestiary : MonoBehaviour
         for (int i = 0; i < pageButtons.Length; i++)
         {
             int pageIndex = i;
-            pageButtons[i].onClick.AddListener(() => GoToPage(pageIndex));
+            //pageButtons[i].onClick.AddListener(() => GoToPage(pageIndex));
         }
 
         Initialize();
@@ -57,6 +59,12 @@ public class Bestiary : MonoBehaviour
     {
         currentMonster = 0;
         UpdateUIMonster();
+    }
+
+    public void ChooseMonster(CardSO cardSO)
+    {
+        Debug.Log("[Bestiary] ChooseMonster");
+        OnChooseMonster.Invoke(cardSO);
     }
 
     private void PreviousMoster()
