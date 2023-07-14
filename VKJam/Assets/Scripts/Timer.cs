@@ -53,7 +53,7 @@ public class Timer : NetworkBehaviour
     public void ResetTimer()
     {
         transform.parent.gameObject.SetActive(false);
-        showRecepiesUI.Hide();
+        showRecepiesUI.HideRecepi();
         NetworkTime.Value = roundTime;
         TimerEndClientRpc();
     }
@@ -80,7 +80,7 @@ public class Timer : NetworkBehaviour
     [ClientRpc]
     public void TimerEndClientRpc()
     {
-        showRecepiesUI.SpawnRecept();
+        showRecepiesUI.SetRecepi("нужно назначить");
 
     }
 

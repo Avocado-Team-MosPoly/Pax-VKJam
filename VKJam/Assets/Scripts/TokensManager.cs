@@ -67,8 +67,14 @@ public class TokensManager : MonoBehaviour
     {
         TokensCount += value;
 
-        instance.tokensCountTMPro.text = "X" + TokensCount.ToString();
-        instance.SpawnTokens(value);
+        //instance.tokensCountTMPro.text = "X" + TokensCount.ToString();
+        //instance.SpawnTokens(value);
+    }
+
+    public static void AccrueTokens()
+    {
+        instance.SpawnTokens(TokensCount- tokensOnScene.Count);
+        instance.tokensCountTMPro.text = "X" + TokensCount.ToString();        
     }
 
     public static void RemoveTokens(int value)
