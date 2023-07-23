@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class CardManager : MonoBehaviour
+public class CardManager : NetworkBehaviour
 {
     [SerializeField] private Card cardPrefab;
 
@@ -26,8 +28,8 @@ public class CardManager : MonoBehaviour
     
     [Header("Where cards should spawn")]
     [SerializeField] private Transform[] spawnTransforms;
-    private List<Transform> occupiedSpawnTransforms = new();
-    private List<Card> cardInstances = new();
+    [SerializeField] private List<Transform> occupiedSpawnTransforms = new();
+    [SerializeField] private List<Card> cardInstances = new();
 
     public UnityEvent<ushort> OnChooseCard = new();
 
@@ -86,11 +88,31 @@ public class CardManager : MonoBehaviour
         Log($"{cardInstance.CardSO.Id} spawned as {cardInstance.CardSO.Difficulty} card");
 
         occupiedSpawnTransforms.Add(spawnTransform);
-        usedCardSO.Add(cardSO);
+        AddUsedCardSOServerRpc(GetCardSOIndex(cardSO));
+        //usedCardSO.Add(cardSO);
         cardInstances.Add(cardInstance);
     }
 
     #endregion
+
+    [ServerRpc (RequireOwnership = false)]
+    private void AddUsedCardSOServerRpc(ushort cardSOIndex)
+    {
+        AddUsedCardSOClientRpc(cardSOIndex);
+    }
+
+    [ClientRpc]
+    private void AddUsedCardSOClientRpc(ushort cardSOIndex)
+    {
+        LogError(1.ToString());
+        CardSO cardSO = GetCardSOByIndex(cardSOIndex);
+        
+        usedCardSO.Add(cardSO);
+
+        foreach (var cardSOa in usedCardSO)
+            LogWarning(cardSOa.Id);
+    }
+
     #region Get
 
     private Transform GetFreeSpawnTransform()
@@ -119,7 +141,6 @@ public class CardManager : MonoBehaviour
 
         int startCardIndex = UnityEngine.Random.Range(0, cardSOs.Count);
         int cardIndex = startCardIndex;
-        Log(cardIndex.ToString());
 
         while (usedCardSO.Contains(cardSOs[cardIndex]))
         {
@@ -136,18 +157,27 @@ public class CardManager : MonoBehaviour
 
     public ushort GetCardSOIndex(CardSO cardSO) => (ushort)Array.IndexOf(cardSOArray, cardSO);
     public CardSO GetCardSOByIndex(ushort cardSOIndex) => cardSOArray[cardSOIndex];
+    public CardSO GetCardSOById(string cardSOId)
+    {
+        foreach (CardSO cardSO in cardSOArray)
+            if (cardSOId == cardSO.Id)
+                return cardSO;
+
+        return null;
+    }
 
     #endregion
     #region Interaction
 
     private void DestroyCardInstances()
     {
-        occupiedSpawnTransforms = new();
-
         foreach (Card instance in cardInstances)
         {
             Destroy(instance.gameObject);
         }
+
+        cardInstances = new();
+        occupiedSpawnTransforms = new();
     }
 
     /// <summary> Disable [ Interactable ] on all spawned cards excluding parameter </summary>

@@ -12,18 +12,14 @@ public class GameManager : NetworkBehaviour
 {
     #region Fields
 
-    [SerializeField] private Paint paint;
+    [SerializeField] private Guesser guesser;
     [SerializeField] private Bestiary bestiary;
-    [SerializeField] private GameObject mainCards;
-    [SerializeField] private GameObject guesserUI;
-
-    [SerializeField] private GameObject[] painterGameObjects;
-    [SerializeField] private GameObject[] guesserGameObjects;
-
+    
+    private Painter painter;
     [SerializeField] private CardManager cardManager;
 
     // temp
-    private int roundCount = 2;
+    private int roundCount = 4;
     private int currentRound = 1;
     // temp
 
@@ -55,8 +51,14 @@ public class GameManager : NetworkBehaviour
         else
             LogWarning($"Two GameManagers on scene:\n{Instance}, {this}");
         
+        if (bestiary == null)
+            bestiary = FindObjectOfType<Bestiary>();
         if (cardManager == null)
             cardManager = FindObjectOfType<CardManager>();
+        if (painter == null)
+            painter = FindObjectOfType<Painter>();
+        if (guesser == null)
+            guesser = FindObjectOfType<Guesser>();
 
         cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
         Timer.Instance.OnExpired.AddListener(LoseRound);
@@ -67,6 +69,7 @@ public class GameManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         painterId.OnValueChanged += PainterId_OnValueChanged;
+        //cardManager.GetComponent<NetworkObject>().Spawn(true);
 
         Log($"IsServer : {IsServer}");
 
@@ -95,26 +98,22 @@ public class GameManager : NetworkBehaviour
     private void SetPainter()
     {
         Log("Painter");
-        foreach (GameObject obj in painterGameObjects)
-            obj.SetActive(true);
-        foreach (GameObject obj in guesserGameObjects)
-            obj.SetActive(false);
 
-        mainCards.SetActive(true);
-        paint.ClearCanvas();
-        paint.SetMode(true);
+        //bestiary.gameObject.SetActive(false);
+
+        guesser.Deactivate();
+        painter.Activate();
     }
 
     private void SetGuesser()
     {
         Log("Guesser");
-        foreach (GameObject obj in painterGameObjects)
-            obj.SetActive(false);
-        foreach (GameObject obj in guesserGameObjects)
-            obj.SetActive(true);
 
+        //bestiary.gameObject.SetActive(false);
         cardManager.enabled = false;
-        paint.SetMode(false);
+
+        painter.Deactivate();
+        guesser.Activate();
     }
 
     // не работает [ NetworkManager.Singleton.LocalClientId ], с IEnumerator почему-то работает
@@ -122,7 +121,6 @@ public class GameManager : NetworkBehaviour
     {
         yield return new WaitForSeconds(0f);
 
-        bestiary.gameObject.SetActive(false);
 
         if (IsPainter)
             SetPainter();
@@ -185,8 +183,9 @@ public class GameManager : NetworkBehaviour
     {
         if (!IsPainter)
         {
-            bestiary.gameObject.SetActive(true);
-            guesserUI.SetActive(false);
+            //bestiary.gameObject.SetActive(true);
+            guesser.SetMonsterGuessStage();
+            //guesser.DeactivateUI();
         }
     }
 
@@ -278,6 +277,12 @@ public class GameManager : NetworkBehaviour
     [ServerRpc (RequireOwnership = false)]
     private void CompareMonsterServerRpc(ushort guessCardSOIndex)
     {
+        if (guessCardSOIndex == ushort.MaxValue)
+        {
+            LoseRound();
+            return;
+        }
+
         CardSO guessCardSO = cardManager.GetCardSOByIndex(guessCardSOIndex);
 
         Log($"Current Monster: {answerCardSO.Id}, Guess: {guessCardSO.Id}");
@@ -298,8 +303,11 @@ public class GameManager : NetworkBehaviour
 
     public void CompareMonster(CardSO guessCardSO)
     {
-        ushort guessCardSOIndex = cardManager.GetCardSOIndex(guessCardSO);
-
+        ushort guessCardSOIndex = ushort.MaxValue;
+        
+        if (guessCardSO)
+            guessCardSOIndex = cardManager.GetCardSOIndex(guessCardSO);
+        
         Log("Compare Monster");
 
         CompareMonsterServerRpc(guessCardSOIndex);
