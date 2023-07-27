@@ -15,6 +15,14 @@ public class Guesser : MonoBehaviour
         guessButton.onClick.AddListener(SubmitGuess);
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.KeypadEnter) && guessButton.gameObject.activeInHierarchy)
+        {
+            SubmitGuess();
+        }
+    }
+
     private void ChangeGuess(string value)
     {
         guess = value;
@@ -22,6 +30,10 @@ public class Guesser : MonoBehaviour
 
     private void SubmitGuess()
     {
+        if (guess == string.Empty)
+            return;
+
         GameManager.Instance.CompareIngredient(guess);
+        guessInputField.text = string.Empty;
     }
 }
