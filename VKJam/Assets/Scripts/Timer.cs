@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
+using UnityEngine.Events;
 
 public class Timer : NetworkBehaviour
 {
@@ -12,6 +13,8 @@ public class Timer : NetworkBehaviour
     [SerializeField] private int roundTime = 30;
 
     private Coroutine serverClockCoroutine = null;
+
+    [HideInInspector] public UnityEvent OnExpired;
 
     public static Timer Instance { get; private set; }
 
@@ -28,33 +31,48 @@ public class Timer : NetworkBehaviour
             NetworkTime.Value = roundTime;
     }
 
+    /// <summary> Call only on server </summary>
     [ServerRpc]
     public void StartTimerServerRpc()
     {
-        if (serverClockCoroutine==null)
+        if (serverClockCoroutine == null)
             serverClockCoroutine = StartCoroutine(Clock());
+
+        SetPause(false);
     }
 
     private IEnumerator Clock()
     {
         while (IsServer)
         {
+            if (isTimePaused)
+            {
+                yield return new WaitForSeconds(1);
+                continue;
+            }
+
             if (NetworkTime.Value <= 0)
-                ResetTimer();
+            {
+                //ResetTimer();
+                OnExpired?.Invoke();
+            }
 
-            if (isTimePaused == false)
-                NetworkTime.Value -= 1;
-
+            NetworkTime.Value -= 1;
+            
             yield return new WaitForSeconds(1);
         }
     }
 
     // call on Server
-    public void ResetTimer()
+    public void ResetToDefault()
     {
+
         transform.parent.gameObject.SetActive(false);
         showRecepiesUI.HideRecepi();
+
         NetworkTime.Value = roundTime;
+        isTimePaused = true;
+
         TimerEndClientRpc();
     }
 
@@ -80,7 +98,8 @@ public class Timer : NetworkBehaviour
     [ClientRpc]
     public void TimerEndClientRpc()
     {
-        showRecepiesUI.SetRecepi("нужно назначить");
+
+        showRecepiesUI.SetRecepi("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
 
     }
 

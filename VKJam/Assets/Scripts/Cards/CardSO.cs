@@ -9,6 +9,7 @@ public class CardSO : ScriptableObject
 
     [SerializeField] private Texture cardTexture;
     [SerializeField] private Sprite monsterSprite;
+    [SerializeField] private Sprite monsterInBestiarySprite;
 
     [SerializeField] private string description;
     [SerializeField] private string[] ingredients;
@@ -17,6 +18,7 @@ public class CardSO : ScriptableObject
     public CardDifficulty Difficulty => difficulty;
     public Texture CardTexture => cardTexture;
     public Sprite MonsterSprite => monsterSprite;
+    public Sprite MonsterInBestiarySprite => monsterInBestiarySprite;
 
     public string Description => description;
     public string[] Ingredients => ingredients;

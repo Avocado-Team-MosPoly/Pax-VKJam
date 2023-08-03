@@ -11,7 +11,6 @@ public class TextHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private void Start()
     {
-        // Создаем префаб анимации подчеркивания для каждого текстового объекта
         underlineAnimations = new GameObject[texts.Length];
         for (int i = 0; i < texts.Length; i++)
         {
@@ -22,11 +21,9 @@ public class TextHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // Находим индекс текстового объекта, на который наведена мышь
         int index = System.Array.IndexOf(texts, eventData.pointerEnter.GetComponent<TMP_Text>());
         if (index >= 0)
         {
-            // Активируем анимацию подчеркивания только для соответствующего текстового объекта
             underlineAnimations[index].SetActive(true);
             underlineAnimations[index].GetComponent<Animator>().Play("YourAnimationName");
         }
@@ -34,7 +31,6 @@ public class TextHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        // Деактивируем все анимации подчеркивания при уходе курсора с текста
         for (int i = 0; i < underlineAnimations.Length; i++)
         {
             underlineAnimations[i].SetActive(false);
