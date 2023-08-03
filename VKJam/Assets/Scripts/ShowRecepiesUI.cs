@@ -6,22 +6,34 @@ using TMPro;
 public class ShowRecepiesUI : MonoBehaviour
 {
     [SerializeField] private GameObject Recept;
+    [SerializeField] private Animation anim;
+    [SerializeField] private GameObject animGameObject;
 
-    public void SpawnRecept()
+    private void Start()
+    {
+        anim = animGameObject.GetComponent<Animation>();
+    }
+
+    public void SpawnReceptOld()
     {
         if (Cards.activeIngridients.Count>0)
         {
             int rundomNumber = Random.Range(0, Cards.activeIngridients.Count - 1);
             Recept.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Cards.activeIngridients[rundomNumber];
             Cards.activeIngridients.Remove(Cards.activeIngridients[rundomNumber]);
-            Debug.Log("SpawnRecept");
         }
         else
         {
-            Debug.Log("Рецепты кончились");
+
         }
     }
-    public void Hide()
+    public void SetRecepi(string text)
+    {
+        Recept.SetActive(true);
+        Recept.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
+        //anim.Play("что то");
+    }
+    public void HideRecepi()
     {
         Recept.SetActive(false);
     }

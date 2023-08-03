@@ -66,6 +66,10 @@ public class Timer : NetworkBehaviour
     // call on Server
     public void ResetToDefault()
     {
+
+        transform.parent.gameObject.SetActive(false);
+        showRecepiesUI.HideRecepi();
+
         NetworkTime.Value = roundTime;
         isTimePaused = true;
 
@@ -94,7 +98,9 @@ public class Timer : NetworkBehaviour
     [ClientRpc]
     public void TimerEndClientRpc()
     {
-        //showRecepiesUI.SpawnRecept();
+
+        showRecepiesUI.SetRecepi("����� ���������");
+
     }
 
     public void SetPause(bool state)
