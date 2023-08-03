@@ -5,13 +5,13 @@ using TMPro;
 
 public class ShowRecepiesUI : MonoBehaviour
 {
-    [SerializeField] private GameObject Recept;
-    [SerializeField] private Animation anim;
-    [SerializeField] private GameObject animGameObject;
+    //[SerializeField] private GameObject Recept;
+    //[SerializeField] private Animation anim;
+    //[SerializeField] private GameObject animGameObject;
 
     private void Start()
     {
-        anim = animGameObject.GetComponent<Animation>();
+        //anim = animGameObject.GetComponent<Animation>();
     }
 
     public void SpawnReceptOld()
@@ -19,7 +19,7 @@ public class ShowRecepiesUI : MonoBehaviour
         if (Cards.activeIngridients.Count>0)
         {
             int rundomNumber = Random.Range(0, Cards.activeIngridients.Count - 1);
-            Recept.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Cards.activeIngridients[rundomNumber];
+            transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Cards.activeIngridients[rundomNumber];
             Cards.activeIngridients.Remove(Cards.activeIngridients[rundomNumber]);
         }
         else
@@ -29,12 +29,13 @@ public class ShowRecepiesUI : MonoBehaviour
     }
     public void SetRecepi(string text)
     {
-        Recept.SetActive(true);
-        Recept.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
+        Debug.Log("" + text);
+        gameObject.SetActive(true);
+        transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
         //anim.Play("что то");
     }
     public void HideRecepi()
     {
-        Recept.SetActive(false);
+        gameObject.SetActive(false);
     }
 }

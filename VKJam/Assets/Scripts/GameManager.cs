@@ -22,6 +22,8 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private CardManager cardManager;
 
+    [SerializeField] private ShowRecepiesUI recipeHand;
+
     // temp
     private int roundCount = 2;
     private int currentRound = 1;
@@ -328,6 +330,20 @@ public class GameManager : NetworkBehaviour
     }
 
     #endregion
+
+    public void InteractRecipeHand()
+    {
+
+        if (recipeHand.gameObject.activeInHierarchy)
+        {
+            recipeHand.HideRecepi();
+        }
+        else
+        {
+            recipeHand.SetRecepi(answerCardSO.Ingredients[currentIngredientIndex]);
+        }
+    }
+
     #region Logs
 
     private void Log(string message) => Debug.Log("[GameManager] " + message);

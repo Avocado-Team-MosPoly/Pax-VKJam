@@ -2,27 +2,48 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
 using TMPro;
+using Unity.Services.Core;
+using Unity.Services;
+using Unity.Services.Authentication;
+using Unity.Services.Relay;
+using Unity.Services.Relay.Models;
+using Unity.Netcode.Transports.UTP;
 
 public class Menu_Multiplayer : MonoBehaviour
 {
+    public enum RecipeMode
+    {
+        Standard,
+        Random
+    }
+
     public struct RoomSettings
     {
-        private string name;
-        private int maxPlayerAmount;
-        private int maxRoundAmount;
-        private bool isTeamMode;
+        public string Name;
+        public int MaxPlayerAmount;
+        public bool IsTeamMode;
 
-        public string Name => name;
-        public int MaxPlayerAmount => maxPlayerAmount;
-        public int MaxRoundAmount => maxRoundAmount;
-        public bool IsTeamMode => isTeamMode;
+        public int MaxRoundAmount;
+        public RecipeMode RecipeMod;
 
-        public RoomSettings(string name, int maxPlayerAmount, int maxRoundAmount, bool isTeamMode)
+        public RoomSettings(string name)
         {
-            this.name = name;
-            this.maxPlayerAmount = maxPlayerAmount;
-            this.maxRoundAmount = maxRoundAmount;
-            this.isTeamMode = isTeamMode;
+            Name = name;
+            MaxPlayerAmount = 2;
+            IsTeamMode = true;
+
+            MaxRoundAmount = 4;
+            RecipeMod = RecipeMode.Standard;
+        }
+
+        public RoomSettings(string name, int maxPlayerAmount, bool isTeamMode, int maxRoundAmount, RecipeMode recipeMode)
+        {
+            Name = name;
+            MaxPlayerAmount = maxPlayerAmount;
+            IsTeamMode = isTeamMode;
+
+            MaxRoundAmount = maxRoundAmount;
+            RecipeMod = recipeMode;
         }
     }
 
@@ -31,54 +52,94 @@ public class Menu_Multiplayer : MonoBehaviour
     [SerializeField] private Button createRoomButton;
     [SerializeField] private Button joinRoomButton;
 
-    [SerializeField] private TMP_Dropdown deckDropdown;
-    [SerializeField] private TMP_Dropdown roundDropdown;
+    [SerializeField] private TMP_InputField joinCodeInputField;
+    [SerializeField] private string joinCode;
 
-    public static RoomSettings roomSettings { get; private set; }
+    private RoomSettings roomSettings;
 
-    private void Start()
+    private async void Awake()
     {
+        await UnityServices.InitializeAsync();
+
+        AuthenticationService.Instance.SignedIn += () => Debug.Log("Signed In. Your Id is " + AuthenticationService.Instance.PlayerId);
+
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
         createRoomButton.onClick.AddListener(CreateRoom);
         joinRoomButton.onClick.AddListener(JoinRoom);
+        joinCodeInputField.onValueChanged.AddListener((string value) => joinCode = value);
     }
 
-    private void CreateRoom()
+    private async void CreateRoom()
     {
         // пока что захардкожено, тк реализован только комендный режим (неважно количество игроков и раундов)
-        roomSettings = new("Main", 2, 4, true);
+        //roomSettings = new
+        //(
+        //    name:"Main",
+        //    maxPlayerAmount:2,
+        //    isTeamMode:true,
+        //    maxRoundAmount:4,
+        //    recipeMode:RecipeMode.Standard
+        //);
+        try
+        {
+            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
+            joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+            Debug.Log(joinCode);
 
-        NetworkManager.Singleton.OnServerStarted += () => SceneLoader.ServerLoad(lobbySceneName);
-        NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => { Debug.Log($"Client {clientId} connected"); };
-        NetworkManager.Singleton.StartHost();
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData
+            (
+                allocation.RelayServer.IpV4,
+                (ushort) allocation.RelayServer.Port,
+                allocation.AllocationIdBytes,
+                allocation.Key,
+                allocation.ConnectionData
+            );
+
+            NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => { Debug.Log($"Client {clientId} connected"); };
+            NetworkManager.Singleton.OnServerStarted += () => SceneLoader.ServerLoad(lobbySceneName);
+            NetworkManager.Singleton.StartHost();
+        }
+        catch (RelayServiceException ex)
+        {
+            if (!Log(ex))
+                throw;
+        }
     }
 
-    private void JoinRoom()
+    private async void JoinRoom()
     {
-        NetworkManager.Singleton.StartClient();
+        try
+        {
+            JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
+
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData
+            (
+                joinAllocation.RelayServer.IpV4,
+                (ushort)joinAllocation.RelayServer.Port,
+                joinAllocation.AllocationIdBytes,
+                joinAllocation.Key,
+                joinAllocation.ConnectionData,
+                joinAllocation.HostConnectionData
+            );
+
+            NetworkManager.Singleton.StartClient();
+        }        
+        catch (RelayServiceException ex)
+        {
+            if (!Log(ex))
+                throw;
+        }
     }
 
-    public void ChangeMaxPlayersAmount(int value)
+    private bool Log(object message)
     {
-        
-    }
+        if (Logger.Instance)
+        {
+            Logger.Instance.Log(message);
+            return true;
+        }
 
-    public void SelectGameMode(bool isTeamMode)
-    {
-        
-    }
-
-    public void SelectRecipeMode(bool isStandart)
-    {
-        
-    }
-
-    public void SelectDeck()
-    {
-        //int selectedDeckIndex = deckDropdown.value;
-    }
-
-    public void SelectRoundCount()
-    {
-        //int selectedRoundIndex = roundDropdown.value;
+        return false;
     }
 }
