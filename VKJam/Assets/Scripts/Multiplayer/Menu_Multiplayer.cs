@@ -20,30 +20,30 @@ public class Menu_Multiplayer : MonoBehaviour
     public struct RoomSettings
     {
         public string Name;
-        public int MaxPlayerAmount;
+        public int MaxPlayers;
         public bool IsTeamMode;
 
-        public int MaxRoundAmount;
-        public RecipeMode RecipeMod;
+        public int RoundAmount;
+        public RecipeMode RecipeMode;
 
         public RoomSettings(string name)
         {
             Name = name;
-            MaxPlayerAmount = 2;
+            MaxPlayers = 2;
             IsTeamMode = true;
 
-            MaxRoundAmount = 4;
-            RecipeMod = RecipeMode.Standard;
+            RoundAmount = 4;
+            RecipeMode = RecipeMode.Standard;
         }
 
         public RoomSettings(string name, int maxPlayerAmount, bool isTeamMode, int maxRoundAmount, RecipeMode recipeMode)
         {
             Name = name;
-            MaxPlayerAmount = maxPlayerAmount;
+            MaxPlayers = maxPlayerAmount;
             IsTeamMode = isTeamMode;
 
-            MaxRoundAmount = maxRoundAmount;
-            RecipeMod = recipeMode;
+            RoundAmount = maxRoundAmount;
+            RecipeMode = recipeMode;
         }
     }
 
@@ -85,6 +85,8 @@ public class Menu_Multiplayer : MonoBehaviour
         {
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
             joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+            if (!Log(joinCode))
+                Debug.Log(joinCode);
             Debug.Log(joinCode);
 
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData
@@ -116,7 +118,7 @@ public class Menu_Multiplayer : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData
             (
                 joinAllocation.RelayServer.IpV4,
-                (ushort)joinAllocation.RelayServer.Port,
+                (ushort) joinAllocation.RelayServer.Port,
                 joinAllocation.AllocationIdBytes,
                 joinAllocation.Key,
                 joinAllocation.ConnectionData,

@@ -62,7 +62,7 @@ public class GameManager : NetworkBehaviour
 
         cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
         Timer.Instance.OnExpired.AddListener(LoseRound);
-
+        
         bestiary.OnChooseMonster.AddListener(CompareMonster);
     }
 
@@ -254,9 +254,11 @@ public class GameManager : NetworkBehaviour
          */
 
         OnEndGame?.Invoke();
-        NetworkManager.Singleton.DisconnectClient(1);
-        NetworkManager.Singleton.Shutdown();
-        SceneManager.LoadScene("Menu");
+        SceneLoader.ServerLoad("Map");
+        //NetworkManager.Singleton.DisconnectClient(1);
+        //NetworkManager.Singleton.Shutdown();
+        //RelayService.Instance.
+        //SceneManager.LoadScene("Menu");
         // Сообщить всем игрокам о выигрыше/проигрыше
     }
 
