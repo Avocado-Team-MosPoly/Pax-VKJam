@@ -117,11 +117,12 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private async void JoinLobbyByCode(string code)
+    private async void JoinLobbyByCode(string joinCode)
     {
         try
         {
-            Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(code);
+            Debug.Log(joinCode);
+            Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(joinCode);
             joinedLobby = lobby;
              
             Debug.Log("You joined lobby " + lobby.Name);
