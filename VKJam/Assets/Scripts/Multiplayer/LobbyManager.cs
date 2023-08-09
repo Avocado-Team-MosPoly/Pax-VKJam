@@ -35,7 +35,7 @@ public class LobbyManager : MonoBehaviour
 
     public static LobbyManager Instance { get; private set; }
 
-    private async void Awake()
+    private void Awake()
     {
         if (Instance == null)
         {
