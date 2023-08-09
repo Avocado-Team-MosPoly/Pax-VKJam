@@ -1,22 +1,12 @@
 using UnityEngine;
-using UnityEngine.UI;
 using Unity.Netcode;
-using TMPro;
-using Unity.Services.Core;
-using Unity.Services;
-using Unity.Services.Authentication;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.Netcode.Transports.UTP;
+using System.Threading.Tasks;
 
-public class Menu_Multiplayer : MonoBehaviour
+public class RelayManager : MonoBehaviour
 {
-    public enum RecipeMode
-    {
-        Standard,
-        Random
-    }
-
     public struct RoomSettings
     {
         public string Name;
@@ -49,46 +39,29 @@ public class Menu_Multiplayer : MonoBehaviour
 
     [SerializeField] private string lobbySceneName;
 
-    [SerializeField] private Button createRoomButton;
-    [SerializeField] private Button joinRoomButton;
+    public static RelayManager Instance { get; private set; }
 
-    [SerializeField] private TMP_InputField joinCodeInputField;
-    [SerializeField] private string joinCode;
-
-    private RoomSettings roomSettings;
-
-    private async void Awake()
+    private void Awake()
     {
-        await UnityServices.InitializeAsync();
-
-        AuthenticationService.Instance.SignedIn += () => Debug.Log("Signed In. Your Id is " + AuthenticationService.Instance.PlayerId);
-
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
-
-        createRoomButton.onClick.AddListener(CreateRoom);
-        joinRoomButton.onClick.AddListener(JoinRoom);
-        joinCodeInputField.onValueChanged.AddListener((string value) => joinCode = value);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(Instance.gameObject);
+        }
+        else
+        {
+            Destroy(this);
+        }
     }
 
-    private async void CreateRoom()
+    public async Task<string> CreateRelay()
     {
-        // пока что захардкожено, тк реализован только комендный режим (неважно количество игроков и раундов)
-        //roomSettings = new
-        //(
-        //    name:"Main",
-        //    maxPlayerAmount:2,
-        //    isTeamMode:true,
-        //    maxRoundAmount:4,
-        //    recipeMode:RecipeMode.Standard
-        //);
         try
-        {
-            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
-            joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
-            if (!Log(joinCode))
-                Debug.Log(joinCode);
-            Debug.Log(joinCode);
 
+        {
+            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(4);
+            string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+            
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData
             (
                 allocation.RelayServer.IpV4,
@@ -101,20 +74,26 @@ public class Menu_Multiplayer : MonoBehaviour
             NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => { Debug.Log($"Client {clientId} connected"); };
             NetworkManager.Singleton.OnServerStarted += () => SceneLoader.ServerLoad(lobbySceneName);
             NetworkManager.Singleton.StartHost();
+            
+            Log("You created relay with code: " + joinCode);
+
+            return joinCode;
         }
         catch (RelayServiceException ex)
         {
             if (!Log(ex))
                 throw;
+            
+            return "0";
         }
     }
 
-    private async void JoinRoom()
+    public async void JoinRelay(string joinCode)
     {
         try
         {
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
-
+            
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData
             (
                 joinAllocation.RelayServer.IpV4,
@@ -126,7 +105,9 @@ public class Menu_Multiplayer : MonoBehaviour
             );
 
             NetworkManager.Singleton.StartClient();
-        }        
+
+            Log("You joined relay with code: " +  joinCode);
+        }
         catch (RelayServiceException ex)
         {
             if (!Log(ex))

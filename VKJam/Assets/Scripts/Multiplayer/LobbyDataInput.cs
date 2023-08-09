@@ -3,17 +3,23 @@ using UnityEngine;
 
 public class LobbyDataInput : MonoBehaviour
 {
-    [HideInInspector] public string LobbyName { get; private set; }
-    [HideInInspector] public int MaxPlayers { get; private set; }
-    [HideInInspector] public bool IsTeamMode { get; private set; }
-    [HideInInspector] public int RoundAmount { get; private set; }
-    [HideInInspector] public Menu_Multiplayer.RecipeMode RecipeMode { get; private set; }
+    public string LobbyJoinCode { get; private set; }
+    public string LobbyName { get; private set; }
+    public int MaxPlayers { get; private set; } = 2;
+    public bool GameMode { get; private set; } = true;
+    public int RoundAmount { get; private set; } = 4;
+    public RecipeMode RecipeMode { get; private set; } = RecipeMode.Standard;
 
     public static LobbyDataInput Instance { get; private set; }
 
     private void Awake()
     {
         Instance = this;
+    }
+
+    public void ChangeLobbyCode(string value)
+    {
+        LobbyJoinCode = value;
     }
 
     public void ChangeLobbyName(string value)
@@ -28,7 +34,7 @@ public class LobbyDataInput : MonoBehaviour
 
     public void ChangeTeamMode(bool value)
     {
-        IsTeamMode = value;
+        GameMode = value; 
     }
 
     public void ChangeRoundAmount(int value)
@@ -36,7 +42,7 @@ public class LobbyDataInput : MonoBehaviour
         RoundAmount = value;
     }
 
-    public void ChangeRecipeMode(Menu_Multiplayer.RecipeMode value)
+    public void ChangeRecipeMode(RecipeMode value)
     {
         RecipeMode = value;
     }

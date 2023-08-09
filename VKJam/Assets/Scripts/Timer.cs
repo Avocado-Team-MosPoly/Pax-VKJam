@@ -9,7 +9,7 @@ public class Timer : NetworkBehaviour
     [SerializeField] private TMP_Text ShowTime;
     public NetworkVariable<int> NetworkTime = new(0);
     private bool isTimePaused = false;
-    [SerializeField] private ShowRecepiesUI showRecepiesUI;
+    [SerializeField] private Hint showRecepiesUI;
     [SerializeField] private int roundTime = 30;
 
     private Coroutine serverClockCoroutine = null;
@@ -69,7 +69,7 @@ public class Timer : NetworkBehaviour
 
         //transform.parent.gameObject.SetActive(false);
         if (GameManager.Instance.IsPainter)
-            showRecepiesUI.HideRecepi();
+            showRecepiesUI.HideHint();
 
         NetworkTime.Value = roundTime;
         isTimePaused = true;

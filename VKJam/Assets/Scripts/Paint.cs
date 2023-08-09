@@ -347,10 +347,22 @@ public class Paint : NetworkBehaviour
 
     public void ClearCanvas()
     {
+        ClearCanvasServerRpc();
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    private void ClearCanvasServerRpc()
+    {
+        ClearCanvasClientRpc();
+    }
+
+    [ClientRpc]
+    private void ClearCanvasClientRpc()
+    {
         Fill(baseColor);
     }
 
-    public void SetMode(bool isPainter)
+    public void SetActive(bool isPainter)
     {
         this.isPainter = isPainter;
     }
