@@ -9,7 +9,15 @@ public class Logger : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(Instance.gameObject);
+        }
+        else
+        {
+            Destroy(this);
+        }
     }
 
     public void Log(object message)

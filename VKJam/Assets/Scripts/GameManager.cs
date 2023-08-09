@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 // –еализован командный режим на 2 и более игроков
-/// <summary> ¬се методы должны выполн€тьс€ только на сервере, с клиента можно вызывать [ CompareAnswer(string guess), CompareMonster(string guess) ] </summary>
+/// <summary> ¬се методы должны выполн€тьс€ только на сервере, с клиента можно вызывать [ CompareIngredient(string guess), CompareMonster(string guess) ] </summary>
 public class GameManager : NetworkBehaviour
 {
     #region Fields
@@ -22,7 +23,7 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private CardManager cardManager;
 
-    [SerializeField] private ShowRecepiesUI recipeHand;
+    [SerializeField] private Hint hint;
 
     // temp
     private int roundCount = 2;
@@ -104,7 +105,7 @@ public class GameManager : NetworkBehaviour
 
         mainCards.SetActive(true);
         paint.ClearCanvas();
-        paint.SetMode(true);
+        paint.SetActive(true);
     }
 
     private void SetGuesser()
@@ -116,7 +117,7 @@ public class GameManager : NetworkBehaviour
             obj.SetActive(true);
 
         cardManager.enabled = false;
-        paint.SetMode(false);
+        paint.SetActive(false);
     }
 
     // не работает [ NetworkManager.Singleton.LocalClientId ], с IEnumerator почему-то работает
@@ -162,6 +163,7 @@ public class GameManager : NetworkBehaviour
         Log("Correct guess");
 
         OnCorrectIngredientGuess?.Invoke();
+        AddTokenClientRpc();
         NextIngredient();
     }
 
@@ -177,6 +179,7 @@ public class GameManager : NetworkBehaviour
 
         if (currentIngredientIndex >= answerCardSO.Ingredients.Length)
         {
+            ActivateGuessMonsterStageClientRpc();
             OnIngredientsEnd?.Invoke();
             return;
         }
@@ -185,7 +188,11 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void ActivateGuessMonsterStageClientRpc()
     {
-        if (!IsPainter)
+        if (IsPainter)
+        {
+            // выводить догадки с разделением по игрокам
+        }
+        else
         {
             bestiary.gameObject.SetActive(true);
             guesserUI.SetActive(false);
@@ -201,6 +208,7 @@ public class GameManager : NetworkBehaviour
             EndGame();
             return;
         }
+
         ChangeRoles();
         Timer.Instance.ResetToDefault();
     }
@@ -216,7 +224,7 @@ public class GameManager : NetworkBehaviour
          */
 
         Log("WinRound");
-        AddTokenClientRpc();
+        
         NextRound();
         OnWinRound?.Invoke();
         // сообщить игрокам о смен раунда
@@ -240,31 +248,39 @@ public class GameManager : NetworkBehaviour
         Log("LoseRound");
         NextRound();
         OnLoseRound?.Invoke();
-        // сообщить игрокам о смен раунда
+        // сообщить игрокам о смене раунда
     }
-
-
 
     private void EndGame()
     {
         /* ”словие: ћонстры закончились (угаданы/не угаданы)
          * ƒействи€:
          *  - –аздача монет (внутриигрова€ валюта)
-         *  - ¬ыход в лобби
+         *  - ѕодведение итогов
          */
 
         OnEndGame?.Invoke();
-        SceneLoader.ServerLoad("Map");
+        EndGameClientRpc();
+        
+        SceneLoader.ServerLoad("Lobby"); // отображать итоги в лобби
+
         //NetworkManager.Singleton.DisconnectClient(1);
         //NetworkManager.Singleton.Shutdown();
         //RelayService.Instance.
         //SceneManager.LoadScene("Menu");
-        // —ообщить всем игрокам о выигрыше/проигрыше
+    }
+
+    [ClientRpc]
+    private void EndGameClientRpc()
+    {
+        // раздача монет
+        // 
+        
     }
 
     #endregion
     #region Compare
-
+    
     [ServerRpc (RequireOwnership = false)]
     private void CompareIngredientServerRpc(FixedString32Bytes guess, ServerRpcParams serverRpcParams)
     {
@@ -336,13 +352,13 @@ public class GameManager : NetworkBehaviour
     public void InteractRecipeHand()
     {
 
-        if (recipeHand.gameObject.activeInHierarchy)
+        if (hint.gameObject.activeInHierarchy)
         {
-            recipeHand.HideRecepi();
+            hint.HideHint();
         }
         else
         {
-            recipeHand.SetRecepi(answerCardSO.Ingredients[currentIngredientIndex]);
+            hint.SetHint(answerCardSO.Ingredients[currentIngredientIndex]);
         }
     }
 

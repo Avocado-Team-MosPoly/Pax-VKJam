@@ -21,24 +21,73 @@ public class LobbyManager : MonoBehaviour
     private Lobby hostLobby;
     private Lobby joinedLobby;
 
+    private bool isSendHeartBeatPing = false;
+    private float heartBeatTime = 15f;
+    private float heartBeatTimer;
+
     private string KEY_START_GAME = "0";
     private string KEY_RELAY_CODE = "RelayCode";
     private string KEY_TEAM_MODE = "IsTeamMode";
     private string KEY_ROUND_AMOUNT = "RoundAmount";
-    private string KEY_RECIPE_MODE = "RoundAmount";
+    private string KEY_RECIPE_MODE = "RecipeMode";
 
+    public bool IsHost => hostLobby != null;
 
-    private void Start()
+    public static LobbyManager Instance { get; private set; }
+
+    private async void Awake()
     {
-        UnityServices.InitializeAsync();
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(Instance.gameObject);
+        }
+        else
+        {
+            Destroy(this);
+        }
 
-        AuthenticationService.Instance.SignInAnonymouslyAsync();
+        Authentication.Authenticate();
 
         createLobbyButton.onClick.AddListener(CreateLobby);
-        //joinLobbyButton.onClick.AddListener(JoinLobby);
-        listLobbiesButton.onClick.AddListener(ListLobbies);
-        listPlayersButton.onClick.AddListener(ListPlayers);
+        joinLobbyButton.onClick.AddListener( () => JoinLobbyByCode(LobbyDataInput.Instance.LobbyJoinCode) );
+        //listLobbiesButton.onClick.AddListener(ListLobbies);
+        //listPlayersButton.onClick.AddListener(ListPlayers);
     }
+
+
+    private void Update()
+    {
+        HeartBeatPing();
+    }
+
+    #region HeartBeat
+
+    private async void HeartBeatPing()
+    {
+        if (!isSendHeartBeatPing || hostLobby == null)
+            return;
+
+        heartBeatTimer += Time.deltaTime;
+        if (heartBeatTimer >= heartBeatTime)
+        {
+            heartBeatTimer = 0f;
+            await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
+        }
+    }
+
+    public void StartHeartBeatPing()
+    {
+        isSendHeartBeatPing = true;
+        heartBeatTimer = heartBeatTime;
+    }
+
+    public void StopHeartBeatPing()
+    {
+        isSendHeartBeatPing = false;
+    }
+
+    #endregion
 
     private async void CreateLobby()
     {
@@ -55,12 +104,16 @@ public class LobbyManager : MonoBehaviour
 
             hostLobby = lobby;
             joinedLobby = lobby;
+            StartHeartBeatPing();
+            
+            Debug.Log($"Created lobby: {lobby.Name}, max players: {lobby.MaxPlayers}, lobby code: {lobby.LobbyCode}");
 
-            Logger.Instance.Log($"Lobby created {lobby.Name}, max players: {lobby.MaxPlayers}, lobby code: {lobby.LobbyCode}");
+            string relayJoinCode = await RelayManager.Instance.CreateRelay();
+            SaveRelayCode(relayJoinCode);
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(ex);
+            Debug.Log(ex);
         }
     }
 
@@ -69,40 +122,43 @@ public class LobbyManager : MonoBehaviour
         try
         {
             Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(code);
-
-            Logger.Instance.Log("You joined lobby " + lobby.Name);
+            joinedLobby = lobby;
+             
+            Debug.Log("You joined lobby " + lobby.Name);
+            
+            RelayManager.Instance.JoinRelay(lobby.Data[KEY_RELAY_CODE].Value);
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(ex);
+            Debug.Log(ex);
         }
     }
 
-    private async void ListLobbies()
-    {
+    public async void ListLobbies()
+    { 
         try
         {
             QueryResponse queryResponse = await LobbyService.Instance.QueryLobbiesAsync();
 
-            Logger.Instance.Log("Lobbies found: " + queryResponse.Results.Count);
+            Debug.Log("Lobbies found: " + queryResponse.Results.Count);
 
             foreach (var lobby in queryResponse.Results)
             {
-                Logger.Instance.Log(lobby.Name + " : " + lobby.MaxPlayers);
+                Debug.Log(lobby.Name + " : " + lobby.MaxPlayers);
             }
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(ex);
+            Debug.Log(ex);
         }
     }
 
     private void ListPlayers()
     {
-        Logger.Instance.Log("Players list in lobby " + joinedLobby.Name + ":");
+        Debug.Log("Players list in lobby " + joinedLobby.Name + ":");
         foreach (Player player in joinedLobby.Players)
         {
-            Logger.Instance.Log(player.Data["Player Name"].Value);
+            Debug.Log(player.Data["Player Name"].Value);
         }
     }
 
@@ -128,7 +184,7 @@ public class LobbyManager : MonoBehaviour
                 { KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") },
             };
 
-            lobbyData[KEY_TEAM_MODE] = new(DataObject.VisibilityOptions.Member, LobbyDataInput.Instance.IsTeamMode.ToString());
+            lobbyData[KEY_TEAM_MODE] = new(DataObject.VisibilityOptions.Member, LobbyDataInput.Instance.GameMode.ToString());
             lobbyData[KEY_ROUND_AMOUNT] = new(DataObject.VisibilityOptions.Member, LobbyDataInput.Instance.RoundAmount.ToString());
             lobbyData[KEY_RECIPE_MODE] = new(DataObject.VisibilityOptions.Member, ((int) LobbyDataInput.Instance.RecipeMode).ToString());
         }
@@ -138,12 +194,28 @@ public class LobbyManager : MonoBehaviour
             {
                 { KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") },
                 { KEY_RELAY_CODE, new DataObject(DataObject.VisibilityOptions.Member, "0") },
-                { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Member, "0") },
+                { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Member, "1") },
                 { KEY_ROUND_AMOUNT, new DataObject(DataObject.VisibilityOptions.Member, "4") },
                 { KEY_RECIPE_MODE, new DataObject(DataObject.VisibilityOptions.Member, "0") },
             };
         }
 
         return lobbyData;
+    }
+
+    public void SaveRelayCode(string relayJoinCode)
+    {
+        if (!IsHost)
+            return;
+
+        UpdateLobbyOptions updateLobbyOptions = new UpdateLobbyOptions
+        {
+            Data = new Dictionary<string, DataObject>
+            {
+                { KEY_RELAY_CODE, new DataObject(DataObject.VisibilityOptions.Member, relayJoinCode) },
+            }
+        };
+
+        LobbyService.Instance.UpdateLobbyAsync(hostLobby.Id, updateLobbyOptions);
     }
 }
