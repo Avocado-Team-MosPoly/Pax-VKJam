@@ -106,14 +106,14 @@ public class LobbyManager : MonoBehaviour
             joinedLobby = lobby;
             StartHeartBeatPing();
             
-            Debug.Log($"Created lobby: {lobby.Name}, max players: {lobby.MaxPlayers}, lobby code: {lobby.LobbyCode}");
+            Logger.Instance.Log($"Created lobby: {lobby.Name}, max players: {lobby.MaxPlayers}, lobby code: {lobby.LobbyCode}");
 
             string relayJoinCode = await RelayManager.Instance.CreateRelay();
             SaveRelayCode(relayJoinCode);
         }
         catch (LobbyServiceException ex)
         {
-            Debug.Log(ex);
+            throw;
         }
     }
 
@@ -121,17 +121,17 @@ public class LobbyManager : MonoBehaviour
     {
         try
         {
-            Debug.Log(joinCode);
+            Logger.Instance.Log(joinCode);
             Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(joinCode);
             joinedLobby = lobby;
              
-            Debug.Log("You joined lobby " + lobby.Name);
+            Logger.Instance.Log("You joined lobby " + lobby.Name);
             
             RelayManager.Instance.JoinRelay(lobby.Data[KEY_RELAY_CODE].Value);
         }
         catch (LobbyServiceException ex)
         {
-            Debug.Log(ex);
+            throw;
         }
     }
 
@@ -141,25 +141,25 @@ public class LobbyManager : MonoBehaviour
         {
             QueryResponse queryResponse = await LobbyService.Instance.QueryLobbiesAsync();
 
-            Debug.Log("Lobbies found: " + queryResponse.Results.Count);
+            Logger.Instance.Log("Lobbies found: " + queryResponse.Results.Count);
 
             foreach (var lobby in queryResponse.Results)
             {
-                Debug.Log(lobby.Name + " : " + lobby.MaxPlayers);
+                Logger.Instance.Log(lobby.Name + " : " + lobby.MaxPlayers);
             }
         }
         catch (LobbyServiceException ex)
         {
-            Debug.Log(ex);
+            throw;
         }
     }
 
     private void ListPlayers()
     {
-        Debug.Log("Players list in lobby " + joinedLobby.Name + ":");
+        Logger.Instance.Log("Players list in lobby " + joinedLobby.Name + ":");
         foreach (Player player in joinedLobby.Players)
         {
-            Debug.Log(player.Data["Player Name"].Value);
+            Logger.Instance.Log(player.Data["Player Name"].Value);
         }
     }
 

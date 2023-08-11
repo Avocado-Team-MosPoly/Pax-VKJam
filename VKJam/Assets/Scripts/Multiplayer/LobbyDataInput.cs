@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class LobbyDataInput : MonoBehaviour
 {
+    [SerializeField] private ButtonSet<int> maxPlayers_ButtonSet;
+    [SerializeField] private ButtonSet<bool> teamMode_ButtonSet;
+    [SerializeField] private ButtonSet<RecipeMode> RecipeMode_ButtonSet;
+
     public string LobbyJoinCode { get; private set; }
     public string LobbyName { get; private set; }
     public int MaxPlayers { get; private set; } = 2;
@@ -15,6 +19,10 @@ public class LobbyDataInput : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        maxPlayers_ButtonSet.OnClick.AddListener(ChangeMaxPlayers);
+        teamMode_ButtonSet.OnClick.AddListener(ChangeTeamMode);
+        RecipeMode_ButtonSet.OnClick.AddListener(ChangeRecipeMode);
     }
 
     public void ChangeLobbyCode(string value)

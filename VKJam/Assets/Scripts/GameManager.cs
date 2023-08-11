@@ -210,7 +210,7 @@ public class GameManager : NetworkBehaviour
         }
 
         ChangeRoles();
-        Timer.Instance.ResetToDefault();
+        //Timer.Instance.ResetToDefault();
     }
 
     private void WinRound()
