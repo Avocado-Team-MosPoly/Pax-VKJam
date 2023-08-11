@@ -5,6 +5,7 @@ using Unity.Services.Lobbies.Models;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using Unity.Services.Authentication;
+using System.ComponentModel;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -18,6 +19,10 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private Button listLobbiesButton;
     [SerializeField] private Button listPlayersButton;
 
+    [SerializeField] private Transform container;
+    [SerializeField] private Transform lobbySingleTemplate;
+    [SerializeField] private Transform lobbyList;
+
     private Lobby hostLobby;
     private Lobby joinedLobby;
 
@@ -27,9 +32,9 @@ public class LobbyManager : MonoBehaviour
 
     private string KEY_START_GAME = "0";
     private string KEY_RELAY_CODE = "RelayCode";
-    private string KEY_TEAM_MODE = "IsTeamMode";
-    private string KEY_ROUND_AMOUNT = "RoundAmount";
-    private string KEY_RECIPE_MODE = "RecipeMode";
+    public readonly string KEY_TEAM_MODE = "IsTeamMode";
+    public readonly string KEY_ROUND_AMOUNT = "RoundAmount";
+    public readonly string KEY_RECIPE_MODE = "RecipeMode";
 
     public bool IsHost => hostLobby != null;
 
@@ -51,7 +56,7 @@ public class LobbyManager : MonoBehaviour
 
         createLobbyButton.onClick.AddListener(CreateLobby);
         joinLobbyButton.onClick.AddListener( () => JoinLobbyByCode(LobbyDataInput.Instance.LobbyJoinCode) );
-        //listLobbiesButton.onClick.AddListener(ListLobbies);
+        listLobbiesButton.onClick.AddListener(ListLobbies);
         //listPlayersButton.onClick.AddListener(ListPlayers);
     }
 
@@ -126,7 +131,24 @@ public class LobbyManager : MonoBehaviour
             joinedLobby = lobby;
              
             Logger.Instance.Log("You joined lobby " + lobby.Name);
-            
+
+            RelayManager.Instance.JoinRelay(lobby.Data[KEY_RELAY_CODE].Value);
+        }
+        catch (LobbyServiceException ex)
+        {
+            throw;
+        }
+    }
+
+    public async void JoinLobbyByLobby(Lobby lobby)
+    {
+        try
+        {
+            joinedLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id);
+            joinedLobby = lobby;
+
+            Logger.Instance.Log("You joined lobby " + lobby.Name);
+
             RelayManager.Instance.JoinRelay(lobby.Data[KEY_RELAY_CODE].Value);
         }
         catch (LobbyServiceException ex)
@@ -140,6 +162,8 @@ public class LobbyManager : MonoBehaviour
         try
         {
             QueryResponse queryResponse = await LobbyService.Instance.QueryLobbiesAsync();
+            List <Lobby> lobbyList = queryResponse.Results;
+            UpdateLobbyList(lobbyList);
 
             Logger.Instance.Log("Lobbies found: " + queryResponse.Results.Count);
 
@@ -151,6 +175,24 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             throw;
+        }
+    }
+
+    private void UpdateLobbyList(List<Lobby> lobbyList)
+    {
+        foreach (Transform child in container)
+        {
+            if (child == lobbySingleTemplate) continue;
+
+            Destroy(child.gameObject);
+        }
+
+        foreach (Lobby lobby in lobbyList)
+        {
+            Transform lobbySingleTransform = Instantiate(lobbySingleTemplate, container);
+            lobbySingleTransform.gameObject.SetActive(true);
+            LobbyListSingleUi lobbyListSingleUI = lobbySingleTransform.GetComponent<LobbyListSingleUi>();
+            lobbyListSingleUI.UpdateLobby(lobby);
         }
     }
 
@@ -185,9 +227,9 @@ public class LobbyManager : MonoBehaviour
                 { KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") },
             };
 
-            lobbyData[KEY_TEAM_MODE] = new(DataObject.VisibilityOptions.Member, LobbyDataInput.Instance.GameMode.ToString());
-            lobbyData[KEY_ROUND_AMOUNT] = new(DataObject.VisibilityOptions.Member, LobbyDataInput.Instance.RoundAmount.ToString());
-            lobbyData[KEY_RECIPE_MODE] = new(DataObject.VisibilityOptions.Member, ((int) LobbyDataInput.Instance.RecipeMode).ToString());
+            lobbyData[KEY_TEAM_MODE] = new(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.GameMode.ToString());
+            lobbyData[KEY_ROUND_AMOUNT] = new(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.RoundAmount.ToString());
+            lobbyData[KEY_RECIPE_MODE] = new(DataObject.VisibilityOptions.Public, ((int) LobbyDataInput.Instance.RecipeMode).ToString());
         }
         else
         {
@@ -195,9 +237,9 @@ public class LobbyManager : MonoBehaviour
             {
                 { KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") },
                 { KEY_RELAY_CODE, new DataObject(DataObject.VisibilityOptions.Member, "0") },
-                { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Member, "1") },
-                { KEY_ROUND_AMOUNT, new DataObject(DataObject.VisibilityOptions.Member, "4") },
-                { KEY_RECIPE_MODE, new DataObject(DataObject.VisibilityOptions.Member, "0") },
+                { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Public, "1") },
+                { KEY_ROUND_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, "4") },
+                { KEY_RECIPE_MODE, new DataObject(DataObject.VisibilityOptions.Public, "0") },
             };
         }
 
