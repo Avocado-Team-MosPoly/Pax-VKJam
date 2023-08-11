@@ -223,6 +223,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 18481184}
+  - component: {fileID: 18481185}
   m_Layer: 5
   m_Name: Game Mode
   m_TagString: Untagged
@@ -243,7 +244,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1769509296}
-  - {fileID: 860573353}
+  - {fileID: 149973622}
+  - {fileID: 444489354}
   m_Father: {fileID: 86739986}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -252,6 +254,25 @@ RectTransform:
   m_AnchoredPosition: {x: 290, y: -254}
   m_SizeDelta: {x: 994, y: 1253}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &18481185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18481183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbb6d66a50f96a74fb3f95de74870cdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonValues:
+  - Button: {fileID: 149973623}
+    Value: 1
+  - Button: {fileID: 444489355}
+    Value: 0
+  defaultState: {fileID: 21300000, guid: 0caaa3ba39a9e8f48a6f13218228c0ea, type: 3}
+  clickedState: {fileID: 21300000, guid: 6c453387123829342a5538aeb5b4cc54, type: 3}
 --- !u!1 &24741699
 GameObject:
   m_ObjectHideFlags: 0
@@ -1127,13 +1148,13 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1828522245}
-  m_Father: {fileID: 860573353}
-  m_RootOrder: 0
+  m_Father: {fileID: 18481184}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.24400002, y: 0.61531323}
   m_AnchorMax: {x: 0.43152335, y: 0.76984984}
-  m_AnchoredPosition: {x: -120.63765, y: -0.3598562}
-  m_SizeDelta: {x: 338.5273, y: 218.5955}
+  m_AnchoredPosition: {x: -0.49993896, y: -2.5}
+  m_SizeDelta: {x: 31.689728, y: 2.010788}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &149973623
 MonoBehaviour:
@@ -1157,7 +1178,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.8584906, g: 0.753196, b: 0.19977449, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -1199,7 +1220,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fbf220c0d5cc4b54dbf574190b3363ff, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0caaa3ba39a9e8f48a6f13218228c0ea, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2843,6 +2864,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b55ec46a9b3767843b3d47cc8b9342dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxPlayers_ButtonSet: {fileID: 1444302827}
+  teamMode_ButtonSet: {fileID: 18481185}
+  RecipeMode_ButtonSet: {fileID: 1615311023}
 --- !u!1 &417265303
 GameObject:
   m_ObjectHideFlags: 0
@@ -3138,13 +3162,13 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1555540952}
-  m_Father: {fileID: 860573353}
-  m_RootOrder: 1
+  m_Father: {fileID: 18481184}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.43152335, y: 0.61531323}
   m_AnchorMax: {x: 0.61800003, y: 0.76984984}
-  m_AnchoredPosition: {x: 174.8038, y: -0.3598562}
-  m_SizeDelta: {x: 338.81482, y: 218.5955}
+  m_AnchoredPosition: {x: -11.040009, y: -2.5}
+  m_SizeDelta: {x: 33.689697, y: 2.010788}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &444489355
 MonoBehaviour:
@@ -3168,7 +3192,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.8584906, g: 0.753196, b: 0.19977449, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -5434,7 +5458,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.8584906, g: 0.753196, b: 0.19977449, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -5455,19 +5479,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 782035637}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 405557831}
-        m_TargetAssemblyTypeName: LobbyDataInput, Assembly-CSharp
-        m_MethodName: ChangeMaxPlayers
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 4
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &782035637
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6149,64 +6161,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 854160493}
   m_CullTransparentMesh: 1
---- !u!1 &860573352
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 860573353}
-  - component: {fileID: 860573354}
-  m_Layer: 5
-  m_Name: Buttons
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &860573353
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 860573352}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 149973622}
-  - {fileID: 444489354}
-  m_Father: {fileID: 18481184}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -145.32703, y: 267.76492}
-  m_SizeDelta: {x: 400.76178, y: 1.8685913}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &860573354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 860573352}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8524bbeee8b2daa44be298741547b561, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buttonValues:
-  - Button: {fileID: 149973623}
-    Value: 0
-  - Button: {fileID: 444489355}
-    Value: 0
-  defaultState: {fileID: 0}
-  clickedState: {fileID: 0}
 --- !u!1 &881408598
 GameObject:
   m_ObjectHideFlags: 0
@@ -10105,6 +10059,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1444302826}
+  - component: {fileID: 1444302827}
   m_Layer: 5
   m_Name: Max Players Count
   m_TagString: Untagged
@@ -10136,6 +10091,27 @@ RectTransform:
   m_AnchoredPosition: {x: 330, y: -49}
   m_SizeDelta: {x: 1028, y: 1256}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1444302827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444302825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afbcb0755d8f0d845a8a1c9efe137b35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonValues:
+  - Button: {fileID: 1934010667}
+    Value: 2
+  - Button: {fileID: 1680223096}
+    Value: 3
+  - Button: {fileID: 782035636}
+    Value: 4
+  defaultState: {fileID: 21300000, guid: f80cb8874780a584fb5e511e0b47bec0, type: 3}
+  clickedState: {fileID: 21300000, guid: 6c453387123829342a5538aeb5b4cc54, type: 3}
 --- !u!1 &1464980072
 GameObject:
   m_ObjectHideFlags: 0
@@ -11299,6 +11275,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1615311022}
+  - component: {fileID: 1615311023}
   m_Layer: 5
   m_Name: Recipes
   m_TagString: Untagged
@@ -11329,6 +11306,25 @@ RectTransform:
   m_AnchoredPosition: {x: 289.5, y: 163.5}
   m_SizeDelta: {x: 1009, y: 1256}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1615311023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1615311021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8524bbeee8b2daa44be298741547b561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonValues:
+  - Button: {fileID: 694670850}
+    Value: 0
+  - Button: {fileID: 1827436929}
+    Value: 1
+  defaultState: {fileID: 21300000, guid: 0caaa3ba39a9e8f48a6f13218228c0ea, type: 3}
+  clickedState: {fileID: 21300000, guid: 6c453387123829342a5538aeb5b4cc54, type: 3}
 --- !u!1 &1617613533
 GameObject:
   m_ObjectHideFlags: 0
@@ -11660,7 +11656,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.8584906, g: 0.753196, b: 0.19977449, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -11681,19 +11677,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1680223097}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 405557831}
-        m_TargetAssemblyTypeName: LobbyDataInput, Assembly-CSharp
-        m_MethodName: ChangeMaxPlayers
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 3
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1680223097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13968,7 +13952,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.8584906, g: 0.753196, b: 0.19977449, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -13989,19 +13973,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1934010668}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 405557831}
-        m_TargetAssemblyTypeName: LobbyDataInput, Assembly-CSharp
-        m_MethodName: ChangeMaxPlayers
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1934010668
 MonoBehaviour:
   m_ObjectHideFlags: 0

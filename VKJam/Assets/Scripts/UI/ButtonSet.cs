@@ -27,8 +27,16 @@ public class ButtonSet<T> : MonoBehaviour
 
     private void InitButtons()
     {
+        if (buttonValues.Length <= 0)
+        {
+            Debug.LogWarning("Buttons are not set");
+            return;
+        }
+
         foreach (ButtonValue buttonValue in buttonValues)
             buttonValue.Button.onClick.AddListener( () => Click(buttonValue) );
+
+        Click(buttonValues[0]);
     }
 
     private void Click(ButtonValue buttonValue)

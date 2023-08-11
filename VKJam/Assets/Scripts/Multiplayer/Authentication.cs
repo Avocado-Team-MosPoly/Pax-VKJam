@@ -21,7 +21,7 @@ public class Authentication : MonoBehaviour
         {
             Debug.Log("Signed In. Your Id is " + AuthenticationService.Instance.PlayerId);
 
-            LobbyManager.Instance.ListLobbies();
+            //LobbyManager.Instance.ListLobbies();
         };
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
