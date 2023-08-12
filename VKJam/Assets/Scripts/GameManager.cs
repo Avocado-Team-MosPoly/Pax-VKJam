@@ -25,6 +25,8 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private Hint hint;
 
+    private int tokensPerCard = 2;
+
     // temp
     private int roundCount = 2;
     private int currentRound = 1;
@@ -195,7 +197,7 @@ public class GameManager : NetworkBehaviour
         else
         {
             bestiary.gameObject.SetActive(true);
-            guesserUI.SetActive(false);
+            //guesserUI.SetActive(false);
         }
     }
 
@@ -233,7 +235,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void AddTokenClientRpc()
     {
-        TokensManager.AddTokens(1);
+        TokensManager.AddTokens(tokensPerCard);
     }
 
     private void LoseRound()

@@ -57,7 +57,6 @@ public class RelayManager : MonoBehaviour
     public async Task<string> CreateRelay()
     {
         try
-
         {
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(4);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);

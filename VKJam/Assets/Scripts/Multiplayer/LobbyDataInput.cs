@@ -18,6 +18,7 @@ public class LobbyDataInput : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("Awake");
         Instance = this;
 
         maxPlayers_ButtonSet.OnClick.AddListener(ChangeMaxPlayers);

@@ -252,6 +252,8 @@ public class Paint : NetworkBehaviour
     [ClientRpc]
     private void DrawCircleClientRpc(DrawingParams drawingParams)
     {
+        Debug.Log(drawingParams.newX + " " +  drawingParams.newY);
+
         if (drawingParams.isConnectedToLast)
             SmoothDrawCircle(drawingParams.prevX, drawingParams.prevY, drawingParams.newX, drawingParams.newY);
         else

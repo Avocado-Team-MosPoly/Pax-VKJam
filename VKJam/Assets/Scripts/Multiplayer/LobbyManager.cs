@@ -21,7 +21,6 @@ public class LobbyManager : MonoBehaviour
 
     [SerializeField] private Transform container;
     [SerializeField] private Transform lobbySingleTemplate;
-    [SerializeField] private Transform lobbyList;
 
     private Lobby hostLobby;
     private Lobby joinedLobby;
@@ -55,7 +54,7 @@ public class LobbyManager : MonoBehaviour
         Authentication.Authenticate();
 
         createLobbyButton.onClick.AddListener(CreateLobby);
-        joinLobbyButton.onClick.AddListener( () => JoinLobbyByCode(LobbyDataInput.Instance.LobbyJoinCode) );
+        //joinLobbyButton.onClick.AddListener( () => JoinLobbyByCode(LobbyDataInput.Instance.LobbyJoinCode) );
         listLobbiesButton.onClick.AddListener(ListLobbies);
         //listPlayersButton.onClick.AddListener(ListPlayers);
     }
@@ -118,7 +117,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (LobbyServiceException ex)
         {
-            throw;
+            Logger.Instance.Log(ex);
         }
     }
 
@@ -136,7 +135,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (LobbyServiceException ex)
         {
-            throw;
+            Logger.Instance.Log(ex);
         }
     }
 
@@ -153,7 +152,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (LobbyServiceException ex)
         {
-            throw;
+            Logger.Instance.Log(ex);
         }
     }
 
@@ -174,7 +173,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (LobbyServiceException ex)
         {
-            throw;
+            Logger.Instance.Log(ex);
         }
     }
 
