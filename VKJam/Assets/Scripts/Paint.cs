@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -106,7 +105,7 @@ public class Paint : NetworkBehaviour
     private DrawingParams drawingParams;
 
     private bool isDraw = false;
-
+    
     [Header("Ïðîñòî çàêèíóòü ññûëêó(åñëè íå íóæåí ôóíêöèîíàë, íå ñòàâèòü)")]
     [SerializeField] private Slider brushSizeSlider;
     [SerializeField] private Button switchBrushButton;
@@ -155,13 +154,12 @@ public class Paint : NetworkBehaviour
             return;
         }
         texture = new Texture2D(textureSettings.size, textureSettings.size);
-        Fill(baseColor);
 
         texture.wrapMode = textureSettings.wrapMode;
         texture.filterMode = textureSettings.filterMode;
 
         material.mainTexture = texture;
-        texture.Apply();
+        Fill(baseColor);
     }
 
     private void Update()
@@ -227,6 +225,8 @@ public class Paint : NetworkBehaviour
                 texture.SetPixel(x, y, color);
             }
         }
+
+        texture.Apply();
     }
     
     private void DrawCircle(short rayX, short rayY)
@@ -252,8 +252,6 @@ public class Paint : NetworkBehaviour
     [ClientRpc]
     private void DrawCircleClientRpc(DrawingParams drawingParams)
     {
-        Debug.Log(drawingParams.newX + " " +  drawingParams.newY);
-
         if (drawingParams.isConnectedToLast)
             SmoothDrawCircle(drawingParams.prevX, drawingParams.prevY, drawingParams.newX, drawingParams.newY);
         else

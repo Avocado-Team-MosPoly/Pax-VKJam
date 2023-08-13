@@ -41,7 +41,7 @@ public class LobbyListSingleUi : MonoBehaviour
         receipeMode.text = lobby.Data[LobbyManager.Instance.KEY_RECIPE_MODE].Value;
 
         connectButton.GetComponent<Button>().onClick.AddListener(() => {
-            LobbyManager.Instance.JoinLobbyByLobby(this.lobby);
+            LobbyManager.Instance.JoinLobby(this.lobby);
         });
         closeButton.GetComponent<Button>().onClick.AddListener(() => {
             fullSetting.SetActive(false);

@@ -33,12 +33,22 @@ public class Timer : NetworkBehaviour
 
     /// <summary> Call only on server </summary>
     [ServerRpc]
-    public void StartTimerServerRpc()
+    public void StartServerRpc()
     {
         if (serverClockCoroutine == null)
             serverClockCoroutine = StartCoroutine(Clock());
 
         SetPause(false);
+    }
+
+    [ServerRpc]
+    private void StopServerRpc()
+    {
+        SetPause(true);
+
+        StopCoroutine(serverClockCoroutine);
+        Debug.Log(serverClockCoroutine);
+        serverClockCoroutine = null;
     }
 
     private IEnumerator Clock()
@@ -55,9 +65,10 @@ public class Timer : NetworkBehaviour
             {
                 //ResetTimer();
                 OnExpired?.Invoke();
+                StopServerRpc();
             }
-
-            NetworkTime.Value -= 1;
+            else
+                NetworkTime.Value -= 1;
             
             yield return new WaitForSeconds(1);
         }
@@ -66,7 +77,6 @@ public class Timer : NetworkBehaviour
     // call on Server
     public void ResetToDefault()
     {
-
         //transform.parent.gameObject.SetActive(false);
         if (GameManager.Instance.IsPainter)
             showRecepiesUI.HideHint();
@@ -74,7 +84,7 @@ public class Timer : NetworkBehaviour
         NetworkTime.Value = roundTime;
         isTimePaused = true;
 
-        TimerEndClientRpc();
+        //TimerEndClientRpc();
     }
 
     private void OnTaimerChange(int preveusValue, int newValue)

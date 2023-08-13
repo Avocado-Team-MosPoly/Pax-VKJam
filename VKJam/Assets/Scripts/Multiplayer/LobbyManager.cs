@@ -1,11 +1,12 @@
 using UnityEngine;
-using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine.UI;
 using Unity.Services.Authentication;
-using System.ComponentModel;
+using Unity.Netcode;
+using System.Threading.Tasks;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -22,8 +23,7 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private Transform container;
     [SerializeField] private Transform lobbySingleTemplate;
 
-    private Lobby hostLobby;
-    private Lobby joinedLobby;
+    private Lobby currentLobby;
 
     private bool isSendHeartBeatPing = false;
     private float heartBeatTime = 15f;
@@ -35,7 +35,7 @@ public class LobbyManager : MonoBehaviour
     public readonly string KEY_ROUND_AMOUNT = "RoundAmount";
     public readonly string KEY_RECIPE_MODE = "RecipeMode";
 
-    public bool IsHost => hostLobby != null;
+    public bool IsHost => NetworkManager.Singleton.IsHost;
 
     public static LobbyManager Instance { get; private set; }
 
@@ -69,14 +69,14 @@ public class LobbyManager : MonoBehaviour
 
     private async void HeartBeatPing()
     {
-        if (!isSendHeartBeatPing || hostLobby == null)
+        if (!isSendHeartBeatPing || IsHost || currentLobby == null)
             return;
 
         heartBeatTimer += Time.deltaTime;
         if (heartBeatTimer >= heartBeatTime)
         {
             heartBeatTimer = 0f;
-            await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
+            await LobbyService.Instance.SendHeartbeatPingAsync(currentLobby.Id);
         }
     }
 
@@ -106,8 +106,7 @@ public class LobbyManager : MonoBehaviour
 
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(LobbyDataInput.Instance.LobbyName, LobbyDataInput.Instance.MaxPlayers, createLobbyOptions);
 
-            hostLobby = lobby;
-            joinedLobby = lobby;
+            currentLobby = lobby;
             StartHeartBeatPing();
             
             Logger.Instance.Log($"Created lobby: {lobby.Name}, max players: {lobby.MaxPlayers}, lobby code: {lobby.LobbyCode}");
@@ -121,17 +120,17 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private async void JoinLobbyByCode(string joinCode)
+    private async void JoinLobby(string joinCode)
     {
         try
         {
             Logger.Instance.Log(joinCode);
             Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(joinCode);
-            joinedLobby = lobby;
+            currentLobby = lobby;
              
             Logger.Instance.Log("You joined lobby " + lobby.Name);
 
-            RelayManager.Instance.JoinRelay(lobby.Data[KEY_RELAY_CODE].Value);
+            RelayManager.Instance.JoinRelay(currentLobby.Data[KEY_RELAY_CODE].Value);
         }
         catch (LobbyServiceException ex)
         {
@@ -139,16 +138,29 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public async void JoinLobbyByLobby(Lobby lobby)
+    public async void JoinLobby(Lobby lobby)
     {
         try
         {
-            joinedLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id);
-            joinedLobby = lobby;
-
+            Logger.Instance.Log(lobby.Id);
+            currentLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id);
+            
             Logger.Instance.Log("You joined lobby " + lobby.Name);
 
-            RelayManager.Instance.JoinRelay(lobby.Data[KEY_RELAY_CODE].Value);
+            RelayManager.Instance.JoinRelay(currentLobby.Data[KEY_RELAY_CODE].Value);
+        }
+        catch (LobbyServiceException ex)
+        {
+            Logger.Instance.Log(ex);
+        }
+    }
+
+    public async void LeaveLobby()
+    {
+        try
+        {
+            string playerId = AuthenticationService.Instance.PlayerId;
+            await LobbyService.Instance.RemovePlayerAsync(currentLobby.Id, playerId);
         }
         catch (LobbyServiceException ex)
         {
@@ -197,8 +209,8 @@ public class LobbyManager : MonoBehaviour
 
     private void ListPlayers()
     {
-        Logger.Instance.Log("Players list in lobby " + joinedLobby.Name + ":");
-        foreach (Player player in joinedLobby.Players)
+        Logger.Instance.Log("Players list in lobby " + currentLobby.Name + ":");
+        foreach (Player player in currentLobby.Players)
         {
             Logger.Instance.Log(player.Data["Player Name"].Value);
         }
@@ -258,6 +270,6 @@ public class LobbyManager : MonoBehaviour
             }
         };
 
-        LobbyService.Instance.UpdateLobbyAsync(hostLobby.Id, updateLobbyOptions);
+        LobbyService.Instance.UpdateLobbyAsync(currentLobby.Id, updateLobbyOptions);
     }
 }
