@@ -7,7 +7,7 @@ public class URL_Image : MonoBehaviour
 {
     [SerializeField] private string url;
     private RawImage Target;
-    void Start()
+    void Awake()
     {
         Target = GetComponent<RawImage>();
         StartCoroutine(DownloadImage());

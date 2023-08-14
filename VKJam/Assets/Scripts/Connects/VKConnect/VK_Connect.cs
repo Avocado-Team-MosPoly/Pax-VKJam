@@ -14,7 +14,22 @@ public class VK_Connect : MonoBehaviour
 
     void Start()
     {
-        DebugingText = GameObject.FindGameObjectWithTag("Debug").GetComponent<TMPro.TMP_Text>();
+        GameObject temp;
+        if (DebugingText == null)
+        {
+            temp = GameObject.FindGameObjectWithTag("Debug");
+            if (temp != null) DebugingText = temp.GetComponent<TMPro.TMP_Text>();
+            temp = null;
+        }
+        if (NameText == null) { 
+            temp = GameObject.FindGameObjectWithTag("Name");
+            if(temp != null) NameText = temp.GetComponent<TMPro.TMP_Text>();
+            temp = null;
+        }
+        if (urlImage == null) { 
+            temp = GameObject.FindGameObjectWithTag("Profile_Picture");
+            if (temp != null) urlImage = temp.GetComponent<URL_Image>();
+        }
         RequestUserData();
     }
     public void ButClick()
@@ -43,10 +58,10 @@ public class VK_Connect : MonoBehaviour
     {
         string[] text = Input.Split('|');
         int User_ID = int.Parse(text[0]);
-        string Image_Url = text[1];
-        string First_Name = text[2];
-        if (NameText != null) NameText.text = First_Name;
-        if (urlImage != null) urlImage.ChangeImage(Image_Url);
+        UserData.UserIMG_URL = text[1];
+        UserData.UserName = text[2];
+        if (NameText != null) NameText.text = UserData.UserName;
+        if (urlImage != null) urlImage.ChangeImage(UserData.UserIMG_URL);
         if(Php_Connect.PHPisOnline) StartCoroutine(Php_Connect.Request_Auth(User_ID));
     }
 }
