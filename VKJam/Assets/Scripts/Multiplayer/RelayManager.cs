@@ -91,6 +91,8 @@ public class RelayManager : MonoBehaviour
     {
         try
         {
+            Log(joinCode);
+
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
             
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData

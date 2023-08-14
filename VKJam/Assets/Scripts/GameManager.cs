@@ -23,17 +23,19 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private CardManager cardManager;
 
-    [SerializeField] private Hint hint;
+    [SerializeField] private Hint hintManager;
 
     private int tokensPerCard = 2;
 
     // temp
-    private int roundCount = 2;
+    private int roundCount = 4;
     private int currentRound = 1;
     // temp
 
     private CardSO answerCardSO;
     private int currentIngredientIndex;
+
+    private bool isMonsterStage;
 
     private NetworkVariable<ushort> painterId = new(ushort.MaxValue);
     private List<ulong> lastPainterIds = new();
@@ -64,9 +66,9 @@ public class GameManager : NetworkBehaviour
             cardManager = FindObjectOfType<CardManager>();
 
         cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
-        Timer.Instance.OnExpired.AddListener(LoseRound);
+        Timer.Instance.OnExpired.AddListener(OnTimeExpired);
         
-        bestiary.OnChooseMonster.AddListener(CompareMonster);
+        //bestiary.OnChooseMonster.AddListener(CompareMonster);
     }
 
     public override void OnNetworkSpawn()
@@ -78,7 +80,7 @@ public class GameManager : NetworkBehaviour
         if (IsServer)
         {
             painterId.Value = (ushort)NetworkManager.ConnectedClientsIds[0];
-            OnIngredientsEnd.AddListener(ActivateGuessMonsterStageClientRpc);
+            //OnIngredientsEnd.AddListener(ActivateGuessMonsterStageClientRpc);
         }
         else
         {
@@ -128,6 +130,7 @@ public class GameManager : NetworkBehaviour
         yield return new WaitForSeconds(0f);
 
         bestiary.gameObject.SetActive(false);
+        hintManager.gameObject.SetActive(false);
 
         if (IsPainter)
             SetPainter();
@@ -160,6 +163,13 @@ public class GameManager : NetworkBehaviour
     #endregion
     #region Base
 
+    private void LoseIngredient()
+    {
+        Log("Lose Ingredient");
+
+        NextIngredient();
+    }
+
     private void CorrectIngredientGuess()
     {
         Log("Correct guess");
@@ -182,8 +192,8 @@ public class GameManager : NetworkBehaviour
         if (currentIngredientIndex >= answerCardSO.Ingredients.Length)
         {
             ActivateGuessMonsterStageClientRpc();
+            isMonsterStage = true;
             OnIngredientsEnd?.Invoke();
-            return;
         }
     }
 
@@ -196,7 +206,7 @@ public class GameManager : NetworkBehaviour
         }
         else
         {
-            bestiary.gameObject.SetActive(true);
+            //bestiary.gameObject.SetActive(true);
             //guesserUI.SetActive(false);
         }
     }
@@ -211,8 +221,9 @@ public class GameManager : NetworkBehaviour
             return;
         }
 
+        isMonsterStage = false;
         ChangeRoles();
-        //Timer.Instance.ResetToDefault();
+        Timer.Instance.ResetToDefault();
     }
 
     private void WinRound()
@@ -264,7 +275,7 @@ public class GameManager : NetworkBehaviour
         OnEndGame?.Invoke();
         EndGameClientRpc();
         
-        SceneLoader.ServerLoad("Lobby"); // отображать итоги в лобби
+        //SceneLoader.ServerLoad("Lobby"); // отображать итоги в лобби
 
         //NetworkManager.Singleton.DisconnectClient(1);
         //NetworkManager.Singleton.Shutdown();
@@ -289,7 +300,7 @@ public class GameManager : NetworkBehaviour
         string stringGuess = guess.ToString();
         GuessHistory.Instance.AddGuess(serverRpcParams.Receive.SenderClientId, stringGuess);
 
-        Log($"Current Ingredient: {answerCardSO.Ingredients[currentIngredientIndex]}, Guess: {stringGuess}");
+        Log($"Current Ingredient: {answerCardSO.Ingredients[currentIngredientIndex]}, Guess: {stringGuess}, Guesser Id: {serverRpcParams.Receive.SenderClientId}");
 
         if (answerCardSO.Ingredients[currentIngredientIndex] == stringGuess.ToLower())
             CorrectIngredientGuess();
@@ -298,13 +309,12 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc (RequireOwnership = false)]
-    private void CompareMonsterServerRpc(ushort guessCardSOIndex)
+    private void CompareMonsterServerRpc(string guess, ServerRpcParams serverRpcParams)
     {
-        CardSO guessCardSO = cardManager.GetCardSOByIndex(guessCardSOIndex);
+        //CardSO guessCardSO = cardManager.GetCardSOByIndex(guess);
+        Log($"Current Monster: {answerCardSO.Id}, Guess: {guess}, Guesser Id: {serverRpcParams.Receive.SenderClientId}");
 
-        Log($"Current Monster: {answerCardSO.Id}, Guess: {guessCardSO.Id}");
-
-        if (answerCardSO == guessCardSO)
+        if (answerCardSO.Id == guess)
             WinRound();
         else
             LoseRound();
@@ -318,13 +328,17 @@ public class GameManager : NetworkBehaviour
         CompareIngredientServerRpc(fixedStringGuess, serverRpcParams);
     }
 
-    public void CompareMonster(CardSO guessCardSO)
+    public void CompareMonster(string guess)
     {
-        ushort guessCardSOIndex = cardManager.GetCardSOIndex(guessCardSO);
+        CompareMonsterServerRpc(guess, new());
+    }
 
-        Log("Compare Monster");
-
-        CompareMonsterServerRpc(guessCardSOIndex);
+    public void CompareAnswer(string guess)
+    {
+        if (isMonsterStage)
+            CompareMonster(guess);
+        else
+            CompareIngredient(guess);
     }
 
     #endregion
@@ -334,7 +348,7 @@ public class GameManager : NetworkBehaviour
     {
         Log("CardSO Updated");
         currentIngredientIndex = 0;
-        Timer.Instance.StartTimerServerRpc();
+        Timer.Instance.StartServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -351,16 +365,29 @@ public class GameManager : NetworkBehaviour
 
     #endregion
 
-    public void InteractRecipeHand()
+    private void OnTimeExpired()
     {
-
-        if (hint.gameObject.activeInHierarchy)
+        if (currentIngredientIndex >= answerCardSO.Ingredients.Length)
         {
-            hint.HideHint();
+            LoseRound();
         }
         else
         {
-            hint.SetHint(answerCardSO.Ingredients[currentIngredientIndex]);
+            LoseIngredient();
+        }
+    }
+
+    public void InteractRecipeHand()
+    {
+
+        if (hintManager.gameObject.activeInHierarchy)
+        {
+            //hintManager.DeactivateHint();
+        }
+        else
+        {
+            //hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
+            //hintManager.ActivateHint();
         }
     }
 

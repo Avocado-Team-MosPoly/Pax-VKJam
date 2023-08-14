@@ -15,13 +15,13 @@ public class Guesser : MonoBehaviour
         guessButton.onClick.AddListener(SubmitGuess);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.KeypadEnter) && guessButton.gameObject.activeInHierarchy)
-        {
-            SubmitGuess();
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.KeypadEnter) && guessButton.gameObject.activeInHierarchy)
+    //    {
+    //        SubmitGuess();
+    //    }
+    //}
 
     private void ChangeGuess(string value)
     {
@@ -33,7 +33,8 @@ public class Guesser : MonoBehaviour
         if (guess == string.Empty)
             return;
 
-        GameManager.Instance.CompareIngredient(guess);
+        GameManager.Instance.CompareAnswer(guess);
+
         guessInputField.text = string.Empty;
     }
 }

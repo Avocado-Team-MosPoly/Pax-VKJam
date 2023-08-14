@@ -8,10 +8,11 @@ public class Authentication : MonoBehaviour
 
     public static async void Authenticate()
     {
-        if (PlayerName == string.Empty)
+        if (PlayerName == string.Empty || PlayerName == null)
         {
             PlayerName = Random.Range(100, 1000).ToString();
         }
+        Logger.Instance.Log("Player Name" + PlayerName);
         InitializationOptions initializationOptions = new InitializationOptions();
         initializationOptions.SetProfile(PlayerName);
         

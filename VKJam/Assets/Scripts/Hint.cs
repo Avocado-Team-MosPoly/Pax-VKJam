@@ -3,16 +3,9 @@ using TMPro;
 
 public class Hint : MonoBehaviour
 {
-    public void SetHint(string text)
+    public void SetData(string ingredientName)
     {
-        Debug.Log("New Ingredient setted" + text);
-        
-        gameObject.SetActive(true);
-        transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
-    }
-
-    public void HideHint()
-    {
-        gameObject.SetActive(false);
+        Debug.Log("New Ingredient setted " + ingredientName);
+        transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = ingredientName;
     }
 }
