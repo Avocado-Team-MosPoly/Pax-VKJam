@@ -31,6 +31,12 @@ public class Timer : NetworkBehaviour
             NetworkTime.Value = roundTime;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.O))
+            StartServerRpc();
+    }
+
     /// <summary> Call only on server </summary>
     [ServerRpc]
     public void StartServerRpc()
@@ -78,8 +84,9 @@ public class Timer : NetworkBehaviour
     public void ResetToDefault()
     {
         //transform.parent.gameObject.SetActive(false);
-        if (GameManager.Instance.IsPainter)
-            showRecepiesUI.HideHint();
+        
+        //if (GameManager.Instance.IsPainter)
+            //showRecepiesUI.HideHint();
 
         NetworkTime.Value = roundTime;
         isTimePaused = true;

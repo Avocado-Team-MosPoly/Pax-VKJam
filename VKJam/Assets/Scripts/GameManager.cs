@@ -23,7 +23,7 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private CardManager cardManager;
 
-    [SerializeField] private HintManager hintManager;
+    [SerializeField] private Hint hintManager;
 
     private int tokensPerCard = 2;
 
@@ -34,6 +34,8 @@ public class GameManager : NetworkBehaviour
 
     private CardSO answerCardSO;
     private int currentIngredientIndex;
+
+    private bool isMonsterStage;
 
     private NetworkVariable<ushort> painterId = new(ushort.MaxValue);
     private List<ulong> lastPainterIds = new();
@@ -190,6 +192,7 @@ public class GameManager : NetworkBehaviour
         if (currentIngredientIndex >= answerCardSO.Ingredients.Length)
         {
             ActivateGuessMonsterStageClientRpc();
+            isMonsterStage = true;
             OnIngredientsEnd?.Invoke();
         }
     }
@@ -218,6 +221,7 @@ public class GameManager : NetworkBehaviour
             return;
         }
 
+        isMonsterStage = false;
         ChangeRoles();
         Timer.Instance.ResetToDefault();
     }
@@ -308,7 +312,6 @@ public class GameManager : NetworkBehaviour
     private void CompareMonsterServerRpc(string guess, ServerRpcParams serverRpcParams)
     {
         //CardSO guessCardSO = cardManager.GetCardSOByIndex(guess);
-
         Log($"Current Monster: {answerCardSO.Id}, Guess: {guess}, Guesser Id: {serverRpcParams.Receive.SenderClientId}");
 
         if (answerCardSO.Id == guess)
@@ -327,7 +330,15 @@ public class GameManager : NetworkBehaviour
 
     public void CompareMonster(string guess)
     {
-        CompareMonsterServerRpc(guess, new ServerRpcParams());
+        CompareMonsterServerRpc(guess, new());
+    }
+
+    public void CompareAnswer(string guess)
+    {
+        if (isMonsterStage)
+            CompareMonster(guess);
+        else
+            CompareIngredient(guess);
     }
 
     #endregion
@@ -371,12 +382,12 @@ public class GameManager : NetworkBehaviour
 
         if (hintManager.gameObject.activeInHierarchy)
         {
-            hintManager.DeactivateHint();
+            //hintManager.DeactivateHint();
         }
         else
         {
-            hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
-            hintManager.ActivateHint();
+            //hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
+            //hintManager.ActivateHint();
         }
     }
 
