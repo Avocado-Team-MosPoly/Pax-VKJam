@@ -5,7 +5,7 @@ using UnityEngine;
 public class Authentication : MonoBehaviour
 {
     public static string PlayerName { get; private set; }
-
+    
     public static async void Authenticate()
     {
         if (PlayerName == string.Empty || PlayerName == null)

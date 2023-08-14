@@ -4,6 +4,7 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.Netcode.Transports.UTP;
 using System.Threading.Tasks;
+using Unity.Networking.Transport.Relay;
 
 public class RelayManager : MonoBehaviour
 {
@@ -60,20 +61,14 @@ public class RelayManager : MonoBehaviour
         {
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(4);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
-            
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData
-            (
-                allocation.RelayServer.IpV4,
-                (ushort) allocation.RelayServer.Port,
-                allocation.AllocationIdBytes,
-                allocation.Key,
-                allocation.ConnectionData
-            );
+            RelayServerData relayServerData = new RelayServerData(allocation, "wss");
+
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => { Debug.Log($"Client {clientId} connected"); };
             NetworkManager.Singleton.OnServerStarted += () => SceneLoader.ServerLoad(lobbySceneName);
             NetworkManager.Singleton.StartHost();
-            
+
             Log("You created relay with code: " + joinCode);
 
             return joinCode;
@@ -82,7 +77,7 @@ public class RelayManager : MonoBehaviour
         {
             if (!Log(ex))
                 throw;
-            
+
             return "0";
         }
     }
