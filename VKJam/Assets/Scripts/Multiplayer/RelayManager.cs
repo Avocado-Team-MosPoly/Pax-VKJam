@@ -71,7 +71,7 @@ public class RelayManager : MonoBehaviour
             );
 
             NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => { Debug.Log($"Client {clientId} connected"); };
-            NetworkManager.Singleton.OnServerStarted += () => SceneLoader.ServerLoad(lobbySceneName);
+            //NetworkManager.Singleton.OnServerStarted += () => SceneLoader.ServerLoad(lobbySceneName);
             NetworkManager.Singleton.StartHost();
             
             Log("You created relay with code: " + joinCode);
