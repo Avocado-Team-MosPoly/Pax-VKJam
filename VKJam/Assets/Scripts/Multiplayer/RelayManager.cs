@@ -89,16 +89,18 @@ public class RelayManager : MonoBehaviour
             Log(joinCode);
 
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
-            
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData
-            (
-                joinAllocation.RelayServer.IpV4,
-                (ushort) joinAllocation.RelayServer.Port,
-                joinAllocation.AllocationIdBytes,
-                joinAllocation.Key,
-                joinAllocation.ConnectionData,
-                joinAllocation.HostConnectionData
-            );
+            RelayServerData relayServerData = new RelayServerData(joinAllocation, "wss");
+
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+            //NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData
+            //(
+            //    joinAllocation.RelayServer.IpV4,
+            //    (ushort) joinAllocation.RelayServer.Port,
+            //    joinAllocation.AllocationIdBytes,
+            //    joinAllocation.Key,
+            //    joinAllocation.ConnectionData,
+            //    joinAllocation.HostConnectionData
+            //);
 
             NetworkManager.Singleton.StartClient();
 
