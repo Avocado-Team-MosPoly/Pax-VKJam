@@ -33,7 +33,7 @@ public class Guesser : MonoBehaviour
         if (guess == string.Empty)
             return;
 
-        GameManager.Instance.CompareAnswer(guess);
+        GameManager.Instance.CompareAnswerServerRpc(guess);
 
         guessInputField.text = string.Empty;
     }

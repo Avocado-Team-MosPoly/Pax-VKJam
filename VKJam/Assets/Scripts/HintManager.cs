@@ -1,72 +1,29 @@
 using UnityEngine;
 
-public enum HintType
-{
-    Notebook,
-    Hand
-}
-
 public class HintManager : MonoBehaviour
 {
     [SerializeField] private Hint notebookHint;
     [SerializeField] private Hint handHint;
-
-    [SerializeField] private NotebookBounds notebookBounds;
     
-    private Hint currentHint;
-
     private string hintText;
 
-    private void Awake()
-    {
-        notebookBounds.OnEnabled.AddListener( () =>
-        {
-            if (currentHint != null)
-            {
-                currentHint.gameObject.SetActive(false);
-            }
-        });
-    }
-
-    private void UpdateHint()
-    {
-        if (currentHint != null)
-            currentHint.SetData(hintText);
-    }
+    public bool IsActiveHandHint => handHint.gameObject.activeInHierarchy;
 
     public void SetHintData(string ingredientName)
     {
         hintText = ingredientName;
-        UpdateHint();
+        
+        notebookHint.SetData(hintText);
+        handHint.SetData(hintText);
     }
 
-    public void ActivateHint()
+    public void EnableHandHint()
     {
-        //if (currentHint != null)
-        //    currentHint.gameObject.SetActive(false);
-
-
-        //if (hintType == HintType.Notebook)
-        //{
-        //    currentHint = handHint;
-        //    notebookBounds.SetHoldHintTexture();
-        //}
-        //else
-        //{
-        //    currentHint = notebookHint;
-        //    notebookBounds.SetDefaultTexture();
-        //}
-
-        //currentHint.gameObject.SetActive(true);
-        //UpdateHint();
+        handHint.gameObject.SetActive(true);
     }
 
-    public void DeactivateHint()
+    public void DisableHandHint()
     {
-        if (currentHint == null)
-            return;
-
-        currentHint.gameObject.SetActive(false);
-        currentHint = null;
+        handHint.gameObject.SetActive(false);
     }
 }
