@@ -17,10 +17,11 @@ public class URL_Image : MonoBehaviour
         url = NewUrl;
         StartCoroutine(DownloadImage());
     }
-    IEnumerator DownloadImage()
+    private IEnumerator DownloadImage()
     {
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
         yield return request.SendWebRequest();
+        
         if (request.isNetworkError || request.isHttpError)
             Debug.Log(request.error);
         else

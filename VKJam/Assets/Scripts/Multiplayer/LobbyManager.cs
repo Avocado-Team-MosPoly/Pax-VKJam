@@ -24,6 +24,7 @@ public class LobbyManager : MonoBehaviour
     public readonly string KEY_RECIPE_MODE = "RecipeMode";
 
     public bool IsHost => NetworkManager.Singleton.IsHost;
+    public string LobbyName => currentLobby != null ? currentLobby.Name : "Не известно";
 
     public static LobbyManager Instance { get; private set; }
 

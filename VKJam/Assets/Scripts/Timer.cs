@@ -29,35 +29,19 @@ public class Timer : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         NetworkTime.OnValueChanged += OnTaimerChange;
-        
+
         if (IsServer)
             NetworkTime.Value = roundTime;
     }
 
-    [ServerRpc]
-    public void StartServerRpc()
-    {
-        ResetToDefault();
-        
-        if (serverClockCoroutine == null)
-            serverClockCoroutine = StartCoroutine(Clock());
-
-        SetPause(false);
-    }
-
-    [ServerRpc]
-    public void StopServerRpc()
-    {
-        StopCoroutine(serverClockCoroutine);
-        serverClockCoroutine = null;
-
-        ResetToDefault();
-    }
-
     private IEnumerator Clock()
     {
+        Debug.Log("Clock on client " + NetworkManager.Singleton.LocalClientId);
+
         while (IsServer)
         {
+            Debug.Log("Clock on server " + NetworkManager.Singleton.LocalClientId);
+
             if (isTimePaused)
             {
                 yield return new WaitForSeconds(1);
@@ -66,9 +50,8 @@ public class Timer : NetworkBehaviour
 
             if (NetworkTime.Value <= 0)
             {
-                //ResetTimer();
-                OnExpired?.Invoke();
                 StopServerRpc();
+                OnExpired?.Invoke();
             }
             else
                 NetworkTime.Value -= 1;
@@ -77,7 +60,7 @@ public class Timer : NetworkBehaviour
         }
     }
 
-    public void ResetToDefault()
+    private void ResetToDefault()
     {
         NetworkTime.Value = roundTime;
     }
@@ -92,28 +75,59 @@ public class Timer : NetworkBehaviour
 
     private string ToTimeFormat(int seconds)
     {
-        string timeString = string.Empty;
-
-        if (seconds / 60 <= 10)
-        {
-            if (seconds % 60 < 10)
-                timeString = "0" + seconds / 60 + ":" + "0" + seconds % 60;
-            else
-                timeString = "0" + seconds / 60 + ":" + seconds % 60;
-        }
-        else
-        {
-            if (seconds % 60 < 10)
-                timeString = seconds / 60 + ":" + "0" + seconds % 60;
-            else
-                timeString = seconds / 60 + ":" + seconds % 60;
-        }
+        string timeString = (seconds / 60).ToString() + ":";
+        int onlySeconds = seconds % 60;
+        
+        timeString += onlySeconds < 10 ? "0" + onlySeconds : onlySeconds;
+        
+        //if (seconds / 60 <= 10)
+        //{
+        //    if (seconds % 60 < 10)
+        //        timeString = "0" + seconds / 60 + ":" + "0" + seconds % 60;
+        //    else
+        //        timeString = "0" + seconds / 60 + ":" + seconds % 60;
+        //}
+        //else
+        //{
+        //    if (seconds % 60 < 10)
+        //        timeString = seconds / 60 + ":" + "0" + seconds % 60;
+        //    else
+        //        timeString = seconds / 60 + ":" + seconds % 60;
+        //}
 
         return timeString;
     }
 
+    [ServerRpc]
+    public void StartServerRpc()
+    {
+        Debug.Log("Start Server RPC");
+
+        ResetToDefault();
+
+        if (serverClockCoroutine == null)
+            serverClockCoroutine = StartCoroutine(Clock());
+
+        //SetPause(false);
+    }
+
+    [ServerRpc]
+    public void StopServerRpc()
+    {
+        Debug.Log("Stop Server RPC");
+
+        if (serverClockCoroutine != null)
+        {
+            StopCoroutine(serverClockCoroutine);
+            serverClockCoroutine = null;
+        }
+
+        ResetToDefault();
+    }
+
     public void SetPause(bool state)
     {
+        Debug.Log("Set Pause: " + state);
         isTimePaused = state;
     }
 }

@@ -192,7 +192,7 @@ public class GameManager : NetworkBehaviour
             isMonsterStage = true;
 
             OnIngredientsEnd?.Invoke();
-            hintManager.SetHintData("");
+            hintManager.SetHintData(answerCardSO.Id);
 
             return;
         }
@@ -304,7 +304,7 @@ public class GameManager : NetworkBehaviour
 
         Log($"Current Ingredient: {answerCardSO.Ingredients[currentIngredientIndex]}, Guess: {stringGuess}, Guesser Id: {guesserId}");
 
-        if (answerCardSO.Ingredients[currentIngredientIndex] == stringGuess.ToLower())
+        if (answerCardSO.Ingredients[currentIngredientIndex].ToLower() == stringGuess.ToLower())
             CorrectIngredientGuess();
         else
             WrongIngredientGuess();
@@ -340,7 +340,7 @@ public class GameManager : NetworkBehaviour
         Timer.Instance.StartServerRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc (RequireOwnership = false)]
     private void SetCardSOServerRpc(ushort cardSOIndex)
     {
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
@@ -350,6 +350,7 @@ public class GameManager : NetworkBehaviour
     private void SetAnswerCardSO(ushort cardSOIndex)
     {
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
+        hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
         SetCardSOServerRpc(cardSOIndex);
     }
 
