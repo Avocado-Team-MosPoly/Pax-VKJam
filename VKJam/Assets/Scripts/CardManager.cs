@@ -148,6 +148,8 @@ public class CardManager : MonoBehaviour
         {
             Destroy(instance.gameObject);
         }
+
+        cardInstances.Clear();
     }
 
     /// <summary> Disable [ Interactable ] on all spawned cards excluding parameter </summary>
@@ -173,6 +175,11 @@ public class CardManager : MonoBehaviour
             //CameraBackButton.SetActive(false);
             //CameraButtonAfterChoosingCard.SetActive(true);
         }
+    }
+
+    public void ResetMonsterSprite()
+    {
+        monsterSpriteRenderer.sprite = null;
     }
 
     #endregion

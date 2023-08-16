@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
-using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
@@ -127,7 +125,9 @@ public class GameManager : NetworkBehaviour
         yield return null;
 
         bestiary.gameObject.SetActive(false);
-        
+
+        cardManager.ResetMonsterSprite();
+
         if (IsPainter)
             SetPainter();
         else
@@ -297,13 +297,12 @@ public class GameManager : NetworkBehaviour
     #endregion
     #region Compare
     
-    [ServerRpc (RequireOwnership = false)]
-    private void CompareIngredientServerRpc(FixedString32Bytes guess, ServerRpcParams serverRpcParams)
+    private void CompareIngredient(string guess, ulong guesserId)
     {
         string stringGuess = guess.ToString();
-        GuessHistory.Instance.AddGuess(serverRpcParams.Receive.SenderClientId, stringGuess);
+        GuessHistory.Instance.AddGuess(guesserId, stringGuess);
 
-        Log($"Current Ingredient: {answerCardSO.Ingredients[currentIngredientIndex]}, Guess: {stringGuess}, Guesser Id: {serverRpcParams.Receive.SenderClientId}");
+        Log($"Current Ingredient: {answerCardSO.Ingredients[currentIngredientIndex]}, Guess: {stringGuess}, Guesser Id: {guesserId}");
 
         if (answerCardSO.Ingredients[currentIngredientIndex] == stringGuess.ToLower())
             CorrectIngredientGuess();
@@ -311,42 +310,9 @@ public class GameManager : NetworkBehaviour
             WrongIngredientGuess();
     }
 
-    [ServerRpc (RequireOwnership = false)]
-    private void CompareMonsterServerRpc(string guess, ServerRpcParams serverRpcParams)
+    private void CompareMonster(string guess, ulong guesserId)
     {
-        //CardSO guessCardSO = cardManager.GetCardSOByIndex(guess);
-        Log($"Current Monster: {answerCardSO.Id}, Guess: {guess}, Guesser Id: {serverRpcParams.Receive.SenderClientId}");
-
-        if (answerCardSO.Id == guess)
-            WinRound();
-        else
-            LoseRound();
-    }
-
-    public void CompareIngredient(string guess)
-    {
-        //FixedString32Bytes fixedStringGuess = new(guess);
-        //ServerRpcParams serverRpcParams = new();
-
-        //CompareIngredientServerRpc(fixedStringGuess, serverRpcParams);
-
-        string stringGuess = guess.ToString();
-        GuessHistory.Instance.AddGuess(0, stringGuess);
-
-        Log($"Current Ingredient: {answerCardSO.Ingredients[currentIngredientIndex]}, Guess: {stringGuess}, Guesser Id: {-1}");
-
-        if (answerCardSO.Ingredients[currentIngredientIndex] == stringGuess.ToLower())
-            CorrectIngredientGuess();
-        else
-            WrongIngredientGuess();
-    }
-
-    public void CompareMonster(string guess)
-    {
-        //CompareMonsterServerRpc(guess, new());
-
-        //CardSO guessCardSO = cardManager.GetCardSOByIndex(guess);
-        Log($"Current Monster: {answerCardSO.Id}, Guess: {guess}, Guesser Id: {-1}");
+        Log($"Current Monster: {answerCardSO.Id}, Guess: {guess}, Guesser Id: {guesserId}");
 
         if (answerCardSO.Id == guess)
             WinRound();
@@ -355,12 +321,12 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc (RequireOwnership = false)]
-    public void CompareAnswerServerRpc(string guess)
+    public void CompareAnswerServerRpc(string guess, ServerRpcParams serverRpcParams)
     {
         if (isMonsterStage)
-            CompareMonster(guess);
+            CompareMonster(guess, serverRpcParams.Receive.SenderClientId);
         else
-            CompareIngredient(guess);
+            CompareIngredient(guess, serverRpcParams.Receive.SenderClientId);
     }
 
     #endregion
@@ -370,6 +336,7 @@ public class GameManager : NetworkBehaviour
     {
         Log("CardSO Updated");
         currentIngredientIndex = 0;
+        hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
         Timer.Instance.StartServerRpc();
     }
 
@@ -382,6 +349,7 @@ public class GameManager : NetworkBehaviour
 
     private void SetAnswerCardSO(ushort cardSOIndex)
     {
+        answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
         SetCardSOServerRpc(cardSOIndex);
     }
 

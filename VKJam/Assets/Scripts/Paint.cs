@@ -200,11 +200,9 @@ public class Paint : NetworkBehaviour
                     if (IsServer)
                         rayPos.Value = newRayPos;
                     else
-                    {
                         SendRayPosServerRpc(newRayPos.x, newRayPos.y, isConnectedToLast);
-                        
-                        isConnectedToLast = true;
-                    }
+                    
+                    isConnectedToLast = true;
                 }
             }
         }
@@ -276,21 +274,6 @@ public class Paint : NetworkBehaviour
             currentPoint.y = (short)Mathf.Lerp(prevPoint.y, newPoint.y, t);
 
             DrawCircle(currentPoint.x, currentPoint.y);
-/* Main
-            currentPoint.x = (int)Mathf.Lerp(prevPoint.x, newPoint.x, t);
-            currentPoint.y = (int)Mathf.Lerp(prevPoint.y, newPoint.y, t);
-            switch (_brushMode)
-            {
-                case BrushMode.Draw:
-                    //Debug.Log(BrushMode.Erase.ToString() + " : " + _drawColor);
-                    DrawCircle(currentPoint.x, currentPoint.y, _drawColor);
-                    break;
-                case BrushMode.Erase:
-                    //Debug.Log(BrushMode.Erase.ToString() + " : " + _baseColor);
-                    DrawCircle(currentPoint.x, currentPoint.y, _baseColor);
-                    break;
-            }
-*/
         }
     }
 
