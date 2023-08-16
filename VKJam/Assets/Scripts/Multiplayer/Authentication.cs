@@ -5,7 +5,7 @@ using UnityEngine;
 public class Authentication : MonoBehaviour
 {
     public static string PlayerName { get; private set; }
-
+    
     public static async void Authenticate()
     {
         if (PlayerName == string.Empty || PlayerName == null)
@@ -21,8 +21,6 @@ public class Authentication : MonoBehaviour
         AuthenticationService.Instance.SignedIn += () =>
         {
             Debug.Log("Signed In. Your Id is " + AuthenticationService.Instance.PlayerId);
-
-            //LobbyManager.Instance.ListLobbies();
         };
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();

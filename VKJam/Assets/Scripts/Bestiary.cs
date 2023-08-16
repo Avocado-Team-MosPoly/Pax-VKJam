@@ -7,17 +7,6 @@ using UnityEngine.Events;
 
 public class Bestiary : MonoBehaviour
 {
-    [Serializable]
-    private struct Monster
-    {
-        public string name;
-        public Sprite sprite;
-        public Sprite type;
-        public string description;
-        public string ingredientstext;
-        public string[] ingredients;
-    }
-
     [SerializeField] private List<CardSO> monsters;
     [SerializeField] private Button[] pageButtons;
 
@@ -32,7 +21,6 @@ public class Bestiary : MonoBehaviour
 
     [SerializeField] private Button previousMonsterButton;
     [SerializeField] private Button nextMonsterButton;
-
 
     [SerializeField] private GameObject catalougeCanvas;
     [SerializeField] private GameObject templateCanvas;
@@ -49,7 +37,7 @@ public class Bestiary : MonoBehaviour
         for (int i = 0; i < pageButtons.Length; i++)
         {
             int pageIndex = i;
-            //pageButtons[i].onClick.AddListener(() => GoToPage(pageIndex));
+            pageButtons[i].onClick.AddListener(() => GoToPage(pageIndex));
         }
 
         Initialize();
@@ -95,7 +83,7 @@ public class Bestiary : MonoBehaviour
 
     private void UpdateUIMonster()
     {
-        imageHolder.sprite = monsters[currentMonster].MonsterSprite;
+        imageHolder.sprite = monsters[currentMonster].MonsterInBestiarySprite;
         typeHolder.sprite = (monsters[currentMonster].Difficulty == CardDifficulty.Dangerous ? dangerousIcon : murderousIcon);
         nameHolder.text = monsters[currentMonster].Id;
         descriptionHolder.text = monsters[currentMonster].Description;

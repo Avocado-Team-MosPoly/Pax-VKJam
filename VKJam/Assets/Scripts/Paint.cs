@@ -79,7 +79,6 @@ public class Paint : NetworkBehaviour
         Erase
     }
 
-
     [SerializeField] private TextureSettings textureSettings = new TextureSettings
     {
         size = 512,
@@ -101,7 +100,6 @@ public class Paint : NetworkBehaviour
     private bool isPainter;
 
     private NetworkVariable<Vector2Short> rayPos = new NetworkVariable<Vector2Short>(new Vector2Short(), NetworkVariableReadPermission.Everyone);
-    private Vector2Short localRayPos;
     private DrawingParams drawingParams;
 
     private bool isDraw = false;
@@ -114,10 +112,15 @@ public class Paint : NetworkBehaviour
 
     private void Awake()
     {
-        clearCanvasButton?.onClick.AddListener(() => Fill(baseColor));
-        saveAsPNGButton?.onClick.AddListener(SavePaintingAsPng);
-        switchBrushButton?.onClick.AddListener(SwitchBrush);
-        brushSizeSlider?.onValueChanged.AddListener(ChangeSize);
+        InitControlUI();
+    }
+
+    private void InitControlUI()
+    {
+        clearCanvasButton?.onClick.AddListener( () => Fill(baseColor) );
+        saveAsPNGButton?.onClick.AddListener( SavePaintingAsPng );
+        switchBrushButton?.onClick.AddListener( SwitchBrush );
+        brushSizeSlider?.onValueChanged.AddListener( ChangeSize );
     }
 
     public override void OnNetworkSpawn()
@@ -142,8 +145,6 @@ public class Paint : NetworkBehaviour
         drawingParams.isConnectedToLast = isConnectedToLast;
 
         DrawCircleClientRpc(drawingParams);
-
-        isConnectedToLast = true;
     }
 
     private void CreateTexture()
@@ -164,14 +165,14 @@ public class Paint : NetworkBehaviour
 
     private void Update()
     {
+        if (!isPainter)
+            return;
+
         Draw();
     }
 
     private void Draw()
     {
-        if (!isPainter)
-            return;
-
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             isDraw = true;
@@ -199,11 +200,9 @@ public class Paint : NetworkBehaviour
                     if (IsServer)
                         rayPos.Value = newRayPos;
                     else
-                    {
                         SendRayPosServerRpc(newRayPos.x, newRayPos.y, isConnectedToLast);
-                        
-                        isConnectedToLast = true;
-                    }
+                    
+                    isConnectedToLast = true;
                 }
             }
         }
@@ -275,21 +274,6 @@ public class Paint : NetworkBehaviour
             currentPoint.y = (short)Mathf.Lerp(prevPoint.y, newPoint.y, t);
 
             DrawCircle(currentPoint.x, currentPoint.y);
-/* Main
-            currentPoint.x = (int)Mathf.Lerp(prevPoint.x, newPoint.x, t);
-            currentPoint.y = (int)Mathf.Lerp(prevPoint.y, newPoint.y, t);
-            switch (_brushMode)
-            {
-                case BrushMode.Draw:
-                    //Debug.Log(BrushMode.Erase.ToString() + " : " + _drawColor);
-                    DrawCircle(currentPoint.x, currentPoint.y, _drawColor);
-                    break;
-                case BrushMode.Erase:
-                    //Debug.Log(BrushMode.Erase.ToString() + " : " + _baseColor);
-                    DrawCircle(currentPoint.x, currentPoint.y, _baseColor);
-                    break;
-            }
-*/
         }
     }
 
@@ -354,6 +338,7 @@ public class Paint : NetworkBehaviour
     private void ClearCanvasServerRpc()
     {
         ClearCanvasClientRpc();
+        isConnectedToLast = false;
     }
 
     [ClientRpc]

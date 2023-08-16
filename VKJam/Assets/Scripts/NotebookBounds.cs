@@ -8,19 +8,6 @@ public class NotebookBounds : MonoBehaviour
     [SerializeField] private Texture defaultTexture;
     [SerializeField] private Texture holdHintTexture;
 
-    [HideInInspector] public UnityEvent OnEnabled = new();
-    [HideInInspector] public UnityEvent OnDisabled = new();
-
-    private void OnEnable()
-    {
-        OnEnabled.Invoke();
-    }
-
-    private void OnDisable()
-    {
-        OnDisabled.Invoke();
-    }
-
     public void SetDefaultTexture()
     {
         boundsMaterial.mainTexture = defaultTexture;
