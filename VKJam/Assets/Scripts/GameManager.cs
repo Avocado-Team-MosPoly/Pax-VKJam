@@ -163,7 +163,7 @@ public class GameManager : NetworkBehaviour
     {
         Log("Lose Ingredient");
 
-        NextIngredient();
+        //NextIngredient();
     }
 
     private void CorrectIngredientGuess()
@@ -172,7 +172,7 @@ public class GameManager : NetworkBehaviour
 
         OnCorrectIngredientGuess?.Invoke();
         AddTokenClientRpc();
-        NextIngredient();
+        //NextIngredient();
     }
 
     private void WrongIngredientGuess()
@@ -185,6 +185,7 @@ public class GameManager : NetworkBehaviour
     {
         currentIngredientIndex++;
         Timer.Instance.StartServerRpc();
+        paint.ClearCanvas();
         
         if (currentIngredientIndex >= answerCardSO.Ingredients.Length)
         {
@@ -365,6 +366,7 @@ public class GameManager : NetworkBehaviour
         else
         {
             LoseIngredient();
+            NextIngredient();
         }
     }
 

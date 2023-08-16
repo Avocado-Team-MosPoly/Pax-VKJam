@@ -11,7 +11,7 @@ public class Timer : NetworkBehaviour
     public NetworkVariable<int> NetworkTime = new(0);
     private bool isTimePaused = false;
     [SerializeField] private Hint showRecepiesUI;
-    [SerializeField] private int roundTime = 30;
+    [SerializeField] private readonly int roundTime = 90;
 
     private Coroutine serverClockCoroutine = null;
 
@@ -23,7 +23,7 @@ public class Timer : NetworkBehaviour
     {
         Instance = this;
 
-        ShowTime.text = ToTimeFormat(30);
+        ShowTime.text = ToTimeFormat(roundTime);
     }
 
     public override void OnNetworkSpawn()
