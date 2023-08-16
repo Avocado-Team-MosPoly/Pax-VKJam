@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine.Events;
+using Unity.Collections.LowLevel.Unsafe;
 
 public class Timer : NetworkBehaviour
 {
@@ -21,6 +22,8 @@ public class Timer : NetworkBehaviour
     private void Awake()
     {
         Instance = this;
+
+        ShowTime.text = ToTimeFormat(30);
     }
 
     public override void OnNetworkSpawn()
@@ -31,16 +34,11 @@ public class Timer : NetworkBehaviour
             NetworkTime.Value = roundTime;
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.O))
-            StartServerRpc();
-    }
-
-    /// <summary> Call only on server </summary>
     [ServerRpc]
     public void StartServerRpc()
     {
+        ResetToDefault();
+        
         if (serverClockCoroutine == null)
             serverClockCoroutine = StartCoroutine(Clock());
 
@@ -48,13 +46,12 @@ public class Timer : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void StopServerRpc()
+    public void StopServerRpc()
     {
-        SetPause(true);
-
         StopCoroutine(serverClockCoroutine);
-        Debug.Log(serverClockCoroutine);
         serverClockCoroutine = null;
+
+        ResetToDefault();
     }
 
     private IEnumerator Clock()
@@ -80,45 +77,39 @@ public class Timer : NetworkBehaviour
         }
     }
 
-    // call on Server
     public void ResetToDefault()
     {
-        //transform.parent.gameObject.SetActive(false);
-        
-        //if (GameManager.Instance.IsPainter)
-            //showRecepiesUI.HideHint();
-
         NetworkTime.Value = roundTime;
-        isTimePaused = true;
-
-        //TimerEndClientRpc();
     }
 
-    private void OnTaimerChange(int preveusValue, int newValue)
+    private void OnTaimerChange(int previousValue, int newValue)
     {
-        
-        if (NetworkTime.Value / 60 <= 10)
+        if (newValue < 0)
+            return;
+
+        ShowTime.text = ToTimeFormat(newValue);
+    }
+
+    private string ToTimeFormat(int seconds)
+    {
+        string timeString = string.Empty;
+
+        if (seconds / 60 <= 10)
         {
-            if (NetworkTime.Value % 60 < 10)
-                ShowTime.text = "0" + NetworkTime.Value / 60 + ":" + "0" + NetworkTime.Value % 60;
+            if (seconds % 60 < 10)
+                timeString = "0" + seconds / 60 + ":" + "0" + seconds % 60;
             else
-                ShowTime.text = "0" + NetworkTime.Value / 60 + ":" + NetworkTime.Value % 60;
+                timeString = "0" + seconds / 60 + ":" + seconds % 60;
         }
         else
         {
-            if (NetworkTime.Value % 60 < 10)
-                ShowTime.text = NetworkTime.Value / 60 + ":" + "0" + NetworkTime.Value % 60;
+            if (seconds % 60 < 10)
+                timeString = seconds / 60 + ":" + "0" + seconds % 60;
             else
-                ShowTime.text = NetworkTime.Value / 60 + ":" + NetworkTime.Value % 60;
+                timeString = seconds / 60 + ":" + seconds % 60;
         }
-    }
 
-    [ClientRpc]
-    public void TimerEndClientRpc()
-    {
-
-        //showRecepiesUI.SetRecepi("����� ���������");
-
+        return timeString;
     }
 
     public void SetPause(bool state)

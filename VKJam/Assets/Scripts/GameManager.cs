@@ -23,7 +23,7 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private CardManager cardManager;
 
-    [SerializeField] private Hint hintManager;
+    [SerializeField] private HintManager hintManager;
 
     private int tokensPerCard = 2;
 
@@ -66,9 +66,6 @@ public class GameManager : NetworkBehaviour
             cardManager = FindObjectOfType<CardManager>();
 
         cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
-        Timer.Instance.OnExpired.AddListener(OnTimeExpired);
-        
-        //bestiary.OnChooseMonster.AddListener(CompareMonster);
     }
 
     public override void OnNetworkSpawn()
@@ -80,7 +77,7 @@ public class GameManager : NetworkBehaviour
         if (IsServer)
         {
             painterId.Value = (ushort)NetworkManager.ConnectedClientsIds[0];
-            //OnIngredientsEnd.AddListener(ActivateGuessMonsterStageClientRpc);
+            Timer.Instance.OnExpired.AddListener(OnTimeExpired);
         }
         else
         {
@@ -127,11 +124,10 @@ public class GameManager : NetworkBehaviour
     // не работает [ NetworkManager.Singleton.LocalClientId ], с IEnumerator почему-то работает
     private IEnumerator ChooseRole()
     {
-        yield return new WaitForSeconds(0f);
+        yield return null;
 
         bestiary.gameObject.SetActive(false);
-        hintManager.gameObject.SetActive(false);
-
+        
         if (IsPainter)
             SetPainter();
         else
@@ -188,13 +184,20 @@ public class GameManager : NetworkBehaviour
     private void NextIngredient()
     {
         currentIngredientIndex++;
-
+        Timer.Instance.StartServerRpc();
+        
         if (currentIngredientIndex >= answerCardSO.Ingredients.Length)
         {
             ActivateGuessMonsterStageClientRpc();
             isMonsterStage = true;
+
             OnIngredientsEnd?.Invoke();
+            hintManager.SetHintData("");
+
+            return;
         }
+
+        hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
     }
 
     [ClientRpc]
@@ -223,7 +226,7 @@ public class GameManager : NetworkBehaviour
 
         isMonsterStage = false;
         ChangeRoles();
-        Timer.Instance.ResetToDefault();
+        Timer.Instance.StopServerRpc();
     }
 
     private void WinRound()
@@ -322,18 +325,37 @@ public class GameManager : NetworkBehaviour
 
     public void CompareIngredient(string guess)
     {
-        FixedString32Bytes fixedStringGuess = new(guess);
-        ServerRpcParams serverRpcParams = new();
+        //FixedString32Bytes fixedStringGuess = new(guess);
+        //ServerRpcParams serverRpcParams = new();
 
-        CompareIngredientServerRpc(fixedStringGuess, serverRpcParams);
+        //CompareIngredientServerRpc(fixedStringGuess, serverRpcParams);
+
+        string stringGuess = guess.ToString();
+        GuessHistory.Instance.AddGuess(0, stringGuess);
+
+        Log($"Current Ingredient: {answerCardSO.Ingredients[currentIngredientIndex]}, Guess: {stringGuess}, Guesser Id: {-1}");
+
+        if (answerCardSO.Ingredients[currentIngredientIndex] == stringGuess.ToLower())
+            CorrectIngredientGuess();
+        else
+            WrongIngredientGuess();
     }
 
     public void CompareMonster(string guess)
     {
-        CompareMonsterServerRpc(guess, new());
+        //CompareMonsterServerRpc(guess, new());
+
+        //CardSO guessCardSO = cardManager.GetCardSOByIndex(guess);
+        Log($"Current Monster: {answerCardSO.Id}, Guess: {guess}, Guesser Id: {-1}");
+
+        if (answerCardSO.Id == guess)
+            WinRound();
+        else
+            LoseRound();
     }
 
-    public void CompareAnswer(string guess)
+    [ServerRpc (RequireOwnership = false)]
+    public void CompareAnswerServerRpc(string guess)
     {
         if (isMonsterStage)
             CompareMonster(guess);
@@ -379,15 +401,14 @@ public class GameManager : NetworkBehaviour
 
     public void InteractRecipeHand()
     {
-
-        if (hintManager.gameObject.activeInHierarchy)
+        if (hintManager.IsActiveHandHint)
         {
-            //hintManager.DeactivateHint();
+            hintManager.DisableHandHint();
         }
-        else
+        else if (paint.enabled == false)
         {
-            //hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
-            //hintManager.ActivateHint();
+            hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
+            hintManager.EnableHandHint();
         }
     }
 
