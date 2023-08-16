@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
-public class Product : MonoBehaviour
+public class Product : RandomItem
 {
     [SerializeField] private Image Picture;
     public TextMeshProUGUI Name;
