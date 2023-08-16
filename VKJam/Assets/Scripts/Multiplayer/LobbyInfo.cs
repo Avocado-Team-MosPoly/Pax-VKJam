@@ -50,9 +50,9 @@ public class LobbyInfo : MonoBehaviour
         
         lobbyName.text = lobby.Name;
         playersCount.text = lobby.Players.Count + "/" + lobby.MaxPlayers;
-        gameMode.text = lobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value;
+        gameMode.text = lobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True" ? "Командный" : "Соревновательный";
         roundCount.text = lobby.Data[LobbyManager.Instance.KEY_ROUND_AMOUNT].Value;
-        recipeMode.text = lobby.Data[LobbyManager.Instance.KEY_RECIPE_MODE].Value;
+        recipeMode.text = lobby.Data[LobbyManager.Instance.KEY_RECIPE_MODE].Value == "0" ? "Стандартные" : "Случайные";
         
         gameObject.SetActive(true);
     }

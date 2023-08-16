@@ -6,7 +6,7 @@ public class PlayerInfoUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI playerName;
 
-    public void UpdatePlayer(Player player)
+    public void SetPlayer(Player player)
     {
         playerName.text = player.Data["Player Name"].Value;
     }

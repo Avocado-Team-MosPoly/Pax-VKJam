@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +8,8 @@ public class LobbyManagerUI : MonoBehaviour
 {
     [SerializeField] private Button createLobbyButton;
     [SerializeField] private Button[] listLobbiesButtons;
+    [SerializeField] private Button listPlayersButton;
+    [SerializeField] private Button startGameButton;
 
     [SerializeField] private RectTransform lobbyListContainer;
     [SerializeField] private GameObject lobbyInfoTemplate;
@@ -16,13 +19,24 @@ public class LobbyManagerUI : MonoBehaviour
 
     private void Start()
     {
-        createLobbyButton.onClick.AddListener(LobbyManager.Instance.CreateLobby);
-        
+        createLobbyButton?.onClick.AddListener(LobbyManager.Instance.CreateLobby);
+
+        if (startGameButton)
+        { 
+            if (NetworkManager.Singleton.IsHost)
+                startGameButton.onClick.AddListener(() => SceneLoader.ServerLoad("Map"));
+            else
+                startGameButton.gameObject.SetActive(false);
+        }
+
         foreach (var button in listLobbiesButtons)
             button.onClick.AddListener(LobbyManager.Instance.ListLobbies);
 
-        LobbyManager.Instance.OnLobbyListed.AddListener(UpdateLobbyList);
-        LobbyManager.Instance.OnPlayerListed.AddListener(UpdatePlayerList);
+        if (lobbyListContainer && lobbyInfoTemplate)
+            LobbyManager.Instance.OnLobbyListed.AddListener(UpdateLobbyList);
+        
+        if (playerListContainer && playerInfoPrefab)
+            LobbyManager.Instance.OnPlayerListed.AddListener(UpdatePlayerList);
     }
 
     private void UpdateLobbyList(List<Lobby> lobbyList)
@@ -51,7 +65,7 @@ public class LobbyManagerUI : MonoBehaviour
             playerInfoInstance.SetActive(true);
 
             PlayerInfoUI playerInfoUI = playerInfoInstance.GetComponent<PlayerInfoUI>();
-            playerInfoUI.UpdatePlayer(player);
+            playerInfoUI.SetPlayer(player);
         }
     }
 }

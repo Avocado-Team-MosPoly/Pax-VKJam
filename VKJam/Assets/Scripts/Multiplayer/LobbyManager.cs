@@ -39,6 +39,7 @@ public class LobbyManager : MonoBehaviour
             Destroy(this);
         }
 
+        NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => ListPlayers();
         Authentication.Authenticate();
     }
 
