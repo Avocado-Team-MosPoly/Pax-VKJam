@@ -18,7 +18,6 @@ public class LobbyDataInput : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("Awake");
         Instance = this;
 
         maxPlayers_ButtonSet.OnClick.AddListener(ChangeMaxPlayers);
@@ -48,7 +47,7 @@ public class LobbyDataInput : MonoBehaviour
 
     public void ChangeRoundAmount(int value)
     {
-        RoundAmount = value;
+        RoundAmount = 2 + value * 2;
     }
 
     public void ChangeRecipeMode(RecipeMode value)
