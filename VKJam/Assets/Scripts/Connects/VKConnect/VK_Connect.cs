@@ -64,6 +64,6 @@ public class VK_Connect : MonoBehaviour
         if (urlImage != null) urlImage.ChangeImage(UserData.UserIMG_URL);
         if(Php_Connect.PHPisOnline) StartCoroutine(Php_Connect.Request_Auth(User_ID));
 
-        Authentication.ChangePlayerName(User_ID.ToString());
+        Authentication.ChangeProfile(User_ID.ToString());
     }
 }

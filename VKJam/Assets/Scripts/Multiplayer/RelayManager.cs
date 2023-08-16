@@ -101,7 +101,7 @@ public class RelayManager : MonoBehaviour
             //    joinAllocation.ConnectionData,
             //    joinAllocation.HostConnectionData
             //);
-
+            NetworkManager.Singleton.OnClientStarted += () => Logger.Instance.Log("Client Started");
             NetworkManager.Singleton.StartClient();
 
             Log("You joined relay with code: " +  joinCode);
