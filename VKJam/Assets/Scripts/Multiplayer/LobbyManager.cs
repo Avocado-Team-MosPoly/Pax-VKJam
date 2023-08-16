@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 public class LobbyManager : MonoBehaviour
 {
     [SerializeField] private string playerName = "Lucifer";
-    [SerializeField] private string gameSceneName;
 
     [SerializeField] private string lobbyName = "Paradise";
     [SerializeField] private int maxPlayers = 4;
@@ -21,19 +20,8 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private Button listLobbiesButton;
     [SerializeField] private Button listPlayersButton;
 
-    [SerializeField] private Transform containerLobbyList;
+    [SerializeField] private Transform container;
     [SerializeField] private Transform lobbySingleTemplate;
-
-    [SerializeField] private Transform containerPlayerList;
-    [SerializeField] private Transform playerSingleTemplate;
-
-    [SerializeField] private Transform lobbyCreation;
-    [SerializeField] private Transform lobbyList;
-    [SerializeField] private Transform lobby;
-    [SerializeField] private Transform main;
-    [SerializeField] private Transform shop;
-    [SerializeField] private Transform startGameButton;
-    private List<Transform> canvases;
 
     private Lobby currentLobby;
 
@@ -53,12 +41,6 @@ public class LobbyManager : MonoBehaviour
 
     private void Awake()
     {
-        canvases.Add(lobbyCreation);
-        canvases.Add(lobbyList);
-        canvases.Add(lobby);
-        canvases.Add(main);
-        canvases.Add(shop);
-
         if (Instance == null)
         {
             Instance = this;
@@ -179,7 +161,6 @@ public class LobbyManager : MonoBehaviour
         {
             string playerId = AuthenticationService.Instance.PlayerId;
             await LobbyService.Instance.RemovePlayerAsync(currentLobby.Id, playerId);
-
         }
         catch (LobbyServiceException ex)
         {
@@ -210,7 +191,7 @@ public class LobbyManager : MonoBehaviour
 
     private void UpdateLobbyList(List<Lobby> lobbyList)
     {
-        foreach (Transform child in containerLobbyList)
+        foreach (Transform child in container)
         {
             if (child == lobbySingleTemplate) continue;
 
@@ -219,26 +200,10 @@ public class LobbyManager : MonoBehaviour
 
         foreach (Lobby lobby in lobbyList)
         {
-            Transform lobbySingleTransform = Instantiate(lobbySingleTemplate, containerLobbyList);
+            Transform lobbySingleTransform = Instantiate(lobbySingleTemplate, container);
             lobbySingleTransform.gameObject.SetActive(true);
             LobbyListSingleUi lobbyListSingleUI = lobbySingleTransform.GetComponent<LobbyListSingleUi>();
             lobbyListSingleUI.UpdateLobby(lobby);
-        }
-    }
-    private void UpdatePlayerList()
-    {
-        foreach (Transform child in lobbySingleTemplate)
-        {
-            if (child == playerSingleTemplate) continue;
-            Destroy(child.gameObject);
-        }
-
-        foreach (Player player in currentLobby.Players)
-        {
-            Transform playerSingleTransform = Instantiate(playerSingleTemplate, lobbySingleTemplate);
-            playerSingleTransform.gameObject.SetActive(true);
-            PlayerListSingleTemplate playerListSingleTemplate = playerSingleTransform.GetComponent<PlayerListSingleTemplate>();
-            playerListSingleTemplate.UpdatePlayer(player);
         }
     }
 
@@ -306,67 +271,5 @@ public class LobbyManager : MonoBehaviour
         };
 
         LobbyService.Instance.UpdateLobbyAsync(currentLobby.Id, updateLobbyOptions);
-    }
-
-
-
-    public void clickMain()
-    {
-        foreach (Transform canvas in canvases)
-        {
-            canvas.gameObject.SetActive(false);
-        }
-        if (currentLobby != null)
-            LeaveLobby();
-        main.gameObject.SetActive(true);
-    }
-
-    public void clickLobbeList()
-    {
-        foreach (Transform canvas in canvases)
-        {
-            canvas.gameObject.SetActive(false);
-        }
-        lobbyList.gameObject.SetActive(true);
-    }
-
-    public void clickCreateLobbe()
-    {
-        foreach (Transform canvas in canvases)
-        {
-            canvas.gameObject.SetActive(false);
-        }
-        lobbyCreation.gameObject.SetActive(true);        
-    }
-
-    public void clickGoToLobby()
-    {
-        foreach (Transform canvas in canvases)
-        {
-            canvas.gameObject.SetActive(false);
-        }
-       lobby.gameObject.SetActive(true);
-        if (IsHost)
-        {
-            startGameButton.gameObject.SetActive(true);
-        }
-        else
-        {
-            startGameButton.gameObject.SetActive(false);
-        }
-    }
-
-    public void clickShop()
-    {
-        foreach (Transform canvas in canvases)
-        {
-            canvas.gameObject.SetActive(false);
-        }
-        shop.gameObject.SetActive(true);       
-    }
-
-    public void clickStartGame()
-    {
-        SceneLoader.ServerLoad(gameSceneName);
     }
 }
