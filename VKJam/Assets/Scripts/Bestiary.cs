@@ -37,7 +37,7 @@ public class Bestiary : MonoBehaviour
         for (int i = 0; i < pageButtons.Length; i++)
         {
             int pageIndex = i;
-            //pageButtons[i].onClick.AddListener(() => GoToPage(pageIndex));
+            pageButtons[i].onClick.AddListener(() => GoToPage(pageIndex));
         }
 
         Initialize();
