@@ -10,7 +10,7 @@ public class URL_Image : MonoBehaviour
     void Awake()
     {
         Target = GetComponent<RawImage>();
-        StartCoroutine(DownloadImage());
+        //StartCoroutine(DownloadImage());
     }
     public void ChangeImage(string NewUrl)
     {

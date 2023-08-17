@@ -94,7 +94,7 @@ public class Paint : NetworkBehaviour
     [SerializeField] private Collider _collider;
     [SerializeField] private Color drawColor;
     [SerializeField] private BrushMode brushMode = BrushMode.Draw;
-    [SerializeField] private int brushSize = 16;
+    [SerializeField] private int brushSize = 12;
     private int halfBrushSize;
     private bool isConnectedToLast;
     private bool isPainter;
@@ -145,6 +145,8 @@ public class Paint : NetworkBehaviour
         drawingParams.isConnectedToLast = isConnectedToLast;
 
         DrawCircleClientRpc(drawingParams);
+
+        isConnectedToLast = true;
     }
 
     private void CreateTexture()
@@ -180,7 +182,11 @@ public class Paint : NetworkBehaviour
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            isConnectedToLast = false;
+                SendIsConnectedToLastServerRpc(false);
+            //if (IsHost)
+            //else
+            //    isConnectedToLast = false;
+
             isDraw = false;
         }
 
@@ -195,24 +201,27 @@ public class Paint : NetworkBehaviour
 
                 Vector2Short newRayPos = new Vector2Short(rayX, rayY);
 
-                if (Vector2Short.Distance(rayPos.Value, newRayPos) >= halfBrushSize)
+                if (Vector2Short.Distance(rayPos.Value, newRayPos) > halfBrushSize)
                 {
                     if (IsServer)
                         rayPos.Value = newRayPos;
                     else
-                        SendRayPosServerRpc(newRayPos.x, newRayPos.y, isConnectedToLast);
-                    
-                    isConnectedToLast = true;
+                        SendRayPosServerRpc(newRayPos.x, newRayPos.y);
                 }
             }
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void SendRayPosServerRpc(short x, short y, bool isConnectedToLast)
+    private void SendRayPosServerRpc(short x, short y)
     {
         rayPos.Value = new Vector2Short(x, y);
-        this.isConnectedToLast = isConnectedToLast;
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    private void SendIsConnectedToLastServerRpc(bool value)
+    {
+        isConnectedToLast = value;
     }
 
     private void Fill(Color color)

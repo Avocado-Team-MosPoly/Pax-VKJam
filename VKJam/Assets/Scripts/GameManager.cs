@@ -193,12 +193,14 @@ public class GameManager : NetworkBehaviour
             isMonsterStage = true;
 
             OnIngredientsEnd?.Invoke();
-            hintManager.SetHintData(answerCardSO.Id);
+            //hintManager.SetHintData(answerCardSO.Id);
+            SetHintDataClientRpc(-1);
 
             return;
         }
 
-        hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
+        //hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
+        SetHintDataClientRpc((sbyte)currentIngredientIndex);
     }
 
     [ClientRpc]
@@ -333,29 +335,42 @@ public class GameManager : NetworkBehaviour
     #endregion
     #region CardSO
 
-    private void OnCardSOUpdate()
-    {
-        Log("CardSO Updated");
-        currentIngredientIndex = 0;
-        hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
-        Timer.Instance.StartServerRpc();
-    }
-
     [ServerRpc (RequireOwnership = false)]
     private void SetCardSOServerRpc(ushort cardSOIndex)
     {
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
-        OnCardSOUpdate();
+        
+        currentIngredientIndex = 0;
+        SetHintDataClientRpc((sbyte)currentIngredientIndex);
+        
+        Timer.Instance.StartServerRpc();
+
+        Log("New answer CardSO: " + answerCardSO.Id);
     }
 
     private void SetAnswerCardSO(ushort cardSOIndex)
     {
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
-        hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
+        //hintManager.SetHintData(answerCardSO.Ingredients[0]);
         SetCardSOServerRpc(cardSOIndex);
     }
 
     #endregion
+
+    [ClientRpc]
+    private void SetHintDataClientRpc(sbyte ingredientIndex)
+    {
+        if (!IsPainter)
+            return;
+
+        if (ingredientIndex < 0)
+            hintManager.SetHintData(answerCardSO.Id);
+        else
+        {
+            currentIngredientIndex = ingredientIndex;
+            hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
+        } 
+    }
 
     private void OnTimeExpired()
     {
@@ -378,7 +393,7 @@ public class GameManager : NetworkBehaviour
         }
         else if (paint.enabled == false)
         {
-            hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
+            //hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
             hintManager.EnableHandHint();
         }
     }
