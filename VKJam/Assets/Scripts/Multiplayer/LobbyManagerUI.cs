@@ -10,6 +10,7 @@ public class LobbyManagerUI : MonoBehaviour
     [SerializeField] private Button[] listLobbiesButtons;
     [SerializeField] private Button listPlayersButton;
     [SerializeField] private Button startGameButton;
+    [SerializeField] private Button leaveLobbyButton;
 
     [SerializeField] private RectTransform lobbyListContainer;
     [SerializeField] private GameObject lobbyInfoTemplate;
@@ -20,6 +21,7 @@ public class LobbyManagerUI : MonoBehaviour
     private void Start()
     {
         createLobbyButton?.onClick.AddListener(LobbyManager.Instance.CreateLobby);
+        leaveLobbyButton?.onClick.AddListener(LeaveLobby);
 
         if (startGameButton)
         { 
@@ -67,5 +69,10 @@ public class LobbyManagerUI : MonoBehaviour
             PlayerInfoUI playerInfoUI = playerInfoInstance.GetComponent<PlayerInfoUI>();
             playerInfoUI.SetPlayer(player);
         }
+    }
+
+    private void LeaveLobby()
+    {
+        LobbyManager.Instance.LeaveLobby();
     }
 }

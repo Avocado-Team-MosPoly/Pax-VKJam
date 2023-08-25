@@ -24,7 +24,7 @@ public class LobbyManager : MonoBehaviour
 
     [SerializeField] private string  lobbySceneName= "Lobby";
 
-    Dictionary<ulong, string> playerUlongIdList;
+    Dictionary<ulong, string> playerUlongIdList = new();
 
     public bool IsHost => NetworkManager.Singleton.IsHost;
     public string LobbyName => CurrentLobby != null ? CurrentLobby.Name : "Íå èçâåñòíî";
@@ -41,11 +41,12 @@ public class LobbyManager : MonoBehaviour
         else
         {
             Destroy(this);
+            return;
         }
         NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => KickPlayer(clientId);
         NetworkManager.Singleton.OnClientStopped += (bool someBool) => LeaveLobby();
         NetworkManager.Singleton.OnServerStopped += (bool isHostLeave) => OnServerEnded();
-        NetworkManager.Singleton.OnServerStarted += () => StopHeartBeatPing();
+        NetworkManager.Singleton.OnServerStarted += StopHeartBeatPing;
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => ListPlayers();
         if (IsHost)
         {
@@ -234,7 +235,7 @@ public class LobbyManager : MonoBehaviour
 
             string playerId = AuthenticationService.Instance.PlayerId;
             
-            await LobbyService.Instance.RemovePlayerAsync(currentLobby.Id, playerId);
+            await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, playerId);
 
             LeaveRelay();
         }
@@ -270,15 +271,15 @@ public class LobbyManager : MonoBehaviour
     public void LeaveRelay()
     {
         NetworkManager.Singleton.Shutdown();
-        SceneLoader.Load(lobbySceneName);
+        SceneLoader.Load("Menu");
     }
     public void KickPlayer(ulong client)
     {
         if (IsHost)
         {
-            LobbyService.Instance.RemovePlayerAsync(currentLobby.Id, playerUlongIdList[client]);
+            LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, playerUlongIdList[client]);
             NetworkManager.Singleton.DisconnectClient(client);
-            SceneLoader.Load(lobbySceneName);
+            SceneLoader.Load("Menu");
             LeaveLobby();
         }
     }

@@ -106,9 +106,13 @@ public class Paint : NetworkBehaviour
     
     [Header("Ïðîñòî çàêèíóòü ññûëêó(åñëè íå íóæåí ôóíêöèîíàë, íå ñòàâèòü)")]
     [SerializeField] private Slider brushSizeSlider;
-    [SerializeField] private Button switchBrushButton;
+    [SerializeField] private Button switchBrushModeButton;
     [SerializeField] private Button saveAsPNGButton;
     [SerializeField] private Button clearCanvasButton;
+
+    [SerializeField] private Sprite chalkSprite;
+    [SerializeField] private Sprite eraserSprite;
+    private Image switchBrushModeButtonImage;
 
     private void Awake()
     {
@@ -119,7 +123,10 @@ public class Paint : NetworkBehaviour
     {
         clearCanvasButton?.onClick.AddListener( () => Fill(baseColor) );
         saveAsPNGButton?.onClick.AddListener( SavePaintingAsPng );
-        switchBrushButton?.onClick.AddListener( SwitchBrush );
+        
+        switchBrushModeButton?.onClick.AddListener( SwitchBrushMode );
+        switchBrushModeButtonImage = switchBrushModeButton?.GetComponent<Image>();
+        
         brushSizeSlider?.onValueChanged.AddListener( ChangeSize );
     }
 
@@ -301,7 +308,7 @@ public class Paint : NetworkBehaviour
         Debug.Log("Path: " + dirPath);
     }
 
-    public void SwitchBrush()
+    public void SwitchBrushMode()
     {
         if (brushMode == BrushMode.Draw)
             SwitchBrushServerRpc(BrushMode.Erase);
@@ -319,6 +326,11 @@ public class Paint : NetworkBehaviour
     private void SwitchBrushClientRpc(BrushMode brushMode)
     {
         this.brushMode = brushMode;
+
+        if (brushMode == BrushMode.Draw)
+            switchBrushModeButtonImage.sprite = eraserSprite;
+        else
+            switchBrushModeButtonImage.sprite = chalkSprite;
     }
 
     public void ChangeSize(float brushSize)

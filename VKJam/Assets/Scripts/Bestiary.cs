@@ -27,7 +27,15 @@ public class Bestiary : MonoBehaviour
 
     private int currentMonster;
 
-    public UnityEvent<CardSO> OnChooseMonster;
+    private void OnEnable()
+    {
+        GameManager.Instance.SetGuesserUIActive(false);
+    }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.SetGuesserUIActive(true);
+    }
 
     private void Awake()
     {
@@ -47,12 +55,6 @@ public class Bestiary : MonoBehaviour
     {
         currentMonster = 0;
         UpdateUIMonster();
-    }
-
-    public void ChooseMonster(CardSO cardSO)
-    {
-        Debug.Log("[Bestiary] ChooseMonster");
-        OnChooseMonster.Invoke(cardSO);
     }
 
     private void PreviousMoster()
