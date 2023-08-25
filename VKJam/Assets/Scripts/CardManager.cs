@@ -7,7 +7,7 @@ public class CardManager : MonoBehaviour
 {
     [SerializeField] private Card cardPrefab;
 
-    [SerializeField, Tooltip("Monster sprite on scene")] private SpriteRenderer monsterSpriteRenderer;
+    //[SerializeField, Tooltip("Monster sprite on scene")] private SpriteRenderer monsterSpriteRenderer;
 
     [SerializeField] private CardDifficulty[] spawnedCardDifficulties =
     {
@@ -29,7 +29,7 @@ public class CardManager : MonoBehaviour
     private List<Transform> occupiedSpawnTransforms = new();
     private List<Card> cardInstances = new();
 
-    public UnityEvent<ushort> OnChooseCard = new();
+    public UnityEvent<byte> OnChooseCard = new();
 
     private void OnValidate()
     {
@@ -134,7 +134,7 @@ public class CardManager : MonoBehaviour
         return cardSOs[cardIndex];
     }
 
-    public ushort GetCardSOIndex(CardSO cardSO) => (ushort)Array.IndexOf(cardSOArray, cardSO);
+    public byte GetCardSOIndex(CardSO cardSO) => (byte)Array.IndexOf(cardSOArray, cardSO);
     public CardSO GetCardSOByIndex(ushort cardSOIndex) => cardSOArray[cardSOIndex];
 
     #endregion
@@ -166,7 +166,7 @@ public class CardManager : MonoBehaviour
         {
             choosedCardSO = card.CardSO;
             usedCardSO.Add(card.CardSO);
-            monsterSpriteRenderer.sprite = card.CardSO.MonsterSprite;
+            //monsterSpriteRenderer.sprite = card.CardSO.MonsterTexture;
 
             OnChooseCard.Invoke(GetCardSOIndex(card.CardSO));
             Log(card.CardSO.Id);
@@ -179,7 +179,7 @@ public class CardManager : MonoBehaviour
 
     public void ResetMonsterSprite()
     {
-        monsterSpriteRenderer.sprite = null;
+        //monsterSpriteRenderer.sprite = null;
     }
 
     #endregion
