@@ -4,6 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 // –еализован командный режим на 2 и более игроков
 /// <summary> ¬се методы должны выполн€тьс€ только на сервере, с клиента можно вызывать [ CompareIngredient(string guess), CompareMonster(string guess) ] </summary>
@@ -12,22 +13,26 @@ public class GameManager : NetworkBehaviour
     #region Fields
 
     [SerializeField] private Paint paint;
-    [SerializeField] private Bestiary bestiary;
     [SerializeField] private GameObject mainCards;
+    [SerializeField] private Bestiary bestiary;
     [SerializeField] private GameObject guesserUI;
+    [SerializeField] private GameObject tokensSummary;
+    private GameObject nextRoundButton;
 
     [SerializeField] private GameObject[] painterGameObjects;
     [SerializeField] private GameObject[] guesserGameObjects;
 
     [SerializeField] private CardManager cardManager;
+    [SerializeField] private GameObject sceneMonster;
+    private Material sceneMonsterMaterial;
 
     [SerializeField] private HintManager hintManager;
 
-    private int tokensPerCard = 2;
+    private int tokensPerRound = 2;
 
     // temp
-    private int roundCount = 4;
     private int currentRound = 1;
+    private int roundAmount = 4;
     // temp
 
     private CardSO answerCardSO;
@@ -62,6 +67,16 @@ public class GameManager : NetworkBehaviour
         
         if (cardManager == null)
             cardManager = FindObjectOfType<CardManager>();
+
+        sceneMonsterMaterial = sceneMonster.GetComponent<Renderer>().material;
+        nextRoundButton = tokensSummary.GetComponentInChildren<Button>().gameObject;
+        
+        if (IsHost)
+            nextRoundButton.SetActive(true);
+        else
+            nextRoundButton.SetActive(false);
+
+        roundAmount = int.Parse( LobbyManager.Instance.CurrentLobby.Data[LobbyManager.Instance.KEY_ROUND_AMOUNT].Value );
 
         cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
     }
@@ -125,8 +140,10 @@ public class GameManager : NetworkBehaviour
         yield return null;
 
         bestiary.gameObject.SetActive(false);
+        sceneMonster.gameObject.SetActive(false);
+        tokensSummary.SetActive(false);
 
-        cardManager.ResetMonsterSprite();
+        //cardManager.ResetMonsterSprite();
 
         if (IsPainter)
             SetPainter();
@@ -171,7 +188,7 @@ public class GameManager : NetworkBehaviour
         Log("Correct guess");
 
         OnCorrectIngredientGuess?.Invoke();
-        AddTokenClientRpc();
+        //AddTokenClientRpc();
         //NextIngredient();
     }
 
@@ -217,19 +234,27 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    private void NextRound()
+    private void EndRound()
     {
         currentRound++;
 
-        if (currentRound > roundCount)
+        if (currentRound > roundAmount)
         {
             EndGame();
             return;
         }
 
         isMonsterStage = false;
-        ChangeRoles();
+
+        tokensSummary.SetActive(true);
+        sceneMonster.gameObject.SetActive(true);
+
         Timer.Instance.StopServerRpc();
+    }
+
+    public void NextRound()
+    {
+        ChangeRoles();
     }
 
     private void WinRound()
@@ -243,8 +268,9 @@ public class GameManager : NetworkBehaviour
          */
 
         Log("WinRound");
-        
-        NextRound();
+        AddTokenClientRpc();
+
+        EndRound();
         OnWinRound?.Invoke();
         // сообщить игрокам о смен раунда
     }
@@ -252,7 +278,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void AddTokenClientRpc()
     {
-        TokensManager.AddTokens(tokensPerCard);
+        TokensManager.AddTokens(tokensPerRound);
     }
 
     private void LoseRound()
@@ -265,7 +291,7 @@ public class GameManager : NetworkBehaviour
          */
 
         Log("LoseRound");
-        NextRound();
+        EndRound();
         OnLoseRound?.Invoke();
         // сообщить игрокам о смене раунда
     }
@@ -335,22 +361,34 @@ public class GameManager : NetworkBehaviour
     #endregion
     #region CardSO
 
+    [ClientRpc]
+    private void SetMonsterTextureClientRpc(byte cardIndex)
+    {
+        CardSO cardSO = cardManager.GetCardSOByIndex(cardIndex);
+
+        sceneMonsterMaterial.mainTexture = cardSO.MonsterTexture;
+        sceneMonster.gameObject.SetActive(true);
+    }
+
     [ServerRpc (RequireOwnership = false)]
-    private void SetCardSOServerRpc(ushort cardSOIndex)
+    private void SetCardSOServerRpc(byte cardSOIndex)
     {
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
         
         currentIngredientIndex = 0;
         SetHintDataClientRpc((sbyte)currentIngredientIndex);
-        
+        SetMonsterTextureClientRpc(cardSOIndex);
+
         Timer.Instance.StartServerRpc();
 
         Log("New answer CardSO: " + answerCardSO.Id);
     }
 
-    private void SetAnswerCardSO(ushort cardSOIndex)
+    private void SetAnswerCardSO(byte cardSOIndex)
     {
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
+        sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
+        
         //hintManager.SetHintData(answerCardSO.Ingredients[0]);
         SetCardSOServerRpc(cardSOIndex);
     }
@@ -369,8 +407,10 @@ public class GameManager : NetworkBehaviour
         {
             currentIngredientIndex = ingredientIndex;
             hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
-        } 
+        }
     }
+
+
 
     private void OnTimeExpired()
     {

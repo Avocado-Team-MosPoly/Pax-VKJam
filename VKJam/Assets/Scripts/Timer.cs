@@ -3,7 +3,6 @@ using UnityEngine;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine.Events;
-using Unity.Collections.LowLevel.Unsafe;
 
 public class Timer : NetworkBehaviour
 {
@@ -11,7 +10,7 @@ public class Timer : NetworkBehaviour
     public NetworkVariable<int> NetworkTime = new(0);
     private bool isTimePaused = false;
     [SerializeField] private Hint showRecepiesUI;
-    [SerializeField] private readonly int roundTime = 45;
+    [SerializeField] private readonly int roundTime = 5;
 
     private Coroutine serverClockCoroutine = null;
 
@@ -37,11 +36,11 @@ public class Timer : NetworkBehaviour
 
     private IEnumerator Clock()
     {
-        Debug.Log("Clock on client " + NetworkManager.Singleton.LocalClientId);
+        //Debug.Log("Clock on client " + NetworkManager.Singleton.LocalClientId);
 
         while (IsServer)
         {
-            Debug.Log("Clock on server " + NetworkManager.Singleton.LocalClientId);
+            //Debug.Log("Clock on server " + NetworkManager.Singleton.LocalClientId);
 
             if (isTimePaused)
             {
@@ -80,21 +79,6 @@ public class Timer : NetworkBehaviour
         int onlySeconds = seconds % 60;
         
         timeString += onlySeconds < 10 ? "0" + onlySeconds : onlySeconds;
-        
-        //if (seconds / 60 <= 10)
-        //{
-        //    if (seconds % 60 < 10)
-        //        timeString = "0" + seconds / 60 + ":" + "0" + seconds % 60;
-        //    else
-        //        timeString = "0" + seconds / 60 + ":" + seconds % 60;
-        //}
-        //else
-        //{
-        //    if (seconds % 60 < 10)
-        //        timeString = seconds / 60 + ":" + "0" + seconds % 60;
-        //    else
-        //        timeString = seconds / 60 + ":" + seconds % 60;
-        //}
 
         return timeString;
     }
