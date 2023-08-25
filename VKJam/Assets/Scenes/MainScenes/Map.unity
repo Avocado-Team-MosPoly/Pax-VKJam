@@ -3159,7 +3159,7 @@ Transform:
   m_GameObject: {fileID: 320006151}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.43452328, z: -0, w: 0.90066063}
-  m_LocalPosition: {x: 0.881, y: 0.28, z: 0.285}
+  m_LocalPosition: {x: 0.881, y: 0.28, z: 0.5}
   m_LocalScale: {x: 1.8292443, y: 1.8292443, z: 1.8292443}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -3194,18 +3194,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1705242762}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
       - m_Target: {fileID: 1008611748}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -3229,6 +3217,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1705242767}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: GB_Open
+          m_BoolArgument: 0
         m_CallState: 2
   ActivityInteractable: 1
 --- !u!65 &320006155
@@ -20878,6 +20878,7 @@ GameObject:
   - component: {fileID: 1705242766}
   - component: {fileID: 1705242765}
   - component: {fileID: 1705242764}
+  - component: {fileID: 1705242767}
   m_Layer: 5
   m_Name: GuideBook UI
   m_TagString: Untagged
@@ -20969,6 +20970,27 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: -1
   m_TargetDisplay: 0
+--- !u!95 &1705242767
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705242762}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 90b872765a9bc7b45af3fdd69c61b2b2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1707604359
 GameObject:
   m_ObjectHideFlags: 0
@@ -22226,7 +22248,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 1705242762}
+      - m_Target: {fileID: 1008611748}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
@@ -22236,6 +22258,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1705242767}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: GB_Close
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1752994020
@@ -29407,7 +29441,7 @@ Transform:
   m_GameObject: {fileID: 7444453829734977428}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.43452328, z: -0, w: 0.90066063}
-  m_LocalPosition: {x: 1.0114, y: -0.044739604, z: 0.364739}
+  m_LocalPosition: {x: 1.0114, y: -0.044739604, z: 0.5}
   m_LocalScale: {x: 0.83256364, y: 0.83256346, z: 0.83256364}
   m_ConstrainProportionsScale: 0
   m_Children: []
