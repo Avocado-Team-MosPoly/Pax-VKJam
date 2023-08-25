@@ -113,6 +113,11 @@ public class RelayManager : MonoBehaviour
         }
     }
 
+    public void ReturnToLobby()
+    {
+        SceneLoader.ServerLoad(lobbySceneName);
+    }
+
     private bool Log(object message)
     {
         if (Logger.Instance)

@@ -42,7 +42,10 @@ public class VK_Connect : MonoBehaviour
     }
     public void RequestUserData() // вызываем из событий unity
     {
+#if UNITY_EDITOR
+#else
         UnityPluginRequestUserData();
+#endif
     }
 
     public void ResponseOk(string message)

@@ -2,7 +2,6 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.Events;
-using Unity.Netcode;
 
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class TokensManager : MonoBehaviour
@@ -86,17 +85,15 @@ public class TokensManager : MonoBehaviour
 
     private void Summary()
     {
-        tokensWinned.text = "+ " + TokensCountWinnedCurrentRound;
-        tokensLoosed.text = "- " + TokensCountLoosedCurrentRound;
-        
+        tokensWinned.text = TokensCountWinnedCurrentRound.ToString();
+        tokensLoosed.text = TokensCountLoosedCurrentRound.ToString();
+
         TokensCount += TokensCountWinnedCurrentRound - TokensCountLoosedCurrentRound;
 
-        tokensTotal.text = "X " + TokensCount;
-    }
+        tokensTotal.text = Mathf.Abs(TokensCount).ToString();
 
-    public static void ShowUI()
-    {
-
+        TokensCountWinnedCurrentRound = 0;
+        TokensCountLoosedCurrentRound = 0;
     }
 
     public static void AccrueTokens()
@@ -110,16 +107,10 @@ public class TokensManager : MonoBehaviour
     public static void AddTokens(int value)
     {
         TokensCountWinnedCurrentRound += value;
-
-        //instance.tokensCountTMPro.text = "X" + TokensCount.ToString();
-        //instance.SpawnTokens(value);
     }
 
     public static void RemoveTokens(int value)
     {
-        TokensCountLoosedCurrentRound -= value;
-
-        //instance.tokensCount.text = "X" + TokensCountCurrentRound.ToString();
-        //instance.DeleteExcessTokens();
+        TokensCountLoosedCurrentRound += value;
     }
 }

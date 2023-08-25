@@ -9,6 +9,12 @@ public class Authentication : MonoBehaviour
     
     public static async void Authenticate()
     {
+        if (UnityServices.State == ServicesInitializationState.Initialized)
+        {
+            Debug.LogWarning("Вторая аутентификация");
+            return;
+        }
+
         string number = Random.Range(100, 1000).ToString();
 
         if (PlayerName == string.Empty || PlayerName == null)
