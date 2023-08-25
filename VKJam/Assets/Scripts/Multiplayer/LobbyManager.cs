@@ -17,14 +17,17 @@ public class LobbyManager : MonoBehaviour
     [HideInInspector] public UnityEvent<List<Lobby>> OnLobbyListed = new();
     [HideInInspector] public UnityEvent<List<Player>> OnPlayerListed = new();
 
-    private string KEY_START_GAME = "0";
-    private string KEY_RELAY_CODE = "RelayCode";
+    public readonly string KEY_RELAY_CODE = "RelayCode";
     public readonly string KEY_TEAM_MODE = "IsTeamMode";
     public readonly string KEY_ROUND_AMOUNT = "RoundAmount";
     public readonly string KEY_RECIPE_MODE = "RecipeMode";
 
+    [SerializeField] private string  lobbySceneName= "Lobby";
+
+    Dictionary<ulong, string> playerUlongIdList;
+
     public bool IsHost => NetworkManager.Singleton.IsHost;
-    public string LobbyName => CurrentLobby != null ? CurrentLobby.Name : "Íå èçâåñòíî";
+    public string LobbyName => CurrentLobby != null ? CurrentLobby.Name : "ÃÃ¥ Ã¨Ã§Ã¢Ã¥Ã±Ã²Ã­Ã®";
 
     public static LobbyManager Instance { get; private set; }
 
@@ -39,8 +42,15 @@ public class LobbyManager : MonoBehaviour
         {
             Destroy(this);
         }
-
+        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => KickPlayer(clientId);
+        NetworkManager.Singleton.OnClientStopped += (bool someBool) => LeaveLobby();
+        NetworkManager.Singleton.OnServerStopped += (bool isHostLeave) => OnServerEnded();
+        NetworkManager.Singleton.OnServerStarted += () => StopHeartBeatPing();
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => ListPlayers();
+        if (IsHost)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => playerUlongIdList.Add(clientId, AuthenticationService.Instance.PlayerId);
+        }
         Authentication.Authenticate();
     }
 
@@ -86,7 +96,6 @@ public class LobbyManager : MonoBehaviour
         {
             lobbyData = new Dictionary<string, DataObject>
             {
-                { KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") },
             };
 
             lobbyData[KEY_TEAM_MODE] = new(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.GameMode.ToString());
@@ -97,7 +106,6 @@ public class LobbyManager : MonoBehaviour
         {
             lobbyData = new Dictionary<string, DataObject>
             {
-                { KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") },
                 { KEY_RELAY_CODE, new DataObject(DataObject.VisibilityOptions.Member, "0") },
                 { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Public, "1") },
                 { KEY_ROUND_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, "4") },
@@ -208,7 +216,7 @@ public class LobbyManager : MonoBehaviour
             CurrentLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id, joinLobbyByIdOptions);
 
             Logger.Instance.Log("You joined lobby " + lobby.Name);
-
+            
             RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value);
         }
         catch (LobbyServiceException ex)
@@ -225,7 +233,10 @@ public class LobbyManager : MonoBehaviour
                 return;
 
             string playerId = AuthenticationService.Instance.PlayerId;
-            await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, playerId);
+            
+            await LobbyService.Instance.RemovePlayerAsync(currentLobby.Id, playerId);
+
+            LeaveRelay();
         }
         catch (LobbyServiceException ex)
         {
@@ -254,5 +265,26 @@ public class LobbyManager : MonoBehaviour
             CurrentLobby = currentLobbyUpdate;
 
         OnPlayerListed?.Invoke(CurrentLobby.Players);
+    }
+
+    public void LeaveRelay()
+    {
+        NetworkManager.Singleton.Shutdown();
+        SceneLoader.Load(lobbySceneName);
+    }
+    public void KickPlayer(ulong client)
+    {
+        if (IsHost)
+        {
+            LobbyService.Instance.RemovePlayerAsync(currentLobby.Id, playerUlongIdList[client]);
+            NetworkManager.Singleton.DisconnectClient(client);
+            SceneLoader.Load(lobbySceneName);
+            LeaveLobby();
+        }
+    }
+    public void OnServerEnded()
+    {
+        playerUlongIdList.Clear();
+        LeaveLobby();
     }
 }
