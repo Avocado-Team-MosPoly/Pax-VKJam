@@ -14,6 +14,8 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private Paint paint;
     [SerializeField] private GuesserPainting guesserPaint;
+    [SerializeField] private Interactable painterBook;
+    [SerializeField] private GameObject GuessMonsterStageUI;
 
     [SerializeField] private GameObject mainCards;
     [SerializeField] private Bestiary bestiary;
@@ -142,6 +144,7 @@ public class GameManager : NetworkBehaviour
         guesserPaint.gameObject.SetActive(true);
         cardManager.enabled = false;
         paint.SetActive(false);
+        painterBook.SetInteractable(true);
     }
 
     // не работает [ NetworkManager.Singleton.LocalClientId ], с IEnumerator почему-то работает
@@ -152,7 +155,7 @@ public class GameManager : NetworkBehaviour
         bestiary.gameObject.SetActive(false);
         tokensSummary.SetActive(false);
         sceneMonster.SetActive(false);
-
+        
         //cardManager.ResetMonsterSprite();
 
         if (IsPainter)
@@ -238,7 +241,9 @@ public class GameManager : NetworkBehaviour
     {
         if (IsPainter)
         {
-            paint.SetActive(false);
+            GuessMonsterStageUI.SetActive(true);
+            painterBook.SetInteractable(false);
+            //paint.SetActive(false);
             // выводить догадки с разделением по игрокам
         }
         else
@@ -255,6 +260,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void EndRoundClientRpc(byte cardIndex)
     {
+        GuessMonsterStageUI.SetActive(false);
         TokensManager.AccrueTokens();
         
         tokensSummary.SetActive(true);
