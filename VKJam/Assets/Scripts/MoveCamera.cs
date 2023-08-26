@@ -6,7 +6,7 @@ public class MoveCamera : MonoBehaviour
     [SerializeField] private float XminClamp, XmaxClamp;
     public bool ActiveMove = true;
 
-    public float mouseSensitivity = 100f;
+    public float mouseSensitivity = 20f;
 
     private Vector2 Rotation;
 
