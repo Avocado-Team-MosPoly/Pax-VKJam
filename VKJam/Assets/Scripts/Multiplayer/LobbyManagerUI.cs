@@ -11,6 +11,7 @@ public class LobbyManagerUI : MonoBehaviour
     [SerializeField] private Button listPlayersButton;
     [SerializeField] private Button startGameButton;
     [SerializeField] private Button leaveLobbyButton;
+    [SerializeField] private Button updatePlayerList;
 
     [SerializeField] private RectTransform lobbyListContainer;
     [SerializeField] private GameObject lobbyInfoTemplate;
@@ -22,6 +23,7 @@ public class LobbyManagerUI : MonoBehaviour
     {
         createLobbyButton?.onClick.AddListener(LobbyManager.Instance.CreateLobby);
         leaveLobbyButton?.onClick.AddListener(LeaveLobby);
+        updatePlayerList.onClick.AddListener(LobbyManager.Instance.ListPlayers);
 
         if (startGameButton)
         { 
@@ -63,6 +65,7 @@ public class LobbyManagerUI : MonoBehaviour
 
         foreach (Player player in players)
         {
+            Debug.Log(player.Id);
             GameObject playerInfoInstance = Instantiate(playerInfoPrefab, playerListContainer);
             playerInfoInstance.SetActive(true);
 
