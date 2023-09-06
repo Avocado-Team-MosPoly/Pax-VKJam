@@ -16,9 +16,9 @@ public class LockButton : MonoBehaviour
 
     public void FrozeButton()
     {
-        +
         StartCoroutine(DisableButtonForSeconds(timeToLock));       
     }
+
     private IEnumerator DisableButtonForSeconds(float seconds)
     {
         //btn.interactable = false;
