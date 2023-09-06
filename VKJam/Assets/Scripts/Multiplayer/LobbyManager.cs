@@ -30,7 +30,7 @@ public class LobbyManager : MonoBehaviour
     public string LobbyName => CurrentLobby != null ? CurrentLobby.Name : "Íå èçâåñòíî";
 
     public static LobbyManager Instance { get; private set; }
-
+    
     private void Awake()
     {
         if (Instance == null)
