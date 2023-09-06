@@ -1897,7 +1897,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Close
+  m_text: "\u0412\u044B\u0439\u0442\u0438"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
   m_sharedMaterial: {fileID: 3727686744989863773, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
@@ -2470,6 +2470,18 @@ MonoBehaviour:
       - m_Target: {fileID: 2107600571}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 251685216}
+        m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
+        m_MethodName: set_interactable
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4218,6 +4230,7 @@ GameObject:
   - component: {fileID: 557364528}
   - component: {fileID: 557364527}
   - component: {fileID: 557364526}
+  - component: {fileID: 557364529}
   m_Layer: 5
   m_Name: Create
   m_TagString: Untagged
@@ -4327,6 +4340,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 557364524}
   m_CullTransparentMesh: 1
+--- !u!114 &557364529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557364524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d2ca0c1a3ad4d045bdee4a07823c566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeToLock: 2
 --- !u!1 &570021815
 GameObject:
   m_ObjectHideFlags: 0
@@ -7721,7 +7747,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Update List
+  m_text: "\u041E\u0431\u043D\u043E\u0432\u0438\u0442\u044C \u0441\u043F\u0438\u0441\u043E\u043A"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
   m_sharedMaterial: {fileID: 3727686744989863773, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
@@ -8466,6 +8492,7 @@ MonoBehaviour:
   - {fileID: 251685216}
   listPlayersButton: {fileID: 0}
   startGameButton: {fileID: 0}
+  leaveLobbyButton: {fileID: 0}
   lobbyListContainer: {fileID: 5396604277472523461}
   lobbyInfoTemplate: {fileID: 4318898951855825074, guid: 40f4870fa542e8d419d6a121926e0699, type: 3}
   playerListContainer: {fileID: 0}
@@ -11183,6 +11210,7 @@ GameObject:
   - component: {fileID: 1419413546}
   - component: {fileID: 1419413545}
   - component: {fileID: 1419413547}
+  - component: {fileID: 1419413548}
   m_Layer: 5
   m_Name: Update Lobby List Button
   m_TagString: Untagged
@@ -11292,6 +11320,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1419413548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419413543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d2ca0c1a3ad4d045bdee4a07823c566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeToLock: 1
 --- !u!1 &1421612427
 GameObject:
   m_ObjectHideFlags: 0
@@ -18143,7 +18184,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Connect
+  m_text: "\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0438\u0442\u044C\u0441\u044F"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
   m_sharedMaterial: {fileID: 3727686744989863773, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
@@ -18209,7 +18250,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &5396604276185345032
@@ -18224,6 +18265,7 @@ GameObject:
   - component: {fileID: 5396604276185345044}
   - component: {fileID: 5396604276185345045}
   - component: {fileID: 5396604276185345034}
+  - component: {fileID: 5396604276185345046}
   m_Layer: 5
   m_Name: Connect Button
   m_TagString: Untagged
@@ -18333,6 +18375,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5396604276185345046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5396604276185345032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d2ca0c1a3ad4d045bdee4a07823c566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeToLock: 2
 --- !u!224 &5396604276302117504
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19070,7 +19125,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Close
+  m_text: "\u0417\u0430\u043A\u0440\u044B\u0442\u044C"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
   m_sharedMaterial: {fileID: 3727686744989863773, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
@@ -19136,7 +19191,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &5396604277210034832
