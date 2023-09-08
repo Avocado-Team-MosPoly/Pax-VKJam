@@ -29,12 +29,12 @@ public class Bestiary : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.Instance.SetGuesserUIActive(false);
+        GameManager_OLD.Instance.SetGuesserUIActive(false);
     }
 
     private void OnDisable()
     {
-        GameManager.Instance.SetGuesserUIActive(true);
+        GameManager_OLD.Instance.SetGuesserUIActive(true);
     }
 
     private void Awake()

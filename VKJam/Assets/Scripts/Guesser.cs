@@ -26,7 +26,7 @@ public class Guesser : MonoBehaviour
         if (guess == string.Empty)
             return;
 
-        GameManager.Instance.CompareAnswerServerRpc(guess, new ServerRpcParams());
+        GameManager_OLD.Instance.CompareAnswerServerRpc(guess, new ServerRpcParams());
 
         guessInputField.text = string.Empty;
     }

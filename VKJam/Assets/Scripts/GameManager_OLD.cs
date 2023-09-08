@@ -8,14 +8,14 @@ using UnityEngine.UI;
 
 // Реализован командный режим на 2 и более игроков
 /// <summary> Все методы должны выполняться только на сервере, с клиента можно вызывать [ CompareIngredient(string guess), CompareMonster(string guess) ] </summary>
-public class GameManager : NetworkBehaviour
+public class GameManager_OLD : NetworkBehaviour
 {
     #region Fields
 
     [SerializeField] private Paint paint;
     [SerializeField] private GuesserPainting guesserPaint;
     [SerializeField] private Interactable painterBook;
-    [SerializeField] private GameObject GuessMonsterStageUI;
+    [SerializeField] private GameObject guessMonsterStageUI;
 
     [SerializeField] private GameObject mainCards;
     [SerializeField] private Bestiary bestiary;
@@ -30,7 +30,7 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private CardManager cardManager;
     [SerializeField] private GameObject sceneMonster;
-    [SerializeField] private Texture hiddenMoster;
+    [SerializeField] private Texture hiddenMonster;
 
     private Material sceneMonsterMaterial;
 
@@ -53,7 +53,7 @@ public class GameManager : NetworkBehaviour
     private List<ulong> lastPainterIds = new();
     public bool IsPainter => painterId.Value == NetworkManager.Singleton.LocalClientId;
 
-    public static GameManager Instance { get; private set; }
+    public static GameManager_OLD Instance { get; private set; }
 
     [HideInInspector] public UnityEvent OnCorrectIngredientGuess; // При верном предположении ингредиента
     [HideInInspector] public UnityEvent OnWrongIngredientGuess; // При неверном предположении ингредиента
@@ -241,7 +241,7 @@ public class GameManager : NetworkBehaviour
     {
         if (IsPainter)
         {
-            GuessMonsterStageUI.SetActive(true);
+            guessMonsterStageUI.SetActive(true);
             painterBook.SetInteractable(false);
             //paint.SetActive(false);
             // выводить догадки с разделением по игрокам
@@ -250,7 +250,7 @@ public class GameManager : NetworkBehaviour
         {
             guesserPaint.gameObject.SetActive(false);
             sceneMonster.SetActive(true);
-            sceneMonsterMaterial.mainTexture = hiddenMoster;
+            sceneMonsterMaterial.mainTexture = hiddenMonster;
 
             //bestiary.gameObject.SetActive(true);
             //guesserUI.SetActive(false);
@@ -260,7 +260,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void EndRoundClientRpc(byte cardIndex)
     {
-        GuessMonsterStageUI.SetActive(false);
+        guessMonsterStageUI.SetActive(false);
         TokensManager.AccrueTokens();
         
         tokensSummary.SetActive(true);
