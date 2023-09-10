@@ -1,17 +1,27 @@
+using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class RoundManager : MonoBehaviour
 {
-    private bool isMonsterGuessed;
+    [SerializeField] private int tokensPerRound = 5;
 
-    [HideInInspector] public UnityEvent OnRoundWon;
-    [HideInInspector] public UnityEvent OnRoundLosed;
+    private bool isMonsterGuessed;
+    private List<ulong> correctGuesserIds = new List<ulong>();
+
     [HideInInspector] public UnityEvent OnRoundEnded;
 
-    private void OnCorrectMonsterGuess()
+    private void OnCorrectMonsterGuess(byte clientId)
     {
         isMonsterGuessed = true;
+
+        if (!GameManager.Instance.IsTeamMode)
+        {
+            correctGuesserIds.Add(clientId);
+            if (!correctGuesserIds.Contains(GameManager.Instance.PainterId))
+                correctGuesserIds.Add(GameManager.Instance.PainterId);
+        }
     }
 
     private void WinRound()
@@ -19,7 +29,39 @@ public class RoundManager : MonoBehaviour
         Log("Win Round");
 
         isMonsterGuessed = false;
-        OnRoundWon?.Invoke();
+
+        int playersCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
+
+        if (GameManager.Instance.IsTeamMode)
+        {
+            if (GameManager.Instance.AnswerCardSO.Difficulty == CardDifficulty.Dangerous)
+                TokenManager.AddTokens(playersCount * playersCount * 2);
+            else
+                TokenManager.AddTokens(playersCount * playersCount * 3);
+        }
+        else
+        {
+            if (GameManager.Instance.AnswerCardSO.Difficulty == CardDifficulty.Dangerous)
+            {
+                foreach (byte clientId in correctGuesserIds)
+                {
+                    if (clientId != GameManager.Instance.PainterId)
+                        TokenManager.AddTokensToClient(5, clientId);
+                    else
+                        TokenManager.AddTokensToClient(5 * (playersCount - 1), clientId);
+                }
+            }
+            else
+            {
+                foreach (byte clientId in correctGuesserIds)
+                {
+                    if (clientId != GameManager.Instance.PainterId)
+                        TokenManager.AddTokensToClient(8, clientId);
+                    else
+                        TokenManager.AddTokensToClient(8 * (playersCount - 1), clientId);
+                }
+            }
+        }
     }
 
     private void LoseRound()
@@ -27,7 +69,12 @@ public class RoundManager : MonoBehaviour
         Log("Lose Round");
 
         isMonsterGuessed = false;
-        OnRoundLosed?.Invoke();
+        //if (GameManager.Instance.IsTeamGame)
+        //    TokenManager.RemoveTokens(2);
+        //else
+        //{
+
+        //}
     }
 
     public void OnTimeExpired()
@@ -36,6 +83,8 @@ public class RoundManager : MonoBehaviour
             WinRound();
         else
             LoseRound();
+
+        OnRoundEnded?.Invoke();
     }
 
     public void CompareMonster(string guess, ulong guesserId)
@@ -44,8 +93,8 @@ public class RoundManager : MonoBehaviour
 
         Log($"Current Monster: {currentMonster}, Guess: {guess}, Guesser Id: {guesserId}");
 
-        if (currentMonster == guess)
-            OnCorrectMonsterGuess();
+        if (currentMonster.ToLower() == guess.ToLower())
+            OnCorrectMonsterGuess((byte)guesserId);
     }
 
     private void Log(object message) => Debug.Log($"[{name}] " + message);

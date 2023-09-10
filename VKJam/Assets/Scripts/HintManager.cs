@@ -7,8 +7,6 @@ public class HintManager : MonoBehaviour
     
     private string hintText;
 
-    public bool IsActiveHandHint => handHint.gameObject.activeInHierarchy;
-
     public void SetHintData(string ingredientName)
     {
         hintText = ingredientName;
@@ -17,7 +15,7 @@ public class HintManager : MonoBehaviour
         handHint.SetData(hintText);
     }
 
-    public void EnableHandHint()
+    private void EnableHandHint()
     {
         handHint.gameObject.SetActive(true);
     }
@@ -25,5 +23,13 @@ public class HintManager : MonoBehaviour
     public void DisableHandHint()
     {
         handHint.gameObject.SetActive(false);
+    }
+
+    public void InteractRecipeHand()
+    {
+        if (handHint.gameObject.activeInHierarchy)
+            DisableHandHint();
+        else if (GameManager.Instance.Paint.enabled == false)
+            EnableHandHint();
     }
 }

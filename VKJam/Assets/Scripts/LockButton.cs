@@ -6,8 +6,9 @@ using UnityEngine.UI;
 
 public class LockButton : MonoBehaviour
 {
-    [SerializeField] private int timeToLock;
+    [SerializeField] private float timeToLock;
     private Button btn;
+
     private void Awake()
     {
         btn = GetComponent<Button>();
@@ -16,12 +17,12 @@ public class LockButton : MonoBehaviour
 
     public void FrozeButton()
     {
-        StartCoroutine(DisableButtonForSeconds(timeToLock));       
+        StartCoroutine(DisableButtonForSeconds(timeToLock));
     }
 
     private IEnumerator DisableButtonForSeconds(float seconds)
     {
-        //btn.interactable = false;
+        btn.interactable = false;
 
         yield return new WaitForSeconds(seconds);
 

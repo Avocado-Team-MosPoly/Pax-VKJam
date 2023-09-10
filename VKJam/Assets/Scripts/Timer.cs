@@ -23,7 +23,6 @@ public class Timer : NetworkBehaviour
         Instance = this;
 
         ShowTime.text = ToTimeFormat(roundTime);
-        Debug.Log("round Time: " + roundTime);
     }
 
     public override void OnNetworkSpawn()

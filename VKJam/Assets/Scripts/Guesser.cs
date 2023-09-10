@@ -5,6 +5,8 @@ using Unity.Netcode;
 
 public class Guesser : MonoBehaviour
 {
+    [SerializeField] private CompareSystem compareSystem;
+    
     [SerializeField] private TMP_InputField guessInputField;
     [SerializeField] private Button guessButton;
 
@@ -26,7 +28,7 @@ public class Guesser : MonoBehaviour
         if (guess == string.Empty)
             return;
 
-        GameManager_OLD.Instance.CompareAnswerServerRpc(guess, new ServerRpcParams());
+        compareSystem.CompareAnswerServerRpc(guess, new ServerRpcParams());
 
         guessInputField.text = string.Empty;
     }

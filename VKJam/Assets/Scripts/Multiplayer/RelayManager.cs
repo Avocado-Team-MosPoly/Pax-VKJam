@@ -63,15 +63,21 @@ public class RelayManager : MonoBehaviour
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
 #if UNITY_EDITOR
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData
-            (
-                allocation.RelayServer.IpV4,
-                (ushort)allocation.RelayServer.Port,
-                allocation.AllocationIdBytes,
-                allocation.Key,
-                allocation.ConnectionData
-            );
+            Debug.Log("EDITOR");
+            
+            //UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            //unityTransport.UseWebSockets = false;
+
+            //NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData
+            //(
+            //    allocation.RelayServer.IpV4,
+            //    (ushort)allocation.RelayServer.Port,
+            //    allocation.AllocationIdBytes,
+            //    allocation.Key,
+            //    allocation.ConnectionData
+            //);
 #else
+            Debug.Log("BUILD");
             RelayServerData relayServerData = new RelayServerData(allocation, "wss");
 
             UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
@@ -106,18 +112,24 @@ public class RelayManager : MonoBehaviour
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
 #if UNITY_EDITOR
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData
-            (
-                joinAllocation.RelayServer.IpV4,
-                (ushort)joinAllocation.RelayServer.Port,
-                joinAllocation.AllocationIdBytes,
-                joinAllocation.Key,
-                joinAllocation.ConnectionData,
-                joinAllocation.HostConnectionData
-            );
+            //Debug.Log("EDITOR");
+
+            //UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            //unityTransport.UseWebSockets = false;
+
+            //NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData
+            //(
+            //    joinAllocation.RelayServer.IpV4,
+            //    (ushort)joinAllocation.RelayServer.Port,
+            //    joinAllocation.AllocationIdBytes,
+            //    joinAllocation.Key,
+            //    joinAllocation.ConnectionData,
+            //    joinAllocation.HostConnectionData
+            //);
 #else
+            Debug.Log("BUILD");
             RelayServerData relayServerData = new RelayServerData(joinAllocation, "wss");
-            
+
             UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
             unityTransport.UseWebSockets = true;

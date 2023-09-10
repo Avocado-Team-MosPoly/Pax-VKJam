@@ -3,6 +3,7 @@ using System.IO;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class Paint : NetworkBehaviour
 {
@@ -109,7 +110,7 @@ public class Paint : NetworkBehaviour
     [SerializeField] private Button switchBrushModeButton;
     [SerializeField] private Button saveAsPNGButton;
     [SerializeField] private Button clearCanvasButton;
-
+    [HideInInspector] public UnityEvent OnNetworkSpawned;
     [SerializeField] private Sprite chalkSprite;
     [SerializeField] private Sprite eraserSprite;
     private Image switchBrushModeButtonImage;
@@ -132,6 +133,7 @@ public class Paint : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        Debug.Log("[Paint] Spawned");
         if (IsServer)
         {
             isPainter = true;
@@ -140,6 +142,8 @@ public class Paint : NetworkBehaviour
 
         CreateTexture();
         halfBrushSize = brushSize / 2;
+        this.enabled = false;
+        OnNetworkSpawned?.Invoke();
     }
 
     private void OnMousePositionValueChanged(Vector2Short previousValue, Vector2Short newValue)

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -11,7 +10,6 @@ public class RoleManager : NetworkBehaviour
 
     [HideInInspector] public UnityEvent OnPainterSetted;
     [HideInInspector] public UnityEvent OnGuesserSetted;
-    
     public ushort PainterId => painterId.Value;
 
     public override void OnNetworkSpawn()
@@ -24,7 +22,7 @@ public class RoleManager : NetworkBehaviour
         }
         else
         {
-            StartCoroutine(ChooseRole());
+            ChooseRole();
         }
     }
 
@@ -33,13 +31,13 @@ public class RoleManager : NetworkBehaviour
         Log("PainterId_OnValueChanged");
 
         lastPainterIds.Add(newValue);
-        StartCoroutine(ChooseRole());
+        ChooseRole();
     }
 
     // не работает [ NetworkManager.Singleton.LocalClientId ], с IEnumerator почему-то работает
-    private IEnumerator ChooseRole()
+    private void ChooseRole()
     {
-        yield return null;
+        //yield return null;
 
         if (GameManager.Instance.IsPainter)
             OnPainterSetted?.Invoke();
@@ -47,8 +45,21 @@ public class RoleManager : NetworkBehaviour
             OnGuesserSetted?.Invoke();
     }
 
-    private void ChangeRoles()
+    [ClientRpc]
+    private void ClearLastPaintersClientRpc()
     {
+        lastPainterIds.Clear();
+    }
+
+    private void Log(object message) => Debug.Log($"{name} {message}");
+
+    public void ChangeRoles()
+    {
+#if UNITY_EDITOR
+        GameManager.Instance.CardManager.enabled = false;
+        OnPainterSetted?.Invoke();
+#endif
+
         foreach (ushort clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             if (!lastPainterIds.Contains(clientId))
@@ -62,12 +73,4 @@ public class RoleManager : NetworkBehaviour
         ClearLastPaintersClientRpc();
         painterId.Value = (ushort)NetworkManager.Singleton.ConnectedClientsIds[0];
     }
-
-    [ClientRpc]
-    private void ClearLastPaintersClientRpc()
-    {
-        lastPainterIds.Clear();
-    }
-
-    private void Log(object message) => Debug.Log($"{name} {message}");
 }

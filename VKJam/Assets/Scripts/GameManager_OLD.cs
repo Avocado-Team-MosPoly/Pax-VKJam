@@ -261,7 +261,7 @@ public class GameManager_OLD : NetworkBehaviour
     private void EndRoundClientRpc(byte cardIndex)
     {
         guessMonsterStageUI.SetActive(false);
-        TokensManager.AccrueTokens();
+        TokenManager.AccrueTokens();
         
         tokensSummary.SetActive(true);
         
@@ -311,13 +311,13 @@ public class GameManager_OLD : NetworkBehaviour
     [ClientRpc]
     private void AddTokenClientRpc(int count)
     {
-        TokensManager.AddTokens(count);
+        TokenManager.AddTokens(count);
     }
 
     [ClientRpc]
     private void RemoveTokenClientRpc(int count)
     {
-        TokensManager.RemoveTokens(count);
+        TokenManager.RemoveTokens(count);
     }
 
     private void LoseRound()
@@ -463,18 +463,18 @@ public class GameManager_OLD : NetworkBehaviour
         }
     }
 
-    public void InteractRecipeHand()
-    {
-        if (hintManager.IsActiveHandHint)
-        {
-            hintManager.DisableHandHint();
-        }
-        else if (paint.enabled == false)
-        {
-            //hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
-            hintManager.EnableHandHint();
-        }
-    }
+    //public void InteractRecipeHand()
+    //{
+    //    if (hintManager.IsActiveHandHint)
+    //    {
+    //        hintManager.DisableHandHint();
+    //    }
+    //    else if (paint.enabled == false)
+    //    {
+    //        //hintManager.SetHintData(answerCardSO.Ingredients[currentIngredientIndex]);
+    //        hintManager.EnableHandHint();
+    //    }
+    //}
 
     public void ReturnToLobby()
     {

@@ -2,9 +2,10 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using Unity.Netcode;
 
-[RequireComponent(typeof(TextMeshProUGUI))]
-public class TokensManager : MonoBehaviour
+// needs rework
+public class TokenManager : NetworkBehaviour
 {
     public static int TokensCount { get; private set; }
     public static int TokensCountWinnedCurrentRound { get; private set; }
@@ -17,9 +18,9 @@ public class TokensManager : MonoBehaviour
     [SerializeField] private Transform tokenSpawnTransform;
     
     private static List<Token> tokensOnScene;
-    private static TokensManager instance;
+    private static TokenManager instance;
     
-    private TextMeshProUGUI tokensCount;
+    [SerializeField] private TextMeshProUGUI tokensCount;
     [SerializeField] private TextMeshProUGUI tokensWinned;
     [SerializeField] private TextMeshProUGUI tokensLoosed;
     [SerializeField] private TextMeshProUGUI tokensTotal;
@@ -39,7 +40,6 @@ public class TokensManager : MonoBehaviour
         }
 
         tokensOnScene = new List<Token>();
-        tokensCount = GetComponent<TextMeshProUGUI>();
     }
 
     private void SpawnTokens(int count)
@@ -55,7 +55,6 @@ public class TokensManager : MonoBehaviour
             for (int i = 0; i < count; i++)
             {
                 token = Instantiate(tokenPrefab, tokenSpawnTransform).GetComponent<Token>();
-                //token.Spawn();
                 tokensOnScene.Add(token);
             }
         }
@@ -89,28 +88,70 @@ public class TokensManager : MonoBehaviour
         tokensLoosed.text = TokensCountLoosedCurrentRound.ToString();
 
         TokensCount += TokensCountWinnedCurrentRound - TokensCountLoosedCurrentRound;
+        TokensCount = Mathf.Max(0, TokensCount);
 
-        tokensTotal.text = Mathf.Abs(TokensCount).ToString();
+        tokensTotal.text = "X" + TokensCount.ToString();
 
         TokensCountWinnedCurrentRound = 0;
         TokensCountLoosedCurrentRound = 0;
     }
 
-    public static void AccrueTokens()
+    [ClientRpc]
+    private void AccrueTokensClientRpc()
     {
         instance.Summary();
 
         instance.SpawnTokens(TokensCount - tokensOnScene.Count);
         instance.tokensCount.text = "X" + TokensCount.ToString();
     }
-    
-    public static void AddTokens(int value)
+
+    [ClientRpc]
+    private void AddTokensClientRpc(byte value)
     {
         TokensCountWinnedCurrentRound += value;
     }
 
-    public static void RemoveTokens(int value)
+    [ClientRpc]
+    private void RemoveTokensClientRpc(byte value)
     {
         TokensCountLoosedCurrentRound += value;
+    }
+
+    public static void AccrueTokens()
+    {
+        instance.AccrueTokensClientRpc();
+    }
+    
+    public static void AddTokens(int value)
+    {
+        instance.AddTokensClientRpc((byte)value);
+    }
+
+    public static void RemoveTokens(int value)
+    {
+        instance.RemoveTokensClientRpc((byte)value);
+    }
+
+
+    [ClientRpc]
+    private void AddTokensToClientRpc(byte value, byte clientId)
+    {
+        TokensCountWinnedCurrentRound += value;
+    }
+
+    [ClientRpc]
+    private void RemoveTokensToClientRpc(byte value, byte clientId)
+    {
+        TokensCountLoosedCurrentRound += value;
+    }
+    
+    public static void AddTokensToClient(int value, byte clientId)
+    {
+        instance.AddTokensToClientRpc((byte)value, clientId);
+    }
+
+    public static void RemoveTokensToClient(int value, byte clientId)
+    {
+        instance.RemoveTokensToClientRpc((byte)value, clientId);
     }
 }
