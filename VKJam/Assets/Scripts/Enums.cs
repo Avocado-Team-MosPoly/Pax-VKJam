@@ -15,3 +15,10 @@ public enum RecipeMode
     Standard,
     Random
 }
+
+public enum Stage
+{
+    Waiting,
+    IngredientGuess,
+    MonsterGuess
+}

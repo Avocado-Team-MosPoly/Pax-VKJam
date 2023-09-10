@@ -23,12 +23,12 @@ public class LobbyManagerUI : MonoBehaviour
     {
         createLobbyButton?.onClick.AddListener(LobbyManager.Instance.CreateLobby);
         leaveLobbyButton?.onClick.AddListener(LeaveLobby);
-        updatePlayerList.onClick.AddListener(LobbyManager.Instance.ListPlayers);
+        updatePlayerList?.onClick.AddListener(LobbyManager.Instance.ListPlayers);
 
         if (startGameButton)
-        { 
+        {
             if (NetworkManager.Singleton.IsHost)
-                startGameButton.onClick.AddListener(() => SceneLoader.ServerLoad("Map"));
+                startGameButton.onClick.AddListener(() => SceneLoader.ServerLoad("Map_New"));
             else
                 startGameButton.gameObject.SetActive(false);
         }
@@ -38,9 +38,12 @@ public class LobbyManagerUI : MonoBehaviour
 
         if (lobbyListContainer && lobbyInfoTemplate)
             LobbyManager.Instance.OnLobbyListed.AddListener(UpdateLobbyList);
-        
+
         if (playerListContainer && playerInfoPrefab)
+        {
             LobbyManager.Instance.OnPlayerListed.AddListener(UpdatePlayerList);
+            LobbyManager.Instance.ListPlayers();
+        }
     }
 
     private void UpdateLobbyList(List<Lobby> lobbyList)

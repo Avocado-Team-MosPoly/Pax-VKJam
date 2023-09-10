@@ -66,7 +66,7 @@ public class CardManager : MonoBehaviour
 
     private void SpawnCard(CardSO cardSO)
     {
-        if (cardSO == null || cardSO == default)
+        if (cardSO == null)
         {
             LogWarning("Incorrect Card Scriptable Object");
             return;

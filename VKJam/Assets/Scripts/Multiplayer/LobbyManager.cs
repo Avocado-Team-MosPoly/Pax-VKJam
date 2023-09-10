@@ -22,8 +22,6 @@ public class LobbyManager : MonoBehaviour
     public readonly string KEY_ROUND_AMOUNT = "RoundAmount";
     public readonly string KEY_RECIPE_MODE = "RecipeMode";
 
-    [SerializeField] private string  lobbySceneName= "Lobby";
-
     Dictionary<ulong, string> playerUlongIdList = new();
 
     public bool IsHost => NetworkManager.Singleton.IsHost;
@@ -160,7 +158,7 @@ public class LobbyManager : MonoBehaviour
 
             CurrentLobby = await LobbyService.Instance.CreateLobbyAsync
             (
-                LobbyDataInput.Instance.LobbyName,
+                LobbyDataInput.Instance.LobbyName == "" ? Authentication.PlayerName : LobbyDataInput.Instance.LobbyName,
                 LobbyDataInput.Instance.MaxPlayers,
                 createLobbyOptions
             );

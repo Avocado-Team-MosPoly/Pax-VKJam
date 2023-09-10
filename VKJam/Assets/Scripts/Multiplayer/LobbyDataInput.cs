@@ -8,7 +8,7 @@ public class LobbyDataInput : MonoBehaviour
     [SerializeField] private ButtonSet<RecipeMode> RecipeMode_ButtonSet;
 
     public string LobbyJoinCode { get; private set; }
-    public string LobbyName { get; private set; } = "Lobby";
+    public string LobbyName { get; private set; } = "";
     public int MaxPlayers { get; private set; } = 2;
     public bool GameMode { get; private set; } = true;
     public int RoundAmount { get; private set; } = 4;

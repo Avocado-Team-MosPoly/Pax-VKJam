@@ -13,7 +13,8 @@ public class MoveCamera : MonoBehaviour
     public void SetActivity(bool Target)
     {
         ActiveMove = Target;
-        if (Target == false) transform.localRotation = Quaternion.Euler((XminClamp + XmaxClamp) / 2, (YminClamp + YmaxClamp) / 2, 0f);
+        if (Target == false) //transform.localRotation = Quaternion.Euler((XminClamp + XmaxClamp) / 2, (YminClamp + YmaxClamp) / 2, 0f);
+            transform.eulerAngles = new Vector3(16.5f, 180f, 0f);
     }
 
     private void Update()
