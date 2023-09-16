@@ -10,7 +10,7 @@ public class Timer : NetworkBehaviour
     public NetworkVariable<int> NetworkTime = new(0);
     private bool isTimePaused = false;
     [SerializeField] private Hint showRecepiesUI;
-    [SerializeField] private readonly int roundTime = 5;
+    [SerializeField] private readonly int roundTime = 45;
 
     private Coroutine serverClockCoroutine = null;
 
