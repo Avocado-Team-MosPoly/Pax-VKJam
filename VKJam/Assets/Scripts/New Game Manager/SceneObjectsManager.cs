@@ -45,6 +45,7 @@ public class SceneObjectsManager : MonoBehaviour
 
         bestiary.gameObject.SetActive(false);
         tokensSummary.SetActive(false);
+        moveCamera.SetActivity(true);
 
         GameManager.Instance.SceneMonster.SetActive(false);
         GameManager.Instance.CardManager.ResetMonsterSprite();
@@ -69,7 +70,7 @@ public class SceneObjectsManager : MonoBehaviour
     {
         OnRoleSetted();
 
-        if (isFirstSetted)
+        if (isFirstSetted || NetworkManager.Singleton.IsServer)
         {
             foreach (GameObject obj in painterGameObjects)
                 obj.SetActive(false);

@@ -168,7 +168,10 @@ public class LobbyManager : MonoBehaviour
             Logger.Instance.Log($"Created lobby: {CurrentLobby.Name}, max players: {CurrentLobby.MaxPlayers}, lobby code: {CurrentLobby.LobbyCode}");
 
             string relayJoinCode = await RelayManager.Instance.CreateRelay();
-            SaveRelayCode(relayJoinCode);
+            if (relayJoinCode != "0")
+                SaveRelayCode(relayJoinCode);
+            else
+                Debug.Log($"[{name}] Invalid relay join code");
         }
         catch (LobbyServiceException ex)
         {
@@ -258,6 +261,7 @@ public class LobbyManager : MonoBehaviour
 
     public async void ListPlayers()
     {
+        Logger.Instance.Log("ListPlayers");
         Lobby currentLobbyUpdate = await LobbyService.Instance.GetLobbyAsync(CurrentLobby.Id);
 
         if (currentLobbyUpdate.Players.Count > CurrentLobby.Players.Count)
@@ -268,7 +272,8 @@ public class LobbyManager : MonoBehaviour
 
     public void LeaveRelay()
     {
-        NetworkManager.Singleton.Shutdown();
+        if (NetworkManager.Singleton)
+            NetworkManager.Singleton.Shutdown();
         SceneLoader.Load("Menu");
     }
     public void KickPlayer(ulong client)
