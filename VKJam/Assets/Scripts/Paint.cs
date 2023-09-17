@@ -58,6 +58,7 @@ public class Paint : NetworkBehaviour
         public short prevY;
         public short newX;
         public short newY;
+        public byte brushSize;
 
         public BrushMode brushMode;
         public bool isConnectedToLast;
@@ -68,6 +69,7 @@ public class Paint : NetworkBehaviour
             serializer.SerializeValue(ref prevY);
             serializer.SerializeValue(ref newX);
             serializer.SerializeValue(ref newY);
+            serializer.SerializeValue(ref brushSize);
             serializer.SerializeValue(ref brushMode);
             serializer.SerializeValue(ref isConnectedToLast);
         }
@@ -95,7 +97,7 @@ public class Paint : NetworkBehaviour
     [SerializeField] private Collider _collider;
     [SerializeField] private Color drawColor;
     [SerializeField] private BrushMode brushMode = BrushMode.Draw;
-    [SerializeField] private int brushSize = 12;
+    [SerializeField] private byte brushSize = 12;
     private int halfBrushSize;
     private bool isConnectedToLast;
     private bool isPainter;
@@ -106,7 +108,7 @@ public class Paint : NetworkBehaviour
     private bool isDraw = false;
     
     [Header("Ïðîñòî çàêèíóòü ññûëêó(åñëè íå íóæåí ôóíêöèîíàë, íå ñòàâèòü)")]
-    [SerializeField] private Slider brushSizeSlider;
+    //[SerializeField] private Slider brushSizeSlider;
     [SerializeField] private Button switchBrushModeButton;
     [SerializeField] private Button saveAsPNGButton;
     [SerializeField] private Button clearCanvasButton;
@@ -114,6 +116,8 @@ public class Paint : NetworkBehaviour
     [SerializeField] private Sprite chalkSprite;
     [SerializeField] private Sprite eraserSprite;
     private Image switchBrushModeButtonImage;
+
+    public byte BrushSize => brushSize;
 
     private void Awake()
     {
@@ -128,7 +132,7 @@ public class Paint : NetworkBehaviour
         switchBrushModeButton?.onClick.AddListener( SwitchBrushMode );
         switchBrushModeButtonImage = switchBrushModeButton?.GetComponent<Image>();
         
-        brushSizeSlider?.onValueChanged.AddListener( ChangeSize );
+        //brushSizeSlider?.onValueChanged.AddListener( ChangeSize );
     }
 
     public override void OnNetworkSpawn()
@@ -152,6 +156,7 @@ public class Paint : NetworkBehaviour
         drawingParams.prevY = previousValue.y;
         drawingParams.newX = newValue.x;
         drawingParams.newY = newValue.y;
+        drawingParams.brushSize = (byte)brushSize;
         drawingParams.brushMode = brushMode;
         drawingParams.isConnectedToLast = isConnectedToLast;
 
@@ -337,21 +342,23 @@ public class Paint : NetworkBehaviour
             switchBrushModeButtonImage.sprite = chalkSprite;
     }
 
-    public void ChangeSize(float brushSize)
+    public void ChangeSize(byte brushSize)
     {
         ChangeSizeServerRpc(brushSize);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ChangeSizeServerRpc(float brushSize)
+    private void ChangeSizeServerRpc(byte brushSize)
     {
         ChangeSizeClientRpc(brushSize);
     }
 
     [ClientRpc]
-    private void ChangeSizeClientRpc(float brushSize)
+    private void ChangeSizeClientRpc(byte brushSize)
     {
-        this.brushSize = Mathf.RoundToInt(brushSize * textureSettings.size);
+        this.brushSize = brushSize;
+        halfBrushSize = brushSize / 2;
+        Debug.Log("Size Changed To: " + brushSize);
     }
 
     public void ClearCanvas()

@@ -22,3 +22,9 @@ public enum Stage
     IngredientGuess,
     MonsterGuess
 }
+
+public enum BrushMode
+{
+    Draw,
+    Erase
+}

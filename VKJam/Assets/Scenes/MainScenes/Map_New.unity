@@ -14975,7 +14975,7 @@ GameObject:
   - component: {fileID: 1101699222}
   - component: {fileID: 1101699221}
   m_Layer: 0
-  m_Name: Borber For Tokens
+  m_Name: Border For Tokens
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27426,7 +27426,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.8656757, y: 0}
   m_AnchorMax: {x: 1, y: 0.16452633}
-  m_AnchoredPosition: {x: -3.6000366, y: -7.5999756}
+  m_AnchoredPosition: {x: -3.5999756, y: -7.5999756}
   m_SizeDelta: {x: 8.501116, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2043017901
@@ -30470,6 +30470,7 @@ GameObject:
   - component: {fileID: 4832641851117436131}
   - component: {fileID: 7751093537230117310}
   - component: {fileID: 7751093537230117311}
+  - component: {fileID: 7751093537230117312}
   m_Layer: 6
   m_Name: Painting
   m_TagString: Untagged
@@ -30580,7 +30581,7 @@ MonoBehaviour:
   textureSettings:
     size: 512
     wrapMode: 1
-    filterMode: 0
+    filterMode: 1
   texture: {fileID: 0}
   baseColor: {r: 1, g: 1, b: 1, a: 0}
   material: {fileID: 2100000, guid: f38295ad12d428d4aae65b790df42022, type: 2}
@@ -30588,8 +30589,7 @@ MonoBehaviour:
   _collider: {fileID: 7751093537230117298}
   drawColor: {r: 0, g: 0, b: 0, a: 0}
   brushMode: 0
-  brushSize: 16
-  brushSizeSlider: {fileID: 0}
+  brushSize: 10
   switchBrushModeButton: {fileID: 1828553528}
   saveAsPNGButton: {fileID: 0}
   clearCanvasButton: {fileID: 0}
@@ -30618,6 +30618,20 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &7751093537230117312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7751093537230117296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 856b4e26af925ce468b3247b2f2e66fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  paint: {fileID: 7751093537230117310}
+  scrollRate: 1
 --- !u!4 &7790053061071082798
 Transform:
   m_ObjectHideFlags: 0
