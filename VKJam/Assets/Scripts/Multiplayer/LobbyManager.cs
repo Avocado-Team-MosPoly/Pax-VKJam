@@ -20,6 +20,7 @@ public class LobbyManager : MonoBehaviour
     public readonly string KEY_RELAY_CODE = "RelayCode";
     public readonly string KEY_TEAM_MODE = "IsTeamMode";
     public readonly string KEY_ROUND_AMOUNT = "RoundAmount";
+    public readonly string KEY_TIMER_AMOUNT = "TimerAmount";
     public readonly string KEY_RECIPE_MODE = "RecipeMode";
 
     Dictionary<ulong, string> playerUlongIdList = new();
@@ -99,6 +100,7 @@ public class LobbyManager : MonoBehaviour
 
             lobbyData[KEY_TEAM_MODE] = new(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.GameMode.ToString());
             lobbyData[KEY_ROUND_AMOUNT] = new(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.RoundAmount.ToString());
+            lobbyData[KEY_TIMER_AMOUNT] = new(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.TimerAmount.ToString());
             lobbyData[KEY_RECIPE_MODE] = new(DataObject.VisibilityOptions.Public, ((int)LobbyDataInput.Instance.RecipeMode).ToString());
         }
         else
@@ -108,6 +110,7 @@ public class LobbyManager : MonoBehaviour
                 { KEY_RELAY_CODE, new DataObject(DataObject.VisibilityOptions.Member, "0") },
                 { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Public, "1") },
                 { KEY_ROUND_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, "4") },
+                { KEY_TIMER_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, "40") },
                 { KEY_RECIPE_MODE, new DataObject(DataObject.VisibilityOptions.Public, "0") },
             };
         }
