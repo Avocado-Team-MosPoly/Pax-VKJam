@@ -2,9 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
-public class Product : RandomItem
+public class Product : MonoBehaviour
 {
     [SerializeField] private Image Picture;
+    
     public TextMeshProUGUI Name;
     [SerializeField] private TextMeshProUGUI Price;
     [SerializeField] private WareHouseData Data;
@@ -17,11 +18,12 @@ public class Product : RandomItem
     private void Refresh()
     {
         Picture.sprite = Data.icon;
+        //SystemName = Data.productName;
         Name.text = Data.productName;
         Price.text = "X" + Data.productPrice.ToString();
     }
 
-    public void BuyTry()
+    public void Interact()
     {
         StartCoroutine(Php_Connect.Request_BuyTry(Data.productCode));
     }

@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine;
 using UnityEngine.UI;
+
 [RequireComponent(typeof(RawImage))]
 public class URL_Image : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class URL_Image : MonoBehaviour
     void Awake()
     {
         Target = GetComponent<RawImage>();
-        //StartCoroutine(DownloadImage());
+        StartCoroutine(DownloadImage());
     }
     public void ChangeImage(string NewUrl)
     {
@@ -22,7 +23,7 @@ public class URL_Image : MonoBehaviour
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
         yield return request.SendWebRequest();
         
-        if (request.isNetworkError || request.isHttpError)
+        if (UnityWebRequest.Result.ConnectionError == request.result || UnityWebRequest.Result.ProtocolError == request.result)
             Debug.Log(request.error);
         else
             Target.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
