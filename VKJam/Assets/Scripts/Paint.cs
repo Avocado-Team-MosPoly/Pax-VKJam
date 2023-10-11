@@ -4,13 +4,15 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using TMPro;
 
 public class Paint : NetworkBehaviour
 {
     [Serializable]
     private struct TextureSettings
     {
-        [Range(2, 1024)] public int size;
+        [Range(2, 1024)] public int sizeX;
+        [Range(2, 1024)] public int sizeY;
         public TextureWrapMode wrapMode;
         public FilterMode filterMode;
     }
@@ -84,7 +86,8 @@ public class Paint : NetworkBehaviour
 
     [SerializeField] private TextureSettings textureSettings = new TextureSettings
     {
-        size = 512,
+        sizeX = 512,
+        sizeY = 1024,
         wrapMode = TextureWrapMode.Clamp,
         filterMode = FilterMode.Point
     };
@@ -113,6 +116,7 @@ public class Paint : NetworkBehaviour
     [SerializeField] private Button saveAsPNGButton;
     [SerializeField] private Button clearCanvasButton;
     [HideInInspector] public UnityEvent OnNetworkSpawned;
+
     [SerializeField] private Sprite chalkSprite;
     [SerializeField] private Sprite eraserSprite;
     private Image switchBrushModeButtonImage;
@@ -121,15 +125,18 @@ public class Paint : NetworkBehaviour
 
     private void Awake()
     {
+        baseColor.a = 1f;
+        drawColor.a = 1f;
+
         InitControlUI();
     }
 
     private void InitControlUI()
     {
-        clearCanvasButton?.onClick.AddListener( () => Fill(baseColor) );
-        saveAsPNGButton?.onClick.AddListener( SavePaintingAsPng );
-        
-        switchBrushModeButton?.onClick.AddListener( SwitchBrushMode );
+        clearCanvasButton?.onClick.AddListener(() => Fill(baseColor));
+        saveAsPNGButton?.onClick.AddListener(SavePaintingAsPng);
+
+        switchBrushModeButton?.onClick.AddListener(SwitchBrushMode);
         switchBrushModeButtonImage = switchBrushModeButton?.GetComponent<Image>();
         
         //brushSizeSlider?.onValueChanged.AddListener( ChangeSize );
@@ -172,8 +179,8 @@ public class Paint : NetworkBehaviour
             Debug.LogError("Material isn't set");
             return;
         }
-        texture = new Texture2D(textureSettings.size, textureSettings.size);
-
+        texture = new Texture2D(textureSettings.sizeX, textureSettings.sizeY);
+        Debug.Log(texture.height + " " +  texture.width);
         texture.wrapMode = textureSettings.wrapMode;
         texture.filterMode = textureSettings.filterMode;
 
@@ -212,8 +219,8 @@ public class Paint : NetworkBehaviour
 
             if (_collider.Raycast(ray, out RaycastHit hitInfo, 1000f))
             {
-                int rayX = (int)(hitInfo.textureCoord.x * textureSettings.size);
-                int rayY = (int)(hitInfo.textureCoord.y * textureSettings.size);
+                int rayX = (int)(hitInfo.textureCoord.x * textureSettings.sizeX);
+                int rayY = (int)(hitInfo.textureCoord.y * textureSettings.sizeY);
 
                 Vector2Short newRayPos = new Vector2Short(rayX, rayY);
 
@@ -242,9 +249,9 @@ public class Paint : NetworkBehaviour
 
     private void Fill(Color color)
     {
-        for (int x = 0; x < textureSettings.size; x++)
+        for (int x = 0; x < textureSettings.sizeX; x++)
         {
-            for (int y = 0; y < textureSettings.size; y++)
+            for (int y = 0; y < textureSettings.sizeY; y++)
             {
                 texture.SetPixel(x, y, color);
             }
@@ -342,6 +349,11 @@ public class Paint : NetworkBehaviour
             switchBrushModeButtonImage.sprite = chalkSprite;
     }
 
+    public void ChangeSize(float brushSize)
+    {
+        ChangeSizeServerRpc((byte)brushSize);
+    }
+
     public void ChangeSize(byte brushSize)
     {
         ChangeSizeServerRpc(brushSize);
@@ -358,6 +370,7 @@ public class Paint : NetworkBehaviour
     {
         this.brushSize = brushSize;
         halfBrushSize = brushSize / 2;
+
         Debug.Log("Size Changed To: " + brushSize);
     }
 
