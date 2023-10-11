@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
-public class SoundsSettings : MonoBehaviour
+
+public class SoundsSettings : ScriptableObject
 {
     [Header("Audio settings")]
     [Range(0, 1)] [SerializeField] private static float Master = 1;
