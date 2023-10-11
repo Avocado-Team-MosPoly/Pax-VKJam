@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 [RequireComponent(typeof(AudioSource))]
+[System.Serializable]
 public class SoundList : MonoBehaviour
 {
     [System.Serializable]

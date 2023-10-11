@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEngine.Networking;
 using UnityEngine;
 
 [System.Serializable]
@@ -7,9 +8,11 @@ public class Php_Connect : MonoBehaviour
 {
     public static bool PHPisOnline = true;
     
-[SerializeField] private string Link;
+    [SerializeField] private string Link;
+    [SerializeField] private RandomItemList RandomBase;
     static public int Nickname;
     private static string link;
+    public static RandomItemList randomBase;
     private static WWW request;
     public static Currency Current;
     [System.Serializable]
@@ -21,14 +24,22 @@ public class Php_Connect : MonoBehaviour
     void Start()
     {
         link = Link;
+        randomBase = RandomBase;
         PHPisOnline = true;
-        /*StartCoroutine(Request_Auth(12));
+        Nickname = 1;
+        GameManager.Instance.OnGameEnded.AddListener(OnGameEnded);
+        /*Debug.Log(Request_BuyTry(0));
+        StartCoroutine(Request_Auth(12));
         StartCoroutine(Request_DataAboutDesign(1));
         StartCoroutine(Request_CurrentCurrency("Renata"));
         StartCoroutine(Request_BuyTry("Renata",1));
         StartCoroutine(Request_CurrentCurrency("Renata"));*/
     }
-
+    private void OnGameEnded()
+    {
+        Current.IGCurrency += TokenManager.TokensCount;
+        if(PHPisOnline) Request_TokenWin(TokenManager.TokensCount);
+    }
     private static void ErrorProcessor(string error)
     {
         Debug.LogWarning("Server Error: " + error);
@@ -37,104 +48,209 @@ public class Php_Connect : MonoBehaviour
             PHPisOnline = false;
         }
     }
-
-    public static IEnumerator Request_Auth(int external_Nickname)
+    private static string Request_TokenWin(int Count)
     {
         WWWForm form = new WWWForm();
-        Nickname = external_Nickname;
-        form.AddField("Nickname", external_Nickname);
-        request = new WWW(link + "/Auth.php", form);
-        yield return request;
-        if (request.error != null)
+        form.AddField("Nickname", Nickname);
+        form.AddField("Count", Count);
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/TokenWin.php", form))
         {
-            ErrorProcessor(request.error);
-            yield break;
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return www.downloadHandler.text;
+            }
         }
-        Debug.Log("Server say: " + request.text);
     }
-    public static IEnumerator Request_BuyTry(int DesignID)
+    public static string Request_BuyTry(int DesignID)
     {
         WWWForm form = new WWWForm();
         form.AddField("Nickname", Nickname);
         form.AddField("DesignID", DesignID);
-        request = new WWW(link + "/BuyTry.php", form);
-        yield return request;
-        if (request.error != null)
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/BuyTry.php", form))
         {
-            ErrorProcessor(request.error);
-            yield break;
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return www.downloadHandler.text;
+            }
         }
-        Debug.Log("Server say: " + request.text);
     }
-    public static IEnumerator Request_CurrentCurrency()
+    public static string Request_Gift(int DesignID, int TargetNickname)
+    {
+        string result = Request_BuyTry(DesignID);
+        if (result != "success") return result;
+        int ID;
+        if (DesignID == 0)
+        {
+            randomBase.Interact();
+            ID = Catcher_RandomItem.Result;
+            if (ID >= -4 && ID < 0) return Request_BuyTry(ID);
+            else return Response_Gift(ID, TargetNickname);
+        }
+        else return Response_Gift(DesignID, TargetNickname);
+    }
+
+    private static string Response_Gift(int DesignID, int TargetNickname)
+    {
+        int ID = DesignID;
+        WWWForm form = new WWWForm();
+        form.AddField("TargetNickname", TargetNickname);
+        form.AddField("DesignID", ID);
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/Gift.php", form))
+        {
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return www.downloadHandler.text;
+            }
+        }
+
+    }
+    public static string Request_Auth(int external_Nickname)
+    {
+        WWWForm form = new WWWForm();
+        Nickname = external_Nickname;
+        form.AddField("Nickname", external_Nickname);
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/Auth.php", form))
+        {
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return www.downloadHandler.text;
+            }
+        }
+    }
+    public static Currency Request_CurrentCurrency()
     {
         WWWForm form = new WWWForm();
 
         form.AddField("Nickname", Nickname);
-        request = new WWW(link + "/CurrentCurrency.php", form);
-        yield return request;
-        if (request.error != null)
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/CurrentCurrency.php", form))
         {
-            ErrorProcessor(request.error);
-            yield break;
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return Current;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                string[] split = www.downloadHandler.text.Split();
+                Current.IGCurrency = Int32.Parse(split[0]);
+                Current.DCurrency = Int32.Parse(split[1]);
+                return Current;
+            }
         }
-        Debug.Log("Server say: " + request.text);
-        string[] split = request.text.Split();
-        Current.IGCurrency = Int32.Parse(split[0]);
-        Current.DCurrency = Int32.Parse(split[1]);
     }
-    public static IEnumerator Request_WhatOwnering(string Output)
+
+    public static string Request_WhatOwnering()
     {
         WWWForm form = new WWWForm();
 
         form.AddField("Nickname", Nickname);
-        request = new WWW(link + "/WhatOwnering.php", form);
-        yield return request;
-        if (request.error != null)
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/WhatOwnering.php", form))
         {
-            ErrorProcessor(request.error);
-            yield break;
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return www.downloadHandler.text;
+            }
         }
-
-        Debug.Log("Server say: " + request.text);
-        Output = request.text;
     }
-    public static IEnumerator Request_DesignCount(Action<int> onResult)
+
+    public static int Request_DesignCount()
     {
         WWWForm form = new WWWForm();
-        request = new WWW(link + "/DesignCount.php", form);
-        yield return request;
-        if (request.error != null)
-        {
-            ErrorProcessor(request.error);
-            yield break;
-        }
 
-        Debug.Log("Server say: " + request.text);
-        onResult(Int32.Parse(request.text));
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignCount.php", form))
+        {
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return -1;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return int.Parse(www.downloadHandler.text);
+            }
+        }
     }
-    public static IEnumerator Request_DataAboutDesign(int idDesign, Action<WareHouseData> onResult)
+
+    public static WareHouseData Request_DataAboutDesign(int idDesign)
     {
         WWWForm form = new WWWForm();
 
         form.AddField("idDesign", idDesign);
-        request = new WWW(link + "/DesignOutput.php", form);
-        yield return request;
-        if (request.error != null)
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignOutput.php", form))
         {
-            ErrorProcessor(request.error);
-            yield break;
-        }
-
-        Debug.Log("Server say: " + request.text);
-        if (request.text == "error - 404") yield break;
-        string[] split = request.text.Split();
-        UnityEngine.Sprite sprite = Base64ToSprite(split[1]);
-        WareHouseData output = new WareHouseData(idDesign, split[0], Int32.Parse(split[2]), sprite, split[3] == "1");
-
-        if (onResult != null)
-        {
-            onResult(output);
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return new WareHouseData();
+            }
+            else if (request.text == "error - 404")
+            {
+                ErrorProcessor("404");
+                return new WareHouseData();
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                string[] split = www.downloadHandler.text.Split();
+                Sprite sprite = Base64ToSprite(split[1]);
+                return new WareHouseData(idDesign, split[0], int.Parse(split[2]), sprite, split[3] == "1");
+            }
         }
     }
 

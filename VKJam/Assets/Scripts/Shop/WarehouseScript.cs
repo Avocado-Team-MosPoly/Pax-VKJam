@@ -6,35 +6,31 @@ public class WarehouseScript : MonoBehaviour
 {
 	[SerializeField] private List<Product> Products = new List<Product>();
     [SerializeField]
+    private TMPro.TMP_Text InGameValue;
+    [SerializeField]
     private GameObject Template;
-    private void Awake()
+    
+    void Awake()
     {
-		//SortListByName();
-	}
-
-    void Start()
-    {
-        StartCoroutine(FetchAllProductData());
+        if (Php_Connect.PHPisOnline) Php_Connect.Request_CurrentCurrency();
+        InGameValue.text = Php_Connect.Current.IGCurrency.ToString();
+        if (Php_Connect.PHPisOnline) FetchAllProductData();
     }
-    private IEnumerator FetchAllProductData()
+    private void FetchAllProductData()
     {
         int i = 0;
         WareHouseData output;
         GameObject temp;
         do
         {
-            output = new WareHouseData();
-            yield return StartCoroutine(Php_Connect.Request_DataAboutDesign(i, (tempOutput) => {
-                output = tempOutput;
-                Debug.Log(output.productName);
-                if (output.productName != "") {
-                    temp = Instantiate(Template, transform);
-                    Product InWork = temp.GetComponent<Product>();
-                    Products.Add(InWork);
-                    InWork.SetData(output);
-                }
-                else return;
-            }));
+            output = Php_Connect.Request_DataAboutDesign(i);
+            if (output.productName != "")
+            {
+                temp = Instantiate(Template, transform);
+                Product InWork = temp.GetComponent<Product>();
+                Products.Add(InWork);
+                InWork.SetData(output);
+            }
             i++;
         }
         while (Products[i-1].Name.text != "");
