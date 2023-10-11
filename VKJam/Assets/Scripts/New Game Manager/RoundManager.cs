@@ -78,23 +78,30 @@ public class RoundManager : MonoBehaviour
                         TokenManager.AddTokensToClient(8 * (playersCount - 1), clientId);
                 }
             }
-        }
 
-        correctGuesserIds.Clear();
+            correctGuesserIds.Clear();
+        }
     }
 
     private void LoseRound()
     {
         Log("Lose Round");
 
-        isMonsterGuessed = false;
-        correctGuesserIds.Clear();
+        if (GameManager.Instance.IsTeamMode)
+        {
+            int tokensToRemove = (int)(TokenManager.TokensCountWinnedCurrentRound * 0.6f);
+            TokenManager.RemoveTokens(tokensToRemove);
+        }
+        
+
         //if (GameManager.Instance.IsTeamGame)
         //    TokenManager.RemoveTokens(2);
         //else
         //{
 
         //}
+        isMonsterGuessed = false;
+        correctGuesserIds.Clear();
     }
 
     public void OnTimeExpired()

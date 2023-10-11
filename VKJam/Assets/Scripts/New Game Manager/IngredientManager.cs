@@ -85,6 +85,8 @@ public class IngredientManager : MonoBehaviour
                 else
                     TokenManager.AddTokensToClient(playersCount - 1, clientId);
             }
+
+            correctGuesserIds.Clear();
         }
 
         OnCorrectIngredient?.Invoke();
