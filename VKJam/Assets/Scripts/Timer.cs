@@ -3,6 +3,8 @@ using UnityEngine;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine.Events;
+using Unity.Services.Lobbies.Models;
+using Unity.Services.Lobbies;
 
 public class Timer : NetworkBehaviour
 {
@@ -10,7 +12,7 @@ public class Timer : NetworkBehaviour
     public NetworkVariable<int> NetworkTime = new(0);
     private bool isTimePaused = false;
     [SerializeField] private Hint showRecepiesUI;
-    [SerializeField] private readonly int roundTime = 45;
+    [SerializeField] private int roundTime = 45;
 
     private Coroutine serverClockCoroutine = null;
 
@@ -21,7 +23,7 @@ public class Timer : NetworkBehaviour
     private void Awake()
     {
         Instance = this;
-
+        roundTime = int.Parse(LobbyManager.Instance.CurrentLobby.Data["TimerAmount"].Value);
         ShowTime.text = ToTimeFormat(roundTime);
     }
 
