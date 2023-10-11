@@ -21,6 +21,7 @@ public class Bestiary : MonoBehaviour
 
     [SerializeField] private Button previousMonsterButton;
     [SerializeField] private Button nextMonsterButton;
+    [SerializeField] private GameObject chooseMonster;
 
     [SerializeField] private GameObject catalougeCanvas;
     [SerializeField] private GameObject templateCanvas;
@@ -88,6 +89,16 @@ public class Bestiary : MonoBehaviour
         imageHolder.sprite = monsters[currentMonster].MonsterInBestiarySprite;
         typeHolder.sprite = (monsters[currentMonster].Difficulty == CardDifficulty.Dangerous ? dangerousIcon : murderousIcon);
         nameHolder.text = monsters[currentMonster].Id;
+        if (GameManager.Instance.Stage == Stage.MonsterGuess)
+        {
+            chooseMonster.SetActive(true);
+            chooseMonster.GetComponent<ChooseFromBook>().guess = monsters[currentMonster].Id;
+        }
+        else
+        {
+            chooseMonster.SetActive(false);
+        }
+
         descriptionHolder.text = monsters[currentMonster].Description;
         ingredientsHolder.text = monsters[currentMonster].GetIngredientsAsString();
     }
