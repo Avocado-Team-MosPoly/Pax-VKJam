@@ -30,6 +30,22 @@ public class IngredientManager : MonoBehaviour
         OnIngredientSwitched?.Invoke((sbyte)CurrentIngredientIndex);
     }
 
+    private void OnWrongIngredientGuess(ulong clientId)
+    {
+        if (!GameManager.Instance.IsTeamMode)
+        {
+            if (correctGuesserIds.Contains(clientId))
+            {
+                correctGuesserIds.Remove(clientId);
+                if (correctGuesserIds.Count == 1)
+                {
+                    correctGuesserIds.Clear();
+                    isIngredientGuessed = true;
+                }
+            }
+        }
+    }
+
     private void OnCorrectIngredientGuess(ulong clientId)
     {
         isIngredientGuessed = true;
@@ -103,6 +119,8 @@ public class IngredientManager : MonoBehaviour
 
         if (currentIngredient.ToLower() == guess.ToLower())
             OnCorrectIngredientGuess(guesserId);
+        else
+            OnWrongIngredientGuess(guesserId);
     }
 
     private void Log(object message) => Debug.Log($"[{name}] " + message);

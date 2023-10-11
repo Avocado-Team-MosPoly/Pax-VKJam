@@ -73,9 +73,6 @@ public class PaintController : MonoBehaviour
 
         if (scrollDelta != 0)
         {
-            scrollDelta = Mathf.Clamp(scrollDelta - scrollDelta % 2, minBrushSize, maxBrushSize);
-            localBrushSize += scrollDelta;
-            
             if (canSetCoroutine != null)
             {
                 StopCoroutine(canSetCoroutine);
@@ -84,7 +81,7 @@ public class PaintController : MonoBehaviour
         }
         else if (localBrushSize != paint.BrushSize)
         {
-            localBrushSize = Mathf.Clamp(localBrushSize, minBrushSize, maxBrushSize);
+            localBrushSize = Mathf.Clamp(localBrushSize + scrollDelta - scrollDelta % 2, minBrushSize, maxBrushSize);
             if (localBrushSize != paint.BrushSize)
             {
                 if (canSet)

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Unity.Netcode;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,7 +13,23 @@ public class RoundManager : MonoBehaviour
 
     [HideInInspector] public UnityEvent OnRoundEnded;
 
-    private void OnCorrectMonsterGuess(byte clientId)
+    private void OnWrongMonsterGuess(ulong clientId)
+    {
+        if (!GameManager.Instance.IsTeamMode)
+        {
+            if (correctGuesserIds.Contains(clientId))
+            {
+                correctGuesserIds.Remove(clientId);
+                if (correctGuesserIds.Count == 1)
+                {
+                    correctGuesserIds.Clear();
+                    isMonsterGuessed = false;
+                }
+            }
+        }
+    }
+
+    private void OnCorrectMonsterGuess(ulong clientId)
     {
         isMonsterGuessed = true;
 
@@ -62,6 +79,8 @@ public class RoundManager : MonoBehaviour
                 }
             }
         }
+
+        correctGuesserIds.Clear();
     }
 
     private void LoseRound()
@@ -69,6 +88,7 @@ public class RoundManager : MonoBehaviour
         Log("Lose Round");
 
         isMonsterGuessed = false;
+        correctGuesserIds.Clear();
         //if (GameManager.Instance.IsTeamGame)
         //    TokenManager.RemoveTokens(2);
         //else
@@ -94,7 +114,9 @@ public class RoundManager : MonoBehaviour
         Log($"Current Monster: {currentMonster}, Guess: {guess}, Guesser Id: {guesserId}");
 
         if (currentMonster.ToLower() == guess.ToLower())
-            OnCorrectMonsterGuess((byte)guesserId);
+            OnCorrectMonsterGuess(guesserId);
+        else
+            OnWrongMonsterGuess(guesserId);
     }
 
     private void Log(object message) => Debug.Log($"[{name}] " + message);
