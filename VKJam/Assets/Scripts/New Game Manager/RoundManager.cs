@@ -58,6 +58,8 @@ public class RoundManager : MonoBehaviour
         }
         else
         {
+            PainterPenalty(correctGuesserIds.Count);
+            PainterReward(correctGuesserIds.Count);
             if (GameManager.Instance.AnswerCardSO.Difficulty == CardDifficulty.Dangerous)
             {
                 foreach (byte clientId in correctGuesserIds)
@@ -78,7 +80,6 @@ public class RoundManager : MonoBehaviour
                         TokenManager.AddTokensToClient(8 * (playersCount - 1), clientId);
                 }
             }
-
             correctGuesserIds.Clear();
         }
     }
@@ -91,6 +92,11 @@ public class RoundManager : MonoBehaviour
         {
             int tokensToRemove = (int)(TokenManager.TokensCountWinnedCurrentRound * 0.6f);
             TokenManager.RemoveTokens(tokensToRemove);
+        }
+        else
+        {
+            PainterPenalty(correctGuesserIds.Count);
+            PainterReward(correctGuesserIds.Count);
         }
         
 
@@ -124,6 +130,25 @@ public class RoundManager : MonoBehaviour
             OnCorrectMonsterGuess(guesserId);
         else
             OnWrongMonsterGuess(guesserId);
+    }
+
+    public void PainterPenalty(int count)
+    {
+        if (count <=3)
+        { TokenManager.RemoveTokensToClient(5, (byte)GameManager.Instance.PainterId); }
+        else if (count ==4)
+        { TokenManager.RemoveTokensToClient(3, (byte)GameManager.Instance.PainterId); }
+        else if (count >=5)
+        { TokenManager.RemoveTokensToClient(2, (byte)GameManager.Instance.PainterId); }
+    }
+    public void PainterReward(int count)
+    {
+        if (count <= 3)
+        { TokenManager.AddTokensToClient(5, (byte)GameManager.Instance.PainterId); }
+        else if (count == 4)
+        { TokenManager.AddTokensToClient(3, (byte)GameManager.Instance.PainterId); }
+        else if (count >= 5)
+        { TokenManager.AddTokensToClient(2, (byte)GameManager.Instance.PainterId); }
     }
 
     private void Log(object message) => Debug.Log($"[{name}] " + message);
