@@ -51,10 +51,15 @@ public class RoundManager : MonoBehaviour
 
         if (GameManager.Instance.IsTeamMode)
         {
+            int tokensToAdd = playersCount * playersCount * 4;
+
             if (GameManager.Instance.AnswerCardSO.Difficulty == CardDifficulty.Dangerous)
-                TokenManager.AddTokens(playersCount * playersCount * 2);
+                TokenManager.AddTokens(tokensToAdd);
             else
-                TokenManager.AddTokens(playersCount * playersCount * 3);
+                TokenManager.AddTokens((int)(tokensToAdd * 1.5f));
+            
+            if (playersCount - 2 > 0)
+                TokenManager.AddTokens(playersCount);
         }
         else
         {
@@ -65,9 +70,17 @@ public class RoundManager : MonoBehaviour
                 foreach (byte clientId in correctGuesserIds)
                 {
                     if (clientId != GameManager.Instance.PainterId)
-                        TokenManager.AddTokensToClient(5, clientId);
+                        TokenManager.AddTokensToClient(4, clientId);
                     else
-                        TokenManager.AddTokensToClient(5 * (playersCount - 1), clientId);
+                    {
+                        int tokensToAdd = 4;
+                        if (correctGuesserIds.Count > 2)
+                        {
+                            tokensToAdd += playersCount - 1;
+                        }
+
+                        TokenManager.AddTokensToClient(tokensToAdd, clientId);
+                    }
                 }
             }
             else
@@ -75,9 +88,17 @@ public class RoundManager : MonoBehaviour
                 foreach (byte clientId in correctGuesserIds)
                 {
                     if (clientId != GameManager.Instance.PainterId)
-                        TokenManager.AddTokensToClient(8, clientId);
+                        TokenManager.AddTokensToClient(6, clientId);
                     else
-                        TokenManager.AddTokensToClient(8 * (playersCount - 1), clientId);
+                    {
+                        int tokensToAdd = 6;
+                        if (correctGuesserIds.Count > 2)
+                        {
+                            tokensToAdd += playersCount - 1;
+                        }
+
+                        TokenManager.AddTokensToClient(tokensToAdd, clientId);
+                    }
                 }
             }
             correctGuesserIds.Clear();
@@ -95,17 +116,10 @@ public class RoundManager : MonoBehaviour
         }
         else
         {
-            PainterPenalty(correctGuesserIds.Count);
-            PainterReward(correctGuesserIds.Count);
+            //PainterPenalty(correctGuesserIds.Count);
+            //PainterReward(correctGuesserIds.Count);
         }
         
-
-        //if (GameManager.Instance.IsTeamGame)
-        //    TokenManager.RemoveTokens(2);
-        //else
-        //{
-
-        //}
         isMonsterGuessed = false;
         correctGuesserIds.Clear();
     }

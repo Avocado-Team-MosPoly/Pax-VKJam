@@ -136,12 +136,18 @@ public class TokenManager : NetworkBehaviour
     [ClientRpc]
     private void AddTokensToClientRpc(byte value, byte clientId)
     {
+        if (clientId != NetworkManager.Singleton.LocalClientId)
+            return;
+
         TokensCountWinnedCurrentRound += value;
     }
 
     [ClientRpc]
     private void RemoveTokensToClientRpc(byte value, byte clientId)
     {
+        if (clientId != NetworkManager.Singleton.LocalClientId)
+            return;
+
         TokensCountLoosedCurrentRound += value;
     }
     
