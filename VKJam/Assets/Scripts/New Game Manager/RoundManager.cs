@@ -116,8 +116,8 @@ public class RoundManager : MonoBehaviour
         }
         else
         {
-            //PainterPenalty(correctGuesserIds.Count);
-            //PainterReward(correctGuesserIds.Count);
+            PainterPenalty(correctGuesserIds.Count);
+            PainterReward(correctGuesserIds.Count);
         }
         
         isMonsterGuessed = false;
