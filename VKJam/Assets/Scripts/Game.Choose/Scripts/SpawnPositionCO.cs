@@ -5,10 +5,10 @@ public class SpawnPositionCO : SpawnPosition
     public Vector3[] positions;
     protected override void UpdatePositions()
     {
-        positions = new Vector3[_isDeadly ? 5 : 4];
+        positions = new Vector3[_isMurderously ? 5 : 4];
     }
     public override Vector3 ReturnPositions()
     {
-        return positions[Random.Range(1, _isDeadly ? 5 : 4)];
+        return positions[Random.Range(1, _isMurderously ? 5 : 4)];
     }
 }
