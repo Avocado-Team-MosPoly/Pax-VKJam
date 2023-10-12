@@ -12,6 +12,17 @@ public class Ingredient : ScriptableObject
     [SerializeField] private CardSO[] _monster;
 
     [SerializeField] SpawnPosition Positions;
+
+    public void addMonster(CardSO value)
+    {
+        CardSO[] tempArray = new CardSO[_monster.Length + 1];
+        for (int i = 0; i < _monster.Length; i++)
+        {
+            tempArray[i] = _monster[i]; 
+        }
+        tempArray[_monster.Length] = value;   
+        _monster = tempArray;
+    }
     public void SummonIngredient()
     {
         Instantiate(_model, Positions.ReturnPositions(), Quaternion.identity);
