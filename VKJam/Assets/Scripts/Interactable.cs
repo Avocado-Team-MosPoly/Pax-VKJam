@@ -8,7 +8,8 @@ public class Interactable : MonoBehaviour
     [SerializeField] private Color NewColor;
     private Renderer Rend;
     public UnityEvent m_OnClick;
-    public UnityEvent m_OnHover;
+    public UnityEvent m_OnMouseEnter;
+    public UnityEvent m_OnMouseExit;
     public bool ActivityInteractable;
     
     private void Awake()
@@ -18,13 +19,14 @@ public class Interactable : MonoBehaviour
     void OnMouseEnter()
     {
         if (!ActivityInteractable) return;
-        m_OnHover.Invoke();
+        m_OnMouseEnter.Invoke();
         foreach (int current in TargetMaterialID)
             Rend.materials[current].color = NewColor;
     }
     void OnMouseExit()
     {
         if (!ActivityInteractable) return;
+        m_OnMouseExit.Invoke();
         foreach (int current in TargetMaterialID)
             Rend.materials[current].color = Color.white;
     }
