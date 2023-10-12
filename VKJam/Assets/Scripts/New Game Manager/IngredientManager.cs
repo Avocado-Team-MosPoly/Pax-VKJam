@@ -9,12 +9,28 @@ public class IngredientManager : MonoBehaviour
 
     private bool isIngredientGuessed;
     public int CurrentIngredientIndex { get; private set; }
-    private List<ulong> correctGuesserIds = new List<ulong>();
+    private List<ulong> correctGuesserIds = new();
+    private Dictionary<ulong, bool> correctGuesserAllIds = new();
 
     [HideInInspector] public UnityEvent<sbyte> OnIngredientSwitched;
     [HideInInspector] public UnityEvent OnIngredientsEnded;
     [HideInInspector] public UnityEvent OnCorrectIngredient;
     [HideInInspector] public UnityEvent OnWrongIngredient;
+
+    private void Start()
+    {
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+            correctGuesserAllIds[clientId] = true;
+
+        NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
+        {
+            correctGuesserAllIds[clientId] = GameManager.Instance.CurrentRound == 1;
+        };
+        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
+        {
+            correctGuesserAllIds.Remove(clientId);
+        };
+    }
 
     private void NextIngredient()
     {
@@ -30,6 +46,18 @@ public class IngredientManager : MonoBehaviour
         OnIngredientSwitched?.Invoke((sbyte)CurrentIngredientIndex);
     }
 
+    private void OnCorrectIngredientGuess(ulong clientId)
+    {
+        isIngredientGuessed = true;
+        
+        if (!GameManager.Instance.IsTeamMode)
+        {
+            correctGuesserIds.Add(clientId);
+            if (!correctGuesserIds.Contains(GameManager.Instance.PainterId))
+                correctGuesserIds.Add(GameManager.Instance.PainterId);
+        }
+    }
+
     private void OnWrongIngredientGuess(ulong clientId)
     {
         if (!GameManager.Instance.IsTeamMode)
@@ -40,21 +68,9 @@ public class IngredientManager : MonoBehaviour
                 if (correctGuesserIds.Count == 1)
                 {
                     correctGuesserIds.Clear();
-                    isIngredientGuessed = true;
+                    isIngredientGuessed = false;
                 }
             }
-        }
-    }
-
-    private void OnCorrectIngredientGuess(ulong clientId)
-    {
-        isIngredientGuessed = true;
-        
-        if (!GameManager.Instance.IsTeamMode)
-        {
-            correctGuesserIds.Add(clientId);
-            if (!correctGuesserIds.Contains(GameManager.Instance.PainterId))
-                correctGuesserIds.Add(GameManager.Instance.PainterId);
         }
     }
 
@@ -68,22 +84,19 @@ public class IngredientManager : MonoBehaviour
 
         if (GameManager.Instance.IsTeamMode)
         {
-            foreach (byte clientId in NetworkManager.Singleton.ConnectedClientsIds)
-            {
-                if (GameManager.Instance.PainterId != clientId)
-                    TokenManager.AddTokensToClient(playersCount, clientId);
-                else
-                    TokenManager.AddTokensToClient(playersCount - 1, clientId);
-            }
+            TokenManager.AddTokens(playersCount * 2);
         }
         else
         {
             foreach (byte clientId in correctGuesserIds)
             {
-                if (clientId != GameManager.Instance.PainterId)
-                    TokenManager.AddTokensToClient(1, clientId);
-                else
-                    TokenManager.AddTokensToClient(playersCount - 1, clientId);
+                TokenManager.AddTokensToClient(1, clientId);
+            }
+
+            foreach (ulong clientId in correctGuesserAllIds.Keys)
+            {
+                if (!correctGuesserIds.Contains(clientId))
+                    correctGuesserAllIds[clientId] = false;
             }
 
             correctGuesserIds.Clear();

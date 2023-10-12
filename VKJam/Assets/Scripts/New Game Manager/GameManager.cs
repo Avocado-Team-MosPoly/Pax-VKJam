@@ -31,6 +31,7 @@ public class GameManager : NetworkBehaviour
     public CardSO AnswerCardSO { get; private set; }
     public Stage Stage { get; private set; } = Stage.Waiting;
     public bool IsTeamMode { get; private set; } = true;
+    public int CurrentRound => currentRound;
 
     /// <summary> Sends true if local player is painter, false if not </summary>
     [HideInInspector] public UnityEvent<bool> OnGuessMonsterStageActivated;
