@@ -5,6 +5,7 @@ using UnityEngine.Events;
 public class Interactable : MonoBehaviour
 {
     [SerializeField] private int[] TargetMaterialID;
+    private Color[] TargetColorMaterial;
     [SerializeField] private Color NewColor;
     private Renderer Rend;
     public UnityEvent m_OnClick;
@@ -15,6 +16,9 @@ public class Interactable : MonoBehaviour
     private void Awake()
     {
         Rend = GetComponent<Renderer>();
+        TargetColorMaterial = new Color[TargetMaterialID.Length];
+        for(int i =0;i < TargetMaterialID.Length;++i)
+            TargetColorMaterial[i] = Rend.materials[TargetMaterialID[i]].color;
     }
     void OnMouseEnter()
     {
@@ -27,8 +31,8 @@ public class Interactable : MonoBehaviour
     {
         if (!ActivityInteractable) return;
         m_OnMouseExit.Invoke();
-        foreach (int current in TargetMaterialID)
-            Rend.materials[current].color = Color.white;
+        for (int i = 0; i < TargetMaterialID.Length; ++i)
+            Rend.materials[TargetMaterialID[i]].color = TargetColorMaterial[i];
     }
     void OnMouseDown()
     {
