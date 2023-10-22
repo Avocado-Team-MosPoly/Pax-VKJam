@@ -46,7 +46,12 @@ public class LobbyManager : MonoBehaviour
         NetworkManager.Singleton.OnClientStopped += (bool someBool) => LeaveLobby();
         NetworkManager.Singleton.OnServerStopped += (bool isHostLeave) => OnServerEnded();
         NetworkManager.Singleton.OnServerStarted += StopHeartBeatPing;
-        NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => ListPlayers();
+        NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
+        {
+            Debug.Log("Client Connected");
+            if (clientId != NetworkManager.Singleton.LocalClientId)
+                ListPlayers();
+        };
         if (IsHost)
         {
             NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => playerUlongIdList.Add(clientId, AuthenticationService.Instance.PlayerId);
@@ -291,6 +296,7 @@ public class LobbyManager : MonoBehaviour
     }
     public void OnServerEnded()
     {
+        Debug.LogWarning("On Server Ended");
         playerUlongIdList.Clear();
         LeaveLobby();
     }
