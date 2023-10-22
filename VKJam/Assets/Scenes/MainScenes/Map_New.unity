@@ -917,7 +917,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &126402742
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3836,6 +3836,12 @@ MonoBehaviour:
           m_StringArgument: GB_Open
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnMouseEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnMouseExit:
+    m_PersistentCalls:
+      m_Calls: []
   ActivityInteractable: 1
 --- !u!65 &320006155
 BoxCollider:
@@ -10620,6 +10626,7 @@ GameObject:
   m_Component:
   - component: {fileID: 738068582}
   - component: {fileID: 738068581}
+  - component: {fileID: 738068583}
   m_Layer: 0
   m_Name: Point Light (1)
   m_TagString: Untagged
@@ -10704,6 +10711,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1728177109}
   m_LocalEulerAnglesHint: {x: 47.125, y: -182.631, z: -134.699}
+--- !u!114 &738068583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738068580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1 &738283713
 GameObject:
   m_ObjectHideFlags: 0
@@ -11146,6 +11176,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnMouseEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnMouseExit:
+    m_PersistentCalls:
+      m_Calls: []
   ActivityInteractable: 1
 --- !u!65 &772972742
 BoxCollider:
@@ -13236,6 +13272,7 @@ GameObject:
   m_Component:
   - component: {fileID: 936029144}
   - component: {fileID: 936029145}
+  - component: {fileID: 936029146}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -13320,6 +13357,29 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &936029146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936029143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1 &941431113
 GameObject:
   m_ObjectHideFlags: 0
@@ -18197,6 +18257,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1325583576}
   - component: {fileID: 1325583575}
+  - component: {fileID: 1325583577}
   m_Layer: 0
   m_Name: Point Light (2)
   m_TagString: Untagged
@@ -18281,6 +18342,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1728177109}
   m_LocalEulerAnglesHint: {x: 47.125, y: -182.631, z: -134.699}
+--- !u!114 &1325583577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325583574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1 &1346186199
 GameObject:
   m_ObjectHideFlags: 0
@@ -22508,6 +22592,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnMouseEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnMouseExit:
+    m_PersistentCalls:
+      m_Calls: []
   ActivityInteractable: 1
 --- !u!65 &1711129836
 BoxCollider:
@@ -25535,6 +25625,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnMouseEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnMouseExit:
+    m_PersistentCalls:
+      m_Calls: []
   ActivityInteractable: 1
 --- !u!65 &1847877629
 BoxCollider:
@@ -28142,6 +28238,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2036402730}
   - component: {fileID: 2036402729}
+  - component: {fileID: 2036402731}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -28226,6 +28323,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 543450653376473598}
   m_LocalEulerAnglesHint: {x: 47.125, y: -182.631, z: -134.699}
+--- !u!114 &2036402731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036402728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1 &2040740867
 GameObject:
   m_ObjectHideFlags: 0
@@ -29696,6 +29816,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnMouseEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnMouseExit:
+    m_PersistentCalls:
+      m_Calls: []
   ActivityInteractable: 1
 --- !u!65 &2142335302
 BoxCollider:
@@ -31721,6 +31847,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+  m_OnMouseEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnMouseExit:
+    m_PersistentCalls:
+      m_Calls: []
   ActivityInteractable: 1
 --- !u!65 &7751093536772813506
 BoxCollider:
