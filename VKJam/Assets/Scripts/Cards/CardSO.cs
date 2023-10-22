@@ -25,15 +25,15 @@ public class CardSO : ScriptableObject
     public string Description => description;
     public string[] Ingredients => ingredients;
 
-    /*private void Awake()
+    /*private void OnValidate()
     {
         foreach(var current in ingredientsSO)
         {
             current.addMonster(this);
         }
     }*/
-
-    /*private void OnValidate()
+    /*
+    private void OnValidate()
     {
         ingredients = new string[ingredientsSO.Length];
         for(int i = 0;i< ingredientsSO.Length; ++i)
