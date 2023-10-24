@@ -1,10 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class WarehouseScript : MonoBehaviour
 {
 	[SerializeField] private List<Product> Products = new List<Product>();
+    [SerializeField] private string krutrki;
     [SerializeField]
     private TMPro.TMP_Text InGameValue;
     [SerializeField]
@@ -15,6 +16,11 @@ public class WarehouseScript : MonoBehaviour
         if (Php_Connect.PHPisOnline) Php_Connect.Request_CurrentCurrency();
         InGameValue.text = Php_Connect.Current.IGCurrency.ToString();
         if (Php_Connect.PHPisOnline) FetchAllProductData();
+    }
+
+    public void goToRandom()
+    {
+        SceneManager.LoadScene(krutrki);
     }
     private void FetchAllProductData()
     {

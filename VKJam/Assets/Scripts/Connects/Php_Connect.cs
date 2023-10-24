@@ -23,11 +23,11 @@ public class Php_Connect : MonoBehaviour
     }
     void Start()
     {
+        SceneLoader.EndLoad += OnGameEnded;
         link = Link;
         randomBase = RandomBase;
         PHPisOnline = true;
         Nickname = 1;
-        GameManager.Instance.OnGameEnded.AddListener(OnGameEnded);
         /*Debug.Log(Request_BuyTry(0));
         StartCoroutine(Request_Auth(12));
         StartCoroutine(Request_DataAboutDesign(1));
@@ -35,7 +35,7 @@ public class Php_Connect : MonoBehaviour
         StartCoroutine(Request_BuyTry("Renata",1));
         StartCoroutine(Request_CurrentCurrency("Renata"));*/
     }
-    private void OnGameEnded()
+    private void OnGameEnded(string sceneName)
     {
         Current.IGCurrency += TokenManager.TokensCount;
         if(PHPisOnline) Request_TokenWin(TokenManager.TokensCount);
