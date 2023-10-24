@@ -27,13 +27,13 @@ public class NetworkManagerUI : NetworkBehaviour
         
         NetworkManager.Singleton.StartHost();
 
-        SceneManager.LoadScene(hostScene);
+        SceneLoader.Load(hostScene);
     }
 
     private void StartClient()
     {
         NetworkManager.Singleton.StartClient();
 
-        SceneManager.LoadScene(clientScene);
+        SceneLoader.Load(clientScene);
     }
 }
