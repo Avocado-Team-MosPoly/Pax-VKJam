@@ -41,26 +41,31 @@ public class RelayManager : MonoBehaviour
     [SerializeField] private string lobbySceneName;
 
     public static RelayManager Instance { get; private set; }
-    
-    /// <summary>
-    /// Allowed regions:
-    /// europe-north1,
-    /// europe-central2,
-    /// europe-west4,
-    /// europe-west2,
-    /// us-east4,
-    /// northamerica-northeast1,
-    /// us-central1,
-    /// us-west2,
-    /// southamerica-east1,
-    /// asia-northeast1,
-    /// asia-south1,
-    /// asia-northeast3,
-    /// asia-southeast1,
-    /// asia-southeast2,
-    /// australia-southeast1
-    /// </summary>
-    private string connectionRegion = "europe-central2";
+
+    /*
+        Allowed regions:
+            Works in VK (can cause a few connection failed errors):
+                europe-north1
+                us-central1
+                asia-northeast1
+                asia-south1
+                asia-northeast3
+                australia-southeast1
+
+            Works in VK (sometimes connection failed fully):
+                asia-southeast1
+                asia-southeast2
+
+            Doesn't works in VK:
+                europe-central2
+                europe-west4
+                europe-west2
+                us-east4 - 
+                northamerica-northeast1
+                us-west2
+                southamerica-east1
+    */
+    private string connectionRegion = "europe-north1";
 
     public void ChangeRegion(string region)
     {
