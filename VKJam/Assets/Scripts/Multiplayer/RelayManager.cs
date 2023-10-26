@@ -42,6 +42,36 @@ public class RelayManager : MonoBehaviour
 
     public static RelayManager Instance { get; private set; }
 
+    /*
+        Allowed regions:
+            Works in VK (can cause a few connection failed errors):
+                europe-north1
+                us-central1
+                asia-northeast1
+                asia-south1
+                asia-northeast3
+                australia-southeast1
+
+            Works in VK (sometimes connection failed fully):
+                asia-southeast1
+                asia-southeast2
+
+            Doesn't works in VK:
+                europe-central2
+                europe-west4
+                europe-west2
+                us-east4 - 
+                northamerica-northeast1
+                us-west2
+                southamerica-east1
+    */
+    private string connectionRegion = "europe-north1";
+
+    public void ChangeRegion(string region)
+    {
+        connectionRegion = region;
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -59,10 +89,14 @@ public class RelayManager : MonoBehaviour
     {
         try
         {
-            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(4);
+            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(4, connectionRegion);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
-
+            
             UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+
+#if UNITY_EDITOR
+            Debug.Log("EDITOR");
+
             unityTransport.SetRelayServerData
             (
                 allocation.RelayServer.IpV4,
@@ -71,34 +105,14 @@ public class RelayManager : MonoBehaviour
                 allocation.Key,
                 allocation.ConnectionData
             );
-            //RelayServerData relayServerData = new RelayServerData(allocation, "wss");
 
-            //UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-
-            //unityTransport.UseWebSockets = true;
-            //unityTransport.SetRelayServerData(relayServerData);
-#if UNITY_EDITOR
-            //Debug.Log("EDITOR");
-
-            //UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            //unityTransport.UseWebSockets = false;
-
-            //NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData
-            //(
-            //    allocation.RelayServer.IpV4,
-            //    (ushort)allocation.RelayServer.Port,
-            //    allocation.AllocationIdBytes,
-            //    allocation.Key,
-            //    allocation.ConnectionData
-            //);
 #else
-            //Debug.Log("BUILD");
-            //RelayServerData relayServerData = new RelayServerData(allocation, "wss");
+            Debug.Log("BUILD");
+            
+            RelayServerData relayServerData = new RelayServerData(allocation, "wss");
 
-            //UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-
-            //unityTransport.UseWebSockets = true;
-            //unityTransport.SetRelayServerData(relayServerData);
+            unityTransport.UseWebSockets = true;
+            unityTransport.SetRelayServerData(relayServerData);
 #endif
 
             NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => { Debug.Log($"Client {clientId} connected"); };
@@ -125,8 +139,11 @@ public class RelayManager : MonoBehaviour
             Log(joinCode);
 
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
-            
             UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+
+#if UNITY_EDITOR
+            Debug.Log("EDITOR");
+
             unityTransport.SetRelayServerData
             (
                 joinAllocation.RelayServer.IpV4,
@@ -136,35 +153,13 @@ public class RelayManager : MonoBehaviour
                 joinAllocation.ConnectionData,
                 joinAllocation.HostConnectionData
             );
-            //RelayServerData relayServerData = new RelayServerData(joinAllocation, "wss");
-
-            //UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-
-            //unityTransport.UseWebSockets = true;
-            //unityTransport.SetRelayServerData(relayServerData);
-#if UNITY_EDITOR
-            //Debug.Log("EDITOR");
-
-            //UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            //unityTransport.UseWebSockets = false;
-
-            //NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData
-            //(
-            //    joinAllocation.RelayServer.IpV4,
-            //    (ushort)joinAllocation.RelayServer.Port,
-            //    joinAllocation.AllocationIdBytes,
-            //    joinAllocation.Key,
-            //    joinAllocation.ConnectionData,
-            //    joinAllocation.HostConnectionData
-            //);
 #else
-            //Debug.Log("BUILD");
-            //RelayServerData relayServerData = new RelayServerData(joinAllocation, "wss");
+            Debug.Log("BUILD");
+            
+            RelayServerData relayServerData = new RelayServerData(joinAllocation, "wss");
 
-            //UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-
-            //unityTransport.UseWebSockets = true;
-            //unityTransport.SetRelayServerData(relayServerData);
+            unityTransport.UseWebSockets = true;
+            unityTransport.SetRelayServerData(relayServerData);
 #endif
 
             NetworkManager.Singleton.OnClientStarted += () => Logger.Instance.Log("Client Started");
