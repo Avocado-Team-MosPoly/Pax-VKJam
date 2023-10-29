@@ -3,7 +3,7 @@ using UnityEngine;
 [CreateAssetMenu()]
 public class CardSO : ScriptableObject
 {
-    [SerializeField] private string id;
+    public string id;
 
     [SerializeField] private CardDifficulty difficulty;
 
