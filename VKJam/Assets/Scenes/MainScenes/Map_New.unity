@@ -4992,7 +4992,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &375007726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8772,9 +8772,9 @@ RectTransform:
   - {fileID: 1790548128}
   m_Father: {fileID: 2020867494}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 277.025, y: -27.47635}
   m_SizeDelta: {x: 553.7673, y: 54.9527}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &579361368
@@ -8873,6 +8873,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ingridientName: {fileID: 184812123}
   ingredientImage: {fileID: 1790548127}
+  compareSystem: {fileID: 0}
 --- !u!1 &617569106
 GameObject:
   m_ObjectHideFlags: 0
@@ -12357,7 +12358,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &843361613
 Transform:
   m_ObjectHideFlags: 0
@@ -19521,6 +19522,8 @@ MonoBehaviour:
   ingredientListContainer1: {fileID: 0}
   ingredientListContainer2: {fileID: 0}
   ingredientInfoTemplate: {fileID: 0}
+  IngridientName: []
+  IngredientImage: []
 --- !u!114 &1415958725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23898,7 +23901,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1749320895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28523,6 +28526,8 @@ MonoBehaviour:
   ingredientListContainer1: {fileID: 0}
   ingredientListContainer2: {fileID: 0}
   ingredientInfoTemplate: {fileID: 579361366}
+  IngridientName: []
+  IngredientImage: []
 --- !u!1 &2023617750
 GameObject:
   m_ObjectHideFlags: 0
