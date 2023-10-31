@@ -34,7 +34,6 @@ public class Php_Connect : MonoBehaviour
         StartCoroutine(Request_BuyTry("Renata",1));
         StartCoroutine(Request_CurrentCurrency("Renata"));*/
     }
-
     private static void ErrorProcessor(string error)
     {
         Debug.LogWarning("Server Error: " + error);
@@ -46,6 +45,7 @@ public class Php_Connect : MonoBehaviour
     
     public static string Request_WhichCardInPackOwnering(int idPack)
     {
+        if (!PHPisOnline) return "";
         WWWForm form = new WWWForm();
         form.AddField("Nickname", Nickname);
         form.AddField("PackId", idPack);
@@ -70,6 +70,7 @@ public class Php_Connect : MonoBehaviour
     }
     public static string Request_WhatPackOwnering()
     {
+        if (!PHPisOnline) return "";
         WWWForm form = new WWWForm();
         form.AddField("Nickname", Nickname);
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/WhatPackOwnering.php", form))
@@ -97,6 +98,7 @@ public class Php_Connect : MonoBehaviour
     }
     private static string Request_TokenWin(int Count)
     {
+        if (!PHPisOnline) return "";
         WWWForm form = new WWWForm();
         form.AddField("Nickname", Nickname);
         form.AddField("Count", Count);
@@ -120,6 +122,7 @@ public class Php_Connect : MonoBehaviour
     }
     public static string Request_BuyTry(int DesignID)
     {
+        if (!PHPisOnline) return "";
         WWWForm form = new WWWForm();
         form.AddField("Nickname", Nickname);
         form.AddField("DesignID", DesignID);
@@ -143,6 +146,7 @@ public class Php_Connect : MonoBehaviour
     }
     public static string Request_Gift(int DesignID, int TargetNickname)
     {
+        if (!PHPisOnline) return "";
         string result = Request_BuyTry(DesignID);
         if (result != "success") return result;
         int ID;
@@ -158,6 +162,7 @@ public class Php_Connect : MonoBehaviour
 
     private static string Response_Gift(int DesignID, int TargetNickname)
     {
+        if (!PHPisOnline) return "";
         int ID = DesignID;
         WWWForm form = new WWWForm();
         form.AddField("TargetNickname", TargetNickname);
@@ -206,6 +211,7 @@ public class Php_Connect : MonoBehaviour
     }
     public static Currency Request_CurrentCurrency()
     {
+        if (!PHPisOnline) return Current;
         WWWForm form = new WWWForm();
 
         form.AddField("Nickname", Nickname);
@@ -233,6 +239,7 @@ public class Php_Connect : MonoBehaviour
 
     public static string Request_WhatOwnering()
     {
+        if (!PHPisOnline) return "";
         WWWForm form = new WWWForm();
 
         form.AddField("Nickname", Nickname);
@@ -257,6 +264,7 @@ public class Php_Connect : MonoBehaviour
 
     public static int Request_DesignCount()
     {
+        if (!PHPisOnline) return -1;
         WWWForm form = new WWWForm();
 
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignCount.php", form))
@@ -280,6 +288,7 @@ public class Php_Connect : MonoBehaviour
 
     public static WareHouseData Request_DataAboutDesign(int idDesign)
     {
+        if (!PHPisOnline) return new WareHouseData();
         WWWForm form = new WWWForm();
 
         form.AddField("idDesign", idDesign);
