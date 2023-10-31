@@ -62,3 +62,13 @@ public enum ItemType
     DrawingColors,
     AvatarsAndChat,
 }
+
+public enum RandomType
+{
+    Transit,
+    Nothing,
+    Token,
+    Card,
+    CardPiece,
+    Custom
+}
