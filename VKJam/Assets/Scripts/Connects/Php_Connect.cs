@@ -1,8 +1,12 @@
 using System;
-using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine;
-
+[System.Serializable]
+public struct Currency
+{
+    public int IGCurrency;
+    public int DCurrency;
+}
 [System.Serializable]
 public class Php_Connect : MonoBehaviour
 {
@@ -13,14 +17,8 @@ public class Php_Connect : MonoBehaviour
     static public int Nickname;
     private static string link;
     public static RandomItemList randomBase;
-    private static WWW request;
     public static Currency Current;
-    [System.Serializable]
-    public struct Currency
-    {
-        public int IGCurrency;
-        public int DCurrency;
-    }
+    
     void Start()
     {
         SceneLoader.EndLoad += OnGameEnded;
@@ -28,6 +26,7 @@ public class Php_Connect : MonoBehaviour
         randomBase = RandomBase;
         PHPisOnline = true;
         Nickname = 1;
+        //Debug.Log(Php_Connect.Request_WhichCardInPackOwnering(0));
         /*Debug.Log(Request_BuyTry(0));
         StartCoroutine(Request_Auth(12));
         StartCoroutine(Request_DataAboutDesign(1));
@@ -35,11 +34,7 @@ public class Php_Connect : MonoBehaviour
         StartCoroutine(Request_BuyTry("Renata",1));
         StartCoroutine(Request_CurrentCurrency("Renata"));*/
     }
-    private void OnGameEnded(string sceneName)
-    {
-        Current.IGCurrency += TokenManager.TokensCount;
-        if(PHPisOnline) Request_TokenWin(TokenManager.TokensCount);
-    }
+
     private static void ErrorProcessor(string error)
     {
         Debug.LogWarning("Server Error: " + error);
@@ -48,6 +43,58 @@ public class Php_Connect : MonoBehaviour
             PHPisOnline = false;
         }
     }
+    
+    public static string Request_WhichCardInPackOwnering(int idPack)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("Nickname", Nickname);
+        form.AddField("PackId", idPack);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/WhichCardInPackOwnering.php", form))
+        {
+            www.certificateHandler = new AcceptAllCertificates();
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return www.downloadHandler.text;
+            }
+        }
+    }
+    public static string Request_WhatPackOwnering()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("Nickname", Nickname);
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/WhatPackOwnering.php", form))
+        {
+            www.certificateHandler = new AcceptAllCertificates();
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return www.downloadHandler.text;
+            }
+        }
+    }
+    private void OnGameEnded(string sceneName)
+    {
+        Current.IGCurrency += TokenManager.TokensCount;
+        if (PHPisOnline) Request_TokenWin(TokenManager.TokensCount);
+    }
     private static string Request_TokenWin(int Count)
     {
         WWWForm form = new WWWForm();
@@ -55,6 +102,7 @@ public class Php_Connect : MonoBehaviour
         form.AddField("Count", Count);
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/TokenWin.php", form))
         {
+            www.certificateHandler = new AcceptAllCertificates();
             // «апрос выполн€етс€ дожида€сь его завершени€
             www.SendWebRequest();
             while (!www.isDone) { }
@@ -77,6 +125,7 @@ public class Php_Connect : MonoBehaviour
         form.AddField("DesignID", DesignID);
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/BuyTry.php", form))
         {
+            www.certificateHandler = new AcceptAllCertificates();
             // «апрос выполн€етс€ дожида€сь его завершени€
             www.SendWebRequest();
             while (!www.isDone) { }
@@ -115,6 +164,7 @@ public class Php_Connect : MonoBehaviour
         form.AddField("DesignID", ID);
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/Gift.php", form))
         {
+            www.certificateHandler = new AcceptAllCertificates();
             // «апрос выполн€етс€ дожида€сь его завершени€
             www.SendWebRequest();
             while (!www.isDone) { }
@@ -138,6 +188,7 @@ public class Php_Connect : MonoBehaviour
         form.AddField("Nickname", external_Nickname);
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/Auth.php", form))
         {
+            www.certificateHandler = new AcceptAllCertificates();
             // «апрос выполн€етс€ дожида€сь его завершени€
             www.SendWebRequest();
             while (!www.isDone) { }
@@ -160,6 +211,7 @@ public class Php_Connect : MonoBehaviour
         form.AddField("Nickname", Nickname);
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/CurrentCurrency.php", form))
         {
+            www.certificateHandler = new AcceptAllCertificates();
             // «апрос выполн€етс€ дожида€сь его завершени€
             www.SendWebRequest();
             while (!www.isDone) { }
@@ -186,6 +238,7 @@ public class Php_Connect : MonoBehaviour
         form.AddField("Nickname", Nickname);
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/WhatOwnering.php", form))
         {
+            www.certificateHandler = new AcceptAllCertificates();
             // «апрос выполн€етс€ дожида€сь его завершени€
             www.SendWebRequest();
             while (!www.isDone) { }
@@ -208,6 +261,7 @@ public class Php_Connect : MonoBehaviour
 
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignCount.php", form))
         {
+            www.certificateHandler = new AcceptAllCertificates();
             // «апрос выполн€етс€ дожида€сь его завершени€
             www.SendWebRequest();
             while (!www.isDone) { }
@@ -231,6 +285,7 @@ public class Php_Connect : MonoBehaviour
         form.AddField("idDesign", idDesign);
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignOutput.php", form))
         {
+            www.certificateHandler = new AcceptAllCertificates();
             // «апрос выполн€етс€ дожида€сь его завершени€
             www.SendWebRequest();
             while (!www.isDone) { }
@@ -239,7 +294,7 @@ public class Php_Connect : MonoBehaviour
                 ErrorProcessor(www.error);
                 return new WareHouseData();
             }
-            else if (request.text == "error - 404")
+            else if (www.downloadHandler.text == "error - 404")
             {
                 ErrorProcessor("404");
                 return new WareHouseData();

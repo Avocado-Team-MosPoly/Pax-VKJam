@@ -9993,12 +9993,12 @@ RectTransform:
   m_Children:
   - {fileID: 190359118}
   - {fileID: 1034285160}
-  m_Father: {fileID: 361794758}
+  m_Father: {fileID: 1305574347}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.016208336, y: 0.85911113}
   m_AnchorMax: {x: 0.19179167, y: 0.9824074}
-  m_AnchoredPosition: {x: -169.43134, y: 74.60205}
-  m_SizeDelta: {x: 53.54413, y: 17.081482}
+  m_AnchoredPosition: {x: -15.293335, y: -6.468506}
+  m_SizeDelta: {x: 280.9233, y: 131.2645}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &336377036
 GameObject:
@@ -10395,8 +10395,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 335339987}
-  - {fileID: 409330308}
+  - {fileID: 1305574347}
   - {fileID: 1027337809}
   - {fileID: 405243408}
   m_Father: {fileID: 202208320}
@@ -12119,12 +12118,12 @@ RectTransform:
   m_Children:
   - {fileID: 1697980544}
   - {fileID: 1610892667}
-  m_Father: {fileID: 361794758}
+  m_Father: {fileID: 1305574347}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.19179167, y: 0.85911113}
   m_AnchorMax: {x: 0.36100003, y: 0.9824074}
-  m_AnchoredPosition: {x: -132.12567, y: 74.60205}
-  m_SizeDelta: {x: 63.974182, y: 17.081482}
+  m_AnchoredPosition: {x: 245.26373, y: -6.468506}
+  m_SizeDelta: {x: 283.09778, y: 131.2645}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &414691258
 GameObject:
@@ -29452,7 +29451,7 @@ GameObject:
   - component: {fileID: 1034285161}
   m_Layer: 5
   m_Name: CoinAmountText
-  m_TagString: Untagged
+  m_TagString: IGCurrency
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -37943,6 +37942,58 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.15832856, y: 0.00042999163, z: 0.0027489364}
     m_Extent: {x: 0.1669653, y: 0.08992572, z: 0.07190737}
   m_DirtyAABB: 0
+--- !u!1 &1305574346
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1305574347}
+  - component: {fileID: 1305574348}
+  m_Layer: 5
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1305574347
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1305574346}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 335339987}
+  - {fileID: 409330308}
+  m_Father: {fileID: 361794758}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -666.9552, y: 470.7301}
+  m_SizeDelta: {x: 378.73212, y: 15.373352}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1305574348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1305574346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 263eaa293419c924c9af5641d1b81c4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Donat: {fileID: 1610892668}
+  IG: {fileID: 1034285161}
 --- !u!1 &1306170983
 GameObject:
   m_ObjectHideFlags: 0
@@ -45119,7 +45170,7 @@ GameObject:
   - component: {fileID: 1610892668}
   m_Layer: 5
   m_Name: DonatAmountText
-  m_TagString: Untagged
+  m_TagString: DCurrency
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -53514,6 +53565,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2296393078715663276, guid: 8b554824ff097a247877aaa9ff773a86, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1887226444}
+    - targetCorrespondingSourceObject: {fileID: 2296393078715663276, guid: 8b554824ff097a247877aaa9ff773a86, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1887226446}
   m_SourcePrefab: {fileID: 100100000, guid: 8b554824ff097a247877aaa9ff773a86, type: 3}
 --- !u!1 &1887226441 stripped
 GameObject:
@@ -53574,6 +53628,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: Wish
           m_BoolArgument: 0
+        m_CallState: 0
+      - m_Target: {fileID: 1887226446}
+        m_TargetAssemblyTypeName: Catcher_RandomItem, Assembly-CSharp
+        m_MethodName: Gifter
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Wish
+          m_BoolArgument: 0
         m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:
@@ -53603,6 +53669,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.7277339, y: 0.65424883, z: 0.569297}
   m_Center: {x: 0.25139773, y: 0.29890937, z: -0.099529564}
+--- !u!114 &1887226446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1887226442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 459bdaa4b246e5d4e9e387dc39392000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  display: {fileID: 1305574348}
+  Hand: {fileID: 1887226443}
 --- !u!1 &1889251699
 GameObject:
   m_ObjectHideFlags: 0
