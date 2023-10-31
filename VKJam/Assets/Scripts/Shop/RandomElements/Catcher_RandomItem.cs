@@ -28,7 +28,7 @@ public class Catcher_RandomItem : MonoBehaviour
     public static void SetData(RandomItem Data)
     {
         DroppedItem = Data;
-        //OnDropped?.Invoke();
+        OnDropped?.Invoke();
         Result = Data.DesignID;
         if(Window != null) Window.SetActive(true);
         if (NameOutput != null) NameOutput.text = Data.SystemName;
@@ -48,17 +48,16 @@ public class Catcher_RandomItem : MonoBehaviour
                 Hand.Play("WishFiga");
         break;
             case RandomType.Token:
-                
-        break;
-            //.............
+                Hand.Play("Wish");
+                break;
             case RandomType.Card:
-                
-        break;
+                Hand.Play("Wish");
+                break;
             case RandomType.CardPiece:
-
+                Hand.Play("Wish");
                 break;
             case RandomType.Custom:
-
+                Hand.Play("Wish");
                 break;
             default:
                 
