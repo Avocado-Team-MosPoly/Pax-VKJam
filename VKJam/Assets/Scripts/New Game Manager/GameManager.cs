@@ -6,14 +6,40 @@ using UnityEngine.UI;
 
 public class GameManager : NetworkBehaviour
 {
+    /// <summary> Sends true if local player is painter, false if not </summary>
+    [HideInInspector] public UnityEvent<bool> OnGuessMonsterStageActivated;
+    [HideInInspector] public UnityEvent OnAnswerCardSOSettedOnServer; // TODO: remind why or delete
+    [HideInInspector] public UnityEvent OnGameEnded;
+
+    #region Properties
+
+    public Stage Stage { get; private set; } = Stage.Waiting;
+    public bool IsTeamMode { get; private set; }
+
+    public int IngredientsCount => answerCardSO.Ingredients.Length;
+    public bool IsDangerousCard => answerCardSO.Difficulty == CardDifficulty.Dangerous;
+    public int CurrentRound => currentRound;
+
+    public Paint Paint => paint;
+    public RoleManager RoleManager => roleManager;
+    public CardManager CardManager => cardManager;
+    public GameObject SceneMonster => sceneMonster;
+    public bool IsPainter => roleManager.PainterId == NetworkManager.Singleton.LocalClientId;
+    public byte PainterId => roleManager.PainterId;
+
+    #endregion
+
+    [SerializeField] private GameConfigSO gameConfig;
+
     [Header("Managers")]
     [SerializeField] private RoleManager roleManager;
     [SerializeField] private CardManager cardManager;
     [SerializeField] private CompareSystem compareSystem;
-    [SerializeField] private IngredientManager ingredientManager;
-    [SerializeField] private RoundManager roundManager;
     [SerializeField] private SceneObjectsManager sceneObjectsManager;
     [SerializeField] private HintManager hintManager;
+
+    private IngredientManager ingredientManager;
+    private RoundManager roundManager;
 
     [Header("---")]
     [SerializeField] private Paint paint;
@@ -28,26 +54,7 @@ public class GameManager : NetworkBehaviour
     private int currentRound = 1;
     private int roundAmount = 4;
 
-    public CardSO AnswerCardSO { get; private set; }
-    public Stage Stage { get; private set; } = Stage.Waiting;
-    public bool IsTeamMode { get; private set; } = true;
-    public int CurrentRound => currentRound;
-
-    /// <summary> Sends true if local player is painter, false if not </summary>
-    [HideInInspector] public UnityEvent<bool> OnGuessMonsterStageActivated;
-    [HideInInspector] public UnityEvent OnAnswerCardSOSettedOnServer;
-    [HideInInspector] public UnityEvent OnGameEnded;
-
-    #region GetProperties
-
-    public Paint Paint => paint;
-    public RoleManager RoleManager => roleManager;
-    public CardManager CardManager => cardManager;
-    public GameObject SceneMonster => sceneMonster;
-    public bool IsPainter => roleManager.PainterId == NetworkManager.Singleton.LocalClientId;
-    public ushort PainterId => roleManager.PainterId;
-
-    #endregion
+    private CardSO answerCardSO;
 
     public static GameManager Instance { get; private set; }
 
@@ -65,37 +72,48 @@ public class GameManager : NetworkBehaviour
     {
         cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
 
-        ingredientManager.OnIngredientSwitched.AddListener(OnIngredientSwitched);
-        roundManager.OnRoundEnded.AddListener(OnRoundEnded);
-
         nextRoundButton.GetComponent<Button>().onClick.AddListener(roleManager.ChangeRoles);
     }
 
     public override void OnNetworkSpawn()
     {
-        Log($"IsServer : {IsServer}");
+        Log("IsServer : " + IsServer);
 
         if (IsServer)
         {
-            compareSystem.OnIngredientGuess.AddListener(ingredientManager.CompareIngredient);
-            compareSystem.OnMonsterGuess.AddListener(roundManager.CompareMonster);
+            IsTeamMode = LobbyManager.Instance.CurrentLobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True";
+
+            if (IsTeamMode)
+            {
+                Log("TEAM MODE");
+
+                ingredientManager = new TeamIngredientManager(compareSystem);
+                roundManager = new TeamRoundManager(gameConfig, compareSystem, ingredientManager);
+            }
+            else
+            {
+                Log("COMPETITIVE MODE");
+
+                ingredientManager = new CompetitiveIngredientManager(compareSystem);
+                roundManager = new CompetitiveRoundManager(gameConfig, compareSystem, ingredientManager);
+            }
 
             ingredientManager.OnIngredientsEnded.AddListener(ActivateGuessMonsterStage);
-
-            nextRoundButton.gameObject.SetActive(true);
-            returnToLobbyButton.gameObject.SetActive(true);
-
-            Timer.Instance.OnExpired.AddListener(OnTimeExpired);
+            ingredientManager.OnIngredientSwitched.AddListener(OnIngredientSwitched);
+            roundManager.OnRoundEnded.AddListener(OnRoundEnded);
 
             roundAmount = NetworkManager.Singleton.ConnectedClientsIds.Count;
+            
+            Timer.Instance.OnExpired.AddListener(OnTimeExpired);
+            
+            nextRoundButton.SetActive(true);
+            returnToLobbyButton.SetActive(true);
 
-            IsTeamMode = LobbyManager.Instance.CurrentLobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True";
-            Log("Is Team Mode " + LobbyManager.Instance.CurrentLobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True");
         }
         else
         {
-            nextRoundButton.gameObject.SetActive(false);
-            returnToLobbyButton.gameObject.SetActive(false);
+            nextRoundButton.SetActive(false);
+            returnToLobbyButton.SetActive(false);
         }
     }
 
@@ -110,7 +128,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void OnRoundEndedClientRpc()
     {
-        sceneMonsterMaterial.mainTexture = AnswerCardSO.MonsterTexture;
+        sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
         sceneObjectsManager.OnRoundEnded();
         hintManager.DisableHandHint();
         TokenManager.AccrueTokens();
@@ -139,7 +157,7 @@ public class GameManager : NetworkBehaviour
             if (paint.enabled)
                 paint.GetComponent<Animator>().Play("NoteBookClose");
 
-            hintManager.SetHintData(AnswerCardSO.Id);
+            hintManager.SetHintData(answerCardSO.Id);
             hintManager.DisableHandHint();
         }
         else
@@ -169,16 +187,16 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void SetCardSOClientRpc(byte cardSOIndex)
     {
-        AnswerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
+        answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
 
-        sceneMonsterMaterial.mainTexture = AnswerCardSO.MonsterTexture;
+        sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void SetCardSOServerRpc(byte cardSOIndex)
     {
-        AnswerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
-        sceneMonsterMaterial.mainTexture = AnswerCardSO.MonsterTexture;
+        answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
+        sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
 
         OnAnswerCardSOSettedOnServer?.Invoke();
         SetCardSOClientRpc(cardSOIndex);
@@ -188,14 +206,14 @@ public class GameManager : NetworkBehaviour
 
         Stage = Stage.IngredientGuess;
 
-        Log("New answer CardSO: " + AnswerCardSO.Id);
+        Log("New answer CardSO: " + answerCardSO.Id);
     }
 
     private void SetAnswerCardSO(byte cardSOIndex)
     {
-        AnswerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
+        answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
 
-        sceneMonsterMaterial.mainTexture = AnswerCardSO.MonsterTexture;
+        sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
         sceneMonster.SetActive(true);
 
         SetCardSOServerRpc(cardSOIndex);
@@ -210,9 +228,9 @@ public class GameManager : NetworkBehaviour
             return;
 
         if (ingredientIndex < 0)
-            hintManager.SetHintData(AnswerCardSO.Id);
+            hintManager.SetHintData(answerCardSO.Id);
         else
-            hintManager.SetHintData(AnswerCardSO.Ingredients[ingredientIndex]);
+            hintManager.SetHintData(answerCardSO.Ingredients[ingredientIndex]);
     }
 
     private void OnIngredientSwitched(sbyte ingredientIndex)
@@ -225,11 +243,14 @@ public class GameManager : NetworkBehaviour
 
     private void EndGame()
     {
+        if (!IsTeamMode)
+            TokenManager.OnCompetitiveGameEnd();
+
         EndGameClientRpc();
 
         nextRoundButton.GetComponent<Button>().onClick.RemoveAllListeners();
         nextRoundButton.GetComponent<Button>().onClick.AddListener(ReturnToLobby);
-        nextRoundButton.GetComponentInChildren<TextMeshProUGUI>().text = "ֲ כמבבט";
+        nextRoundButton.GetComponentInChildren<TextMeshProUGUI>().text = "To Lobby";
     }
 
     [ClientRpc]
@@ -250,12 +271,12 @@ public class GameManager : NetworkBehaviour
 
     public string GetCurrentIngredient()
     {
-        return AnswerCardSO.Ingredients[ingredientManager.CurrentIngredientIndex];
+        return answerCardSO.Ingredients[ingredientManager.CurrentIngredientIndex];
     }
 
     public string GetCurrentMonster()
     {
-        return AnswerCardSO.Id;
+        return answerCardSO.Id;
     }
 
     #endregion

@@ -133,7 +133,7 @@ public class Paint : NetworkBehaviour
 
     private void InitControlUI()
     {
-        clearCanvasButton?.onClick.AddListener(() => Fill(baseColor));
+        clearCanvasButton?.onClick.AddListener(ClearCanvas);
         saveAsPNGButton?.onClick.AddListener(SavePaintingAsPng);
 
         switchBrushModeButton?.onClick.AddListener(SwitchBrushMode);
@@ -376,7 +376,15 @@ public class Paint : NetworkBehaviour
 
     public void ClearCanvas()
     {
-        ClearCanvasServerRpc();
+        if (IsServer)
+        {
+            ClearCanvasClientRpc();
+            isConnectedToLast = false;
+        }
+        else
+        {
+            ClearCanvasServerRpc();
+        }
     }
 
     [ServerRpc (RequireOwnership = false)]

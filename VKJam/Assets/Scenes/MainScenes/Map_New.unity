@@ -3767,54 +3767,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 309458914}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &311997001
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 311997002}
-  - component: {fileID: 311997003}
-  m_Layer: 0
-  m_Name: RoundManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &311997002
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 311997001}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1443419630}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &311997003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 311997001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06517ecbba2543a47a088d975bc7da45, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tokensPerRound: 5
-  OnRoundEnded:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &315087638
 GameObject:
   m_ObjectHideFlags: 0
@@ -20598,63 +20550,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!1 &1420472094
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1420472095}
-  - component: {fileID: 1420472096}
-  m_Layer: 0
-  m_Name: IngredientsManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1420472095
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1420472094}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1443419630}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1420472096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1420472094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34beee5572c9bfd4f85bd84eea63974e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tokensPerIngredient: 1
-  OnIngredientSwitched:
-    m_PersistentCalls:
-      m_Calls: []
-  OnIngredientsEnded:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCorrectIngredient:
-    m_PersistentCalls:
-      m_Calls: []
-  OnWrongIngredient:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &1443419627
 GameObject:
   m_ObjectHideFlags: 0
@@ -20705,19 +20600,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fad93a00e536a542bbedfc537b49f5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roleManager: {fileID: 121424963}
-  cardManager: {fileID: 1895462717}
-  compareSystem: {fileID: 385257337}
-  ingredientManager: {fileID: 1420472096}
-  roundManager: {fileID: 311997003}
-  sceneObjectsManager: {fileID: 1599721547}
-  hintManager: {fileID: 2059909896}
-  paint: {fileID: 7751093537230117310}
-  nextRoundButton: {fileID: 1308791797}
-  returnToLobbyButton: {fileID: 788196272}
-  sceneMonster: {fileID: 707516069}
-  sceneMonsterMaterial: {fileID: 2100000, guid: b72b645da8fabef40b672d31e4581140, type: 2}
-  hiddenMonster: {fileID: 2800000, guid: 6d0ad448bb87a1b44be804e4ca2c46e7, type: 3}
   OnGuessMonsterStageActivated:
     m_PersistentCalls:
       m_Calls: []
@@ -20727,6 +20609,18 @@ MonoBehaviour:
   OnGameEnded:
     m_PersistentCalls:
       m_Calls: []
+  gameConfig: {fileID: 11400000, guid: 8039a142f3e087644a35d9d22f2bcf0a, type: 2}
+  roleManager: {fileID: 121424963}
+  cardManager: {fileID: 1895462717}
+  compareSystem: {fileID: 385257337}
+  sceneObjectsManager: {fileID: 1599721547}
+  hintManager: {fileID: 2059909896}
+  paint: {fileID: 7751093537230117310}
+  nextRoundButton: {fileID: 1308791797}
+  returnToLobbyButton: {fileID: 788196272}
+  sceneMonster: {fileID: 707516069}
+  sceneMonsterMaterial: {fileID: 2100000, guid: b72b645da8fabef40b672d31e4581140, type: 2}
+  hiddenMonster: {fileID: 2800000, guid: 6d0ad448bb87a1b44be804e4ca2c46e7, type: 3}
 --- !u!4 &1443419630
 Transform:
   m_ObjectHideFlags: 0
@@ -20743,8 +20637,6 @@ Transform:
   - {fileID: 2059909895}
   - {fileID: 385257336}
   - {fileID: 121424962}
-  - {fileID: 311997002}
-  - {fileID: 1420472095}
   - {fileID: 1599721546}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
