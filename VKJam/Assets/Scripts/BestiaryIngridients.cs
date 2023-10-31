@@ -4,17 +4,43 @@ using TMPro;
 using Unity.Services.Lobbies.Models;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using static UnityEngine.ParticleSystem;
 
 public class BestiaryIngridients : MonoBehaviour
 {
     [SerializeField] private int lastShownIngridient=0;
+    [SerializeField] private int firstShownIngredient;
     [SerializeField] private RectTransform ingredientListContainer1;
     [SerializeField] private RectTransform ingredientListContainer2;
     [SerializeField] private GameObject ingredientInfoTemplate;
-    [SerializeField] private List<string> IngridientName;
-    [SerializeField] private List<Sprite> IngredientImage;
+    [SerializeField] private List<string> ingridientName;
+    [SerializeField] private List<Sprite> ingredientImage;
+    [SerializeField] private PackCardSO packCardSO;
+    [SerializeField] private GameObject NextButton;
+    [SerializeField] private GameObject BeforeButton;
 
+    public void Awake()
+    {
+        TakePack();
+        NextButton.GetComponent<Button>().onClick.AddListener(() => UpdateIngredientList(true));
+        BeforeButton.GetComponent<Button>().onClick.AddListener(() => UpdateIngredientList(false));
+        lastShownIngridient = 0;
+        UpdateIngredientList(true);
+    }
+    public void TakePack()
+    {
+        ingridientName.Clear();
+        ingredientImage.Clear();
+        for (int i =0; i < packCardSO.CardInPack.Length; i++)
+        {
+            if(packCardSO.CardInPack[i].CardIsInOwn==true)
+            {
+                ingridientName.Add(packCardSO.CardInPack[i].Card.id);
+                ingredientImage.Add(packCardSO.CardInPack[i].Card.MonsterInBestiarySprite);
+            }
+        }
+    }
     public void UpdateIngredientList(bool up)
     {
         foreach (Transform child in ingredientListContainer1)
@@ -28,35 +54,36 @@ public class BestiaryIngridients : MonoBehaviour
         }
         else
         {
-            UpdateIngredientListDown(ingredientListContainer1);
-            UpdateIngredientListDown(ingredientListContainer2);
+            lastShownIngridient = firstShownIngredient;
+            UpdateIngredientListUp(ingredientListContainer1);
+            UpdateIngredientListUp(ingredientListContainer2);
         }
-        
+        CheckButton();
     }
     private void UpdateIngredientListUp(RectTransform ingredientListContainer)
     {
         int i = lastShownIngridient;
         for (; i < 10 + lastShownIngridient; i++)
         {
-            if (i + lastShownIngridient >= IngridientName.Count)
+            if (i >= ingridientName.Count)
             {
+                i -= 1;
                 break;
-            }
-            ;
+            };            
             GameObject ingredientSingleTransform = Instantiate(ingredientInfoTemplate, ingredientListContainer);
             ingredientSingleTransform.SetActive(true);
 
             IngredientInfo ingredientInfoUI = ingredientSingleTransform.GetComponent<IngredientInfo>();
-            ingredientInfoUI.SetIngridient(IngridientName[i + lastShownIngridient], IngredientImage[i + lastShownIngridient]);
+            ingredientInfoUI.SetIngridient(ingridientName[i], ingredientImage[i]);
         }
         lastShownIngridient = i;
     }
     private void UpdateIngredientListDown(RectTransform ingredientListContainer)
-    {
+    {   
         int i = lastShownIngridient;
         for (; i > lastShownIngridient-10; i--)
         {
-            if (lastShownIngridient-i <= 0)
+            if (i <= -1)
             {
                 break;
             }
@@ -64,8 +91,24 @@ public class BestiaryIngridients : MonoBehaviour
             ingredientSingleTransform.SetActive(true);
 
             IngredientInfo ingredientInfoUI = ingredientSingleTransform.GetComponent<IngredientInfo>();
-            ingredientInfoUI.SetIngridient(IngridientName[lastShownIngridient - i], IngredientImage[lastShownIngridient - i]);
+            ingredientInfoUI.SetIngridient(ingridientName[i], ingredientImage[i]);
         }
         lastShownIngridient = i;
+    }
+    private void CheckButton()
+    {
+        if (lastShownIngridient >= ingridientName.Count-1)
+        {
+            NextButton.SetActive(false);
+        }
+        else
+        {
+            NextButton.SetActive(true);
+        }
+        if (lastShownIngridient <= 20)
+        {
+            BeforeButton.SetActive(false);
+        }
+        else { BeforeButton.SetActive(true); }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 [CreateAssetMenu()]
 public class PackCardSO : ScriptableObject
@@ -15,7 +16,8 @@ public class PackCardSO : ScriptableObject
     [SerializeField] private bool PackIsInOwn;
     [SerializeField] private int PackDBIndex;
 
-    [SerializeField] private CardSystem[] CardInPack;
+    public CardSystem[] CardInPack;
+     
     /*private void OnValidate()
     {
         string temp = "";

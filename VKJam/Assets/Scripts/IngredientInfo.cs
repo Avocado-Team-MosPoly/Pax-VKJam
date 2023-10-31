@@ -16,10 +16,11 @@ public class IngredientInfo : MonoBehaviour
     {
         ingridientName.text = name;
         ingredientImage.GetComponent<Image>().sprite = picture;
+        gameObject.SetActive(true);
 
-//        GetComponent<Button>().onClick.AddListener(
-//           () => 
-//       );
+        GetComponent<Button>().onClick.AddListener(
+          () => Guess()
+      );
     }
     public void Guess()
     {
