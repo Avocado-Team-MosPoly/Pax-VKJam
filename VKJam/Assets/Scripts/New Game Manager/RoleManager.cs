@@ -5,12 +5,12 @@ using UnityEngine.Events;
 
 public class RoleManager : NetworkBehaviour
 {
-    private NetworkVariable<ushort> painterId = new(ushort.MaxValue);
+    private NetworkVariable<byte> painterId = new(byte.MaxValue);
     private List<ulong> lastPainterIds = new();
 
     [HideInInspector] public UnityEvent OnPainterSetted;
     [HideInInspector] public UnityEvent OnGuesserSetted;
-    public ushort PainterId => painterId.Value;
+    public byte PainterId => painterId.Value;
 
     public override void OnNetworkSpawn()
     {
@@ -18,7 +18,7 @@ public class RoleManager : NetworkBehaviour
 
         if (IsServer)
         {
-            painterId.Value = (ushort)NetworkManager.ConnectedClientsIds[0];
+            painterId.Value = (byte)NetworkManager.ConnectedClientsIds[0];
         }
         else
         {
@@ -26,7 +26,7 @@ public class RoleManager : NetworkBehaviour
         }
     }
 
-    private void PainterId_OnValueChanged(ushort previousValue, ushort newValue)
+    private void PainterId_OnValueChanged(byte previousValue, byte newValue)
     {
         Log("PainterId_OnValueChanged");
 
@@ -34,11 +34,8 @@ public class RoleManager : NetworkBehaviour
         ChooseRole();
     }
 
-    // не работает [ NetworkManager.Singleton.LocalClientId ], с IEnumerator почему-то работает
     private void ChooseRole()
     {
-        //yield return null;
-
         if (GameManager.Instance.IsPainter)
             OnPainterSetted?.Invoke();
         else
@@ -56,11 +53,12 @@ public class RoleManager : NetworkBehaviour
     public void ChangeRoles()
     {
 #if UNITY_EDITOR
+        // forgot why
         GameManager.Instance.CardManager.enabled = false;
         OnPainterSetted?.Invoke();
 #endif
 
-        foreach (ushort clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        foreach (byte clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             if (!lastPainterIds.Contains(clientId))
             {
@@ -71,6 +69,6 @@ public class RoleManager : NetworkBehaviour
 
         // runs if all played for painter
         ClearLastPaintersClientRpc();
-        painterId.Value = (ushort)NetworkManager.Singleton.ConnectedClientsIds[0];
+        painterId.Value = (byte)NetworkManager.Singleton.ConnectedClientsIds[0];
     }
 }

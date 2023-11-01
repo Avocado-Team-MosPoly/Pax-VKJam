@@ -1,8 +1,12 @@
-using System;
 using UnityEngine;
+using System.Linq;
 [CreateAssetMenu()]
 public class PackCardSO : ScriptableObject
 {
+    
+    [SerializeField] private string PackName;
+    [SerializeField] private bool PackIsInOwn;
+    public int PackDBIndex;
     [System.Serializable]
     public struct CardSystem
     {
@@ -12,20 +16,39 @@ public class PackCardSO : ScriptableObject
 
         private static int currentIndex = 0;
     }
-    [SerializeField] private string PackName;
-    [SerializeField] private bool PackIsInOwn;
-    [SerializeField] private int PackDBIndex;
-
     public CardSystem[] CardInPack;
-     
-    /*private void OnValidate()
+   /* private void OnValidate()
     {
         string temp = "";
-        for(int j =0;j< CardInPack.Length; ++j)
+        for (int j = 0; j < CardInPack.Length; ++j)
         {
             CardInPack[j].CardDBIndex = j;
             temp += CardInPack[j].Card.id + "\n";
         }
+        CardInPack = CardInPack.OrderBy(cardSystem => cardSystem.Card.id).ToArray();
         Debug.Log(temp);
     }*/
+
+
+    public PackCardSO PackDataOwnering()
+    {
+        
+        string res = Php_Connect.Request_WhichCardInPackOwnering(PackDBIndex);
+        string[] result = res.Split();
+        Debug.Log(res);
+        foreach (var current in result)
+        {
+            if (current == "") break;
+            CardInPack[int.Parse(current)].CardIsInOwn = true;
+        }
+        return this;
+    }
+
+    public void ResetOwning()
+    {
+        for (int j = 0; j < CardInPack.Length; ++j)
+        {
+            CardInPack[j].CardIsInOwn = false;
+        }
+    }
 }

@@ -3,22 +3,43 @@ using UnityEngine;
 using UnityEngine.Events;
 using Unity.Netcode;
 
-public class IngredientManager : MonoBehaviour
+public abstract class IngredientManager
 {
-    [SerializeField] private int tokensPerIngredient = 1;
+    public UnityEvent<sbyte> OnIngredientSwitched = new();
+    public UnityEvent OnIngredientsEnded = new();
+    public UnityEvent OnCorrectIngredient = new();
+    public UnityEvent OnWrongIngredient = new();
 
-    private bool isIngredientGuessed;
     public int CurrentIngredientIndex { get; private set; }
-    private List<ulong> correctGuesserIds = new();
-    private Dictionary<ulong, bool> correctGuesserAllIds = new();
 
-    [HideInInspector] public UnityEvent<sbyte> OnIngredientSwitched;
-    [HideInInspector] public UnityEvent OnIngredientsEnded;
-    [HideInInspector] public UnityEvent OnCorrectIngredient;
-    [HideInInspector] public UnityEvent OnWrongIngredient;
-
-    private void Start()
+    public IReadOnlyList<ulong> CorrectGuesserAllIds
     {
+        get
+        {
+            List<ulong> result = new();
+
+            foreach (ulong clientId in correctGuesserAllIds.Keys)
+                if (correctGuesserAllIds[clientId])
+                    result.Add(clientId);
+
+            return result;
+        }
+    }
+
+    protected List<ulong> correctGuesserIds = new();
+
+    /// <summary> Players guessed without mistakes </summary>
+    protected Dictionary<ulong, bool> correctGuesserAllIds = new();
+
+    protected bool isIngredientGuessed;
+
+    public IngredientManager(CompareSystem compareSystem)
+    {
+        if (NetworkManager.Singleton == null)
+            throw new System.Exception("Ingredient Manager needs Network Manager instance on scene");
+
+        compareSystem.OnIngredientGuess.AddListener(CompareIngredient);
+
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
             correctGuesserAllIds[clientId] = true;
 
@@ -36,7 +57,7 @@ public class IngredientManager : MonoBehaviour
     {
         CurrentIngredientIndex++;
 
-        if (CurrentIngredientIndex >= GameManager.Instance.AnswerCardSO.Ingredients.Length)
+        if (CurrentIngredientIndex >= GameManager.Instance.IngredientsCount)
         {
             OnIngredientsEnded?.Invoke();
             CurrentIngredientIndex = 0;
@@ -46,64 +67,17 @@ public class IngredientManager : MonoBehaviour
         OnIngredientSwitched?.Invoke((sbyte)CurrentIngredientIndex);
     }
 
-    private void OnCorrectIngredientGuess(ulong clientId)
+    protected virtual void OnCorrectIngredientGuess(ulong clientId)
     {
         isIngredientGuessed = true;
-        
-        if (!GameManager.Instance.IsTeamMode)
-        {
-            correctGuesserIds.Add(clientId);
-            if (!correctGuesserIds.Contains(GameManager.Instance.PainterId))
-                correctGuesserIds.Add(GameManager.Instance.PainterId);
-        }
     }
 
-    private void OnWrongIngredientGuess(ulong clientId)
+    protected virtual void OnWrongIngredientGuess(ulong clientId)
     {
-        if (!GameManager.Instance.IsTeamMode)
-        {
-            if (correctGuesserIds.Contains(clientId))
-            {
-                correctGuesserIds.Remove(clientId);
-                if (correctGuesserIds.Count == 1)
-                {
-                    correctGuesserIds.Clear();
-                    isIngredientGuessed = false;
-                }
-            }
-        }
+
     }
 
-    private void CorrectIngredient()
-    {
-        Log("Correct guess");
-
-        isIngredientGuessed = false;
-
-        int playersCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
-
-        if (GameManager.Instance.IsTeamMode)
-        {
-            TokenManager.AddTokens(playersCount * 2);
-        }
-        else
-        {
-            foreach (byte clientId in correctGuesserIds)
-            {
-                TokenManager.AddTokensToClient(1, clientId);
-            }
-
-            foreach (ulong clientId in correctGuesserAllIds.Keys)
-            {
-                if (!correctGuesserIds.Contains(clientId))
-                    correctGuesserAllIds[clientId] = false;
-            }
-
-            correctGuesserIds.Clear();
-        }
-
-        OnCorrectIngredient?.Invoke();
-    }
+    protected abstract void CorrectIngredient();
 
     private void WrongIngredient()
     {
@@ -138,5 +112,5 @@ public class IngredientManager : MonoBehaviour
             OnWrongIngredientGuess(guesserId);
     }
 
-    private void Log(object message) => Debug.Log($"[{name}] " + message);
+    protected void Log(object message) => Debug.Log($"[{nameof(IngredientManager)}] " + message);
 }

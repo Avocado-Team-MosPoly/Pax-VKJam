@@ -4,13 +4,20 @@ public class Catcher_RandomItem : MonoBehaviour
 {
     [SerializeField] private static TMPro.TMP_Text NameOutput;
     [SerializeField] private static GameObject Window;
+    [SerializeField] private CurrencyCatcher display;
+    [SerializeField] private static RandomItem DroppedItem;
+    [SerializeField] private Animator Hand;
     public static int Result;
+
+    public delegate void ThisDroppedEvent();
+    public static event ThisDroppedEvent OnDropped;
 
     private void Awake()
     {
+        OnDropped += OnDroppingWhatever;
         if (NameOutput == null)
         {
-            NameOutput = GameObject.FindGameObjectWithTag("Random_Frame").GetComponent<TMPro.TMP_Text>();
+            GameObject.FindGameObjectWithTag("Random_Frame").TryGetComponent<TMPro.TMP_Text>(out NameOutput);
         }
         if (Window == null)
         {
@@ -20,13 +27,42 @@ public class Catcher_RandomItem : MonoBehaviour
     }
     public static void SetData(RandomItem Data)
     {
+        DroppedItem = Data;
+        OnDropped?.Invoke();
         Result = Data.DesignID;
         if(Window != null) Window.SetActive(true);
         if (NameOutput != null) NameOutput.text = Data.SystemName;
     }
     public void Gifter()
     {
+        Debug.Log(0);
         if (Php_Connect.PHPisOnline) Php_Connect.Request_Gift(0, Php_Connect.Nickname);
         else Php_Connect.randomBase.Interact();
+        display.Refresh();
     }
+    private void OnDroppingWhatever()
+    {
+        switch (DroppedItem.Type)
+        {
+            case RandomType.Nothing:
+                Hand.Play("WishFiga");
+        break;
+            case RandomType.Token:
+                Hand.Play("Wish");
+                break;
+            case RandomType.Card:
+                Hand.Play("Wish");
+                break;
+            case RandomType.CardPiece:
+                Hand.Play("Wish");
+                break;
+            case RandomType.Custom:
+                Hand.Play("Wish");
+                break;
+            default:
+                
+        break;
+        }
+    }
+
 }

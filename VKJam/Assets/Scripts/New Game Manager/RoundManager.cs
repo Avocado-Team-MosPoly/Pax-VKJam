@@ -3,132 +3,58 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class RoundManager : MonoBehaviour
+public abstract class RoundManager
 {
-    [SerializeField] private int tokensPerRound = 5;
+    [HideInInspector] public UnityEvent OnRoundEnded = new();
 
-    private bool isMonsterGuessed;
-    private List<ulong> correctGuesserIds = new List<ulong>();
+    /// <summary> Correct guessed in this round </summary>
+    protected List<ulong> correctGuesserIds = new();
 
-    [HideInInspector] public UnityEvent OnRoundEnded;
+    protected bool isMonsterGuessed;
 
-    private void OnWrongMonsterGuess(ulong clientId)
+    protected readonly byte winningBonus = 20;
+    protected readonly IngredientManager ingredientManager;
+
+    protected readonly GameConfigSO config;
+
+    protected int playersCount => NetworkManager.Singleton.ConnectedClientsIds.Count;
+
+    public RoundManager(GameConfigSO gameConfig, CompareSystem compareSystem, IngredientManager ingredientManager)
     {
-        if (!GameManager.Instance.IsTeamMode)
-        {
-            if (correctGuesserIds.Contains(clientId))
-            {
-                correctGuesserIds.Remove(clientId);
-                if (correctGuesserIds.Count == 1)
-                {
-                    correctGuesserIds.Clear();
-                    isMonsterGuessed = false;
-                }
-            }
-        }
+        config = gameConfig;
+        this.ingredientManager = ingredientManager;
+
+        compareSystem.OnMonsterGuess.AddListener(CompareMonster);
     }
 
-    private void OnCorrectMonsterGuess(ulong clientId)
+    protected abstract void OnWrongMonsterGuess(ulong clientId);
+
+    // called if one or more players guessed monster correctly
+    protected virtual void WinRound()
+    {
+        Debug.Log("Round Win");
+    }
+
+    protected virtual void LoseRound()
+    {
+        Debug.Log("Round Losed");
+    }
+
+    protected virtual void OnCorrectMonsterGuess(ulong clientId)
     {
         isMonsterGuessed = true;
-
-        if (!GameManager.Instance.IsTeamMode)
-        {
-            correctGuesserIds.Add(clientId);
-            if (!correctGuesserIds.Contains(GameManager.Instance.PainterId))
-                correctGuesserIds.Add(GameManager.Instance.PainterId);
-        }
     }
 
-    private void WinRound()
-    {
-        Log("Win Round");
-
-        isMonsterGuessed = false;
-
-        int playersCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
-
-        if (GameManager.Instance.IsTeamMode)
-        {
-            int tokensToAdd = playersCount * playersCount * 4;
-
-            if (GameManager.Instance.AnswerCardSO.Difficulty == CardDifficulty.Dangerous)
-                TokenManager.AddTokens(tokensToAdd);
-            else
-                TokenManager.AddTokens((int)(tokensToAdd * 1.5f));
-            
-            if (playersCount - 2 > 0)
-                TokenManager.AddTokens(playersCount);
-        }
-        else
-        {
-            PainterPenalty(correctGuesserIds.Count);
-            PainterReward(correctGuesserIds.Count);
-            if (GameManager.Instance.AnswerCardSO.Difficulty == CardDifficulty.Dangerous)
-            {
-                foreach (byte clientId in correctGuesserIds)
-                {
-                    if (clientId != GameManager.Instance.PainterId)
-                        TokenManager.AddTokensToClient(4, clientId);
-                    else
-                    {
-                        int tokensToAdd = 4;
-                        if (correctGuesserIds.Count > 2)
-                        {
-                            tokensToAdd += playersCount - 1;
-                        }
-
-                        TokenManager.AddTokensToClient(tokensToAdd, clientId);
-                    }
-                }
-            }
-            else
-            {
-                foreach (byte clientId in correctGuesserIds)
-                {
-                    if (clientId != GameManager.Instance.PainterId)
-                        TokenManager.AddTokensToClient(6, clientId);
-                    else
-                    {
-                        int tokensToAdd = 6;
-                        if (correctGuesserIds.Count > 2)
-                        {
-                            tokensToAdd += playersCount - 1;
-                        }
-
-                        TokenManager.AddTokensToClient(tokensToAdd, clientId);
-                    }
-                }
-            }
-            correctGuesserIds.Clear();
-        }
-    }
-
-    private void LoseRound()
-    {
-        Log("Lose Round");
-
-        if (GameManager.Instance.IsTeamMode)
-        {
-            int tokensToRemove = (int)(TokenManager.TokensCountWinnedCurrentRound * 0.6f);
-            TokenManager.RemoveTokens(tokensToRemove);
-        }
-        else
-        {
-            PainterPenalty(correctGuesserIds.Count);
-            PainterReward(correctGuesserIds.Count);
-        }
-        
-        isMonsterGuessed = false;
-        correctGuesserIds.Clear();
-    }
-
-    public void OnTimeExpired()
+    /// <summary> End of round </summary>
+    public virtual void OnTimeExpired()
     {
         if (isMonsterGuessed)
             WinRound();
         else
             LoseRound();
+
+        isMonsterGuessed = false;
+        correctGuesserIds.Clear();
 
         OnRoundEnded?.Invoke();
     }
@@ -137,7 +63,7 @@ public class RoundManager : MonoBehaviour
     {
         string currentMonster = GameManager.Instance.GetCurrentMonster();
 
-        Log($"Current Monster: {currentMonster}, Guess: {guess}, Guesser Id: {guesserId}");
+        Log($"Current Monster: {currentMonster}; Guess: {guess}; Guesser Id: {guesserId}");
 
         if (currentMonster.ToLower() == guess.ToLower())
             OnCorrectMonsterGuess(guesserId);
@@ -164,5 +90,5 @@ public class RoundManager : MonoBehaviour
         { TokenManager.AddTokensToClient(2, (byte)GameManager.Instance.PainterId); }
     }
 
-    private void Log(object message) => Debug.Log($"[{name}] " + message);
+    private void Log(object message) => Debug.Log($"[{nameof(RoundManager)}] " + message);
 }

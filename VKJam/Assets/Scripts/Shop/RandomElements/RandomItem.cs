@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 [CreateAssetMenu(fileName = "New RandomItem", menuName = "Random Item", order = 51)]
 public class RandomItem : ScriptableObject
@@ -7,7 +5,9 @@ public class RandomItem : ScriptableObject
 
     [SerializeField] public string SystemName;
     [SerializeField] public int DesignID;
-    [SerializeField] protected bool IsEmbedded; 
+    [SerializeField] protected bool IsEmbedded;
+    
+    public RandomType Type;
     protected virtual void Embedded() { IsEmbedded = false; }
     public bool checkEmbedded()
     {
@@ -16,7 +16,7 @@ public class RandomItem : ScriptableObject
     private void Start() => Embedded();
     public virtual void Interact() 
     {
-        Catcher_RandomItem.SetData(this);
+        Catcher_RandomItem.SetData(this);        
     }
 
     public float ResultLesserThan;

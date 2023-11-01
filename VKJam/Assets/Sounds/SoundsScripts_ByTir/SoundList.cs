@@ -43,7 +43,7 @@ public class SoundList : MonoBehaviour
         }
         _source.clip = Target.Sounds[Random.Range(0, Target.Sounds.Length)];
         _source.Play();
-        if (WaitingSoundEnd) WaitSoundEnd(Target);
+        if (WaitingSoundEnd) StartCoroutine(WaitSoundEnd(Target));
     }
     private IEnumerator WaitSoundEnd(Audio Target)
     {
