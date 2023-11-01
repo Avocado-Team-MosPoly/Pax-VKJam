@@ -66,6 +66,7 @@ public class BestiaryIngridients : MonoBehaviour
         for (; i < 10 + lastShownIngridient; i++)
         {
             if (i >= ingridientName.Count)
+
             {
                 i -= 1;
                 break;
@@ -75,6 +76,7 @@ public class BestiaryIngridients : MonoBehaviour
 
             IngredientInfo ingredientInfoUI = ingredientSingleTransform.GetComponent<IngredientInfo>();
             ingredientInfoUI.SetIngridient(ingridientName[i], ingredientImage[i]);
+
         }
         lastShownIngridient = i;
     }
@@ -92,6 +94,7 @@ public class BestiaryIngridients : MonoBehaviour
 
             IngredientInfo ingredientInfoUI = ingredientSingleTransform.GetComponent<IngredientInfo>();
             ingredientInfoUI.SetIngridient(ingridientName[i], ingredientImage[i]);
+
         }
         lastShownIngridient = i;
     }
