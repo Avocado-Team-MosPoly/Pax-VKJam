@@ -14,8 +14,8 @@ public class BestiaryIngridients : MonoBehaviour
     [SerializeField] private RectTransform ingredientListContainer1;
     [SerializeField] private RectTransform ingredientListContainer2;
     [SerializeField] private GameObject ingredientInfoTemplate;
-    [SerializeField] private List<string> ingridientName;
-    [SerializeField] private List<Sprite> ingredientImage;
+    [SerializeField] private List<string> ingridientName= new List<string>();
+    [SerializeField] private List<Sprite> ingredientImage=new();
     [SerializeField] private PackCardSO packCardSO;
     [SerializeField] private GameObject NextButton;
     [SerializeField] private GameObject BeforeButton;
@@ -66,9 +66,13 @@ public class BestiaryIngridients : MonoBehaviour
         for (; i < 10 + lastShownIngridient; i++)
         {
             if (i >= ingridientName.Count)
-
             {
-                i -= 1;
+                if(i!=0)
+                {
+                    i -= 1;
+                }                
+                Debug.Log("Break");
+                Debug.Log(i);
                 break;
             };            
             GameObject ingredientSingleTransform = Instantiate(ingredientInfoTemplate, ingredientListContainer);
