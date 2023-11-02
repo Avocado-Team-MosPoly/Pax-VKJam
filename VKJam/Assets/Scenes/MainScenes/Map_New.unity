@@ -3961,7 +3961,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &326093033
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4823,25 +4823,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee5833292eca5cb4998a5b939321c691, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsters:
-  - {fileID: 11400000, guid: 21a16bece12707b44bca8b9c7b45ece0, type: 2}
-  - {fileID: 11400000, guid: 6534034b993db4f478b16088c28913fd, type: 2}
-  - {fileID: 11400000, guid: d58a355a8ffca88408cf4563c446ead1, type: 2}
-  - {fileID: 11400000, guid: 17e15e6474cdb8c4680de2a63913cdd9, type: 2}
-  - {fileID: 11400000, guid: 3aea8ec17757b4a40a07c14f695a392b, type: 2}
-  - {fileID: 11400000, guid: 5128db9d2414b8040b88a2322fbb5d7d, type: 2}
-  - {fileID: 11400000, guid: d1a656aef0d8c634fac83baa945ba1c3, type: 2}
-  - {fileID: 11400000, guid: 16adc864832bab741a189e4a9f3a39a8, type: 2}
-  - {fileID: 11400000, guid: 437ebd7f25baff2408735bfea562a97a, type: 2}
-  - {fileID: 11400000, guid: 562ad9fec2a61da4a841d32fb847bdd5, type: 2}
-  - {fileID: 11400000, guid: 75984699b495249429cf4cee91b28cb8, type: 2}
-  - {fileID: 11400000, guid: 8e23770d3acf48e4bbd5c94ddc17f030, type: 2}
-  - {fileID: 11400000, guid: f6e54f0238245504398703c454111202, type: 2}
-  - {fileID: 11400000, guid: 3f42c660fdb698449923c693aab4412d, type: 2}
-  - {fileID: 11400000, guid: 594faaa8f37415946b432f4c7afc8158, type: 2}
-  - {fileID: 11400000, guid: 47776b6d93d7d344f8a9aa0c01fdf6c6, type: 2}
-  - {fileID: 11400000, guid: a33b9082b2aef4b4e809e7b974264b83, type: 2}
-  - {fileID: 11400000, guid: 90f18e2d335723c40bbdc13e04c396e1, type: 2}
   pageButtons:
   - {fileID: 1383167168}
   - {fileID: 168666157}
@@ -4873,6 +4854,7 @@ MonoBehaviour:
   chooseMonster: {fileID: 489164534}
   catalougeCanvas: {fileID: 2025106277}
   templateCanvas: {fileID: 1909102219}
+  packCardSO: {fileID: 11400000, guid: 040e18bcc36e564478de642a4b6f95ec, type: 2}
 --- !u!114 &375007727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10514,7 +10496,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.018526316}
   m_AnchorMax: {x: 0.64267564, y: 0.17071055}
-  m_AnchoredPosition: {x: 1.3999939, y: -17.600037}
+  m_AnchoredPosition: {x: 1.3999939, y: -17.600098}
   m_SizeDelta: {x: -2.4989014, y: 26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &725662201
@@ -27038,7 +27020,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.1834737, y: 0.087000005}
   m_AnchorMax: {x: 0.85400003, y: 0.90900004}
-  m_AnchoredPosition: {x: -4.5910034, y: -2.1848755}
+  m_AnchoredPosition: {x: -4.5910645, y: -2.1848755}
   m_SizeDelta: {x: 9.22998, y: 1.3058014}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1910327979
