@@ -176,6 +176,7 @@ public class GameManager : NetworkBehaviour
 
         ActivateGuessMonsterStageClientRpc();
 
+        Timer.Instance.OnMonsterGuess();
         Timer.Instance.StartServerRpc();
 
         Debug.Log("Monster Stage " + Stage);
@@ -202,6 +203,7 @@ public class GameManager : NetworkBehaviour
         SetCardSOClientRpc(cardSOIndex);
 
         SetHintDataClientRpc((sbyte)ingredientManager.CurrentIngredientIndex);
+        Timer.Instance.OnIngredientGuess();
         Timer.Instance.StartServerRpc();
 
         Stage = Stage.IngredientGuess;
@@ -235,6 +237,7 @@ public class GameManager : NetworkBehaviour
 
     private void OnIngredientSwitched(sbyte ingredientIndex)
     {
+        Timer.Instance.OnIngredientGuess();
         Timer.Instance.StartServerRpc();
         paint.ClearCanvas();
 

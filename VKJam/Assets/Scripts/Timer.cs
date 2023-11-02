@@ -12,7 +12,11 @@ public class Timer : NetworkBehaviour
     public NetworkVariable<int> NetworkTime = new(0);
     private bool isTimePaused = false;
     [SerializeField] private Hint showRecepiesUI;
-    [SerializeField] private int roundTime = 45;
+
+    [SerializeField] private int ingredientGuessTime = 45;
+    [SerializeField] private int monsterGuessTime = 120;
+
+    private int roundTime;
 
     private Coroutine serverClockCoroutine = null;
 
@@ -23,7 +27,7 @@ public class Timer : NetworkBehaviour
     private void Awake()
     {
         Instance = this;
-        roundTime = int.Parse(LobbyManager.Instance.CurrentLobby.Data["TimerAmount"].Value);
+        roundTime = ingredientGuessTime;//int.Parse(LobbyManager.Instance.CurrentLobby.Data["TimerAmount"].Value);
         ShowTime.text = ToTimeFormat(roundTime);
     }
 
@@ -109,6 +113,15 @@ public class Timer : NetworkBehaviour
         }
 
         ResetToDefault();
+    }
+    public void OnIngredientGuess()
+    {
+        roundTime = ingredientGuessTime;
+    }
+
+    public void OnMonsterGuess()
+    {
+        roundTime = monsterGuessTime;
     }
 
     public void SetPause(bool state)
