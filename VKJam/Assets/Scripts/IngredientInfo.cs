@@ -22,6 +22,9 @@ public class IngredientInfo : MonoBehaviour
     }
     public void Guess()
     {
-        compareSystem.CompareAnswerServerRpc(ingridientName.text, new ServerRpcParams());
+        if (GameManager.Instance.Stage == Stage.IngredientGuess)
+        {
+            compareSystem.CompareAnswerServerRpc(ingridientName.text, new ServerRpcParams());
+        }
     }
 }
