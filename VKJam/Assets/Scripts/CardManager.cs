@@ -17,7 +17,7 @@ public class CardManager : MonoBehaviour
     };
 
     [Header("Scriptable Objects")]
-    private List<CardSO> cardSOArray;
+    private List<CardSO> cardSOArray=new();
     [SerializeField] private PackCardSO packCardSO;
     private Dictionary<CardDifficulty, List<CardSO>> cardSODictionary = new();
     private List<CardSO> usedCardSO = new();
