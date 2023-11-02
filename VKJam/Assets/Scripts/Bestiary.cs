@@ -54,6 +54,7 @@ public class Bestiary : MonoBehaviour
     }
     public void TakePack()
     {
+        monsters.Clear();
         for (int i = 0; i < packCardSO.CardInPack.Length; i++)
         {
             if (packCardSO.CardInPack[i].CardIsInOwn == true)
