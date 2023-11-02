@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public class Bestiary : MonoBehaviour
 {
-    private List<CardSO> monsters;
+    private List<CardSO> monsters = new();
     [SerializeField] private Button[] pageButtons;
 
     [SerializeField] private Sprite dangerousIcon;
@@ -41,6 +41,7 @@ public class Bestiary : MonoBehaviour
 
     private void Start()
     {
+        TakePack();
         previousMonsterButton.onClick.AddListener(PreviousMoster);
         nextMonsterButton.onClick.AddListener(NextMoster);
 
@@ -49,7 +50,6 @@ public class Bestiary : MonoBehaviour
             int pageIndex = i;
             pageButtons[i].onClick.AddListener(() => GoToPage(pageIndex));
         }
-        TakePack();
         Initialize();
     }
     public void TakePack()
