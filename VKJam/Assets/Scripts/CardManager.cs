@@ -17,7 +17,8 @@ public class CardManager : MonoBehaviour
     };
 
     [Header("Scriptable Objects")]
-    [SerializeField] private CardSO[] cardSOArray;
+    private List<CardSO> cardSOArray=new();
+    [SerializeField] private PackCardSO packCardSO;
     private Dictionary<CardDifficulty, List<CardSO>> cardSODictionary = new();
     private List<CardSO> usedCardSO = new();
     private int cardSOCount;
@@ -39,16 +40,33 @@ public class CardManager : MonoBehaviour
 
     private void Awake()
     {
+        TakePack();
         foreach (CardDifficulty cardDifficulty in Enum.GetValues(typeof(CardDifficulty)))
             cardSODictionary.Add(cardDifficulty, new List<CardSO>());
         foreach (CardSO cardSO in cardSOArray)
             cardSODictionary[cardSO.Difficulty].Add(cardSO);
         
-        cardSOCount = cardSOArray.Length;
+        cardSOCount = cardSOArray.Count;
         //Array.Clear(cardSOArray, 0, cardSOCount);
 
         Card.OnChoose.AddListener(ChooseCardInstance);
         Card.OnSelect.AddListener(DisableInteractable);
+
+    }
+    public void TakePack()
+    {
+        cardSOArray.Clear();
+        for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+        {
+            if (packCardSO.CardInPack[i].CardIsInOwn == true)
+            {
+                cardSOArray.Add(packCardSO.CardInPack[i].Card);
+            }
+        }
+    }
+    public void SetPack(PackCardSO _packCardSO)
+    {
+        packCardSO = _packCardSO;
     }
 
     private void OnEnable()
@@ -134,7 +152,7 @@ public class CardManager : MonoBehaviour
         return cardSOs[cardIndex];
     }
 
-    public byte GetCardSOIndex(CardSO cardSO) => (byte)Array.IndexOf(cardSOArray, cardSO);
+    public byte GetCardSOIndex(CardSO cardSO) => (byte)cardSOArray.IndexOf(cardSO);
     public CardSO GetCardSOByIndex(ushort cardSOIndex) => cardSOArray[cardSOIndex];
 
     #endregion
