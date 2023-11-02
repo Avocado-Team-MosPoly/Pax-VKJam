@@ -38,7 +38,7 @@ public class Bestiary : MonoBehaviour
         //GameManager_OLD.Instance.SetGuesserUIActive(true);
     }
 
-    private void Awake()
+    private void Start()
     {
         previousMonsterButton.onClick.AddListener(PreviousMoster);
         nextMonsterButton.onClick.AddListener(NextMoster);
