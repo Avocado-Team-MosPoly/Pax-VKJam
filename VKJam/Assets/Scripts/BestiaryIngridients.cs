@@ -36,7 +36,7 @@ public class BestiaryIngridients : MonoBehaviour
         {
             if(packCardSO.CardInPack[i].CardIsInOwn==true)
             {
-                ingridientName.Add(packCardSO.CardInPack[i].Card.id);
+                //ingridientName.Add(packCardSO.CardInPack[i].Card.id);
                 foreach (Ingredient ingridient in packCardSO.CardInPack[i].Card.IngredientsSO)
                 {
                     if (ingridientList.Contains(ingridient) !=true)
