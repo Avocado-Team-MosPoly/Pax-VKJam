@@ -128,6 +128,8 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void OnRoundEndedClientRpc()
     {
+        Stage = Stage.Waiting;
+
         sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
         sceneObjectsManager.OnRoundEnded();
         hintManager.DisableHandHint();
@@ -151,6 +153,8 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void ActivateGuessMonsterStageClientRpc()
     {
+        Stage = Stage.MonsterGuess;
+        
         if (IsPainter)
         {
             paint.SetActive(false);
@@ -188,6 +192,8 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void SetCardSOClientRpc(byte cardSOIndex)
     {
+        Stage = Stage.IngredientGuess;
+
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
 
         sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
