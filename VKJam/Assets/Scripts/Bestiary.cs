@@ -105,6 +105,7 @@ public class Bestiary : MonoBehaviour
         imageHolder.sprite = monsters[currentMonster].MonsterInBestiarySprite;
         typeHolder.sprite = (monsters[currentMonster].Difficulty == CardDifficulty.Dangerous ? dangerousIcon : murderousIcon);
         nameHolder.text = monsters[currentMonster].Id;
+
         if (GameManager.Instance.Stage == Stage.MonsterGuess)
         {
             chooseMonster.SetActive(true);
