@@ -83,6 +83,12 @@ public class RelayManager : MonoBehaviour
         {
             Destroy(this);
         }
+
+#if UNITY_EDITOR
+#if UNITY_WEBGL
+        Debug.LogError("Multiplyer doesn't work in editor on \"WebGL\" platform. You should change platform to \"Windows, Mac, Linux\"");
+#endif
+#endif
     }
 
     public async Task<string> CreateRelay()
