@@ -15,7 +15,7 @@ public class BestiaryIngridients : MonoBehaviour
     [SerializeField] private RectTransform ingredientListContainer2;
     [SerializeField] private GameObject ingredientInfoTemplate;
     [SerializeField] private List<string> ingridientName= new List<string>();
-    [SerializeField] private List<Sprite> ingredientImage=new();
+    [SerializeField] private List<Ingredient> ingridientList;
     [SerializeField] private PackCardSO packCardSO;
     [SerializeField] private GameObject NextButton;
     [SerializeField] private GameObject BeforeButton;
@@ -30,14 +30,21 @@ public class BestiaryIngridients : MonoBehaviour
     }
     public void TakePack()
     {
+        ingridientList.Clear();
         ingridientName.Clear();
-        ingredientImage.Clear();
         for (int i =0; i < packCardSO.CardInPack.Length; i++)
         {
             if(packCardSO.CardInPack[i].CardIsInOwn==true)
             {
                 ingridientName.Add(packCardSO.CardInPack[i].Card.id);
-                ingredientImage.Add(packCardSO.CardInPack[i].Card.MonsterInBestiarySprite);
+                foreach (Ingredient ingridient in packCardSO.CardInPack[i].Card.IngredientsSO)
+                {
+                    if (ingridientList.Contains(ingridient) !=true)
+                    {
+                        ingridientList.Add(ingridient);
+                        ingridientName.Add(ingridient.Name);
+                    }                    
+                }
             }
         }
     }
@@ -83,7 +90,7 @@ public class BestiaryIngridients : MonoBehaviour
             ingredientSingleTransform.SetActive(true);
 
             IngredientInfo ingredientInfoUI = ingredientSingleTransform.GetComponent<IngredientInfo>();
-            ingredientInfoUI.SetIngridient(ingridientName[i], ingredientImage[i]);
+            ingredientInfoUI.SetIngridient(ingridientName[i]);
 
         }
         lastShownIngridient = i;
@@ -101,7 +108,7 @@ public class BestiaryIngridients : MonoBehaviour
             ingredientSingleTransform.SetActive(true);
 
             IngredientInfo ingredientInfoUI = ingredientSingleTransform.GetComponent<IngredientInfo>();
-            ingredientInfoUI.SetIngridient(ingridientName[i], ingredientImage[i]);
+            ingredientInfoUI.SetIngridient(ingridientName[i]);
 
         }
         lastShownIngridient = i;

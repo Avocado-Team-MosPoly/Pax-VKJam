@@ -10,12 +10,10 @@ using UnityEngine.UI;
 public class IngredientInfo : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI ingridientName;
-    [SerializeField] private GameObject ingredientImage;
     [SerializeField] private CompareSystem compareSystem;
-    public void SetIngridient(string name, Sprite picture)
+    public void SetIngridient(string name)
     {
         ingridientName.text = name;
-        ingredientImage.GetComponent<Image>().sprite = picture;
         gameObject.SetActive(true);
 
         GetComponent<Button>().onClick.AddListener(
