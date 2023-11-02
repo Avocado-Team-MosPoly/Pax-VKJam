@@ -15,6 +15,7 @@ public class CardSO : ScriptableObject
     [SerializeField] private string[] ingredients;
 
     [SerializeField] private Ingredient[] ingredientsSO;
+    public Ingredient[] IngredientsSO => ingredientsSO;
 
     public string Id => id;
     public CardDifficulty Difficulty => difficulty;

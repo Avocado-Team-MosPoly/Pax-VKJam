@@ -76,11 +76,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lastShownIngridient: 0
+  firstShownIngredient: 0
   ingredientListContainer1: {fileID: 0}
   ingredientListContainer2: {fileID: 0}
   ingredientInfoTemplate: {fileID: 0}
-  IngridientName: []
-  IngredientImage: []
+  ingridientName: []
+  ingridientList: []
+  packCardSO: {fileID: 0}
+  NextButton: {fileID: 0}
+  BeforeButton: {fileID: 0}
 --- !u!1 &536465967255673149
 GameObject:
   m_ObjectHideFlags: 0
@@ -114,7 +118,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 572218885607806724}
-  - {fileID: 8042466939157882401}
   m_Father: {fileID: 4500296787264082144}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -217,7 +220,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ingridientName: {fileID: 2557891514432472027}
-  ingredientImage: {fileID: 7929496166148671098}
   compareSystem: {fileID: 0}
 --- !u!1 &2491023526747366648
 GameObject:
@@ -391,81 +393,6 @@ RectTransform:
   m_AnchoredPosition: {x: 30.4077, y: -14.655001}
   m_SizeDelta: {x: 1283.232, y: 828.2452}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &7929496166148671098
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8042466939157882401}
-  - component: {fileID: 3872745562030686090}
-  - component: {fileID: 7057162420601902309}
-  m_Layer: 5
-  m_Name: Image
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &8042466939157882401
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7929496166148671098}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6832455356730499222}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 245.87552, y: -1.2379}
-  m_SizeDelta: {x: 62.0088, y: 57.428}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &3872745562030686090
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7929496166148671098}
-  m_CullTransparentMesh: 1
---- !u!114 &7057162420601902309
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7929496166148671098}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &8232956025756574141
 GameObject:
   m_ObjectHideFlags: 0
@@ -533,8 +460,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Name
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
+  m_sharedMaterial: {fileID: 3727686744989863773, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -677,8 +604,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lastShownIngridient: 0
+  firstShownIngredient: 0
   ingredientListContainer1: {fileID: 0}
   ingredientListContainer2: {fileID: 0}
   ingredientInfoTemplate: {fileID: 536465967255673149}
-  IngridientName: []
-  IngredientImage: []
+  ingridientName: []
+  ingridientList: []
+  packCardSO: {fileID: 0}
+  NextButton: {fileID: 0}
+  BeforeButton: {fileID: 0}
