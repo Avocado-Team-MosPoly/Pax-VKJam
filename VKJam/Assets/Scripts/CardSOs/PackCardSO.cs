@@ -17,7 +17,7 @@ public class PackCardSO : ScriptableObject
         private static int currentIndex = 0;
     }
     public CardSystem[] CardInPack;
-   /* private void OnValidate()
+   private void OnValidate()
     {
         string temp = "";
         for (int j = 0; j < CardInPack.Length; ++j)
@@ -27,10 +27,10 @@ public class PackCardSO : ScriptableObject
         }
         CardInPack = CardInPack.OrderBy(cardSystem => cardSystem.Card.id).ToArray();
         Debug.Log(temp);
-    }*/
+    }
 
 
-    public PackCardSO PackDataOwnering()
+    /*public PackCardSO PackDataOwnering()
     {
         
         string res = Php_Connect.Request_WhichCardInPackOwnering(PackDBIndex);
@@ -42,10 +42,11 @@ public class PackCardSO : ScriptableObject
             CardInPack[int.Parse(current)].CardIsInOwn = true;
         }
         return this;
-    }
+    }*/
 
     public void ResetOwning()
     {
+        return;
         for (int j = 0; j < CardInPack.Length; ++j)
         {
             CardInPack[j].CardIsInOwn = false;

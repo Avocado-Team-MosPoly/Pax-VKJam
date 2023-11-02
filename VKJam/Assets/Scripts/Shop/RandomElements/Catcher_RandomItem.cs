@@ -7,6 +7,7 @@ public class Catcher_RandomItem : MonoBehaviour
     [SerializeField] private CurrencyCatcher display;
     [SerializeField] private static RandomItem DroppedItem;
     [SerializeField] private Animator Hand;
+    [SerializeField] private GameObject SpawnPoint;
     public static int Result;
 
     public delegate void ThisDroppedEvent();

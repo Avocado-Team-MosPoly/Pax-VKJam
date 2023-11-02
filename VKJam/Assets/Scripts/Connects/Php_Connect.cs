@@ -14,8 +14,10 @@ public class Php_Connect : MonoBehaviour
     
     [SerializeField] private string Link;
     [SerializeField] private RandomItemList RandomBase;
+    [SerializeField] private Sprite ConnectionError;
     static public int Nickname;
     private static string link;
+    private static Sprite connectionError;
     public static RandomItemList randomBase;
     public static Currency Current;
     
@@ -26,6 +28,7 @@ public class Php_Connect : MonoBehaviour
         randomBase = RandomBase;
         PHPisOnline = true;
         Nickname = 1;
+        Tesf();
         //Debug.Log(Php_Connect.Request_WhichCardInPackOwnering(0));
         /*Debug.Log(Request_BuyTry(0));
         StartCoroutine(Request_Auth(12));
@@ -33,6 +36,10 @@ public class Php_Connect : MonoBehaviour
         StartCoroutine(Request_CurrentCurrency("Renata"));
         StartCoroutine(Request_BuyTry("Renata",1));
         StartCoroutine(Request_CurrentCurrency("Renata"));*/
+    }
+    private void Tesf()
+    {
+        Debug.Log(JsonUtility.ToJson(new WareHouseData(connectionError)));
     }
     private static void ErrorProcessor(string error)
     {
@@ -43,7 +50,7 @@ public class Php_Connect : MonoBehaviour
         }
     }
     
-    public static string Request_WhichCardInPackOwnering(int idPack)
+    public static string Request_WhichCardInPackOwnering(int idPack) // Переписать под инт, по схеме
     {
         if (!PHPisOnline) return "";
         WWWForm form = new WWWForm();
@@ -68,7 +75,7 @@ public class Php_Connect : MonoBehaviour
             }
         }
     }
-    public static string Request_WhatPackOwnering()
+    public static string Request_WhatPackOwnering() 
     {
         if (!PHPisOnline) return "";
         WWWForm form = new WWWForm();
@@ -286,9 +293,9 @@ public class Php_Connect : MonoBehaviour
         }
     }
 
-    public static WareHouseData Request_DataAboutDesign(int idDesign)
+    public static WareHouseData Request_DataAboutDesign(int idDesign) // Переделать под JSON, написать скрипт, чтобы заливал в БД данные JSON-ом
     {
-        if (!PHPisOnline) return new WareHouseData();
+        if (!PHPisOnline) return new WareHouseData(connectionError);
         WWWForm form = new WWWForm();
 
         form.AddField("idDesign", idDesign);
@@ -301,12 +308,12 @@ public class Php_Connect : MonoBehaviour
             if (www.result != UnityWebRequest.Result.Success)
             {
                 ErrorProcessor(www.error);
-                return new WareHouseData();
+                return new WareHouseData(connectionError);
             }
             else if (www.downloadHandler.text == "error - 404")
             {
                 ErrorProcessor("404");
-                return new WareHouseData();
+                return new WareHouseData(connectionError);
             }
             else
             {

@@ -13,7 +13,7 @@ public class PackManager : MonoBehaviour
         yield return new WaitForSeconds(1);
         foreach (var current in All)
         {
-            current.PackDataOwnering();
+            //current.PackDataOwnering();
         }
     }
     private void OnApplicationQuit()
