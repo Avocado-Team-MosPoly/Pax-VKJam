@@ -41,6 +41,10 @@ public class BestiaryIngridients : MonoBehaviour
             }
         }
     }
+    public void SetPack(PackCardSO _packCardSO)
+    {
+        packCardSO = _packCardSO;
+    }
     public void UpdateIngredientList(bool up)
     {
         foreach (Transform child in ingredientListContainer1)

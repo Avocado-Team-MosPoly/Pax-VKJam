@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public class Bestiary : MonoBehaviour
 {
-    [SerializeField] private List<CardSO> monsters;
+    private List<CardSO> monsters;
     [SerializeField] private Button[] pageButtons;
 
     [SerializeField] private Sprite dangerousIcon;
@@ -25,6 +25,7 @@ public class Bestiary : MonoBehaviour
 
     [SerializeField] private GameObject catalougeCanvas;
     [SerializeField] private GameObject templateCanvas;
+    [SerializeField] private PackCardSO packCardSO;
 
     private int currentMonster;
 
@@ -48,10 +49,23 @@ public class Bestiary : MonoBehaviour
             int pageIndex = i;
             pageButtons[i].onClick.AddListener(() => GoToPage(pageIndex));
         }
-
+        TakePack();
         Initialize();
     }
-
+    public void TakePack()
+    {
+        for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+        {
+            if (packCardSO.CardInPack[i].CardIsInOwn == true)
+            {
+                monsters.Add(packCardSO.CardInPack[i].Card);
+            }
+        }
+    }
+    public void SetPack(PackCardSO _packCardSO)
+    {
+        packCardSO = _packCardSO;
+    }
     private void Initialize()
     {
         currentMonster = 0;
