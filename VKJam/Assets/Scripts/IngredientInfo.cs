@@ -5,22 +5,25 @@ using UnityEngine.UI;
 
 public class IngredientInfo : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI ingridientName;
-    [SerializeField] private CompareSystem compareSystem;
-    public void SetIngridient(string name)
+    public TextMeshProUGUI IngridientName;
+
+    private CompareSystem compareSystem;
+
+    public void SetIngridient(string name, CompareSystem compareSystem)
     {
-        ingridientName.text = name;
+        IngridientName.text = name;
+        this.compareSystem = compareSystem;
+        
         gameObject.SetActive(true);
 
-        GetComponent<Button>().onClick.AddListener(
-          () => Guess()
-      );
+        GetComponent<Button>().onClick.AddListener(Guess);
     }
+
     public void Guess()
     {
         if (GameManager.Instance.Stage == Stage.IngredientGuess)
         {
-            compareSystem.CompareAnswerServerRpc(ingridientName.text, new ServerRpcParams());
+            compareSystem.CompareAnswerServerRpc(IngridientName.text, new ServerRpcParams());
         }
     }
 }

@@ -1,4 +1,4 @@
-using TMPro;
+п»їusing TMPro;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.Events;
@@ -50,9 +50,9 @@ public class LobbyInfo : MonoBehaviour
         
         lobbyName.text = lobby.Name;
         playersCount.text = lobby.Players.Count + "/" + lobby.MaxPlayers;
-        gameMode.text = lobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True" ? "Командный" : "Соревновательный";
+        gameMode.text = lobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True" ? "РљРѕРјР°РЅРґРЅС‹Р№" : "РЎРѕСЂРµРІРЅРѕРІР°С‚РµР»СЊРЅС‹Р№";
         roundCount.text = lobby.Data[LobbyManager.Instance.KEY_ROUND_AMOUNT].Value;
-        recipeMode.text = lobby.Data[LobbyManager.Instance.KEY_RECIPE_MODE].Value == "0" ? "Стандартные" : "Случайные";
+        recipeMode.text = lobby.Data[LobbyManager.Instance.KEY_RECIPE_MODE].Value == "0" ? "РЎС‚Р°РЅРґР°СЂРЅС‹Рµ" : "РЎР»СѓС‡Р°Р№РЅС‹Рµ";
         
         gameObject.SetActive(true);
     }
