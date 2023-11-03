@@ -1,16 +1,26 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Collections.Generic;
 
 public class TextHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public TMP_Text[] texts;
-    public GameObject underlineAnimationPrefab;
+    [SerializeField] private TMP_Text[] texts;
+    [SerializeField] private GameObject underlineAnimationPrefab;
 
-    private GameObject[] underlineAnimations;
+    [SerializeField] private GameObject[] underlineAnimations;
 
-    private void Start()
+    private void Awake()
     {
+        if (texts.Length > 0)
+            Initialize();
+    }
+
+    private void Initialize()
+    {
+        foreach (GameObject go in underlineAnimations)
+            Destroy(go);
+
         underlineAnimations = new GameObject[texts.Length];
         for (int i = 0; i < texts.Length; i++)
         {
@@ -19,13 +29,29 @@ public class TextHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExit
         }
     }
 
+    public void SetTexts(List<TMP_Text> listTexts)
+    {
+        texts = listTexts.ToArray();
+        Initialize();
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         int index = System.Array.IndexOf(texts, eventData.pointerEnter.GetComponent<TMP_Text>());
+
         if (index >= 0)
         {
             underlineAnimations[index].SetActive(true);
-            underlineAnimations[index].GetComponent<Animator>().Play("YourAnimationName");
+            Animator animator = underlineAnimations[index].GetComponent<Animator>();
+
+            foreach (AnimationClip animationClip in animator.runtimeAnimatorController.animationClips)
+            {
+                if (animationClip.name == "OnMouseEnterCross")
+                {
+                    animator.Play("OnMouseEnter");
+                    break;
+                }
+            }
         }
     }
 

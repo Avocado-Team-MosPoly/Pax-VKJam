@@ -1,42 +1,50 @@
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.Services.Lobbies.Models;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.ParticleSystem;
+using TMPro;
 
 public class BestiaryIngridients : MonoBehaviour
 {
-    [SerializeField] private int lastShownIngridient=0;
-    [SerializeField] private int firstShownIngredient;
-    [SerializeField] private RectTransform ingredientListContainer1;
-    [SerializeField] private RectTransform ingredientListContainer2;
-    [SerializeField] private GameObject ingredientInfoTemplate;
-    [SerializeField] private List<string> ingridientName= new List<string>();
-    [SerializeField] private List<Ingredient> ingridientList;
+    [SerializeField] private CompareSystem compareSystem;
     [SerializeField] private PackCardSO packCardSO;
+    [SerializeField] private IngredientInfo ingredientInfoTemplate;
+
+    [SerializeField] private RectTransform leftIngredientsPage;
+    [SerializeField] private RectTransform rightIngredientsPage;
+
     [SerializeField] private GameObject NextButton;
     [SerializeField] private GameObject BeforeButton;
+
+    [SerializeField] private TextHoverEffect textHoverEffect;
+
+    private List<string> ingridientName = new();
+    private List<Ingredient> ingridientList = new();
+
+    private List<TMP_Text> ingredientsTexts = new();
+
+    private int lastShownIngridient;
+    private int firstShownIngredient;
 
     public void Awake()
     {
         TakePack();
+
+        lastShownIngridient = 0;
+
+        UpdateIngredientList(true);
+
         NextButton.GetComponent<Button>().onClick.AddListener(() => UpdateIngredientList(true));
         BeforeButton.GetComponent<Button>().onClick.AddListener(() => UpdateIngredientList(false));
-        lastShownIngridient = 0;
-        UpdateIngredientList(true);
     }
     public void TakePack()
     {
         ingridientList.Clear();
         ingridientName.Clear();
-        for (int i =0; i < packCardSO.CardInPack.Length; i++)
+
+        for (int i = 0; i < packCardSO.CardInPack.Length; i++)
         {
             if(packCardSO.CardInPack[i].CardIsInOwn==true)
             {
-                //ingridientName.Add(packCardSO.CardInPack[i].Card.id);
                 foreach (Ingredient ingridient in packCardSO.CardInPack[i].Card.IngredientsSO)
                 {
                     if (ingridientList.Contains(ingridient) !=true)
@@ -54,23 +62,30 @@ public class BestiaryIngridients : MonoBehaviour
     }
     public void UpdateIngredientList(bool up)
     {
-        foreach (Transform child in ingredientListContainer1)
+        foreach (Transform child in leftIngredientsPage)
             Destroy(child.gameObject);
-        foreach (Transform child in ingredientListContainer2)
+        foreach (Transform child in rightIngredientsPage)
             Destroy(child.gameObject);
+
+        ingredientsTexts.Clear();
+
         if (up)
         {
-            UpdateIngredientListUp(ingredientListContainer1);
-            UpdateIngredientListUp(ingredientListContainer2);
+            UpdateIngredientListUp(leftIngredientsPage);
+            UpdateIngredientListUp(rightIngredientsPage);
         }
         else
         {
             lastShownIngridient = firstShownIngredient;
-            UpdateIngredientListUp(ingredientListContainer1);
-            UpdateIngredientListUp(ingredientListContainer2);
+            UpdateIngredientListUp(leftIngredientsPage);
+            UpdateIngredientListUp(rightIngredientsPage);
         }
+
+        textHoverEffect.SetTexts(ingredientsTexts);
+
         CheckButton();
     }
+
     private void UpdateIngredientListUp(RectTransform ingredientListContainer)
     {
         int i = lastShownIngridient;
@@ -78,44 +93,46 @@ public class BestiaryIngridients : MonoBehaviour
         {
             if (i >= ingridientName.Count)
             {
-                if(i!=0)
+                if (i != 0)
                 {
                     i -= 1;
-                }                
-                Debug.Log("Break");
-                Debug.Log(i);
-                break;
-            };            
-            GameObject ingredientSingleTransform = Instantiate(ingredientInfoTemplate, ingredientListContainer);
-            ingredientSingleTransform.SetActive(true);
+                }
 
-            IngredientInfo ingredientInfoUI = ingredientSingleTransform.GetComponent<IngredientInfo>();
-            ingredientInfoUI.SetIngridient(ingridientName[i]);
-
-        }
-        lastShownIngridient = i;
-    }
-    private void UpdateIngredientListDown(RectTransform ingredientListContainer)
-    {   
-        int i = lastShownIngridient;
-        for (; i > lastShownIngridient-10; i--)
-        {
-            if (i <= -1)
-            {
                 break;
             }
-            GameObject ingredientSingleTransform = Instantiate(ingredientInfoTemplate, ingredientListContainer);
-            ingredientSingleTransform.SetActive(true);
 
-            IngredientInfo ingredientInfoUI = ingredientSingleTransform.GetComponent<IngredientInfo>();
-            ingredientInfoUI.SetIngridient(ingridientName[i]);
+            IngredientInfo ingredientInfoUI = Instantiate(ingredientInfoTemplate, ingredientListContainer);
+            ingredientInfoUI.SetIngridient(ingridientName[i], compareSystem);
+            ingredientInfoUI.gameObject.SetActive(true);
 
+            ingredientsTexts.Add(ingredientInfoUI.IngridientName);
         }
+
         lastShownIngridient = i;
     }
+
+    // why?
+    //private void UpdateIngredientListDown(RectTransform ingredientListContainer)
+    //{   
+    //    int i = lastShownIngridient;
+    //    for (; i > lastShownIngridient - 10; i--)
+    //    {
+    //        if (i <= -1)
+    //        {
+    //            break;
+    //        }
+    //        GameObject ingredientSingleTransform = Instantiate(ingredientInfoTemplate, ingredientListContainer);
+    //        ingredientSingleTransform.SetActive(true);
+
+    //        IngredientInfo ingredientInfoUI = ingredientSingleTransform.GetComponent<IngredientInfo>();
+    //        ingredientInfoUI.SetIngridient(ingridientName[i], compareSystem);
+    //    }
+    //    lastShownIngridient = i;
+    //}
+
     private void CheckButton()
     {
-        if (lastShownIngridient >= ingridientName.Count-1)
+        if (lastShownIngridient >= ingridientName.Count - 1)
         {
             NextButton.SetActive(false);
         }
@@ -123,10 +140,14 @@ public class BestiaryIngridients : MonoBehaviour
         {
             NextButton.SetActive(true);
         }
+
         if (lastShownIngridient <= 20)
         {
             BeforeButton.SetActive(false);
         }
-        else { BeforeButton.SetActive(true); }
+        else
+        {
+            BeforeButton.SetActive(true);
+        }
     }
 }

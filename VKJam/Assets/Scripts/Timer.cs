@@ -33,7 +33,7 @@ public class Timer : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        NetworkTime.OnValueChanged += OnTaimerChange;
+        NetworkTime.OnValueChanged += OnTimerChange;
 
         if (IsServer)
             NetworkTime.Value = roundTime;
@@ -56,7 +56,10 @@ public class Timer : NetworkBehaviour
             if (NetworkTime.Value <= 0)
             {
                 StopServerRpc();
+
                 OnExpired?.Invoke();
+
+                ResetToDefault();
             }
             else
                 NetworkTime.Value -= 1;
@@ -70,7 +73,7 @@ public class Timer : NetworkBehaviour
         NetworkTime.Value = roundTime;
     }
 
-    private void OnTaimerChange(int previousValue, int newValue)
+    private void OnTimerChange(int previousValue, int newValue)
     {
         if (newValue < 0)
             return;
@@ -111,8 +114,6 @@ public class Timer : NetworkBehaviour
             StopCoroutine(serverClockCoroutine);
             serverClockCoroutine = null;
         }
-
-        ResetToDefault();
     }
     public void OnIngredientGuess()
     {

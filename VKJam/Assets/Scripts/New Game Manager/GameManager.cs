@@ -120,7 +120,10 @@ public class GameManager : NetworkBehaviour
     private void OnTimeExpired()
     {
         if (Stage == Stage.MonsterGuess)
+        {
+            Timer.Instance.OnIngredientGuess();
             roundManager.OnTimeExpired();
+        }
         else
             ingredientManager.OnTimeExpired();
     }
