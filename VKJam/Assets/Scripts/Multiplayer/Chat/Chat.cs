@@ -10,9 +10,10 @@ using TMPro;
 public class Chat : NetworkBehaviour
 {
     public IReadOnlyList<Message> History => history;
+    // нужно заполнить
     public IReadOnlyDictionary<ulong, string> PlayersNames => playersNames;
 
-    [HideInInspector] public UnityEvent<Message> MessageSended = new();
+    [HideInInspector] public UnityEvent MessageSended = new();
     [HideInInspector] public UnityEvent MessageReceived = new();
 
     [SerializeField] private TMP_InputField messageInputField;
@@ -32,6 +33,18 @@ public class Chat : NetworkBehaviour
             serializer.SerializeValue(ref text);
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is Message message &&
+                   senderId == message.senderId &&
+                   text.Equals(message.text);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(senderId, text);
+        }
+
         public static bool operator==(Message a, Message b)
         {
             if (a.senderId == b.senderId)
@@ -49,23 +62,13 @@ public class Chat : NetworkBehaviour
 
             return true;
         }
-
-        public override bool Equals(object obj)
-        {
-            return obj is Message message &&
-                   senderId == message.senderId &&
-                   text.Equals(message.text);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(senderId, text);
-        }
     }
 
     private void Awake()
     {
         sendMessageButton.onClick.AddListener(SendMessage_);
+
+        messageInputField.characterLimit = new Message().text.Capacity;
     }
 
     public void SendMessage_()
@@ -84,7 +87,7 @@ public class Chat : NetworkBehaviour
             SendMessageServerRpc(msg);
 
         history.Add(msg);
-        MessageSended.Invoke(msg);
+        MessageSended?.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -99,8 +102,7 @@ public class Chat : NetworkBehaviour
         if (message.senderId != NetworkManager.Singleton.LocalClientId)
         {
             history.Add(message);
-            
-            MessageReceived.Invoke();
+            MessageReceived?.Invoke();
         }
     }
 }
