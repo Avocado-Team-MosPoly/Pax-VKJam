@@ -4,40 +4,13 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.Netcode.Transports.UTP;
 using System.Threading.Tasks;
+using UnityEngine.Events;
+using Unity.Services.Lobbies;
+using Unity.Services.Lobbies.Models;
 using Unity.Networking.Transport.Relay;
 
 public class RelayManager : MonoBehaviour
 {
-    public struct RoomSettings
-    {
-        public string Name;
-        public int MaxPlayers;
-        public bool IsTeamMode;
-
-        public int RoundAmount;
-        public RecipeMode RecipeMode;
-
-        public RoomSettings(string name)
-        {
-            Name = name;
-            MaxPlayers = 2;
-            IsTeamMode = true;
-
-            RoundAmount = 4;
-            RecipeMode = RecipeMode.Standard;
-        }
-
-        public RoomSettings(string name, int maxPlayerAmount, bool isTeamMode, int maxRoundAmount, RecipeMode recipeMode)
-        {
-            Name = name;
-            MaxPlayers = maxPlayerAmount;
-            IsTeamMode = isTeamMode;
-
-            RoundAmount = maxRoundAmount;
-            RecipeMode = recipeMode;
-        }
-    }
-
     [SerializeField] private string lobbySceneName;
 
     public static RelayManager Instance { get; private set; }
@@ -101,7 +74,7 @@ public class RelayManager : MonoBehaviour
             UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
 #if UNITY_EDITOR
-            Debug.Log("EDITOR");
+            Logger.Instance.Log("EDITOR");
 
             unityTransport.SetRelayServerData
             (
@@ -111,18 +84,49 @@ public class RelayManager : MonoBehaviour
                 allocation.Key,
                 allocation.ConnectionData
             );
-
 #else
-            Debug.Log("BUILD");
+            Logger.Instance.Log("BUILD");
+#if UNITY_STANDALONE_WIN
+            Logger.Instance.Log("Windows");
             
+            unityTransport.SetRelayServerData
+            (
+                allocation.RelayServer.IpV4,
+                (ushort)allocation.RelayServer.Port,
+                allocation.AllocationIdBytes,
+                allocation.Key,
+                allocation.ConnectionData
+            );
+#endif
+#if UNITY_WEBGL
+            Logger.Instance.Log("WebGL");
+
             RelayServerData relayServerData = new RelayServerData(allocation, "wss");
 
             unityTransport.UseWebSockets = true;
             unityTransport.SetRelayServerData(relayServerData);
 #endif
+#endif
 
             NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => { Debug.Log($"Client {clientId} connected"); };
             NetworkManager.Singleton.OnServerStarted += () => SceneLoader.ServerLoad(lobbySceneName);
+            NetworkManager.Singleton.OnClientStarted += async () =>
+            {
+                Logger.Instance.Log($"Client Started on server\nCurrent Lobby: {LobbyManager.Instance.CurrentLobby}\nLobby Player Id: {LobbyManager.Instance.LobbyPlayerId}");
+
+                await LobbyService.Instance.UpdatePlayerAsync(LobbyManager.Instance.CurrentLobby.Id, LobbyManager.Instance.LobbyPlayerId, new UpdatePlayerOptions()
+                {
+                    Data = new System.Collections.Generic.Dictionary<string, Unity.Services.Lobbies.Models.PlayerDataObject>
+                    {
+                        { "Id", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, NetworkManager.Singleton.LocalClientId.ToString()) },
+                        { "Player Name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, Authentication.PlayerName) }
+                    }
+                });
+
+                await LobbyManager.Instance.UpdateLocalLobbyData();
+                Logger.Instance.Log("Player Id in lobby data updated to " + NetworkManager.Singleton.LocalClientId.ToString());
+            };
+
             NetworkManager.Singleton.StartHost();
 
             Log("You created relay with code: " + joinCode);
@@ -148,7 +152,7 @@ public class RelayManager : MonoBehaviour
             UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
 #if UNITY_EDITOR
-            Debug.Log("EDITOR");
+            Logger.Instance.Log("EDITOR");
 
             unityTransport.SetRelayServerData
             (
@@ -160,15 +164,43 @@ public class RelayManager : MonoBehaviour
                 joinAllocation.HostConnectionData
             );
 #else
-            Debug.Log("BUILD");
+            Logger.Instance.Log("BUILD");
+#if UNITY_STANDALONE_WIN
+            Logger.Instance.Log("Windows");
             
+            unityTransport.SetRelayServerData
+            (
+                joinAllocation.RelayServer.IpV4,
+                (ushort)joinAllocation.RelayServer.Port,
+                joinAllocation.AllocationIdBytes,
+                joinAllocation.Key,
+                joinAllocation.ConnectionData,
+                joinAllocation.HostConnectionData
+            );
+#endif
+#if UNITY_WEBGL
+            Logger.Instance.Log("WebGL");
+
             RelayServerData relayServerData = new RelayServerData(joinAllocation, "wss");
 
             unityTransport.UseWebSockets = true;
             unityTransport.SetRelayServerData(relayServerData);
 #endif
+#endif
 
-            NetworkManager.Singleton.OnClientStarted += () => Logger.Instance.Log("Client Started");
+            NetworkManager.Singleton.OnClientStarted += () =>
+            {
+                Logger.Instance.Log("Client Started");
+
+                LobbyService.Instance.UpdatePlayerAsync(LobbyManager.Instance.CurrentLobby.Id, LobbyManager.Instance.LobbyPlayerId, new UpdatePlayerOptions()
+                {
+                    Data = new System.Collections.Generic.Dictionary<string, Unity.Services.Lobbies.Models.PlayerDataObject>
+                    {
+                        { "Id", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, NetworkManager.Singleton.LocalClientId.ToString()) },
+                        { "Player Name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, Authentication.PlayerName) }
+                    }
+                });
+            };
             NetworkManager.Singleton.StartClient();
 
             Log("You joined relay with code: " +  joinCode);
