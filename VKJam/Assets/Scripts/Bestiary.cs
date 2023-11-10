@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
-using System;
-using UnityEngine.Events;
 
 public class Bestiary : MonoBehaviour
 {

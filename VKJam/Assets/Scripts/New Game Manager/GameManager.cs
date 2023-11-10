@@ -21,6 +21,8 @@ public class GameManager : NetworkBehaviour
     public int CurrentRound => currentRound;
 
     public Paint Paint => paint;
+    public IngredientManager IngredientManager => ingredientManager;
+    public RoundManager RoundManager => roundManager;
     public RoleManager RoleManager => roleManager;
     public CardManager CardManager => cardManager;
     public GameObject SceneMonster => sceneMonster;

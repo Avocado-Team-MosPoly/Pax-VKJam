@@ -17,7 +17,7 @@ public class RoomCreation : MonoBehaviour
 
     public void SelectGameMode(bool isTeamMode)
     {
-        isTeamMode = isTeamMode;
+        this.isTeamMode = isTeamMode;
     }
 
     public void SelectRecipeMode(bool isStandart)
