@@ -15,6 +15,7 @@ public class LobbyManagerUI : MonoBehaviour
 
     [SerializeField] private RectTransform lobbyListContainer;
     [SerializeField] private GameObject lobbyInfoTemplate;
+    [SerializeField] private List<GameObject> playerList;
 
     [SerializeField] private RectTransform playerListContainer;
     [SerializeField] private GameObject playerInfoPrefab;
@@ -63,17 +64,14 @@ public class LobbyManagerUI : MonoBehaviour
 
     private void UpdatePlayerList(List<Player> players)
     {
-        foreach (Transform child in playerListContainer)
-            Destroy(child.gameObject);
-
-        foreach (Player player in players)
+        foreach (GameObject player in playerList)
         {
-            Debug.Log(player.Id);
-            GameObject playerInfoInstance = Instantiate(playerInfoPrefab, playerListContainer);
-            playerInfoInstance.SetActive(true);
+            player.SetActive(false);
+        }
+        for (int i =0; i< players.Count; i++)
+        {
+            playerList[i].SetActive(true);
 
-            PlayerInfoUI playerInfoUI = playerInfoInstance.GetComponent<PlayerInfoUI>();
-            playerInfoUI.SetPlayer(player);
         }
     }
 
