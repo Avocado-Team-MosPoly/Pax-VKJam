@@ -5,6 +5,7 @@ using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using Unity.Services.Authentication;
 using Unity.Netcode;
+using System.Threading.Tasks;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -25,11 +26,11 @@ public class LobbyManager : MonoBehaviour
 
     Dictionary<ulong, string> playerUlongIdList = new();
 
-    public bool IsHost => NetworkManager.Singleton.IsHost;
+    public bool IsServer => NetworkManager.Singleton.IsServer;
     public string LobbyName => CurrentLobby != null ? CurrentLobby.Name : "Íå èçâåñòíî";
-
+    public string LobbyPlayerId { get; private set; }
     public static LobbyManager Instance { get; private set; }
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -52,7 +53,7 @@ public class LobbyManager : MonoBehaviour
             if (clientId != NetworkManager.Singleton.LocalClientId)
                 ListPlayers();
         };
-        if (IsHost)
+        if (IsServer)
         {
             NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => playerUlongIdList.Add(clientId, AuthenticationService.Instance.PlayerId);
         }
@@ -69,7 +70,7 @@ public class LobbyManager : MonoBehaviour
 
     private async void HeartBeatPing()
     {
-        if (!isSendHeartBeatPing || !IsHost || CurrentLobby == null)
+        if (!isSendHeartBeatPing || !IsServer || CurrentLobby == null)
             return;
 
         heartBeatTimer += Time.deltaTime;
@@ -93,6 +94,27 @@ public class LobbyManager : MonoBehaviour
 
     #endregion
 
+    public async Task UpdateLocalLobbyData()
+    {
+        if (IsServer)
+            await UpdateLocalLobbyDataClientRpc();
+        else
+            await UpdateLocalLobbyDataServerRpcAsync();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private async Task UpdateLocalLobbyDataServerRpcAsync()
+    {
+        await UpdateLocalLobbyDataClientRpc();
+    }
+
+    [ClientRpc]
+    private async Task UpdateLocalLobbyDataClientRpc()
+    {
+        CurrentLobby = await LobbyService.Instance.GetLobbyAsync(CurrentLobby.Id);
+        Logger.Instance.Log("[LobbyManager] Local Lobby Data Updated");
+    }
+
     private Dictionary<string, DataObject> GetLobbyData()
     {
         Dictionary<string, DataObject> lobbyData;
@@ -101,12 +123,11 @@ public class LobbyManager : MonoBehaviour
         {
             lobbyData = new Dictionary<string, DataObject>
             {
+                { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.GameMode.ToString()) },
+                { KEY_ROUND_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.RoundAmount.ToString()) },
+                { KEY_TIMER_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.TimerAmount.ToString()) },
+                { KEY_RECIPE_MODE, new DataObject(DataObject.VisibilityOptions.Public, ((int)LobbyDataInput.Instance.RecipeMode).ToString()) },
             };
-
-            lobbyData[KEY_TEAM_MODE] = new(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.GameMode.ToString());
-            lobbyData[KEY_ROUND_AMOUNT] = new(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.RoundAmount.ToString());
-            lobbyData[KEY_TIMER_AMOUNT] = new(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.TimerAmount.ToString());
-            lobbyData[KEY_RECIPE_MODE] = new(DataObject.VisibilityOptions.Public, ((int)LobbyDataInput.Instance.RecipeMode).ToString());
         }
         else
         {
@@ -129,6 +150,7 @@ public class LobbyManager : MonoBehaviour
         {
             Data = new Dictionary<string, PlayerDataObject>
             {
+                { "Id", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "-1") },
                 { "Player Name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, Authentication.PlayerName) }
             }
         };
@@ -136,7 +158,7 @@ public class LobbyManager : MonoBehaviour
 
     private void SaveRelayCode(string relayJoinCode)
     {
-        if (!IsHost && CurrentLobby == null)
+        if (!IsServer && CurrentLobby == null)
             return;
 
         UpdateLobbyOptions updateLobbyOptions = new UpdateLobbyOptions
@@ -163,13 +185,15 @@ public class LobbyManager : MonoBehaviour
                 Player = GetPlayer(),
                 Data = GetLobbyData()
             };
-
+           
             CurrentLobby = await LobbyService.Instance.CreateLobbyAsync
             (
                 LobbyDataInput.Instance.LobbyName == "" ? Authentication.PlayerName : LobbyDataInput.Instance.LobbyName,
                 LobbyDataInput.Instance.MaxPlayers,
                 createLobbyOptions
             );
+
+            LobbyPlayerId = CurrentLobby.Players[CurrentLobby.Players.Count - 1].Id;
 
             StartHeartBeatPing();
 
@@ -200,6 +224,8 @@ public class LobbyManager : MonoBehaviour
             };
 
             CurrentLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(joinCode, joinLobbyByCodeOptions);
+
+            LobbyPlayerId = CurrentLobby.Players[CurrentLobby.Players.Count - 1].Id;
 
             Logger.Instance.Log("You joined lobby " + CurrentLobby.Name);
 
@@ -286,7 +312,7 @@ public class LobbyManager : MonoBehaviour
     }
     public void KickPlayer(ulong client)
     {
-        if (IsHost)
+        if (IsServer)
         {
             LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, playerUlongIdList[client]);
             NetworkManager.Singleton.DisconnectClient(client);
@@ -299,5 +325,17 @@ public class LobbyManager : MonoBehaviour
         Debug.LogWarning("On Server Ended");
         playerUlongIdList.Clear();
         LeaveLobby();
+    }
+
+    public Player GetPlayerByRelayId(ulong relayId)
+    {
+        if (!NetworkManager.Singleton.IsConnectedClient)
+            return null;
+
+        foreach (Player player in CurrentLobby.Players)
+            if (player.Data["Id"].Value == relayId.ToString())
+                return player;
+
+        return null;
     }
 }
