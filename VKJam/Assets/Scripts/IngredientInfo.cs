@@ -1,17 +1,21 @@
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class IngredientInfo : MonoBehaviour
 {
     public TextMeshProUGUI IngridientName;
+    [HideInInspector] public UnityEvent<int> OnGuess;
 
     private CompareSystem compareSystem;
+    private int index;
 
-    public void SetIngridient(string name, CompareSystem compareSystem)
+    public void SetIngridient(string name, int index, CompareSystem compareSystem)
     {
         IngridientName.text = name;
+        this.index = index;
         this.compareSystem = compareSystem;
         
         gameObject.SetActive(true);
@@ -24,6 +28,7 @@ public class IngredientInfo : MonoBehaviour
         if (GameManager.Instance.Stage == Stage.IngredientGuess)
         {
             compareSystem.CompareAnswerServerRpc(IngridientName.text, new ServerRpcParams());
+            OnGuess?.Invoke(index);
         }
     }
 }

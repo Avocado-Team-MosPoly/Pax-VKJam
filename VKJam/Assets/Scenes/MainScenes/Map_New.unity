@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731715, g: 0.13414735, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -17714,10 +17714,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fad93a00e536a542bbedfc537b49f5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnGuessMonsterStageActivated:
+  OnGuessMonsterStageActivatedOnClient:
     m_PersistentCalls:
       m_Calls: []
-  OnAnswerCardSOSettedOnServer:
+  OnAnswerCardSOSettedOnClient:
     m_PersistentCalls:
       m_Calls: []
   OnGameEnded:
@@ -20693,7 +20693,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: -1
@@ -24445,7 +24445,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.1834737, y: 0.087000005}
   m_AnchorMax: {x: 0.85400003, y: 0.90900004}
-  m_AnchoredPosition: {x: -4.5910034, y: -2.1848755}
+  m_AnchoredPosition: {x: -4.5910645, y: -2.1848755}
   m_SizeDelta: {x: 9.22998, y: 1.3058014}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1910327979

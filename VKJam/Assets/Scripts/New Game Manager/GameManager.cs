@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class GameManager : NetworkBehaviour
 {
     /// <summary> Sends true if local player is painter, false if not </summary>
-    [HideInInspector] public UnityEvent<bool> OnGuessMonsterStageActivated;
-    [HideInInspector] public UnityEvent OnAnswerCardSOSettedOnServer; // TODO: remind why or delete
+    [HideInInspector] public UnityEvent<bool> OnGuessMonsterStageActivatedOnClient;
+    [HideInInspector] public UnityEvent OnAnswerCardSOSettedOnClient; // TODO: remind why or delete
     [HideInInspector] public UnityEvent OnGameEnded;
 
     #region Properties
@@ -173,7 +173,7 @@ public class GameManager : NetworkBehaviour
             sceneMonsterMaterial.mainTexture = hiddenMonster;
         }
 
-        OnGuessMonsterStageActivated?.Invoke(IsPainter);
+        OnGuessMonsterStageActivatedOnClient?.Invoke(IsPainter);
     }
 
     private void ActivateGuessMonsterStage()
@@ -200,6 +200,8 @@ public class GameManager : NetworkBehaviour
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
 
         sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
+        
+        OnAnswerCardSOSettedOnClient?.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -208,7 +210,6 @@ public class GameManager : NetworkBehaviour
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
         sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
 
-        OnAnswerCardSOSettedOnServer?.Invoke();
         SetCardSOClientRpc(cardSOIndex);
 
         SetHintDataClientRpc((sbyte)ingredientManager.CurrentIngredientIndex);
