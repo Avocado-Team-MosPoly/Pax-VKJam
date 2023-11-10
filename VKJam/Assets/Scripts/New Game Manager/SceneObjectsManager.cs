@@ -22,7 +22,7 @@ public class SceneObjectsManager : MonoBehaviour
 
     private void Awake()
     {
-        GameManager.Instance.OnGuessMonsterStageActivated.AddListener(OnGuessMonsterStageActivated);
+        GameManager.Instance.OnGuessMonsterStageActivatedOnClient.AddListener(OnGuessMonsterStageActivated);
         GameManager.Instance.OnGameEnded.AddListener(OnGameEnded);
 
         GameManager.Instance.RoleManager.OnPainterSetted.AddListener(OnPainterSetted);
