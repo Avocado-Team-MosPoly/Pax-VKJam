@@ -7,6 +7,7 @@ public class LobbyInfoUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI lobbyName;
     [SerializeField] private TextMeshProUGUI playersCount;
+    [SerializeField] private Button connectButton;
 
     private Lobby lobby;
 
@@ -16,9 +17,8 @@ public class LobbyInfoUI : MonoBehaviour
         
         lobbyName.text = lobby.Name;
         playersCount.text = lobby.Players.Count + "/" + lobby.MaxPlayers;
-
-        GetComponent<Button>().onClick.AddListener(
-            () => LobbyInfo.Instance.SetLobby(this.lobby)
-        );
+        connectButton.onClick.AddListener(() => {
+            LobbyManager.Instance.JoinLobby(lobby);
+        });
     }
 }
