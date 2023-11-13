@@ -33,11 +33,16 @@ public abstract class IngredientManager
 
     protected bool isIngredientGuessed;
 
-    public IngredientManager(CompareSystem compareSystem)
+    protected readonly GameConfigSO config;
+    
+    protected int playersCount => NetworkManager.Singleton.ConnectedClientsIds.Count;
+
+    public IngredientManager(GameConfigSO config, CompareSystem compareSystem)
     {
         if (NetworkManager.Singleton == null)
             throw new System.Exception("Ingredient Manager needs Network Manager instance on scene");
 
+        this.config = config;
         compareSystem.OnIngredientGuess.AddListener(CompareIngredient);
 
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)

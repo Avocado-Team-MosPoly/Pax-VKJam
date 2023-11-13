@@ -205,11 +205,7 @@ public class Paint : NetworkBehaviour
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-                SendIsConnectedToLastServerRpc(false);
-            //if (IsHost)
-            //else
-            //    isConnectedToLast = false;
-
+            SendIsConnectedToLastServerRpc(false);
             isDraw = false;
         }
 
@@ -371,7 +367,7 @@ public class Paint : NetworkBehaviour
         this.brushSize = brushSize;
         halfBrushSize = brushSize / 2;
 
-        Debug.Log("Size Changed To: " + brushSize);
+        //Debug.Log("Size Changed To: " + brushSize);
     }
 
     public void ClearCanvas()

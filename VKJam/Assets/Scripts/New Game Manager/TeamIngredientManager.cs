@@ -2,7 +2,7 @@ using Unity.Netcode;
 
 public class TeamIngredientManager : IngredientManager
 {
-    public TeamIngredientManager(CompareSystem compareSystem) : base(compareSystem) { }
+    public TeamIngredientManager(GameConfigSO config, CompareSystem compareSystem) : base(config, compareSystem) { }
 
     protected override void CorrectIngredient()
     {
@@ -10,8 +10,8 @@ public class TeamIngredientManager : IngredientManager
 
         isIngredientGuessed = false;
 
-        int playersCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
-        TokenManager.AddTokensToAll(playersCount * 2);
+        int tokensToAdd = config.BonusIngredientGuessed_TM.GetValue(playersCount);
+        TokenManager.AddTokensToAll(tokensToAdd);
 
         OnCorrectIngredient?.Invoke();
     }

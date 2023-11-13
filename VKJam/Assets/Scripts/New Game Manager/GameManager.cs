@@ -89,14 +89,14 @@ public class GameManager : NetworkBehaviour
             {
                 Log("TEAM MODE");
 
-                ingredientManager = new TeamIngredientManager(compareSystem);
+                ingredientManager = new TeamIngredientManager(gameConfig, compareSystem);
                 roundManager = new TeamRoundManager(gameConfig, compareSystem, ingredientManager);
             }
             else
             {
                 Log("COMPETITIVE MODE");
 
-                ingredientManager = new CompetitiveIngredientManager(compareSystem);
+                ingredientManager = new CompetitiveIngredientManager(gameConfig, compareSystem);
                 roundManager = new CompetitiveRoundManager(gameConfig, compareSystem, ingredientManager);
             }
 

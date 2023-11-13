@@ -12,7 +12,7 @@ public class GameConfigSO : ScriptableObject
 
     [Header("Team Mode")]
 
-    public SetOf<int> BonussIngredientGuessed_TM = new(4, 6, 8);
+    public SetOf<int> BonusIngredientGuessed_TM = new(4, 6, 8);
     
     public SetOf<int> BonusIfAllIngredientsGuessed_TM_DM = new(1, 1, 1);
     public SetOf<int> BonusIfAllIngredientsGuessed_TM_MM = new(2, 2, 2);
@@ -29,7 +29,7 @@ public class GameConfigSO : ScriptableObject
     [Header("Competitive Mode")]
     [Header("Guesser")]
 
-    public SetOf<int> BonusIngredientGussed_CM_G = new(1, 1, 1);
+    public SetOf<int> BonusForIngredient_CM_G = new(1, 1, 1);
     
     public SetOf<int> BonusIfAllIngredientsGuessed_CM_DM_G = new(1, 1, 1);
     public SetOf<int> BonusIfAllIngredientsGuessed_CM_MM_G = new(2, 2, 2);
@@ -75,11 +75,11 @@ public class GameConfigSO : ScriptableObject
         {
             switch (playersCount)
             {
-                case 0:
-                    return Players_2;
-                case 1:
-                    return Players_3;
                 case 2:
+                    return Players_2;
+                case 3:
+                    return Players_3;
+                case 4:
                     return Players_4;
             }
 

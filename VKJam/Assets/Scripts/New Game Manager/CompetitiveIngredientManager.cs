@@ -1,6 +1,6 @@
 public class CompetitiveIngredientManager : IngredientManager
 {
-    public CompetitiveIngredientManager(CompareSystem compareSystem) : base(compareSystem) { }
+    public CompetitiveIngredientManager(GameConfigSO config, CompareSystem compareSystem) : base(config, compareSystem) { }
 
     protected override void CorrectIngredient()
     {
@@ -9,7 +9,16 @@ public class CompetitiveIngredientManager : IngredientManager
         // add tokens
         foreach (byte clientId in correctGuesserIds)
         {
-            TokenManager.AddTokensToClient(1, clientId);
+            if (GameManager.Instance.PainterId != clientId)
+            {
+                int tokensToAdd = config.BonusForIngredient_CM_G.GetValue(playersCount);
+                TokenManager.AddTokensToClient(tokensToAdd, clientId);
+            }
+            else
+            {
+                int tokensToAdd = config.BonusForIngredient_CM_P.GetValue(playersCount);
+                TokenManager.AddTokensToClient(tokensToAdd, clientId);
+            }
         }
 
         // calculate player without mistakes

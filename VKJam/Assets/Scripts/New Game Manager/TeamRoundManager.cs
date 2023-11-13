@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Unity.Netcode;
+using UnityEngine;
 
 public class TeamRoundManager : RoundManager
 {
@@ -37,7 +37,8 @@ public class TeamRoundManager : RoundManager
         else  // if monster is murderous (hard)
             TokenManager.AddTokensToAll(config.BonusIfMonsterGuessed_TM_MM.GetValue(playersCount));
 
-        TokenManager.AddTokensToAll(config.BonusIfMonsterGuessedMoreThanOnePlayer_TM.GetValue(playersCount));
+        if (correctGuesserIds.Count > 2)
+            TokenManager.AddTokensToAll(config.BonusIfMonsterGuessedMoreThanOnePlayer_TM.GetValue(playersCount));
     }
 
     public override void OnTimeExpired()
