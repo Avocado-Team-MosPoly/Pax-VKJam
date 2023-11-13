@@ -1,24 +1,34 @@
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class NotificationSystem : MonoBehaviour
+public class NotificationSystem : NetworkBehaviour
 {
     public static NotificationSystem Instance { get; private set; }
 
     [SerializeField] private Notification notificationPrefab;
 
-    //[SerializeField] private float showTime = 3.0f;
-
     private Notification notificationInstance;
+    private List<NotificationQueueItem> notificationQueue = new();
 
-    private List<string> notificationQueue = new();
+    private class NotificationQueueItem
+    {
+        public string Text { get; private set; }
+        public float ShowTime { get; private set; }
+
+        public NotificationQueueItem(string text, float showTime = 3)
+        {
+            Text = text;
+            ShowTime = showTime;
+        }
+    }
 
     private void Awake()
     {
         if (Instance != null)
         {
-            Debug.LogError("[MessageSystem] Two or more Message Systems on scene");
+            Debug.LogError($"[{this.name}] Two or more Message Systems on scene");
             Destroy(this);
         }
         else
@@ -26,7 +36,7 @@ public class NotificationSystem : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(this);
 
-            notificationInstance = Instantiate(notificationPrefab, transform);
+            notificationInstance = Instantiate(notificationPrefab, transform).Init();
             notificationInstance.gameObject.SetActive(false);
             notificationInstance.OnDisappeared += OnNotificationDisappear;
         }
@@ -37,28 +47,78 @@ public class NotificationSystem : MonoBehaviour
         if (notificationQueue.Count <= 0)
             return;
 
-        Send(notificationQueue[0]);
+        SendLocal(notificationQueue[0]);
         notificationQueue.RemoveAt(0);
     }
-    public void sss()
+
+
+
+    #region Send
+    private void SendLocal(NotificationQueueItem notification)
     {
-        Send("New new new");
+        SendLocal(notification.Text, notification.ShowTime);
     }
-    public void Send(object message)
+
+    #region Network
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SendGlobalServerRpc(string message, float showTime, ServerRpcParams serverRpcParams)
+    {
+        if (serverRpcParams.Receive.SenderClientId != NetworkManager.LocalClientId)
+            SendLocal(message, showTime);
+
+        SendGlobalClientRpc(message, showTime, (byte)serverRpcParams.Receive.SenderClientId);
+    }
+
+    [ClientRpc]
+    private void SendGlobalClientRpc(string message, float showTime, byte senderClientId)
+    {
+        if (IsServer)
+            return;
+        if (senderClientId == NetworkManager.LocalClientId)
+            return;
+
+        SendLocal(message, showTime);
+    }
+
+    #endregion
+
+    public void SendGlobal(object message, float showTime = 3f)
+    {
+        SendLocal(message, showTime);
+
+        if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsClient)
+        {
+            Debug.LogError($"[{this.name}] You should connect to relay and start host/client before call {nameof(SendGlobal)}");
+            return;
+        }
+
+        string stringMessage = message.ToString();
+        ServerRpcParams serverRpcParams = new();
+
+        if (IsServer)
+            SendGlobalClientRpc(stringMessage, showTime, (byte)serverRpcParams.Receive.SenderClientId);
+        else
+            SendGlobalServerRpc(stringMessage, showTime, serverRpcParams);
+    }
+
+    public void SendLocal(object message, float showTime = 3f)
     {
         if (message == null)
             throw new NullReferenceException($"{nameof(message)} is null");
         if (notificationInstance == null)
-            throw new NullReferenceException($"{nameof(notificationInstance)} is null. Don't use \"{nameof(Send)}\" method on Awake");
+            throw new NullReferenceException($"{nameof(notificationInstance)} is null. Don't use \"{nameof(SendLocal)}\" method on Awake");
 
         if (notificationInstance.IsActive)
         {
-            notificationQueue.Add(message.ToString());
+            notificationQueue.Add( new(message.ToString(), showTime) );
         }
         else
         {
-            notificationInstance.SetData(message.ToString());
+            notificationInstance.SetData(message.ToString(), showTime);
             notificationInstance.Send();
         }
     }
+
+    #endregion
 }
