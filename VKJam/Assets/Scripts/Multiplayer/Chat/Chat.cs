@@ -10,11 +10,11 @@ using TMPro;
 public class Chat : NetworkBehaviour
 {
     public IReadOnlyList<Message> History => history;
-    // нужно заполнить
-    public IReadOnlyDictionary<ulong, string> PlayersNames => playersNames;
 
-    [HideInInspector] public UnityEvent MessageSended = new();
-    [HideInInspector] public UnityEvent MessageReceived = new();
+    [HideInInspector] public UnityEvent OnMessageSended = new();
+    [HideInInspector] public UnityEvent OnMessageReceived = new();
+
+    [SerializeField] private RoleManager roleManager;
 
     [SerializeField] private TMP_InputField messageInputField;
     [SerializeField] private Button sendMessageButton;
@@ -64,11 +64,31 @@ public class Chat : NetworkBehaviour
         }
     }
 
-    private void Awake()
+    private void Start()
     {
         sendMessageButton.onClick.AddListener(SendMessage_);
 
         messageInputField.characterLimit = new Message().text.Capacity;
+
+        if (roleManager != null)
+        {
+            roleManager.OnPainterSetted.AddListener(OnRoleSetted);
+            roleManager.OnGuesserSetted.AddListener(OnRoleSetted);
+        }
+    }
+
+    private void OnRoleSetted()
+    {
+        if (GameManager.Instance.IsPainter)
+        {
+            messageInputField.interactable = false;
+            sendMessageButton.interactable = false;
+        }
+        else
+        {
+            messageInputField.interactable = true;
+            sendMessageButton.interactable = true;
+        }
     }
 
     public void SendMessage_()
@@ -80,14 +100,13 @@ public class Chat : NetworkBehaviour
         };
 
         if (IsServer)
-        {
             SendMessageClientRpc(msg);
-        }
         else
             SendMessageServerRpc(msg);
 
         history.Add(msg);
-        MessageSended?.Invoke();
+        messageInputField.text = string.Empty;
+        OnMessageSended?.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -102,7 +121,7 @@ public class Chat : NetworkBehaviour
         if (message.senderId != NetworkManager.Singleton.LocalClientId)
         {
             history.Add(message);
-            MessageReceived?.Invoke();
+            OnMessageReceived?.Invoke();
         }
     }
 }

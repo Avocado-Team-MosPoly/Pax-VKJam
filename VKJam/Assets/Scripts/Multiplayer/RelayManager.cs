@@ -113,24 +113,26 @@ public class RelayManager : MonoBehaviour
             NetworkManager.Singleton.OnClientStarted += async () =>
             {
                 Logger.Instance.Log($"Client Started on server\nCurrent Lobby: {LobbyManager.Instance.CurrentLobby}\nLobby Player Id: {LobbyManager.Instance.LobbyPlayerId}");
+                /*
 
-                await LobbyService.Instance.UpdatePlayerAsync(LobbyManager.Instance.CurrentLobby.Id, LobbyManager.Instance.LobbyPlayerId, new UpdatePlayerOptions()
-                {
-                    Data = new System.Collections.Generic.Dictionary<string, Unity.Services.Lobbies.Models.PlayerDataObject>
+                    await LobbyService.Instance.UpdatePlayerAsync(LobbyManager.Instance.CurrentLobby.Id, LobbyManager.Instance.LobbyPlayerId, new UpdatePlayerOptions()
                     {
-                        { "Id", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, NetworkManager.Singleton.LocalClientId.ToString()) },
-                        { "Player Name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, Authentication.PlayerName) }
-                    }
-                });
+                        Data = new System.Collections.Generic.Dictionary<string, Unity.Services.Lobbies.Models.PlayerDataObject>
+                        {
+                            { "Id", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, NetworkManager.Singleton.LocalClientId.ToString()) },
+                            { "Player Name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, Authentication.PlayerName) }
+                        }
+                    });
 
-                await LobbyManager.Instance.UpdateLocalLobbyData();
-                Logger.Instance.Log("Player Id in lobby data updated to " + NetworkManager.Singleton.LocalClientId.ToString());
+                    await LobbyManager.Instance.UpdateLocalLobbyData();
+                    Logger.Instance.Log("Player Id in lobby data updated to " + NetworkManager.Singleton.LocalClientId.ToString());
+                */
+
             };
-
+            
             NetworkManager.Singleton.StartHost();
 
             Log("You created relay with code: " + joinCode);
-
             return joinCode;
         }
         catch (RelayServiceException ex)
@@ -191,7 +193,7 @@ public class RelayManager : MonoBehaviour
             NetworkManager.Singleton.OnClientStarted += () =>
             {
                 Logger.Instance.Log("Client Started");
-
+                /*
                 LobbyService.Instance.UpdatePlayerAsync(LobbyManager.Instance.CurrentLobby.Id, LobbyManager.Instance.LobbyPlayerId, new UpdatePlayerOptions()
                 {
                     Data = new System.Collections.Generic.Dictionary<string, Unity.Services.Lobbies.Models.PlayerDataObject>
@@ -200,7 +202,9 @@ public class RelayManager : MonoBehaviour
                         { "Player Name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, Authentication.PlayerName) }
                     }
                 });
+                */
             };
+
             NetworkManager.Singleton.StartClient();
 
             Log("You joined relay with code: " +  joinCode);

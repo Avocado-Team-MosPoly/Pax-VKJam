@@ -33,15 +33,15 @@ public class ChatView : MonoBehaviour
     private int unreadMessagesCount;
 
     private bool IsChatFull() => messageTexts.Count >= maxTogetherShownMessages;
-    private string GetPlayerNameById(byte playerId) => playerNameById[playerId];
+    private string GetPlayerNameById(byte playerId) => playerId.ToString();//playerNameById[playerId];
     private string MessageToText(Chat.Message message) => GetPlayerNameById(message.senderId) + ": " + message.text.ToString();
 
     private void Start()
     {
         chat = GetComponent<Chat>();
 
-        chat.MessageSended.AddListener(UpdateView);
-        chat.MessageReceived.AddListener(OnMessageReceived);
+        chat.OnMessageSended.AddListener(UpdateView);
+        chat.OnMessageReceived.AddListener(OnMessageReceived);
 
         foreach (Player player in LobbyManager.Instance.CurrentLobby.Players)
         {
@@ -108,10 +108,8 @@ public class ChatView : MonoBehaviour
         for (int i = 0; i < messageTemplatesToSpawnCount && !IsChatFull(); i++)
         {
             SpawnMessage(chatHistory[i]);
-            //Debug.Log(chatHistory[i].senderId);
-            //foreach (var key in playerNameById.Keys)
-            //    Debug.Log(playerNameById.Count + " " + key.ToString());
         }
+
         UpdateShownMessages();
     }
 

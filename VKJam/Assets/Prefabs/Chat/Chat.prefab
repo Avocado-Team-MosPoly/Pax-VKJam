@@ -333,7 +333,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 2
+  m_fontStyle: 3
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -717,7 +717,7 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
-  m_ReverseArrangement: 1
+  m_ReverseArrangement: 0
 --- !u!114 &3880298519719204546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -964,7 +964,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -1272,7 +1272,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 3
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -1676,12 +1676,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9637c4739dc3620469500e301515aed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MessageSended:
+  OnMessageSended:
     m_PersistentCalls:
       m_Calls: []
-  MessageReceived:
+  OnMessageReceived:
     m_PersistentCalls:
       m_Calls: []
+  roleManager: {fileID: 0}
   messageInputField: {fileID: 5214710450047592472}
   sendMessageButton: {fileID: 8134940757286262729}
 --- !u!114 &8519356375861679062
@@ -1703,7 +1704,6 @@ MonoBehaviour:
   unreadMessagesCountObject: {fileID: 1803895933668534322}
   unreadMessagesCountText: {fileID: 1350182159712913245}
   messagePrefab: {fileID: 4113952317711816023, guid: da0c4b71822fef149b848827e173031a, type: 3}
-  showMoreButtonPrefab: {fileID: 4459156296243510241, guid: 6fab9319e4c47f645877ca41080a8966, type: 3}
 --- !u!114 &7908184819771703838
 MonoBehaviour:
   m_ObjectHideFlags: 0
