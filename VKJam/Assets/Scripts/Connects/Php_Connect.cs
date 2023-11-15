@@ -1,11 +1,12 @@
 using System;
 using UnityEngine.Networking;
 using UnityEngine;
-[System.Serializable]
+[System.Serializable] 
 public struct Currency
 {
     public int IGCurrency;
     public int DCurrency;
+    public int CardPiece;
 }
 [System.Serializable]
 public class Php_Connect : MonoBehaviour
@@ -17,7 +18,7 @@ public class Php_Connect : MonoBehaviour
     [SerializeField] private Sprite ConnectionError;
     static public int Nickname;
     private static string link;
-    private static Sprite connectionError;
+    public static Sprite connectionError;
     public static RandomItemList randomBase;
     public static Currency Current;
     
@@ -27,8 +28,8 @@ public class Php_Connect : MonoBehaviour
         link = Link;
         randomBase = RandomBase;
         PHPisOnline = true;
-        Nickname = 1;
-        Tesf();
+        Nickname = 333;
+        Request_Auth(Nickname);
         //Debug.Log(Php_Connect.Request_WhichCardInPackOwnering(0));
         /*Debug.Log(Request_BuyTry(0));
         StartCoroutine(Request_Auth(12));
@@ -36,10 +37,6 @@ public class Php_Connect : MonoBehaviour
         StartCoroutine(Request_CurrentCurrency("Renata"));
         StartCoroutine(Request_BuyTry("Renata",1));
         StartCoroutine(Request_CurrentCurrency("Renata"));*/
-    }
-    private void Tesf()
-    {
-        Debug.Log(JsonUtility.ToJson(new WareHouseData(connectionError)));
     }
     private static void ErrorProcessor(string error)
     {
@@ -100,6 +97,7 @@ public class Php_Connect : MonoBehaviour
     }
     private void OnGameEnded(string sceneName)
     {
+
         Current.IGCurrency += TokenManager.TokensCount;
         if (PHPisOnline) Request_TokenWin(TokenManager.TokensCount);
     }
@@ -237,8 +235,7 @@ public class Php_Connect : MonoBehaviour
             {
                 Debug.Log("Server response: " + www.downloadHandler.text);
                 string[] split = www.downloadHandler.text.Split();
-                Current.IGCurrency = Int32.Parse(split[0]);
-                Current.DCurrency = Int32.Parse(split[1]);
+                Current = JsonUtility.FromJson<Currency>(www.downloadHandler.text);
                 return Current;
             }
         }
@@ -292,14 +289,13 @@ public class Php_Connect : MonoBehaviour
             }
         }
     }
-
-    public static WareHouseData Request_DataAboutDesign(int idDesign) // Переделать под JSON, написать скрипт, чтобы заливал в БД данные JSON-ом
+    public static Design Request_DataAboutDesign(int idDesign)
     {
-        if (!PHPisOnline) return new WareHouseData(connectionError);
+        if (!PHPisOnline) return new Design();
         WWWForm form = new WWWForm();
-
         form.AddField("idDesign", idDesign);
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignOutput.php", form))
+        form.AddField("Nickname", Nickname);
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignOutput_JSON.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
             // Запрос выполняется дожидаясь его завершения
@@ -308,19 +304,17 @@ public class Php_Connect : MonoBehaviour
             if (www.result != UnityWebRequest.Result.Success)
             {
                 ErrorProcessor(www.error);
-                return new WareHouseData(connectionError);
+                return new Design();
             }
             else if (www.downloadHandler.text == "error - 404")
             {
                 ErrorProcessor("404");
-                return new WareHouseData(connectionError);
+                return new Design();
             }
             else
             {
                 Debug.Log("Server response: " + www.downloadHandler.text);
-                string[] split = www.downloadHandler.text.Split();
-                Sprite sprite = Base64ToSprite(split[1]);
-                return new WareHouseData(idDesign, split[0], int.Parse(split[2]), sprite, split[3] == "1");
+                return JsonUtility.FromJson<Design>(www.downloadHandler.text);
             }
         }
     }

@@ -30,6 +30,7 @@ public enum BrushMode
 }
 public enum ShopFilters
 {
+    PackCard,
     Watch,
     Token,
     LeftItem,
@@ -39,7 +40,8 @@ public enum ShopFilters
     CardShirts,
     UI,
     Paint,
-    AvatarsAndChat
+    AvatarsAndChat,
+    Currency
 }
 public enum ItemType
 {
@@ -61,6 +63,7 @@ public enum ItemType
     UI_Painter,
     DrawingColors,
     AvatarsAndChat,
+    Currency
 }
 
 public enum RandomType

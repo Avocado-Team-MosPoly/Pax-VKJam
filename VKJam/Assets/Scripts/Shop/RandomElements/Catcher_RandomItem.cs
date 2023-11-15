@@ -16,7 +16,7 @@ public class Catcher_RandomItem : MonoBehaviour
     private void Awake()
     {
         OnDropped += OnDroppingWhatever;
-        if (NameOutput == null)
+        /*if (NameOutput == null)
         {
             GameObject.FindGameObjectWithTag("Random_Frame").TryGetComponent<TMPro.TMP_Text>(out NameOutput);
         }
@@ -24,7 +24,7 @@ public class Catcher_RandomItem : MonoBehaviour
         {
             Window = NameOutput.transform.parent.gameObject;
         }
-        if (Window != null) Window.SetActive(false);
+        if (Window != null) Window.SetActive(false);*/
     }
     public static void SetData(RandomItem Data)
     {
