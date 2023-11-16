@@ -1,5 +1,4 @@
-using Unity.Netcode;
-
+/// <summary> All logic on server </summary>
 public class TeamIngredientManager : IngredientManager
 {
     public TeamIngredientManager(GameConfigSO config, CompareSystem compareSystem) : base(config, compareSystem) { }

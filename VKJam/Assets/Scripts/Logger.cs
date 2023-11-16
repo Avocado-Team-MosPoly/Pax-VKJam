@@ -22,6 +22,7 @@ public class Logger : MonoBehaviour
 
     public void Log(object message)
     {
-        output.text += message + "\n";
+        NotificationSystem.Instance.SendLocal(message);
+        //output.text += message + "\n";
     }
 }

@@ -2,10 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using WebSocketSharp;
 
 public class BestiaryIngredients : MonoBehaviour
 {
-    
+    [HideInInspector] public List<Ingredient> IngredientList = new();
+    [HideInInspector] public List<string> IngredientName = new();
+
     [SerializeField] private CompareSystem compareSystem;
     [SerializeField] private PackCardSO packCardSO;
     [SerializeField] private IngredientInfo ingredientInfoTemplate;
@@ -18,9 +21,6 @@ public class BestiaryIngredients : MonoBehaviour
     [SerializeField] private TextHoverEffect textHoverEffect;
 
     [SerializeField] private Transform[] spawnPositions;
-
-    private List<string> ingridientName = new();
-    private List<Ingredient> ingredientList = new();
 
     private List<TMP_Text> ingredientsTexts = new();
     private List<GameObject> spawnedIngredientObjects = new();
@@ -43,8 +43,8 @@ public class BestiaryIngredients : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Instance.IngredientManager.OnIngredientSwitched.AddListener((sbyte value) => isSpawnedSelectedIngredient = false);
-        GameManager.Instance.RoundManager.OnRoundEnded.AddListener(() =>
+        GameManager.Instance.OnIngredientSwitchedOnClient.AddListener(() => isSpawnedSelectedIngredient = false);
+        GameManager.Instance.OnRoundStartedOnClient.AddListener(() =>
         {
             foreach (GameObject spawnedIngredient in spawnedIngredientObjects)
             {
@@ -57,8 +57,8 @@ public class BestiaryIngredients : MonoBehaviour
 
     public void TakePack()
     {
-        ingredientList.Clear();
-        ingridientName.Clear();
+        IngredientList.Clear();
+        IngredientName.Clear();
 
         for (int i = 0; i < packCardSO.CardInPack.Length; i++)
         {
@@ -66,10 +66,10 @@ public class BestiaryIngredients : MonoBehaviour
             {
                 foreach (Ingredient ingridient in packCardSO.CardInPack[i].Card.IngredientsSO)
                 {
-                    if (ingredientList.Contains(ingridient) != true)
+                    if (IngredientList.Contains(ingridient) != true)
                     {
-                        ingredientList.Add(ingridient);
-                        ingridientName.Add(ingridient.Name);
+                        IngredientList.Add(ingridient);
+                        IngredientName.Add(ingridient.Name);
                     }
                 }
             }
@@ -110,7 +110,7 @@ public class BestiaryIngredients : MonoBehaviour
         int i = lastShownIngridient;
         for (; i < 10 + lastShownIngridient; i++)
         {
-            if (i >= ingridientName.Count)
+            if (i >= IngredientName.Count)
             {
                 if (i != 0)
                 {
@@ -121,7 +121,7 @@ public class BestiaryIngredients : MonoBehaviour
             }
 
             IngredientInfo ingredientInfoUI = Instantiate(ingredientInfoTemplate, ingredientListContainer);
-            ingredientInfoUI.SetIngridient(ingridientName[i], i, compareSystem);
+            ingredientInfoUI.SetIngridient(IngredientName[i], i, compareSystem);
             ingredientInfoUI.gameObject.SetActive(true);
             ingredientInfoUI.OnGuess.AddListener(OnIngredientSelected);
 
@@ -143,10 +143,10 @@ public class BestiaryIngredients : MonoBehaviour
             return;
 
         Transform spawnPosition = spawnPositions[spawnedIngredientObjects.Count];
-        GameObject spawnedIngredientObject = Instantiate(ingredientList[ingredientIndex].Model, spawnPosition.position, Quaternion.identity, spawnPosition);
+        GameObject spawnedIngredientObject = Instantiate(IngredientList[ingredientIndex].Model, spawnPosition.position, Quaternion.identity, spawnPosition);
 
         if (spawnedIngredientObject == null)
-            throw new System.NullReferenceException($"Ingredient prefab is null ({ingredientList[ingredientIndex].Name} ingredient)");
+            throw new System.NullReferenceException($"Ingredient prefab is null ({IngredientList[ingredientIndex].Name} ingredient)");
 
         spawnedIngredientObjects.Add(spawnedIngredientObject);
         isSpawnedSelectedIngredient = true;
@@ -154,7 +154,7 @@ public class BestiaryIngredients : MonoBehaviour
 
     private void CheckButton()
     {
-        if (lastShownIngridient >= ingridientName.Count - 1)
+        if (lastShownIngridient >= IngredientName.Count - 1)
         {
             NextButton.SetActive(false);
         }
@@ -171,5 +171,23 @@ public class BestiaryIngredients : MonoBehaviour
         {
             BeforeButton.SetActive(true);
         }
+    }
+
+    public int GetIngredientIndexById(string ingredientId)
+    {
+        if (ingredientId.IsNullOrEmpty())
+            Debug.LogWarning($"[{this.name}] Argument ingredientId is null or empty");
+        else if (IngredientList == null || IngredientList.Count <= 0)
+            Debug.LogWarning($"[{this.name}] IngredientList is null or empty");
+        else
+        {
+            for (int i = 0; i < IngredientList.Count; i++)
+            {
+                if (IngredientList[i].Name == ingredientId)
+                    return i;
+            }
+        }
+
+        return -1;
     }
 }
