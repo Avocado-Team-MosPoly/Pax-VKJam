@@ -490,7 +490,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &272261845
 RectTransform:
   m_ObjectHideFlags: 0
@@ -977,7 +977,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &455495990
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1577,7 +1577,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &917954490
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2078,12 +2078,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   createLobbyButton: {fileID: 0}
   listLobbiesButtons: []
-  listPlayersButton: {fileID: 0}
-  startGameButton: {fileID: 1493065764}
   leaveLobbyButton: {fileID: 1780831507}
   updatePlayerList: {fileID: 1640443493}
   lobbyListContainer: {fileID: 0}
   lobbyInfoTemplate: {fileID: 0}
+  ready: {fileID: 0}
   playerGameObjectList:
   - {fileID: 251506184}
   - {fileID: 755886851}
@@ -2094,8 +2093,6 @@ MonoBehaviour:
   - {fileID: 917954489}
   - {fileID: 272261844}
   - {fileID: 455495989}
-  playerListContainer: {fileID: 0}
-  playerInfoPrefab: {fileID: 0}
   allPlayerReady: 00000000
 --- !u!1 &1281023433
 GameObject:
@@ -2114,7 +2111,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1281023434
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2637,6 +2634,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1528943962}
   m_CullTransparentMesh: 1
+--- !u!1 &1547181417
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1547181419}
+  - component: {fileID: 1547181418}
+  m_Layer: 0
+  m_Name: LobbyManagerUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1547181418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547181417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333e2929da7610540b9383ff0894a480, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  createLobbyButton: {fileID: 0}
+  listLobbiesButtons: []
+  leaveLobbyButton: {fileID: 1780831507}
+  updatePlayerList: {fileID: 1640443493}
+  lobbyListContainer: {fileID: 0}
+  lobbyInfoTemplate: {fileID: 0}
+  ready: {fileID: 1493065764}
+  playerGameObjectList:
+  - {fileID: 251506184}
+  - {fileID: 755886851}
+  - {fileID: 315162707}
+  - {fileID: 1907015205}
+  playerReady:
+  - {fileID: 1281023433}
+  - {fileID: 917954489}
+  - {fileID: 272261844}
+  - {fileID: 455495989}
+  allPlayerReady: 00000000
+--- !u!4 &1547181419
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547181417}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1635561180
 GameObject:
   m_ObjectHideFlags: 0
@@ -3828,3 +3887,4 @@ SceneRoots:
   - {fileID: 1095290116}
   - {fileID: 213020243}
   - {fileID: 715082669}
+  - {fileID: 1547181419}

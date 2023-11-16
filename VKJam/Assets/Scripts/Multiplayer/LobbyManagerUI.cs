@@ -11,19 +11,19 @@ public class LobbyManagerUI : MonoBehaviour
 {
     [SerializeField] private Button createLobbyButton;
     [SerializeField] private Button[] listLobbiesButtons;
-    [SerializeField] private Button listPlayersButton;
-    [SerializeField] private Button startGameButton;
+    //[SerializeField] private Button listPlayersButton;
     [SerializeField] private Button leaveLobbyButton;
     [SerializeField] private Button updatePlayerList;
 
     [SerializeField] private RectTransform lobbyListContainer;
     [SerializeField] private GameObject lobbyInfoTemplate;
-    [SerializeField] private GameObject ready;
+    [SerializeField] private Button ready;
     [SerializeField] private List<GameObject> playerGameObjectList;
     [SerializeField] private List<GameObject> playerReady;
+    private int howManyPlayerReady=0;
 
-    [SerializeField] private RectTransform playerListContainer;
-    [SerializeField] private GameObject playerInfoPrefab;
+    //[SerializeField] private RectTransform playerListContainer;
+    //[SerializeField] private GameObject playerInfoPrefab;
     [SerializeField] private List<bool> allPlayerReady;
     private List<Player> players;
 
@@ -33,15 +33,8 @@ public class LobbyManagerUI : MonoBehaviour
         createLobbyButton?.onClick.AddListener(LobbyManager.Instance.CreateLobby);
         leaveLobbyButton?.onClick.AddListener(LeaveLobby);
         updatePlayerList?.onClick.AddListener(LobbyManager.Instance.ListPlayers);
-        ready?.GetComponent<Button>().onClick.AddListener(ChangeReady);
+        ready?.onClick.AddListener(ChangeReady);
 
-        if (startGameButton)
-        {
-            if (NetworkManager.Singleton.IsHost)
-                startGameButton.onClick.AddListener(() => SceneLoader.ServerLoad("Map_New"));
-            else
-                startGameButton.gameObject.SetActive(false);
-        }
 
         foreach (var button in listLobbiesButtons)
             button.onClick.AddListener(LobbyManager.Instance.ListLobbies);
@@ -49,7 +42,7 @@ public class LobbyManagerUI : MonoBehaviour
         if (lobbyListContainer && lobbyInfoTemplate)
             LobbyManager.Instance.OnLobbyListed.AddListener(UpdateLobbyList);
 
-        if (playerListContainer && playerInfoPrefab)
+        if (updatePlayerList)
         {
             LobbyManager.Instance.OnPlayerListed.AddListener(UpdatePlayerList);
             LobbyManager.Instance.ListPlayers();
@@ -81,8 +74,7 @@ public class LobbyManagerUI : MonoBehaviour
         for (; i < players.Count; i++)
         {
             if (players[i].Id == AuthenticationService.Instance.PlayerId)
-            {
-                
+            {               
                 break;
             }
         }
@@ -109,15 +101,25 @@ public class LobbyManagerUI : MonoBehaviour
         }
         if(NetworkManager.Singleton.IsServer)
         {
+            howManyPlayerReady = 0;
             bool allReady=true;
-            foreach (bool ready in allPlayerReady)
+            for (int i = 0; i < allPlayerReady.Count; i++)
             {
-                if (!ready)
-                    allReady = false;
+                if (!allPlayerReady[i])
+                {
+                    if (playerGameObjectList[i].activeSelf)
+                    {
+                        allReady = false;
+                    }
+                }
+                else
+                {
+                    howManyPlayerReady++;
+                }
             }
-            if (allReady)
+            if (allReady&&howManyPlayerReady>2)
             {
-                
+                SceneLoader.ServerLoad("Map_New");
             }
         }
     }
