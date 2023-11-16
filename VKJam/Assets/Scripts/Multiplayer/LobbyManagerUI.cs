@@ -1,108 +1,115 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Lobbies.Models;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
-public class LobbyManagerUI : MonoBehaviour
+public class LobbyManagerUI : NetworkBehaviour
 {
-    [SerializeField] private Button createLobbyButton;
-    [SerializeField] private Button[] listLobbiesButtons;
     //[SerializeField] private Button listPlayersButton;
     [SerializeField] private Button leaveLobbyButton;
     [SerializeField] private Button updatePlayerList;
-
-    [SerializeField] private RectTransform lobbyListContainer;
-    [SerializeField] private GameObject lobbyInfoTemplate;
     [SerializeField] private Button ready;
     [SerializeField] private List<GameObject> playerGameObjectList;
     [SerializeField] private List<GameObject> playerReady;
-    private int howManyPlayerReady=0;
 
     //[SerializeField] private RectTransform playerListContainer;
     //[SerializeField] private GameObject playerInfoPrefab;
-    [SerializeField] private List<bool> allPlayerReady;
-    private List<Player> players;
+    [SerializeField] private NetworkList<bool> allPlayerReady =new();
+    private NetworkList<ulong> playersId = new();
 
 
     private void Start()
     {
-        createLobbyButton?.onClick.AddListener(LobbyManager.Instance.CreateLobby);
         leaveLobbyButton?.onClick.AddListener(LeaveLobby);
         updatePlayerList?.onClick.AddListener(LobbyManager.Instance.ListPlayers);
-        ready?.onClick.AddListener(ChangeReady);
+        ready?.onClick.AddListener(ChangeReady);  
 
 
-        foreach (var button in listLobbiesButtons)
-            button.onClick.AddListener(LobbyManager.Instance.ListLobbies);
+        //LobbyManager.Instance.OnPlayerListed.AddListener(UpdatePlayerList);
+        LobbyManager.Instance.ListPlayers();
 
-        if (lobbyListContainer && lobbyInfoTemplate)
-            LobbyManager.Instance.OnLobbyListed.AddListener(UpdateLobbyList);
-
-        if (updatePlayerList)
+        if (NetworkManager.Singleton.IsServer)
         {
-            LobbyManager.Instance.OnPlayerListed.AddListener(UpdatePlayerList);
-            LobbyManager.Instance.ListPlayers();
+            NetworkManager.Singleton.OnClientDisconnectCallback += PLayerLeave;
+            NetworkManager.Singleton.OnClientConnectedCallback += PlayerConnect;
+            PlayerConnect(0);
+        }
+        allPlayerReady.OnListChanged += AllPlayerReady_OnListChanged;
+        playersId.OnListChanged += PlayersId_OnListChanged;
+
+    }
+
+    private void PlayersId_OnListChanged(NetworkListEvent<ulong> changeEvent)
+    {
+        Debug.LogError("PlayersId_OnListChanged");
+        foreach (GameObject player in playerGameObjectList)
+        {
+            player.SetActive(false);
+        }
+        for (int i = 0; i < playersId.Count; i++)
+        {
+            playerGameObjectList[i].SetActive(true);
         }
     }
 
-    private void UpdateLobbyList(List<Lobby> lobbyList)
+    private void PlayerConnect(ulong obj)
     {
-        foreach (Transform child in lobbyListContainer)
-            Destroy(child.gameObject);
 
-        foreach (Lobby lobby in lobbyList)
-        {
-            GameObject lobbySingleTransform = Instantiate(lobbyInfoTemplate, lobbyListContainer);
-            lobbySingleTransform.SetActive(true);
+        Debug.LogError("Player conected");
+        playersId.Add(obj);
+        allPlayerReady.Add(false);
 
-            LobbyInfoUI lobbyInfoUI = lobbySingleTransform.GetComponent<LobbyInfoUI>();
-            lobbyInfoUI.SetLobby(lobby);
-        }
     }
 
-    private void UpdatePlayerList(List<Player> players)
+    private void PLayerLeave(ulong obj)
     {
-        UpdatePlayerListServerRpc(players);
+
+        allPlayerReady[GetplayerNumber(obj)] = false;
+        playersId.RemoveAt(GetplayerNumber(obj));
     }
-    private int GetplayerNumber()
+
+    private int GetplayerNumber(ulong id)
     {
         int i = 0;
-        for (; i < players.Count; i++)
+        for (; i < playersId.Count; i++)
         {
-            if (players[i].Id == AuthenticationService.Instance.PlayerId)
+            if (playersId[i] == id)
             {               
                 break;
             }
         }
         return i;
     }
+
     public void ChangeReady()
     {
-        UpdatePlayerReadyServerRpc(GetplayerNumber());
+        UpdatePlayerReadyServerRpc(GetplayerNumber(NetworkManager.Singleton.LocalClientId));
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void UpdatePlayerReadyServerRpc(int player)
     {
-        allPlayerReady[player]=!allPlayerReady[player];
-        UpdatePlayerReadyClientRpc(allPlayerReady);
+        Debug.LogError("Server");
+        allPlayerReady[player] = !allPlayerReady[player];              
     }
-    [ClientRpc]
-    private void UpdatePlayerReadyClientRpc(List<bool> players)
+
+    private void AllPlayerReady_OnListChanged(NetworkListEvent<bool> changeEvent)
     {
-        allPlayerReady = players;
-        for (int i = 0; i < playerReady.Count; i++)
+        Debug.LogError("AllPlayerReady_OnListChanged");
+        for (int i = 0; i < allPlayerReady.Count; i++)
         {
             playerReady[i].SetActive(allPlayerReady[i]);
         }
-        if(NetworkManager.Singleton.IsServer)
+        if (NetworkManager.Singleton.IsServer)
         {
-            howManyPlayerReady = 0;
-            bool allReady=true;
+            int howManyPlayerReady = 0;
+            bool allReady = true;
             for (int i = 0; i < allPlayerReady.Count; i++)
             {
                 if (!allPlayerReady[i])
@@ -114,35 +121,21 @@ public class LobbyManagerUI : MonoBehaviour
                 }
                 else
                 {
-                    howManyPlayerReady++;
+                    howManyPlayerReady += 1;                    
                 }
             }
-            if (allReady&&howManyPlayerReady>2)
-            {
+            
+            if (allReady && howManyPlayerReady >= 2)
+            {                
                 SceneLoader.ServerLoad("Map_New");
             }
         }
     }
-    [ServerRpc(RequireOwnership = false)]
-    private void UpdatePlayerListServerRpc(List<Player> players)
-    {
-        UpdatePlayerListClientRpc(players);
-    }
-    [ClientRpc]
-    private void UpdatePlayerListClientRpc(List<Player> players)
-    {
-        this.players=players;
-        foreach (GameObject player in playerGameObjectList)
-        {
-            player.SetActive(false);
-        }
-        for (int i = 0; i < players.Count; i++)
-        {
-            playerGameObjectList[i].SetActive(true);
-        }
-    }
+
     private void LeaveLobby()
     {
         LobbyManager.Instance.LeaveLobby();
     }
+
+
 }

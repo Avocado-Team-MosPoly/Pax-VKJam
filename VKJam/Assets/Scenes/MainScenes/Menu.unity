@@ -11858,7 +11858,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1011779960}
-  - component: {fileID: 1011779961}
+  - component: {fileID: 1011779962}
+  - component: {fileID: 1011779963}
   m_Layer: 0
   m_Name: LobbyManagerUI
   m_TagString: Untagged
@@ -11881,7 +11882,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1011779961
+--- !u!114 &1011779962
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11890,21 +11891,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 1011779959}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 333e2929da7610540b9383ff0894a480, type: 3}
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  createLobbyButton: {fileID: 557364526}
+  GlobalObjectIdHash: 3948780729
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &1011779963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1011779959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35a32e51ff000040ac354daa43c5908, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lobbyListContainer: {fileID: 418092504}
+  lobbyInfoTemplate: {fileID: 8263419414577069639, guid: 7c014ad8af5291946902f7e19b207d57, type: 3}
   listLobbiesButtons:
   - {fileID: 1987466031}
   - {fileID: 251685216}
-  listPlayersButton: {fileID: 0}
-  startGameButton: {fileID: 0}
-  leaveLobbyButton: {fileID: 0}
-  updatePlayerList: {fileID: 0}
-  lobbyListContainer: {fileID: 418092504}
-  lobbyInfoTemplate: {fileID: 8263419414577069639, guid: 7c014ad8af5291946902f7e19b207d57, type: 3}
-  playerListContainer: {fileID: 0}
-  playerInfoPrefab: {fileID: 0}
+  createLobbyButton: {fileID: 557364526}
 --- !u!1 &1015890201
 GameObject:
   m_ObjectHideFlags: 0
@@ -22574,7 +22589,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1987932726}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
