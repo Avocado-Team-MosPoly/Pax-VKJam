@@ -1965,7 +1965,6 @@ GameObject:
   - component: {fileID: 1095290115}
   - component: {fileID: 1095290114}
   - component: {fileID: 1095290113}
-  - component: {fileID: 1095290117}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2064,36 +2063,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1095290117
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1095290112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 333e2929da7610540b9383ff0894a480, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  createLobbyButton: {fileID: 0}
-  listLobbiesButtons: []
-  leaveLobbyButton: {fileID: 1780831507}
-  updatePlayerList: {fileID: 1640443493}
-  lobbyListContainer: {fileID: 0}
-  lobbyInfoTemplate: {fileID: 0}
-  ready: {fileID: 0}
-  playerGameObjectList:
-  - {fileID: 251506184}
-  - {fileID: 755886851}
-  - {fileID: 315162707}
-  - {fileID: 1907015205}
-  playerReady:
-  - {fileID: 1281023433}
-  - {fileID: 917954489}
-  - {fileID: 272261844}
-  - {fileID: 455495989}
-  allPlayerReady: 00000000
 --- !u!1 &1281023433
 GameObject:
   m_ObjectHideFlags: 0
