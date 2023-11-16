@@ -1,3 +1,4 @@
+/// <summary> All logic on server </summary>
 public class CompetitiveIngredientManager : IngredientManager
 {
     public CompetitiveIngredientManager(GameConfigSO config, CompareSystem compareSystem) : base(config, compareSystem) { }

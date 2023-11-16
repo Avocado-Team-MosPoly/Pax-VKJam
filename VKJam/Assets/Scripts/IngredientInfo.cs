@@ -27,7 +27,7 @@ public class IngredientInfo : MonoBehaviour
     {
         if (GameManager.Instance.Stage == Stage.IngredientGuess)
         {
-            compareSystem.CompareAnswerServerRpc(IngridientName.text, new ServerRpcParams());
+            compareSystem.CompareAnswerServerRpc(index, new ServerRpcParams());
             OnGuess?.Invoke(index);
         }
     }

@@ -3,6 +3,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary> All logic on server </summary>
 public abstract class RoundManager
 {
     [HideInInspector] public UnityEvent OnRoundEnded = new();

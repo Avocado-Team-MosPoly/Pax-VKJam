@@ -4,8 +4,9 @@ using Unity.Netcode;
 
 public class ChooseFromBook : MonoBehaviour
 {
-    [HideInInspector] public string guess;
-    
+    [HideInInspector] public string GuessedMonster;
+    [HideInInspector] public int MonsterId;
+
     [SerializeField] private CompareSystem compareSystem;
     
     public void Start()
@@ -15,6 +16,6 @@ public class ChooseFromBook : MonoBehaviour
     
     public void Guess()
     {
-        compareSystem.CompareAnswerServerRpc(guess, new ServerRpcParams());
+        compareSystem.CompareAnswerServerRpc(MonsterId, new ServerRpcParams());
     }
 }

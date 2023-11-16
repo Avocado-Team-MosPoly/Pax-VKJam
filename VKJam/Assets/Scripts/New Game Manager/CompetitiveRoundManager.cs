@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 
+/// <summary> All logic on server </summary>
 public class CompetitiveRoundManager : RoundManager
 {
     public CompetitiveRoundManager(GameConfigSO gameConfig, CompareSystem compareSystem, IngredientManager ingredientManager)
