@@ -4877,7 +4877,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &202208317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33916,6 +33916,7 @@ GameObject:
   - component: {fileID: 1494258490}
   - component: {fileID: 1494258492}
   - component: {fileID: 1494258491}
+  - component: {fileID: 1494258493}
   m_Layer: 5
   m_Name: Book
   m_TagString: Untagged
@@ -33981,6 +33982,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494258489}
   m_CullTransparentMesh: 1
+--- !u!114 &1494258493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494258489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34784b8b63008b94dabd5ea8cdf2cf89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Monsters: []
+  imageHolder:
+  - {fileID: 491667645}
+  - {fileID: 468275045}
+  - {fileID: 1775324614}
+  - {fileID: 413410558}
+  - {fileID: 2012827659}
+  - {fileID: 1852889208}
+  - {fileID: 1348876941}
+  - {fileID: 776151636}
+  nameHolder:
+  - {fileID: 377831722}
+  - {fileID: 1142501926}
+  - {fileID: 1681043119}
+  - {fileID: 1456626128}
+  - {fileID: 246088301}
+  - {fileID: 2007326917}
+  - {fileID: 1864968072}
+  - {fileID: 645649659}
+  previousMonsterButton: {fileID: 1568592684}
+  nextMonsterButton: {fileID: 167275093}
+  packCardSO: {fileID: 11400000, guid: 040e18bcc36e564478de642a4b6f95ec, type: 2}
 --- !u!1 &1494805336
 GameObject:
   m_ObjectHideFlags: 0

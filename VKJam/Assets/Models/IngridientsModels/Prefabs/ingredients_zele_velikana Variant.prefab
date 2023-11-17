@@ -78,37 +78,16 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a5fcb1f265c32eb4d89c1cf1b0ccb8e1, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4883846409475479993}
+      addedObject: {fileID: 7233474709764597336}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a5fcb1f265c32eb4d89c1cf1b0ccb8e1, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7233474709764597336}
+      addedObject: {fileID: 4552553399690792905}
   m_SourcePrefab: {fileID: 100100000, guid: a5fcb1f265c32eb4d89c1cf1b0ccb8e1, type: 3}
 --- !u!1 &3221240408624513501 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a5fcb1f265c32eb4d89c1cf1b0ccb8e1, type: 3}
   m_PrefabInstance: {fileID: 2338859987532512396}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &4883846409475479993
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3221240408624513501}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7233474709764597336
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145,6 +124,27 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+--- !u!65 &4552553399690792905
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3221240408624513501}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.089133695, y: 0.19430764, z: 0.11196871}
+  m_Center: {x: -0.0010495614, y: 0.09715382, z: 0.000000014901161}
 --- !u!95 &8151472915624182045 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: a5fcb1f265c32eb4d89c1cf1b0ccb8e1, type: 3}
