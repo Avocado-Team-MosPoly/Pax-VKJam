@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using WebSocketSharp;
 
 public class BestiaryIngredients : MonoBehaviour
 {
@@ -175,7 +174,7 @@ public class BestiaryIngredients : MonoBehaviour
 
     public int GetIngredientIndexById(string ingredientId)
     {
-        if (ingredientId.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(ingredientId))
             Debug.LogWarning($"[{this.name}] Argument ingredientId is null or empty");
         else if (IngredientList == null || IngredientList.Count <= 0)
             Debug.LogWarning($"[{this.name}] IngredientList is null or empty");
