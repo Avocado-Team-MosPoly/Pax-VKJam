@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using UnityEngine;
 
+/// <summary> All logic on server </summary>
 public class TeamRoundManager : RoundManager
 {
     public TeamRoundManager(GameConfigSO gameConfig, CompareSystem compareSystem, IngredientManager ingredientManager)

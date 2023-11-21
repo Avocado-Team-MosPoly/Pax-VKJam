@@ -11,7 +11,7 @@ public class Authentication : MonoBehaviour
     {
         if (UnityServices.State == ServicesInitializationState.Initialized)
         {
-            Debug.LogWarning("Вторая аутентификация");
+            Debug.LogWarning("Unity Services alredy initialized");
             return;
         }
 

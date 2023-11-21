@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class Bestiary : MonoBehaviour
 {
-    private List<CardSO> monsters = new();
+    [HideInInspector] public List<CardSO> Monsters = new();
+
     [SerializeField] private Button[] dangerousMonstersButtons;
     [SerializeField] private Button[] murderousMonstersButtons;
 
@@ -37,7 +38,7 @@ public class Bestiary : MonoBehaviour
         int dangerousMonstersCount = 0;
         int murderousMonstersCount = 0;
 
-        foreach (CardSO monster in monsters)
+        foreach (CardSO monster in Monsters)
         {
             int pageIndex = dangerousMonstersCount + murderousMonstersCount;
 
@@ -64,13 +65,13 @@ public class Bestiary : MonoBehaviour
 
     public void TakePack()
     {
-        monsters.Clear();
+        Monsters.Clear();
 
         for (int i = 0; i < packCardSO.CardInPack.Length; i++)
         {
             if (packCardSO.CardInPack[i].CardIsInOwn == true)
             {
-                monsters.Add(packCardSO.CardInPack[i].Card);
+                Monsters.Add(packCardSO.CardInPack[i].Card);
             }
         }
     }
@@ -100,7 +101,7 @@ public class Bestiary : MonoBehaviour
 
     private void NextMoster()
     {
-        if (currentMonster >= monsters.Count - 1)
+        if (currentMonster >= Monsters.Count - 1)
         {
             catalougeCanvas.SetActive(true);
             templateCanvas.SetActive(false);
@@ -113,27 +114,29 @@ public class Bestiary : MonoBehaviour
 
     private void UpdateUIMonster()
     {
-        imageHolder.sprite = monsters[currentMonster].MonsterInBestiarySprite;
-        typeHolder.sprite = (monsters[currentMonster].Difficulty == CardDifficulty.Dangerous ? dangerousIcon : murderousIcon);
-        nameHolder.text = monsters[currentMonster].Id;
+        imageHolder.sprite = Monsters[currentMonster].MonsterInBestiarySprite;
+        typeHolder.sprite = (Monsters[currentMonster].Difficulty == CardDifficulty.Dangerous ? dangerousIcon : murderousIcon);
+        nameHolder.text = Monsters[currentMonster].Id;
 
         if (GameManager.Instance.Stage == Stage.MonsterGuess)
         {
             chooseMonster.SetActive(true);
-            chooseMonster.GetComponent<ChooseFromBook>().guess = monsters[currentMonster].Id;
+            ChooseFromBook chooseFromBook = chooseMonster.GetComponent<ChooseFromBook>();
+            chooseFromBook.GuessedMonster = Monsters[currentMonster].Id;
+            chooseFromBook.MonsterId = currentMonster;
         }
         else
         {
             chooseMonster.SetActive(false);
         }
 
-        descriptionHolder.text = monsters[currentMonster].Description;
-        ingredientsHolder.text = monsters[currentMonster].GetIngredientsAsString();
+        descriptionHolder.text = Monsters[currentMonster].Description;
+        ingredientsHolder.text = Monsters[currentMonster].GetIngredientsAsString();
     }
 
     private void GoToPage(int pageIndex)
     {
-        if (pageIndex >= 0 && pageIndex < monsters.Count)
+        if (pageIndex >= 0 && pageIndex < Monsters.Count)
         {
             catalougeCanvas.SetActive(false);
             templateCanvas.SetActive(true);

@@ -1,79 +1,132 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Services.Authentication;
 using Unity.Services.Lobbies.Models;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LobbyManagerUI : MonoBehaviour
+public class LobbyManagerUI : NetworkBehaviour
 {
-    [SerializeField] private Button createLobbyButton;
-    [SerializeField] private Button[] listLobbiesButtons;
-    [SerializeField] private Button listPlayersButton;
-    [SerializeField] private Button startGameButton;
+    //[SerializeField] private Button listPlayersButton;
     [SerializeField] private Button leaveLobbyButton;
     [SerializeField] private Button updatePlayerList;
+    [SerializeField] private Button ready;
+    [SerializeField] private List<GameObject> playerGameObjectList;
+    [SerializeField] private List<GameObject> playerReady;
 
-    [SerializeField] private RectTransform lobbyListContainer;
-    [SerializeField] private GameObject lobbyInfoTemplate;
+    //[SerializeField] private RectTransform playerListContainer;
+    //[SerializeField] private GameObject playerInfoPrefab;
+    [SerializeField] private NetworkList<bool> allPlayerReady =new();
+    private NetworkList<ulong> playersId = new();
 
-    [SerializeField] private RectTransform playerListContainer;
-    [SerializeField] private GameObject playerInfoPrefab;
 
     private void Start()
     {
-        createLobbyButton?.onClick.AddListener(LobbyManager.Instance.CreateLobby);
         leaveLobbyButton?.onClick.AddListener(LeaveLobby);
         updatePlayerList?.onClick.AddListener(LobbyManager.Instance.ListPlayers);
+        ready?.onClick.AddListener(ChangeReady);  
 
-        if (startGameButton)
+
+        //LobbyManager.Instance.OnPlayerListed.AddListener(UpdatePlayerList);
+        LobbyManager.Instance.ListPlayers();
+
+        if (NetworkManager.Singleton.IsServer)
         {
-            if (NetworkManager.Singleton.IsHost)
-                startGameButton.onClick.AddListener(() => SceneLoader.ServerLoad("Map_New"));
-            else
-                startGameButton.gameObject.SetActive(false);
+            NetworkManager.Singleton.OnClientDisconnectCallback += PLayerLeave;
+            NetworkManager.Singleton.OnClientConnectedCallback += PlayerConnect;
+            PlayerConnect(0);
         }
+        allPlayerReady.OnListChanged += AllPlayerReady_OnListChanged;
+        playersId.OnListChanged += PlayersId_OnListChanged;
 
-        foreach (var button in listLobbiesButtons)
-            button.onClick.AddListener(LobbyManager.Instance.ListLobbies);
+    }
 
-        if (lobbyListContainer && lobbyInfoTemplate)
-            LobbyManager.Instance.OnLobbyListed.AddListener(UpdateLobbyList);
-
-        if (playerListContainer && playerInfoPrefab)
+    private void PlayersId_OnListChanged(NetworkListEvent<ulong> changeEvent)
+    {
+        Debug.LogError("PlayersId_OnListChanged");
+        foreach (GameObject player in playerGameObjectList)
         {
-            LobbyManager.Instance.OnPlayerListed.AddListener(UpdatePlayerList);
-            LobbyManager.Instance.ListPlayers();
+            player.SetActive(false);
+        }
+        for (int i = 0; i < playersId.Count; i++)
+        {
+            playerGameObjectList[i].SetActive(true);
         }
     }
 
-    private void UpdateLobbyList(List<Lobby> lobbyList)
+    private void PlayerConnect(ulong obj)
     {
-        foreach (Transform child in lobbyListContainer)
-            Destroy(child.gameObject);
 
-        foreach (Lobby lobby in lobbyList)
-        {
-            GameObject lobbySingleTransform = Instantiate(lobbyInfoTemplate, lobbyListContainer);
-            lobbySingleTransform.SetActive(true);
+        Debug.LogError("Player conected");
+        playersId.Add(obj);
+        allPlayerReady.Add(false);
 
-            LobbyInfoUI lobbyInfoUI = lobbySingleTransform.GetComponent<LobbyInfoUI>();
-            lobbyInfoUI.SetLobby(lobby);
-        }
     }
 
-    private void UpdatePlayerList(List<Player> players)
+    private void PLayerLeave(ulong obj)
     {
-        foreach (Transform child in playerListContainer)
-            Destroy(child.gameObject);
 
-        foreach (Player player in players)
+        allPlayerReady[GetplayerNumber(obj)] = false;
+        playersId.RemoveAt(GetplayerNumber(obj));
+    }
+
+    private int GetplayerNumber(ulong id)
+    {
+        int i = 0;
+        for (; i < playersId.Count; i++)
         {
-            Debug.Log(player.Id);
-            GameObject playerInfoInstance = Instantiate(playerInfoPrefab, playerListContainer);
-            playerInfoInstance.SetActive(true);
+            if (playersId[i] == id)
+            {               
+                break;
+            }
+        }
+        return i;
+    }
 
-            PlayerInfoUI playerInfoUI = playerInfoInstance.GetComponent<PlayerInfoUI>();
-            playerInfoUI.SetPlayer(player);
+    public void ChangeReady()
+    {
+        UpdatePlayerReadyServerRpc(GetplayerNumber(NetworkManager.Singleton.LocalClientId));
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void UpdatePlayerReadyServerRpc(int player)
+    {
+        Debug.LogError("Server");
+        allPlayerReady[player] = !allPlayerReady[player];              
+    }
+
+    private void AllPlayerReady_OnListChanged(NetworkListEvent<bool> changeEvent)
+    {
+        Debug.LogError("AllPlayerReady_OnListChanged");
+        for (int i = 0; i < allPlayerReady.Count; i++)
+        {
+            playerReady[i].SetActive(allPlayerReady[i]);
+        }
+        if (NetworkManager.Singleton.IsServer)
+        {
+            int howManyPlayerReady = 0;
+            bool allReady = true;
+            for (int i = 0; i < allPlayerReady.Count; i++)
+            {
+                if (!allPlayerReady[i])
+                {
+                    if (playerGameObjectList[i].activeSelf)
+                    {
+                        allReady = false;
+                    }
+                }
+                else
+                {
+                    howManyPlayerReady += 1;                    
+                }
+            }
+            
+            if (allReady && howManyPlayerReady >= 2)
+            {                
+                SceneLoader.ServerLoad("Map_New");
+            }
         }
     }
 
@@ -81,4 +134,6 @@ public class LobbyManagerUI : MonoBehaviour
     {
         LobbyManager.Instance.LeaveLobby();
     }
+
+
 }

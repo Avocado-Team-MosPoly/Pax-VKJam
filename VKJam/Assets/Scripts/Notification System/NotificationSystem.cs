@@ -28,7 +28,7 @@ public class NotificationSystem : NetworkBehaviour
     {
         if (Instance != null)
         {
-            Debug.LogError($"[{this.name}] Two or more Message Systems on scene");
+            Debug.LogWarning($"[{this.name}] Two or more Message Systems on scene");
             Destroy(this);
         }
         else

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Unity.Netcode;
 
+/// <summary> All logic on server </summary>
 public abstract class IngredientManager
 {
     public UnityEvent<sbyte> OnIngredientSwitched = new();

@@ -8,8 +8,9 @@ public class GameManager : NetworkBehaviour
 {
     /// <summary> Sends true if local player is painter, false if not </summary>
     [HideInInspector] public UnityEvent<bool> OnGuessMonsterStageActivatedOnClient;
-    [HideInInspector] public UnityEvent OnAnswerCardSOSettedOnClient; // TODO: remind why or delete
     [HideInInspector] public UnityEvent OnGameEnded;
+    [HideInInspector] public UnityEvent OnIngredientSwitchedOnClient;
+    [HideInInspector] public UnityEvent OnRoundStartedOnClient;
 
     #region Properties
 
@@ -37,6 +38,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private RoleManager roleManager;
     [SerializeField] private CardManager cardManager;
     [SerializeField] private CompareSystem compareSystem;
+    [SerializeField] private PlayersStatusManager playersStatusManager;
     [SerializeField] private SceneObjectsManager sceneObjectsManager;
     [SerializeField] private HintManager hintManager;
 
@@ -74,7 +76,15 @@ public class GameManager : NetworkBehaviour
     {
         cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
 
-        nextRoundButton.GetComponent<Button>().onClick.AddListener(roleManager.ChangeRoles);
+        Button nrbb = nextRoundButton.GetComponent<Button>();
+        nrbb.onClick.AddListener(() =>
+        {
+            if (IsServer)
+                OnRoundStartedClientRpc();
+            else
+                OnRoundStartedServerRpc();
+        });
+        nrbb.onClick.AddListener(roleManager.ChangeRoles);
     }
 
     public override void OnNetworkSpawn()
@@ -130,6 +140,18 @@ public class GameManager : NetworkBehaviour
             ingredientManager.OnTimeExpired();
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void OnRoundStartedServerRpc()
+    {
+        OnRoundStartedClientRpc();
+    }
+
+    [ClientRpc]
+    private void OnRoundStartedClientRpc()
+    {
+        OnRoundStartedOnClient?.Invoke();
+    }
+
     [ClientRpc]
     private void OnRoundEndedClientRpc()
     {
@@ -139,6 +161,16 @@ public class GameManager : NetworkBehaviour
         sceneObjectsManager.OnRoundEnded();
         hintManager.DisableHandHint();
         TokenManager.AccrueTokens();
+
+        if (IsPainter)
+        {
+            playersStatusManager.OnRoundEnded();
+            playersStatusManager.SetActive(true);
+        }
+        else if (IsTeamMode)
+            playersStatusManager.SetActive(true);
+        else
+            playersStatusManager.SetActive(false);
     }
 
     private void OnRoundEnded()
@@ -202,8 +234,6 @@ public class GameManager : NetworkBehaviour
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
 
         sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
-        
-        OnAnswerCardSOSettedOnClient?.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -235,8 +265,7 @@ public class GameManager : NetworkBehaviour
 
     #endregion
 
-    [ClientRpc]
-    private void SetHintDataClientRpc(sbyte ingredientIndex)
+    private void SetHintData(sbyte ingredientIndex)
     {
         if (!IsPainter)
             return;
@@ -247,13 +276,26 @@ public class GameManager : NetworkBehaviour
             hintManager.SetHintData(answerCardSO.Ingredients[ingredientIndex]);
     }
 
+    [ClientRpc]
+    private void SetHintDataClientRpc(sbyte ingredientIndex)
+    {
+        SetHintData(ingredientIndex);
+    }
+
+    [ClientRpc]
+    private void OnIngredientSwitchedClientRpc(sbyte ingredientIndex)
+    {
+        SetHintData(ingredientIndex);
+        OnIngredientSwitchedOnClient?.Invoke();
+    }
+
     private void OnIngredientSwitched(sbyte ingredientIndex)
     {
         Timer.Instance.OnIngredientGuess();
         Timer.Instance.StartServerRpc();
         paint.ClearCanvas();
 
-        SetHintDataClientRpc(ingredientIndex);
+        OnIngredientSwitchedClientRpc(ingredientIndex);
     }
 
     private void EndGame()
@@ -279,7 +321,7 @@ public class GameManager : NetworkBehaviour
         RelayManager.Instance.ReturnToLobby();
     }
 
-    private void Log(object message) => Debug.Log($"[{name}] {message}");
+    private void Log(object message) => Logger.Instance.Log($"[{name}] {message}");
     private void LogWarning(object message) => Debug.LogWarning($"[{name}] {message}");
 
     #region Get
