@@ -10,11 +10,13 @@ public struct Design {
     public bool InOwn;
     public ItemType Type;
 }
+
 [Serializable]
 public struct WareData
 {
     
     public Design Data;
+    public bool IsNonBuyable;
     public UnityEngine.Sprite icon;
     public bool isPreloaded;
     public GameObject Model;

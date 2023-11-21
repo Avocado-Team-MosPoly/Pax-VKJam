@@ -22,7 +22,7 @@ public class Php_Connect : MonoBehaviour
     public static RandomItemList randomBase;
     public static Currency Current;
     
-    void Start()
+    void Awake()
     {
         SceneLoader.EndLoad += OnGameEnded;
         link = Link;

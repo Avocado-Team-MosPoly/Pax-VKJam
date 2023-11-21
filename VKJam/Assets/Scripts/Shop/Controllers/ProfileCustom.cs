@@ -2,26 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProfileCustom : MonoBehaviour
+public class ProfileCustom : TaskExecutor<ProfileCustom>
 {
     [SerializeField] private List<Product> Products = new();
-    public WareData[] Custom = new WareData[System.Enum.GetNames(typeof(ItemType)).Length];
+    public SwitchModule[] Custom = new SwitchModule[System.Enum.GetNames(typeof(ItemType)).Length];
     [SerializeField]
     private GameObject Template;
     [SerializeField]
     private GameObject WhereInst;
-    private CustomController Data;
+    [SerializeField] private CustomController Data;
     [SerializeField]
     private GameObject WhatActiv;
     private void Awake()
     {
-        CustomController.Initialization += SetCC;
+        Data = CustomController._executor;
+    }
+    public static void ProductChoosen(Product Target)
+    {
+        Debug.Log(1);
+        _executor._productChoosen(Target);
+    }
+    private void _productChoosen(Product Target)
+    {
+        Debug.Log(2);
+        Custom[(int)Target.Data.Data.Type].SwitchItem(Target.Data);
     }
 
-    public void SetCC(CustomController Target)
-    {
-        Data = Target;
-    }
     public void Drop()
     {
         WhatActiv.SetActive(false);
@@ -46,6 +52,7 @@ public class ProfileCustom : MonoBehaviour
             temp = Instantiate(Template, WhereInst.transform);
             Product InWork = temp.GetComponent<Product>();
             Products.Add(InWork);
+            InWork.ChooseMode = true;
             InWork.SetData(current);
         }
     }

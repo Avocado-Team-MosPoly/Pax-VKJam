@@ -15,11 +15,7 @@ public class WarehouseScript : MonoBehaviour
 
     private void Awake()
     {
-        CustomController.Initialization += SetCC;
-    }
-
-    public void SetCC(CustomController Target){
-        Data = Target;
+        Data = (CustomController)CustomController._executor;
     }
 
     public void ChangeSection(int ToWhat)

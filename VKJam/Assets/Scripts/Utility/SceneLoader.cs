@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class SceneLoader : MonoBehaviour
+public class SceneLoader : TaskExecutor<SceneLoader>
 {
     public delegate void StartLoadEvent(string sceneName);
     public static event StartLoadEvent OnLoad;
@@ -12,13 +12,14 @@ public class SceneLoader : MonoBehaviour
     public static void ServerLoad(string sceneName)
     {
         NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
-        LoadScene(sceneName);
+        _executor.StartCoroutine(LoadScene(sceneName));
     }
 
     public static void Load(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
-        LoadScene(sceneName);
+        Debug.Log(_executor);
+        _executor.StartCoroutine(LoadScene(sceneName));
     }
     private static IEnumerator LoadScene(string sceneName)
     {
