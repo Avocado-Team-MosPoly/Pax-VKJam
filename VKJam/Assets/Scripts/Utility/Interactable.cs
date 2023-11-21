@@ -4,15 +4,24 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Collider))]
 public class Interactable : MonoBehaviour
 {
-    [SerializeField] private int[] TargetMaterialID;
+    public int[] TargetMaterialID;
     private Color[] TargetColorMaterial;
-    [SerializeField] private Color NewColor;
+    public Color NewColor;
     private Renderer Rend;
     public UnityEvent m_OnClick;
     public UnityEvent m_OnMouseEnter;
     public UnityEvent m_OnMouseExit;
     public bool ActivityInteractable;
     
+    public void Set(Interactable New)
+    {
+        TargetMaterialID = New.TargetMaterialID;
+        NewColor = New.NewColor;
+        m_OnClick = New.m_OnClick;
+        m_OnMouseEnter = New.m_OnMouseEnter;
+        m_OnMouseExit = New.m_OnMouseExit;
+        ActivityInteractable = New.ActivityInteractable;
+    }
     private void Awake()
     {
         Rend = GetComponent<Renderer>();

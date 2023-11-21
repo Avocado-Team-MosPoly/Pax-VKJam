@@ -5,12 +5,12 @@ using TMPro;
 public class Product : MonoBehaviour
 {
     [SerializeField] private Image Picture;
-    
+
     public TextMeshProUGUI Name;
     [SerializeField] private TextMeshProUGUI Price;
-    [SerializeField] private WareData Data;
+    public WareData Data;
     [SerializeField] private Button BT;
-
+    public bool ChooseMode;
     public void SetData(WareData NewData)
     {
         Data = NewData;
@@ -22,11 +22,18 @@ public class Product : MonoBehaviour
         //SystemName = Data.productName;
         Name.text = Data.Data.productName;
         Price.text = "X" + Data.Data.productPrice.ToString();
-        BT.interactable = !Data.Data.InOwn;
+        BT.interactable = !Data.Data.InOwn || ChooseMode;
     }
 
     public void Interact()
     {
-        StartCoroutine(Php_Connect.Request_BuyTry(Data.Data.productCode));
+        Debug.Log("a");
+        if (!Data.Data.InOwn && !Data.IsNonBuyable) StartCoroutine(Php_Connect.Request_BuyTry(Data.Data.productCode));
+        else ProfileCustom.ProductChoosen(this);
+    }
+
+    public void TestButtonClick()
+    {
+        Debug.Log("Button Clicked");
     }
 }
