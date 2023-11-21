@@ -7392,29 +7392,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2135888383}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 1128106833}
+        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
+        m_MethodName: Load
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: ProfileCastom
           m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 2107600571}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &581714644
 MonoBehaviour:
@@ -12014,9 +12002,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Products: []
-  krutrki: 
-  InGameValue: {fileID: 0}
+  Display: {fileID: 0}
   Template: {fileID: 0}
+  WhereInst: {fileID: 0}
 --- !u!114 &938281296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14792,9 +14780,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Products: []
-  krutrki: Krutki
-  InGameValue: {fileID: 0}
+  Display: {fileID: 0}
   Template: {fileID: 8121843311091204510, guid: 54e24b8ddf0b6c74f97749d482b33519, type: 3}
+  WhereInst: {fileID: 0}
 --- !u!114 &1226952820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19127,9 +19115,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Products: []
-  krutrki: 
-  InGameValue: {fileID: 0}
+  Display: {fileID: 0}
   Template: {fileID: 0}
+  WhereInst: {fileID: 0}
 --- !u!114 &1586166350
 MonoBehaviour:
   m_ObjectHideFlags: 0

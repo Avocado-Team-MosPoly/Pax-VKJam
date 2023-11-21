@@ -1,48 +1,56 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
+using UnityEditor;
 
 public class WarehouseScript : MonoBehaviour
 {
-	[SerializeField] private List<Product> Products = new List<Product>();
-    [SerializeField] private string krutrki;
-    [SerializeField]
-    private TMPro.TMP_Text InGameValue;
+	[SerializeField] private List<Product> Products = new();
+    
+    [SerializeField] private CurrencyCatcher Display;
     [SerializeField]
     private GameObject Template;
-    
-    void Awake()
+    [SerializeField]
+    private GameObject WhereInst;
+    private CustomController Data;
+
+    private void Awake()
     {
-        if (Php_Connect.PHPisOnline) Php_Connect.Request_CurrentCurrency();
-        InGameValue.text = Php_Connect.Current.IGCurrency.ToString();
-        if (Php_Connect.PHPisOnline) FetchAllProductData();
+        CustomController.Initialization += SetCC;
     }
 
-    public void goToRandom()
-    {
-        SceneManager.LoadScene(krutrki);
+    public void SetCC(CustomController Target){
+        Data = Target;
     }
-    private void FetchAllProductData()
+
+    public void ChangeSection(int ToWhat)
     {
-        int i = 0;
-        WareHouseData output;
+        ChangeSection((ShopFilters)ToWhat);
+    }
+    public void ChangeSection(ShopFilters ToWhat)
+    {
         GameObject temp;
-        do
+        foreach(var current in Products)
         {
-            output = Php_Connect.Request_DataAboutDesign(i);
-            if (output.productName != "")
-            {
-                temp = Instantiate(Template, transform);
-                Product InWork = temp.GetComponent<Product>();
-                Products.Add(InWork);
-                InWork.SetData(output);
-            }
-            i++;
+            Destroy(current.gameObject);
         }
-        while (Products[i-1].Name.text != "");
+        Products.Clear();
+        foreach(var current in Data.Categories[(int)ToWhat].products)
+        {
+            temp = Instantiate(Template, WhereInst.transform);
+            Product InWork = temp.GetComponent<Product>();
+            Products.Add(InWork);
+            InWork.SetData(current);
+        }
     }
-
-
+    public void Drop()
+    {
+        foreach (var current in Products)
+        {
+            Destroy(current.gameObject);
+        }
+        Products.Clear();
+    }
+   
 
 
 

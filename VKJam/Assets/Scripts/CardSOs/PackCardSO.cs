@@ -13,11 +13,9 @@ public class PackCardSO : ScriptableObject
         public int CardDBIndex;
         public bool CardIsInOwn;
         public CardSO Card;
-
-        private static int currentIndex = 0;
     }
     public CardSystem[] CardInPack;
-   private void OnValidate()
+   /*private void OnValidate()
     {
         string temp = "";
         for (int j = 0; j < CardInPack.Length; ++j)
@@ -27,7 +25,7 @@ public class PackCardSO : ScriptableObject
         }
         CardInPack = CardInPack.OrderBy(cardSystem => cardSystem.Card.id).ToArray();
         Debug.Log(temp);
-    }
+    }*/
 
 
     /*public PackCardSO PackDataOwnering()
@@ -44,12 +42,12 @@ public class PackCardSO : ScriptableObject
         return this;
     }*/
 
-    public void ResetOwning()
+    /*public void ResetOwning()
     {
         return;
         for (int j = 0; j < CardInPack.Length; ++j)
         {
             CardInPack[j].CardIsInOwn = false;
         }
-    }
+    }*/
 }
