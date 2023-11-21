@@ -8,9 +8,10 @@ public class Product : MonoBehaviour
     
     public TextMeshProUGUI Name;
     [SerializeField] private TextMeshProUGUI Price;
-    [SerializeField] private WareHouseData Data;
+    [SerializeField] private WareData Data;
+    [SerializeField] private Button BT;
 
-    public void SetData(WareHouseData NewData)
+    public void SetData(WareData NewData)
     {
         Data = NewData;
         Refresh();
@@ -19,12 +20,13 @@ public class Product : MonoBehaviour
     {
         Picture.sprite = Data.icon;
         //SystemName = Data.productName;
-        Name.text = Data.productName;
-        Price.text = "X" + Data.productPrice.ToString();
+        Name.text = Data.Data.productName;
+        Price.text = "X" + Data.Data.productPrice.ToString();
+        BT.interactable = !Data.Data.InOwn;
     }
 
     public void Interact()
     {
-        StartCoroutine(Php_Connect.Request_BuyTry(Data.productCode));
+        StartCoroutine(Php_Connect.Request_BuyTry(Data.Data.productCode));
     }
 }
