@@ -29,13 +29,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5474014826769800577}
+  serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 0.348, y: 0.297, z: -1.543}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: -180}
 --- !u!33 &8580360330904504478
 MeshFilter:
@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 8748892135801146194, guid: 9e8bc96abf468d143898240811827778, type: 3}
+  - {fileID: 2100000, guid: 0bf7de6bf4ffcf744b9e603a2b103790, type: 2}
   - {fileID: 2100000, guid: 75331c57482259a4b8728f3fd2550857, type: 2}
   - {fileID: 2100000, guid: b7910d95d67caf74fa6a36efe575d399, type: 2}
   m_StaticBatchInfo:
@@ -109,6 +109,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &3678777065180372741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,7 +122,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d04091efaad0902478a939de57c482e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterMaterial: {fileID: 2100000, guid: 75331c57482259a4b8728f3fd2550857, type: 2}
   frontMaterialIndex: 1
 --- !u!65 &-7509633871533451797
 BoxCollider:
@@ -131,9 +131,17 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5474014826769800577}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Size: {x: 0.5711733, y: 0.014612814, z: 0.40991822}
   m_Center: {x: 0.00000020861631, y: -0.000000016298152, z: 4.9737985e-14}
 --- !u!114 &2889388206229436696
@@ -165,4 +173,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnMouseEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnMouseExit:
+    m_PersistentCalls:
+      m_Calls: []
   ActivityInteractable: 1
