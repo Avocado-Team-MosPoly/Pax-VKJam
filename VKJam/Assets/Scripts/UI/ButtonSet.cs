@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class ButtonSet<T> : MonoBehaviour
 {
@@ -13,14 +14,13 @@ public class ButtonSet<T> : MonoBehaviour
 
     [SerializeField] private ButtonValue[] buttonValues;
 
-    [SerializeField] private Sprite defaultState;
-    [SerializeField] private Sprite clickedState;
+    [SerializeField] private GameObject hoverSelected;
 
     public readonly UnityEvent<T> OnClick = new();
 
     private ButtonValue selectedButtonValue;
 
-    private void Awake()
+    private void Start()
     {
         InitButtons();
     }
@@ -34,20 +34,17 @@ public class ButtonSet<T> : MonoBehaviour
         }
 
         foreach (ButtonValue buttonValue in buttonValues)
-            buttonValue.Button.onClick.AddListener( () => Click(buttonValue) );
+        {
+            buttonValue.Button.onClick.AddListener(() => Click(buttonValue));
+        }
 
         Click(buttonValues[0]);
     }
 
     private void Click(ButtonValue buttonValue)
     {
-        if (selectedButtonValue.Button != null)
-            selectedButtonValue.Button.GetComponent<Image>().sprite = defaultState;
-
         selectedButtonValue = buttonValue;
-
-        selectedButtonValue.Button.GetComponent<Image>().sprite = clickedState;
-
+        hoverSelected.transform.position= selectedButtonValue.Button.transform.position;
         OnClick?.Invoke(buttonValue.Value);
     }
 }
