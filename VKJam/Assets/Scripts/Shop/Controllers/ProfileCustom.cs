@@ -16,15 +16,14 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
     private void Awake()
     {
         Data = CustomController._executor;
+        Denote();
     }
     public static void ProductChoosen(Product Target)
     {
-        Debug.Log(1);
         _executor._productChoosen(Target);
     }
     private void _productChoosen(Product Target)
     {
-        Debug.Log(2);
         Custom[(int)Target.Data.Data.Type].SwitchItem(Target.Data);
     }
 

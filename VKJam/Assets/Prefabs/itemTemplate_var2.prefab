@@ -100,12 +100,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6219934744066370244}
+  m_Father: {fileID: 8121843311186433271}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -747.64}
-  m_SizeDelta: {x: 550, y: 199.32999}
+  m_AnchoredPosition: {x: 0, y: -0.00012207031}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8121843310492445171
 CanvasRenderer:
@@ -506,8 +506,21 @@ MonoBehaviour:
   Picture: {fileID: 8121843310596330495}
   Name: {fileID: 8121843310712287494}
   Price: {fileID: 8121843311459022028}
-  Data: {fileID: 0}
+  Data:
+    Data:
+      productCode: 0
+      productName: 
+      icon: 
+      productPrice: 0
+      IsDonateVault: 0
+      InOwn: 0
+      Type: 0
+    IsNonBuyable: 0
+    icon: {fileID: 0}
+    isPreloaded: 0
+    Model: {fileID: 0}
   BT: {fileID: 8121843311186433270}
+  ChooseMode: 0
 --- !u!1 &8121843311186433268
 GameObject:
   m_ObjectHideFlags: 0
@@ -538,7 +551,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8121843310492445169}
   m_Father: {fileID: 6219934744066370244}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -839,7 +853,6 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8121843311186433271}
-  - {fileID: 8121843310492445169}
   - {fileID: 3965142062236289711}
   - {fileID: 8121843310712287495}
   - {fileID: 8121843311459022029}

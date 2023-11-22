@@ -27,13 +27,8 @@ public class Product : MonoBehaviour
 
     public void Interact()
     {
-        Debug.Log("a");
         if (!Data.Data.InOwn && !Data.IsNonBuyable) StartCoroutine(Php_Connect.Request_BuyTry(Data.Data.productCode));
         else ProfileCustom.ProductChoosen(this);
     }
 
-    public void TestButtonClick()
-    {
-        Debug.Log("Button Clicked");
-    }
 }

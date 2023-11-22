@@ -8,9 +8,7 @@ public class SwitchModule : MonoBehaviour
     [SerializeField] private DetecterModule SwitchTarget;
     public void SwitchItem(WareData NewItem)
     {
-        Debug.Log(3);
-        Instantiate(NewItem.Model);
-        Debug.Log(4);
+        Instantiate(NewItem.Model, transform);
     }
     public void NewItem(DetecterModule NewItem)
     {
