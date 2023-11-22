@@ -1,21 +1,34 @@
 using UnityEngine;
+using System.Collections;
 
-public class CustomController : MonoBehaviour
+public class CustomController : TaskExecutor<CustomController>
 {
-    public delegate void Init(CustomController sceneName);
-    public static event Init Initialization;
+    [SerializeField] private int FreeIndex;
     public storeSection[] Categories = new storeSection[System.Enum.GetNames(typeof(ShopFilters)).Length];
     public WareData[] Custom = new WareData[System.Enum.GetNames(typeof(ItemType)).Length];
 
-    private void Awake()
+    private void Start()
     {
-        SceneLoader.EndLoad += ChangeScene;
         if (Php_Connect.PHPisOnline) FetchAllProductData();
+        Renumerator();
     }
-    private void ChangeScene(string sceneName)
+
+    private void Renumerator()
     {
-        if (sceneName != "ProfileCastom" && sceneName != "Shop") return;
-        Initialization?.Invoke(this);
+        for (int i = 0; i < Categories.Length; i++)
+        {
+            var category = Categories[i];
+            for (int j = 0; j < category.products.Count; j++)
+            {
+                var subcurrent = category.products[j];
+                    if (subcurrent.Model != null)
+                    {
+                        subcurrent.Data.productName = subcurrent.Model.name;
+                        subcurrent.Data.productCode = FreeIndex++;
+                        subcurrent.Data.productPrice = 10;
+                    }
+            }
+        }
     }
     private int CountPreloaded()
     {
@@ -24,7 +37,7 @@ public class CustomController : MonoBehaviour
         {
             CountData += current.products.Count;
         }
-        return CountData;
+        return CountData-12;
     }
     private void FetchAllProductData()
     {
