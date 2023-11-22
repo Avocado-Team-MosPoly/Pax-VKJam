@@ -12,4 +12,8 @@ public abstract class TaskExecutor<T> : MonoBehaviour where T : TaskExecutor<T>
             _executor = Executor;
         }
     }
+    protected void Denote()
+    {
+            _executor = (T)this;
+    }
 }

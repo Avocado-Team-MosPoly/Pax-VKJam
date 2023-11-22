@@ -62,7 +62,8 @@ public enum ItemType
     UI_Eraser,
     UI_Painter,
     DrawingColors,
-    AvatarsAndChat,
+    Avatars,
+    AvatarFrame,
     Currency
 }
 

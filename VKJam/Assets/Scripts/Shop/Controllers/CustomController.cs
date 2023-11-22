@@ -89,7 +89,9 @@ public class CustomController : TaskExecutor<CustomController>
                 return ShopFilters.Paint;
             case ItemType.DrawingColors:
                 return ShopFilters.Paint;
-            case ItemType.AvatarsAndChat:
+            case ItemType.Avatars:
+                return ShopFilters.AvatarsAndChat;
+            case ItemType.AvatarFrame:
                 return ShopFilters.AvatarsAndChat;
             case ItemType.Currency:
                 return ShopFilters.Currency;
