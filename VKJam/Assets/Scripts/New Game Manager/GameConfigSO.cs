@@ -1,11 +1,13 @@
 using System;
-using System.Diagnostics.Eventing.Reader;
 using UnityEngine;
-using static GameConfigSO;
 
 [CreateAssetMenu()]
 public class GameConfigSO : ScriptableObject
 {
+    [Header("Timer (time in seconds)")]
+    public int TimeForIngredientGuess = 45;
+    public int TimeForMonsterGuess = 120;
+
     [Header("Team Mode - TM, CompetitiveMode - CM" +
             "\nDangerous Monster - DM, Murderous Monster - MM" +
             "\nGuesser - G, Plainter - P")]

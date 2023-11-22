@@ -7,7 +7,7 @@ public enum CardDifficulty
 public enum GameMode
 {
     Team,
-    Ñompetitive
+    Competitive
 }
 
 public enum RecipeMode

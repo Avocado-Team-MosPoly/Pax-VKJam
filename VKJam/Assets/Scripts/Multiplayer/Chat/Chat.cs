@@ -99,6 +99,9 @@ public class Chat : NetworkBehaviour
             text = new FixedString64Bytes(messageInputField.text)
         };
 
+        if (msg.text.IsEmpty)
+            return;
+
         if (IsServer)
             SendMessageClientRpc(msg);
         else

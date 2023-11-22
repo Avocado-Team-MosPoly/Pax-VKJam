@@ -1,27 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class MouseOnButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class MouseOnButton : MonoBehaviour,
+    IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    [SerializeField] private GameObject hover;
-    public virtual void OnPointerEnter(PointerEventData eventData)
+    public UnityEvent<PointerEventData> PoinerEnter;
+    public UnityEvent<PointerEventData> PointerExit;
+    public UnityEvent<PointerEventData> PointerClick;
+
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        hover.SetActive(true);
-        hover.transform.position = eventData.position;
+        PoinerEnter?.Invoke(eventData);
     }
 
-    public virtual void OnPointerExit(PointerEventData eventData)
+    public void OnPointerExit(PointerEventData eventData)
     {
-        hover.SetActive(false);
+        PointerExit?.Invoke(eventData);
     }
 
-    public virtual void OnPointerClick(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData eventData)
     {
-
+        PointerClick?.Invoke(eventData);
     }
-    
-
 }

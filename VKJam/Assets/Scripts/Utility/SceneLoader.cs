@@ -12,14 +12,14 @@ public class SceneLoader : TaskExecutor<SceneLoader>
     public static void ServerLoad(string sceneName)
     {
         NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
-        _executor.StartCoroutine(LoadScene(sceneName));
+        //_executor.StartCoroutine(LoadScene(sceneName));
     }
 
     public static void Load(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
-        Debug.Log(_executor);
-        _executor.StartCoroutine(LoadScene(sceneName));
+        //Debug.Log(_executor);
+        //_executor.StartCoroutine(LoadScene(sceneName));
     }
     private static IEnumerator LoadScene(string sceneName)
     {

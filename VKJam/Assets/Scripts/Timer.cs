@@ -3,8 +3,6 @@ using UnityEngine;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine.Events;
-using Unity.Services.Lobbies.Models;
-using Unity.Services.Lobbies;
 
 public class Timer : NetworkBehaviour
 {
@@ -13,8 +11,8 @@ public class Timer : NetworkBehaviour
     private bool isTimePaused = false;
     [SerializeField] private Hint showRecepiesUI;
 
-    [SerializeField] private int ingredientGuessTime = 45;
-    [SerializeField] private int monsterGuessTime = 120;
+    private int ingredientGuessTime = 45;
+    private int monsterGuessTime = 120;
 
     private int roundTime;
 
@@ -22,20 +20,17 @@ public class Timer : NetworkBehaviour
 
     [HideInInspector] public UnityEvent OnExpired;
 
-    public static Timer Instance { get; private set; }
-
-    private void Awake()
+    public void Init(GameConfigSO gameConfig)
     {
-        Instance = this;
-        roundTime = ingredientGuessTime;//int.Parse(LobbyManager.Instance.CurrentLobby.Data["TimerAmount"].Value);
+        ingredientGuessTime = gameConfig.TimeForIngredientGuess;
+        monsterGuessTime = gameConfig.TimeForMonsterGuess;
+
+        roundTime = ingredientGuessTime;
         ShowTime.text = ToTimeFormat(roundTime);
-    }
 
-    public override void OnNetworkSpawn()
-    {
         NetworkTime.OnValueChanged += OnTimerChange;
 
-        if (IsServer)
+        if (NetworkManager.Singleton.IsServer)
             NetworkTime.Value = roundTime;
     }
 

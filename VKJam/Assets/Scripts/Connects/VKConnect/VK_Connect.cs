@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 public class VK_Connect : MonoBehaviour
 {
@@ -7,24 +8,43 @@ public class VK_Connect : MonoBehaviour
     public TMPro.TMP_Text NameText;
     public URL_Image urlImage;
 
+    [SerializeField] private Php_Connect PHPConnect;
+
 
     [DllImport("__Internal")]
     private static extern void UnityPluginRequestJs();
     [DllImport("__Internal")] private static extern void UnityPluginRequestUserData();
 
-    void Start()
+    private static VK_Connect instance;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+
+        Init();
+        PHPConnect.Init();
+    }
+
+    private void Init()
     {
         GameObject temp;
         if (DebugingText == null)
         {
             temp = GameObject.FindGameObjectWithTag("Debug");
             if (temp != null) DebugingText = temp.GetComponent<TMPro.TMP_Text>();
-            temp = null;
         }
         if (NameText == null) { 
             temp = GameObject.FindGameObjectWithTag("Name");
             if(temp != null) NameText = temp.GetComponent<TMPro.TMP_Text>();
-            temp = null;
         }
         if (urlImage == null) { 
             temp = GameObject.FindGameObjectWithTag("Profile_Picture");
@@ -32,6 +52,7 @@ public class VK_Connect : MonoBehaviour
         }
         RequestUserData();
     }
+
     public void ButClick()
     {
         RequestJs();
@@ -67,6 +88,6 @@ public class VK_Connect : MonoBehaviour
         if (urlImage != null) urlImage.ChangeImage(UserData.UserIMG_URL);
         if(Php_Connect.PHPisOnline) StartCoroutine(Php_Connect.Request_Auth(User_ID));
 
-        Authentication.ChangeProfile(User_ID.ToString());
+        Authentication.LogInVK(User_ID.ToString(), UserData.UserName);
     }
 }

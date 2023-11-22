@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class GameManager : NetworkBehaviour
 {
+    public static GameManager Instance { get; private set; }
+
     /// <summary> Sends true if local player is painter, false if not </summary>
     [HideInInspector] public UnityEvent<bool> OnGuessMonsterStageActivatedOnClient;
     [HideInInspector] public UnityEvent OnGameEnded;
@@ -33,6 +35,7 @@ public class GameManager : NetworkBehaviour
     #endregion
 
     [SerializeField] private GameConfigSO gameConfig;
+    [SerializeField] private Timer timer;
 
     [Header("Managers")]
     [SerializeField] private RoleManager roleManager;
@@ -42,32 +45,36 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private SceneObjectsManager sceneObjectsManager;
     [SerializeField] private HintManager hintManager;
 
-    private IngredientManager ingredientManager;
-    private RoundManager roundManager;
+    [Header("Bestiary")]
+    [SerializeField] private Bestiary bestiary;
+    [SerializeField] private BestiaryIngredients bestiaryIngredients;
 
-    [Header("---")]
+    [Header("Paint")]
     [SerializeField] private Paint paint;
+    
+    [Header("Buttons")]
     [SerializeField] private GameObject nextRoundButton;
     [SerializeField] private GameObject returnToLobbyButton;
 
     [Header("Scene Monster")]
     [SerializeField] private GameObject sceneMonster;
     [SerializeField] private Material sceneMonsterMaterial;
-    [SerializeField] private Texture hiddenMonster;
+    [SerializeField] private Texture hiddenMonsterTexture;
+
+    private IngredientManager ingredientManager;
+    private RoundManager roundManager;
 
     private int currentRound = 1;
     private int roundAmount = 4;
 
     private CardSO answerCardSO;
 
-    public static GameManager Instance { get; private set; }
-
     private void Awake()
     {
         if (Instance == null)
             Instance = this;
         else
-            LogWarning($"Two GameManagers on scene:\n{Instance}, {this}");
+            LogError($"Two GameManagers on scene:\n{Instance}, {this}");
 
         sceneMonsterMaterial = sceneMonster.GetComponent<Renderer>().material;
     }
@@ -91,8 +98,15 @@ public class GameManager : NetworkBehaviour
     {
         Log("IsServer : " + IsServer);
 
+        bestiary.TakePack();
+        bestiaryIngredients.TakePack();
+
+        timer.Init(gameConfig);
+
         if (IsServer)
         {
+            timer.OnExpired.AddListener(OnTimeExpired);
+
             IsTeamMode = LobbyManager.Instance.CurrentLobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True";
 
             if (IsTeamMode)
@@ -115,12 +129,9 @@ public class GameManager : NetworkBehaviour
             roundManager.OnRoundEnded.AddListener(OnRoundEnded);
 
             roundAmount = NetworkManager.Singleton.ConnectedClientsIds.Count;
-            
-            Timer.Instance.OnExpired.AddListener(OnTimeExpired);
-            
+
             nextRoundButton.SetActive(true);
             returnToLobbyButton.SetActive(true);
-
         }
         else
         {
@@ -133,7 +144,7 @@ public class GameManager : NetworkBehaviour
     {
         if (Stage == Stage.MonsterGuess)
         {
-            Timer.Instance.OnIngredientGuess();
+            timer.OnIngredientGuess();
             roundManager.OnTimeExpired();
         }
         else
@@ -204,7 +215,7 @@ public class GameManager : NetworkBehaviour
         else
         {
             sceneMonster.SetActive(true);
-            sceneMonsterMaterial.mainTexture = hiddenMonster;
+            sceneMonsterMaterial.mainTexture = hiddenMonsterTexture;
         }
 
         OnGuessMonsterStageActivatedOnClient?.Invoke(IsPainter);
@@ -217,8 +228,8 @@ public class GameManager : NetworkBehaviour
 
         ActivateGuessMonsterStageClientRpc();
 
-        Timer.Instance.OnMonsterGuess();
-        Timer.Instance.StartServerRpc();
+        timer.OnMonsterGuess();
+        timer.StartServerRpc();
 
         Debug.Log("Monster Stage " + Stage);
     }
@@ -245,8 +256,8 @@ public class GameManager : NetworkBehaviour
         SetCardSOClientRpc(cardSOIndex);
 
         SetHintDataClientRpc((sbyte)ingredientManager.CurrentIngredientIndex);
-        Timer.Instance.OnIngredientGuess();
-        Timer.Instance.StartServerRpc();
+        timer.OnIngredientGuess();
+        timer.StartServerRpc();
 
         Stage = Stage.IngredientGuess;
 
@@ -291,8 +302,8 @@ public class GameManager : NetworkBehaviour
 
     private void OnIngredientSwitched(sbyte ingredientIndex)
     {
-        Timer.Instance.OnIngredientGuess();
-        Timer.Instance.StartServerRpc();
+        timer.OnIngredientGuess();
+        timer.StartServerRpc();
         paint.ClearCanvas();
 
         OnIngredientSwitchedClientRpc(ingredientIndex);
@@ -323,6 +334,7 @@ public class GameManager : NetworkBehaviour
 
     private void Log(object message) => Logger.Instance.Log($"[{name}] {message}");
     private void LogWarning(object message) => Debug.LogWarning($"[{name}] {message}");
+    private void LogError(object message) => Debug.LogError($"[{name}] {message}");
 
     #region Get
 
