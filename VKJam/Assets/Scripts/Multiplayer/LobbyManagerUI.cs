@@ -15,7 +15,7 @@ public class LobbyManagerUI : NetworkBehaviour
     //[SerializeField] private RectTransform playerListContainer;
     //[SerializeField] private GameObject playerInfoPrefab;
     [SerializeField] private NetworkList<bool> allPlayerReady = new();
-    private NetworkList<ulong> playersId = new();
+    private NetworkList<byte> playersId = new();
 
     public override void OnNetworkSpawn()
     {
@@ -46,7 +46,7 @@ public class LobbyManagerUI : NetworkBehaviour
         NetworkManager.Singleton.OnClientConnectedCallback -= PlayerConnect;
     }
 
-    private void PlayersId_OnListChanged(NetworkListEvent<ulong> changeEvent)
+    private void PlayersId_OnListChanged(NetworkListEvent<byte> changeEvent)
     {
         //Debug.LogError("PlayersId_OnListChanged");
         foreach (GameObject player in playerGameObjectList)
@@ -59,17 +59,17 @@ public class LobbyManagerUI : NetworkBehaviour
         }
     }
 
-    private void PlayerConnect(ulong obj)
+    private void PlayerConnect(ulong clientId)
     {
         //Debug.LogError("Player conected");
-        playersId.Add(obj);
+        playersId.Add((byte)clientId);
         allPlayerReady.Add(false);
     }
 
     private void PLayerLeave(ulong clientId)
     {
-        allPlayerReady[GetClientIdIndex(clientId)] = false;
         playersId.RemoveAt(GetClientIdIndex(clientId));
+        allPlayerReady.RemoveAt(GetClientIdIndex(clientId));
     }
 
     private int GetClientIdIndex(ulong id)
@@ -87,11 +87,15 @@ public class LobbyManagerUI : NetworkBehaviour
 
     public void ChangeReady()
     {
-        UpdatePlayerReadyServerRpc(GetClientIdIndex(NetworkManager.Singleton.LocalClientId));
+        int clientIdIndex = GetClientIdIndex(NetworkManager.Singleton.LocalClientId);
+
+        playerReady[clientIdIndex].SetActive(!allPlayerReady[clientIdIndex]);
+
+        SwitchPlayerReadyServerRpc(clientIdIndex);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void UpdatePlayerReadyServerRpc(int clientIdIndex)
+    private void SwitchPlayerReadyServerRpc(int clientIdIndex)
     {
         //Debug.LogError("Server");
         allPlayerReady[clientIdIndex] = !allPlayerReady[clientIdIndex];
@@ -100,10 +104,8 @@ public class LobbyManagerUI : NetworkBehaviour
     private void AllPlayerReady_OnListChanged(NetworkListEvent<bool> changeEvent)
     {
         //Debug.LogError("AllPlayerReady_OnListChanged");
-        for (int i = 0; i < allPlayerReady.Count; i++)
-        {
-            playerReady[i].SetActive(allPlayerReady[i]);
-        }
+        playerReady[changeEvent.Index].SetActive(changeEvent.Value);
+
         if (NetworkManager.Singleton.IsServer)
         {
             int howManyPlayerReady = 0;
