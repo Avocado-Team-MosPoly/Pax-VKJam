@@ -1,12 +1,16 @@
 using Unity.Services.Authentication;
 using Unity.Services.Core;
+using Unity.VisualScripting;
 using UnityEngine;
+using WebSocketSharp;
 
 public class Authentication : MonoBehaviour
 {
     public static string PlayerName { get; private set; }
     public static string UserId { get; private set; }
-    
+
+    public static bool IsLoggedInThroughVK { get; private set; }
+
     public static async void Authenticate()
     {
         if (UnityServices.State == ServicesInitializationState.Initialized)
@@ -21,7 +25,7 @@ public class Authentication : MonoBehaviour
         {
             PlayerName = "Player" + number;
         }
-        if (UserId == string.Empty || UserId == null)
+        if (UserId.IsNullOrEmpty())
         {
             UserId = number;
         }
@@ -29,7 +33,7 @@ public class Authentication : MonoBehaviour
         Logger.Instance.Log("Player Name: " + PlayerName);
         InitializationOptions initializationOptions = new InitializationOptions();
         initializationOptions.SetProfile(UserId);
-        
+
         await UnityServices.InitializeAsync(initializationOptions);
 
         AuthenticationService.Instance.SignedIn += () =>
@@ -51,5 +55,21 @@ public class Authentication : MonoBehaviour
 
         if (AuthenticationService.Instance.IsAuthorized)
             AuthenticationService.Instance.SwitchProfile(userId);
+    }
+
+    public static void LogInVK(string userId, string playerName)
+    {
+        UserId = userId;
+        PlayerName = playerName;
+
+        if (AuthenticationService.Instance.IsAuthorized)
+            AuthenticationService.Instance.SwitchProfile(playerName);
+
+        IsLoggedInThroughVK = true;
+    }
+
+    public static void SignOut()
+    {
+        AuthenticationService.Instance.SignOut(true);
     }
 }
