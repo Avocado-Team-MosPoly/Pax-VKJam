@@ -71,6 +71,7 @@ public class BestiaryIngredients : MonoBehaviour
                 }
             }
         }
+        IngredientName.Sort();
     }
     public void SetPack(PackCardSO _packCardSO)
     {
