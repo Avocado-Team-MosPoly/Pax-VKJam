@@ -30,8 +30,6 @@ public class BestiaryIngredients : MonoBehaviour
 
     private void Awake()
     {
-        TakePack();
-
         lastShownIngridient = 0;
 
         UpdateIngredientList(true);

@@ -55,7 +55,7 @@ public class PlayersStatusManager : NetworkBehaviour
     {
         if (!playerStatuses.ContainsKey(senderClientId))
         {
-            Debug.LogError($"[{this.name}] Client {senderClientId} is not detected");
+            Debug.LogError($"[{nameof(PlayersStatusManager)}] Client {senderClientId} is not detected");
             return;
         }
 
@@ -93,7 +93,7 @@ public class PlayersStatusManager : NetworkBehaviour
             int ingredientIdIndex = bestiaryIngredients.GetIngredientIndexById(status);
 
             if (ingredientIdIndex < 0)
-                throw new System.ArgumentOutOfRangeException("Ingredient doesn't exist");
+                throw new System.ArgumentOutOfRangeException($"[{nameof(PlayersStatusManager)}] Ingredient doesn't exist");
 
             if (IsServer)
                 SendStatusClientRpc(ingredientIdIndex, (byte)senderClientId);
