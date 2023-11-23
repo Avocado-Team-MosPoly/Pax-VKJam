@@ -160,6 +160,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void OnRoundStartedClientRpc()
     {
+        playersStatusManager.ResetStatuses();
         OnRoundStartedOnClient?.Invoke();
     }
 
@@ -175,7 +176,7 @@ public class GameManager : NetworkBehaviour
 
         if (IsPainter)
         {
-            playersStatusManager.OnRoundEnded();
+            //playersStatusManager.ResetStatuses();
             playersStatusManager.SetActive(true);
         }
         else if (IsTeamMode)
@@ -297,6 +298,8 @@ public class GameManager : NetworkBehaviour
     private void OnIngredientSwitchedClientRpc(sbyte ingredientIndex)
     {
         SetHintData(ingredientIndex);
+        playersStatusManager.ResetStatuses();
+
         OnIngredientSwitchedOnClient?.Invoke();
     }
 

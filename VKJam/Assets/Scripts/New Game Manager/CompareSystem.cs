@@ -38,6 +38,7 @@ public class CompareSystem : NetworkBehaviour
 
         if (playersStatusManager == null)
             throw new System.NullReferenceException("Add a Players Status Manager Prefab to the GameUI Canvas scene to avoid this exception");
+
         playersStatusManager.SendStatus(guess, serverRpcParams.Receive.SenderClientId);
 
         if (GameManager.Instance.Stage == Stage.IngredientGuess)

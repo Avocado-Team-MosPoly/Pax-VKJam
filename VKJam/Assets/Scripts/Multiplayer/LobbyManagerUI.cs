@@ -33,11 +33,14 @@ public class LobbyManagerUI : NetworkBehaviour
         {
             NetworkManager.Singleton.OnClientDisconnectCallback += PLayerLeave;
             NetworkManager.Singleton.OnClientConnectedCallback += PlayerConnect;
+
+            NetworkManager.Singleton.OnServerStopped += OnServerStopped_OnHost;
+
             PlayerConnect(0);
         }
     }
 
-    public override void OnDestroy()
+    private void OnServerStopped_OnHost(bool obj)
     {
         NetworkManager.Singleton.OnClientDisconnectCallback -= PLayerLeave;
         NetworkManager.Singleton.OnClientConnectedCallback -= PlayerConnect;

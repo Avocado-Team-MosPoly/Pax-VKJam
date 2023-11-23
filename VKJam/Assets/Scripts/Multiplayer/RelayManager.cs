@@ -9,6 +9,7 @@ using Unity.Services.Lobbies.Models;
 using Unity.Networking.Transport.Relay;
 using UnityEngine.Events;
 using System;
+using UnityEditor.PackageManager;
 
 public class RelayManager : MonoBehaviour
 {
@@ -140,18 +141,6 @@ public class RelayManager : MonoBehaviour
             NetworkManager.Singleton.OnClientStarted += () =>
             {
                 Logger.Instance.Log($"Client Started on server\nCurrent Lobby: {LobbyManager.Instance.CurrentLobby.Name}\nLobby Player Id: {LobbyManager.Instance.LobbyPlayerId}");
-
-                //await LobbyService.Instance.UpdatePlayerAsync(LobbyManager.Instance.CurrentLobby.Id, LobbyManager.Instance.LobbyPlayerId, new UpdatePlayerOptions()
-                //{
-                //    Data = new System.Collections.Generic.Dictionary<string, Unity.Services.Lobbies.Models.PlayerDataObject>
-                //    {
-                //        { "Id", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, NetworkManager.Singleton.LocalClientId.ToString()) },
-                //        { "Player Name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, Authentication.PlayerName) }
-                //    }
-                //});
-
-                //await LobbyManager.Instance.UpdateLocalLobbyData();
-                //Logger.Instance.Log("Player Id in lobby data updated to " + NetworkManager.Singleton.LocalClientId.ToString());
             };
             NetworkManager.Singleton.StartHost();
 
@@ -234,6 +223,15 @@ public class RelayManager : MonoBehaviour
         {
             Debug.LogError(ex);
         }
+    }
+
+    public void DisconnectPlayer(ulong clientId)
+    {
+        if (!NetworkManager.Singleton.IsServer)
+            return;
+
+        NetworkManager.Singleton.DisconnectClient(clientId);
+        LobbyManager.Instance.RemovePlayer(clientId);
     }
 
     public void Disconnect()

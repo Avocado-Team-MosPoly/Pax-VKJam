@@ -17,13 +17,11 @@ public class PlayersStatusManager : NetworkBehaviour
 
     private Dictionary<ulong, PlayerStatus> playerStatuses = new();
 
-    private void Awake()
-    {
-        playerStatusesContainer.gameObject.SetActive(false);
-    }
-
     public override void OnNetworkSpawn()
     {
+        if (!IsServer)
+            SetActive(false);
+
         StartCoroutine(OnNetworkSpawnCoroutine());
     }
 
@@ -34,21 +32,20 @@ public class PlayersStatusManager : NetworkBehaviour
         if (IsServer)
         {
             foreach (ulong clientId in NetworkManager.ConnectedClientsIds)
-            {
                 CreatePlayerStatusClientRpc((byte)clientId);
-            }
-
-            playerStatusesContainer.gameObject.SetActive(true);
         }
     }
 
     [ClientRpc]
-    private void CreatePlayerStatusClientRpc(byte clientId)
+    private void CreatePlayerStatusClientRpc(byte ownerClientId)
     {
         PlayerStatus playerStatusInstance = Instantiate(playerStatusPrefab, playerStatusesContainer).
-            Init(clientId, URL_Image.ProfileTexture ?? defaultPlayerProfileTexture, defaultPlayerStatus, playerStatusDescription);
+            Init(ownerClientId, /*URL_Image.ProfileTexture ?? */defaultPlayerProfileTexture, defaultPlayerStatus, playerStatusDescription);
 
-        playerStatuses.Add(clientId, playerStatusInstance);
+        playerStatuses.Add(ownerClientId, playerStatusInstance);
+
+        if (ownerClientId == NetworkManager.LocalClientId)
+            playerStatusInstance.gameObject.SetActive(false);
     }
 
     private void UpdateStatus(string status, ulong senderClientId)
@@ -114,7 +111,7 @@ public class PlayersStatusManager : NetworkBehaviour
         playerStatusesContainer.gameObject.SetActive(value);
     }
 
-    public void OnRoundEnded()
+    public void ResetStatuses()
     {
         foreach (PlayerStatus playerStatus in playerStatuses.Values)
             playerStatus.ResetStatus(defaultPlayerStatus);

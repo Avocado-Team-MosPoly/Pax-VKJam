@@ -6,6 +6,7 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Authentication;
 using Unity.Netcode;
 using System.Threading.Tasks;
+using UnityEditor.PackageManager;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -41,13 +42,13 @@ public class LobbyManager : MonoBehaviour
             Destroy(this);
             return;
         }
-        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => KickPlayer(clientId);
+        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => RemovePlayer(clientId);
         NetworkManager.Singleton.OnClientStopped += (bool someBool) => LeaveLobbyAsync();
         NetworkManager.Singleton.OnServerStopped += (bool isHostLeave) => OnServerEnded();
         //NetworkManager.Singleton.OnServerStarted += StopHeartBeatPing;
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
-            Debug.Log("Client Connected");
+            Logger.Instance.Log("Client Connected");
             if (clientId != NetworkManager.Singleton.LocalClientId)
                 ListPlayers();
         };
@@ -313,15 +314,26 @@ public class LobbyManager : MonoBehaviour
         OnPlayerListed?.Invoke(CurrentLobby.Players);
     }
 
-    public async void KickPlayer(ulong clientId)
+    public async void RemovePlayer(ulong clientId)
     {
-        if (IsServer)
+        if (!IsServer)
         {
-            await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, PlayersDataManager.Instance.PlayerDatas[clientId].AuthenticationServiceId);
-            NetworkManager.Singleton.DisconnectClient(clientId);
+            Debug.LogWarning($"[{nameof(LobbyManager)}] Remove a player can only the server");
+            return;
         }
+
+        if (CurrentLobby != null)
+            await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, PlayersDataManager.Instance.PlayerDatas[clientId].AuthenticationServiceId);
         else
-            Debug.LogWarning("Kick a player can only the server");
+            Debug.LogWarning($"[{nameof(LobbyManager)}] You are not in the lobby");
+    }
+
+    public async void Disconnect()
+    {
+        if (CurrentLobby != null)
+            await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, AuthenticationService.Instance.PlayerId);
+        else
+            Debug.LogWarning($"[{nameof(LobbyManager)}] You are not in the lobby");
     }
 
     public void OnServerEnded()
@@ -330,16 +342,4 @@ public class LobbyManager : MonoBehaviour
         //playerUlongIdList.Clear();
         //LeaveLobbyAsync();
     }
-
-    //public Player GetPlayerByRelayId(ulong relayId)
-    //{
-    //    if (!NetworkManager.Singleton.IsConnectedClient)
-    //        return null;
-
-    //    foreach (Player player in CurrentLobby.Players)
-    //        if (player.Data["Id"].Value == relayId.ToString())
-    //            return player;
-
-    //    return null;
-    //}
 }

@@ -22,19 +22,17 @@ public class ChatView : MonoBehaviour
 
     [Header("Prefabs")]
     [SerializeField] private GameObject messagePrefab;
-    //[SerializeField] private GameObject showMoreButtonPrefab;
 
     private List<TextMeshProUGUI> messageTexts = new();
 
     private Chat chat;
 
-    private Dictionary<ulong, string> playerNameById = new();
     private int lastShownMessageIndex = -1;
     private bool isOpen;
     private int unreadMessagesCount;
 
     private bool IsChatFull() => messageTexts.Count >= maxTogetherShownMessages;
-    private string GetPlayerNameById(byte playerId) => playerId.ToString();//playerNameById[playerId];
+    private string GetPlayerNameById(byte playerId) => PlayersDataManager.Instance.PlayerDatas[playerId].Name;
     private string MessageToText(Chat.Message message) => GetPlayerNameById(message.senderId) + ": " + message.text.ToString();
 
     private void Start()
@@ -48,21 +46,7 @@ public class ChatView : MonoBehaviour
         {
             if (player.Id == AuthenticationService.Instance.PlayerId)
                 Debug.Log("player " + player.Data["Player Name"].Value + " is me, id: " + player.Id);
-            //if (player.Data["Id"].Value == "-1")
-            //    continue;
-
-            //playerNameById.Add(ulong.Parse(player.Data["Id"].Value), player.Data["Player Name"].Value);
         }
-
-        //NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
-        //{
-        //    playerNameById.Add(clientId, LobbyManager.Instance.GetPlayerByRelayId(clientId).Data["Player Name"].Value);
-        //};
-
-        //NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
-        //{
-        //    playerNameById.Remove(clientId);
-        //};
     }
 
     private void SpawnMessage(Chat.Message message)

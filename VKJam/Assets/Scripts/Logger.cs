@@ -26,4 +26,18 @@ public class Logger : MonoBehaviour
         //NotificationSystem.Instance.SendLocal(message);
         //output.text += message + "\n";
     }
+
+    public void LogWarning(object message)
+    {
+        Debug.LogWarning(message);
+        //NotificationSystem.Instance.SendLocal(message);
+        //output.text += message + "\n";
+    }
+
+    public void LogError(object message)
+    {
+        Debug.LogError(message);
+        //NotificationSystem.Instance.SendLocal(message);
+        //output.text += message + "\n";
+    }
 }
