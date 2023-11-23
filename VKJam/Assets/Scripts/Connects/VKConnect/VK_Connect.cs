@@ -88,6 +88,6 @@ public class VK_Connect : MonoBehaviour
         if (urlImage != null) urlImage.ChangeImage(UserData.UserIMG_URL);
         if(Php_Connect.PHPisOnline) StartCoroutine(Php_Connect.Request_Auth(User_ID));
 
-        Authentication.LogInVK(User_ID.ToString(), UserData.UserName);
+        //Authentication.LogInVK(User_ID.ToString(), UserData.UserName);
     }
 }
