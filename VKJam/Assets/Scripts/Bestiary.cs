@@ -31,7 +31,6 @@ public class Bestiary : MonoBehaviour
 
     private void Start()
     {
-        TakePack();
         previousMonsterButton.onClick.AddListener(PreviousMoster);
         nextMonsterButton.onClick.AddListener(NextMoster);
 

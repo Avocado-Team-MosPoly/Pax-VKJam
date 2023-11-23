@@ -6,7 +6,7 @@ public class PlayerStatusDescription : MonoBehaviour
     [SerializeField] private TextMeshProUGUI nameLabel;
     [SerializeField] private TextMeshProUGUI statusLabel;
 
-    [SerializeField] private Vector3 positionOffset = new(75f, 0f, 0f);
+    [SerializeField] private Vector3 positionOffset = new(15f, 0f, 0f);
 
     private RectTransform rectTransform;
 

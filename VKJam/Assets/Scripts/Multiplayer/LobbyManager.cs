@@ -24,8 +24,6 @@ public class LobbyManager : MonoBehaviour
     public readonly string KEY_TIMER_AMOUNT = "TimerAmount";
     public readonly string KEY_RECIPE_MODE = "RecipeMode";
 
-    Dictionary<ulong, string> playerUlongIdList = new();
-
     public bool IsServer => NetworkManager.Singleton.IsServer;
     public string LobbyName => CurrentLobby != null ? CurrentLobby.Name : "Íå èçâåñòíî";
     public string LobbyPlayerId { get; private set; }
@@ -44,19 +42,16 @@ public class LobbyManager : MonoBehaviour
             return;
         }
         NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => KickPlayer(clientId);
-        NetworkManager.Singleton.OnClientStopped += (bool someBool) => LeaveLobby();
+        NetworkManager.Singleton.OnClientStopped += (bool someBool) => LeaveLobbyAsync();
         NetworkManager.Singleton.OnServerStopped += (bool isHostLeave) => OnServerEnded();
-        NetworkManager.Singleton.OnServerStarted += StopHeartBeatPing;
+        //NetworkManager.Singleton.OnServerStarted += StopHeartBeatPing;
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
             Debug.Log("Client Connected");
             if (clientId != NetworkManager.Singleton.LocalClientId)
                 ListPlayers();
         };
-        if (IsServer)
-        {
-            NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => playerUlongIdList.Add(clientId, AuthenticationService.Instance.PlayerId);
-        }
+
         Authentication.Authenticate();
     }
 
@@ -150,13 +145,13 @@ public class LobbyManager : MonoBehaviour
         {
             Data = new Dictionary<string, PlayerDataObject>
             {
-                { "Id", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "-1") },
+                //{ "Id", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "-1") },
                 { "Player Name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, Authentication.PlayerName) }
             }
         };
     }
 
-    private void SaveRelayCode(string relayJoinCode)
+    private void SaveRelayJoinCode(string relayJoinCode)
     {
         if (!IsServer && CurrentLobby == null)
             return;
@@ -170,6 +165,17 @@ public class LobbyManager : MonoBehaviour
         };
 
         LobbyService.Instance.UpdateLobbyAsync(CurrentLobby.Id, updateLobbyOptions);
+    }
+
+    public void ResetManager(bool isServer)
+    {
+        CurrentLobby = null;
+        LobbyPlayerId = string.Empty;
+
+        if (isServer)
+        {
+
+        }
     }
 
     public async void CreateLobby()
@@ -201,9 +207,9 @@ public class LobbyManager : MonoBehaviour
 
             string relayJoinCode = await RelayManager.Instance.CreateRelay();
             if (relayJoinCode != "0")
-                SaveRelayCode(relayJoinCode);
+                SaveRelayJoinCode(relayJoinCode);
             else
-                Debug.Log($"[{name}] Invalid relay join code");
+                Debug.LogError($"[{name}] Invalid relay join code");
         }
         catch (LobbyServiceException ex)
         {
@@ -261,7 +267,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public async void LeaveLobby()
+    public async Task LeaveLobbyAsync()
     {
         try
         {
@@ -272,7 +278,9 @@ public class LobbyManager : MonoBehaviour
             
             await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, playerId);
 
-            LeaveRelay();
+            Logger.Instance.Log($"You left the \"{CurrentLobby.Name}\" lobby");
+            CurrentLobby = null;
+            //LeaveRelay();
         }
         catch (LobbyServiceException ex)
         {
@@ -298,44 +306,40 @@ public class LobbyManager : MonoBehaviour
         Logger.Instance.Log("ListPlayers");
         Lobby currentLobbyUpdate = await LobbyService.Instance.GetLobbyAsync(CurrentLobby.Id);
 
-        if (currentLobbyUpdate.Players.Count > CurrentLobby.Players.Count)
-            CurrentLobby = currentLobbyUpdate;
+        if (currentLobbyUpdate == null)
+            return;
 
+        CurrentLobby = currentLobbyUpdate;
         OnPlayerListed?.Invoke(CurrentLobby.Players);
     }
 
-    public void LeaveRelay()
-    {
-        if (NetworkManager.Singleton)
-            NetworkManager.Singleton.Shutdown();
-        SceneLoader.Load("Menu");
-    }
-    public void KickPlayer(ulong client)
+    public async void KickPlayer(ulong clientId)
     {
         if (IsServer)
         {
-            LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, playerUlongIdList[client]);
-            NetworkManager.Singleton.DisconnectClient(client);
-            SceneLoader.Load("Menu");
-            LeaveLobby();
+            await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, PlayersDataManager.Instance.PlayerDatas[clientId].AuthenticationServiceId);
+            NetworkManager.Singleton.DisconnectClient(clientId);
         }
+        else
+            Debug.LogWarning("Kick a player can only the server");
     }
+
     public void OnServerEnded()
     {
-        Debug.LogWarning("On Server Ended");
-        playerUlongIdList.Clear();
-        LeaveLobby();
+        //Debug.Log("On Server Ended");
+        //playerUlongIdList.Clear();
+        //LeaveLobbyAsync();
     }
 
-    public Player GetPlayerByRelayId(ulong relayId)
-    {
-        if (!NetworkManager.Singleton.IsConnectedClient)
-            return null;
+    //public Player GetPlayerByRelayId(ulong relayId)
+    //{
+    //    if (!NetworkManager.Singleton.IsConnectedClient)
+    //        return null;
 
-        foreach (Player player in CurrentLobby.Players)
-            if (player.Data["Id"].Value == relayId.ToString())
-                return player;
+    //    foreach (Player player in CurrentLobby.Players)
+    //        if (player.Data["Id"].Value == relayId.ToString())
+    //            return player;
 
-        return null;
-    }
+    //    return null;
+    //}
 }

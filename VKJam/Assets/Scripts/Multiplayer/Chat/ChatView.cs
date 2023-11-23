@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
+using Unity.Services.Authentication;
 
 [RequireComponent(typeof(Chat))]
 public class ChatView : MonoBehaviour
@@ -45,21 +46,23 @@ public class ChatView : MonoBehaviour
 
         foreach (Player player in LobbyManager.Instance.CurrentLobby.Players)
         {
-            if (player.Data["Id"].Value == "-1")
-                continue;
+            if (player.Id == AuthenticationService.Instance.PlayerId)
+                Debug.Log("player " + player.Data["Player Name"].Value + " is me, id: " + player.Id);
+            //if (player.Data["Id"].Value == "-1")
+            //    continue;
 
-            playerNameById.Add(ulong.Parse(player.Data["Id"].Value), player.Data["Player Name"].Value);
+            //playerNameById.Add(ulong.Parse(player.Data["Id"].Value), player.Data["Player Name"].Value);
         }
 
-        NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
-        {
-            playerNameById.Add(clientId, LobbyManager.Instance.GetPlayerByRelayId(clientId).Data["Player Name"].Value);
-        };
+        //NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
+        //{
+        //    playerNameById.Add(clientId, LobbyManager.Instance.GetPlayerByRelayId(clientId).Data["Player Name"].Value);
+        //};
 
-        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
-        {
-            playerNameById.Remove(clientId);
-        };
+        //NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
+        //{
+        //    playerNameById.Remove(clientId);
+        //};
     }
 
     private void SpawnMessage(Chat.Message message)

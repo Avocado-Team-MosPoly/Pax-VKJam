@@ -30,8 +30,6 @@ public class BestiaryIngredients : MonoBehaviour
 
     private void Awake()
     {
-        TakePack();
-
         lastShownIngridient = 0;
 
         UpdateIngredientList(true);
@@ -73,6 +71,7 @@ public class BestiaryIngredients : MonoBehaviour
                 }
             }
         }
+        IngredientName.Sort();
     }
     public void SetPack(PackCardSO _packCardSO)
     {
