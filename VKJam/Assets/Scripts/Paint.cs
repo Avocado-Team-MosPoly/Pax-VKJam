@@ -110,7 +110,7 @@ public class Paint : NetworkBehaviour
 
     private bool isDraw = false;
     
-    [Header("Ïðîñòî çàêèíóòü ññûëêó(åñëè íå íóæåí ôóíêöèîíàë, íå ñòàâèòü)")]
+    [Header("Set if functionality is needed")]
     //[SerializeField] private Slider brushSizeSlider;
     [SerializeField] private Button switchBrushModeButton;
     [SerializeField] private Button saveAsPNGButton;
