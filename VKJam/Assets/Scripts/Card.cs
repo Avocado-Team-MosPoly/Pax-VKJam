@@ -12,6 +12,7 @@ public class Card : MonoBehaviour
 
     private Animator animator;
     private MeshRenderer meshRenderer;
+    [SerializeField] private string CameraBack_Buttons;
 
     private static Card firstSelectedCard;
 
@@ -39,6 +40,7 @@ public class Card : MonoBehaviour
         }
         else
         {
+            GameObject.Find(CameraBack_Buttons).GetComponent<CameraBack>().back();
             OnChoose.Invoke(this);
         }
     }
