@@ -11,11 +11,13 @@ public class WarehouseScript : MonoBehaviour
     private GameObject Template;
     [SerializeField]
     private GameObject WhereInst;
+    [SerializeField]
     private CustomController Data;
+
 
     private void Awake()
     {
-        Data = (CustomController)CustomController._executor;
+        Data = CustomController._executor;
     }
 
     public void ChangeSection(int ToWhat)
@@ -25,12 +27,8 @@ public class WarehouseScript : MonoBehaviour
     public void ChangeSection(ShopFilters ToWhat)
     {
         GameObject temp;
-        foreach(var current in Products)
-        {
-            Destroy(current.gameObject);
-        }
-        Products.Clear();
-        foreach(var current in Data.Categories[(int)ToWhat].products)
+        Drop();
+        foreach (var current in Data.Categories[(int)ToWhat].products)
         {
             temp = Instantiate(Template, WhereInst.transform);
             Product InWork = temp.GetComponent<Product>();
