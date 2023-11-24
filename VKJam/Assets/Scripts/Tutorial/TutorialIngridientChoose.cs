@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class TutorialIngridientChoose : MonoBehaviour
 {
-    [SerializeField] private bool CurrentIngridient;
+    [SerializeField] private bool isLastIngredient;
+    [SerializeField] private bool isCorrect;
     [SerializeField] private GameObject IngridientModel = null;
+    [SerializeField] private Button closeBestiaryButton;
 
     private int _correctAnswers = 0;
 
@@ -14,32 +17,27 @@ public class TutorialIngridientChoose : MonoBehaviour
     {
         GetComponent<Button>().onClick.AddListener(CheckIngridient);
     }
+
     public void SetIngridient(bool currentIngridient)
     {
-        CurrentIngridient = currentIngridient;
+        isCorrect = currentIngridient;
     }
 
     public void CheckIngridient()
     {
-        if(_correctAnswers != 3)
+        if (isCorrect)
         {
-            if (CurrentIngridient)
-            {
+            if (!isLastIngredient)
                 DialogueManager.Instance.StartDialogue(11);
-                _correctAnswers++;
-                IngridientModel.SetActive(true);
-            }
-            else
-            {
-                DialogueManager.Instance.StartDialogue(10);
-            }
+
+            closeBestiaryButton.OnPointerClick(new PointerEventData(EventSystem.current));
+
+            IngridientModel.SetActive(true);
+            isCorrect = false;
         }
         else
         {
-            DialogueManager.Instance.StartDialogue(12);
+            DialogueManager.Instance.StartDialogue(10);
         }
-           
-
     }
-
 }
