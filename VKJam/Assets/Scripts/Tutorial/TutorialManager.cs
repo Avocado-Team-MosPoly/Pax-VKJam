@@ -12,6 +12,8 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private Animator _cameraAnimator;
 
     private int _firstSelectedCard = 0;
+    private bool _check = true;
+
     public void EndDialogue_1()
     {
         StartCoroutine(NextDialogueStage(1,1));
@@ -40,7 +42,7 @@ public class TutorialManager : MonoBehaviour
     public void EndDialogue_7()
     {
         StartCoroutine(NextDialogueStage(1.5f, 7));
-        TokenText.text = "6";
+        TokenText.text = "6";   
     }
 
     public void EndDialogue_8()
@@ -50,7 +52,15 @@ public class TutorialManager : MonoBehaviour
 
     public void EndDialogue_9()
     {
-        StartCoroutine(NextDialogueStage(1f, 9));
+        if(_check)
+            StartCoroutine(NextDialogueStage(1f, 9));
+        _check = false;
+    }
+
+    public void EndDialogue_15()
+    {
+        StartCoroutine(NextDialogueStage(1f, 15));
+        TokenText.text = "13";
     }
 
     IEnumerator NextDialogueStage(float Seconds, int DialogueID)
