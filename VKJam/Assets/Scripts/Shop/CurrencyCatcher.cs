@@ -15,7 +15,9 @@ public class CurrencyCatcher : MonoBehaviour
     }
     public void Refresh()
     {
-        Currency Data = Php_Connect.Request_CurrentCurrency();
+        Currency Data;
+        if (Php_Connect.PHPisOnline) Data = Php_Connect.Request_CurrentCurrency();
+        else Data = Php_Connect.Current;
         Donat_General.text = Data.DCurrency.ToString();
         Donat_Card.text = Data.DCurrency.ToString();
         IG.text = Data.IGCurrency.ToString();

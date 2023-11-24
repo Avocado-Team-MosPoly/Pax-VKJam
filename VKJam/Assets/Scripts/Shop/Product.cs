@@ -23,6 +23,11 @@ public class Product : MonoBehaviour
         Price.text = "X" + Data.Data.productPrice.ToString();
         BT.interactable = !Data.Data.InOwn || ChooseMode;
     }
+    public void RemoveFromWarehouse()
+    {
+        WarehouseScript._executor.RemoveProduct(this);
+        Destroy(gameObject);
+    }
 
     public void Interact()
     {
@@ -30,7 +35,18 @@ public class Product : MonoBehaviour
         {
             if(Php_Connect.PHPisOnline) { 
                 string res = Php_Connect.Request_BuyTry(Data.Data.productCode);
-                if (res == "success") ;
+                if (res == "success")
+                {
+                    Data.Data.InOwn = true;
+                    RemoveFromWarehouse();
+                }
+            }
+            else
+            {
+                if (Data.Data.IsDonateVault) Php_Connect.Current.DCurrency -= Data.Data.productPrice;
+                else Php_Connect.Current.IGCurrency -= Data.Data.productPrice;
+                Data.Data.InOwn = true;
+                RemoveFromWarehouse();
             }
         }
                 

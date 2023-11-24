@@ -1,8 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor;
 
-public class WarehouseScript : MonoBehaviour
+public class WarehouseScript : TaskExecutor<WarehouseScript>
 {
 	[SerializeField] private List<Product> Products = new();
     
@@ -18,6 +17,7 @@ public class WarehouseScript : MonoBehaviour
     private void Awake()
     {
         Data = CustomController._executor;
+        Denote();
     }
 
     public void ChangeSection(int ToWhat)
@@ -30,11 +30,17 @@ public class WarehouseScript : MonoBehaviour
         Drop();
         foreach (var current in Data.Categories[(int)ToWhat].products)
         {
+            if (current.Data.InOwn) continue;
             temp = Instantiate(Template, WhereInst.transform);
             Product InWork = temp.GetComponent<Product>();
             Products.Add(InWork);
             InWork.SetData(current);
         }
+    }
+
+    public void RemoveProduct(Product productToRemove)
+    {
+        Products.Remove(productToRemove);
     }
     public void Drop()
     {
@@ -44,14 +50,5 @@ public class WarehouseScript : MonoBehaviour
         }
         Products.Clear();
     }
-   
-
-
-
-
-    private void SortListByName()
-	{
-		Products.Sort((N1, N2) => N1.Name.text.CompareTo(N2.Name.text));
-	}
-
+  
 }
