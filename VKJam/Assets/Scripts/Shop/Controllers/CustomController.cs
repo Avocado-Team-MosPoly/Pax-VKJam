@@ -9,10 +9,10 @@ public class CustomController : TaskExecutor<CustomController>
 
     private void Start()
     {
-        if (Php_Connect.PHPisOnline) FetchAllProductData();
-        Renumerator();
-    }
+        //if (Php_Connect.PHPisOnline) FetchAllProductData();
 
+    }
+    [ContextMenu("Renumarate all WareData")]
     private void Renumerator()
     {
         for (int i = 0; i < Categories.Length; i++)

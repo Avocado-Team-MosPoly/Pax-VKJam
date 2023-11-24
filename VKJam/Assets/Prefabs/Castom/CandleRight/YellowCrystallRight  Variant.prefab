@@ -67,5 +67,78 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0fda3756ff3817a48abdcec79ea6380e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3615127000097936140}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0fda3756ff3817a48abdcec79ea6380e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1486740846588503820}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0fda3756ff3817a48abdcec79ea6380e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3399022257118723297}
   m_SourcePrefab: {fileID: 100100000, guid: 0fda3756ff3817a48abdcec79ea6380e, type: 3}
+--- !u!1 &4839432118899179236 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0fda3756ff3817a48abdcec79ea6380e, type: 3}
+  m_PrefabInstance: {fileID: 5757979730520622005}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &3615127000097936140
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4839432118899179236}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.39626205, y: 0.5729543, z: 0.396262}
+  m_Center: {x: 0.0041011944, y: 0.27858537, z: 0.0027016774}
+--- !u!114 &1486740846588503820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4839432118899179236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f13c20d4e5f169a4ca84a3779a35757b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetMaterialID: 
+  NewColor: {r: 0, g: 0, b: 0, a: 0}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnMouseEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnMouseExit:
+    m_PersistentCalls:
+      m_Calls: []
+  ActivityInteractable: 0
+--- !u!114 &3399022257118723297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4839432118899179236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 070f0c1784f8e4f48ad49162c5ea3195, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Data: {fileID: 1486740846588503820}
+  Object: {fileID: 4839432118899179236}

@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using TMPro;
 public class Product : MonoBehaviour
 {
@@ -11,7 +10,7 @@ public class Product : MonoBehaviour
     public WareData Data;
     [SerializeField] private Button BT;
     public bool ChooseMode;
-    public void SetData(WareData NewData)
+    public void SetData( WareData NewData)
     {
         Data = NewData;
         Refresh();
@@ -24,10 +23,33 @@ public class Product : MonoBehaviour
         Price.text = "X" + Data.Data.productPrice.ToString();
         BT.interactable = !Data.Data.InOwn || ChooseMode;
     }
+    public void RemoveFromWarehouse()
+    {
+        WarehouseScript._executor.RemoveProduct(this);
+        Destroy(gameObject);
+    }
 
     public void Interact()
     {
-        if (!Data.Data.InOwn && !Data.IsNonBuyable) StartCoroutine(Php_Connect.Request_BuyTry(Data.Data.productCode));
+        if (!Data.Data.InOwn && !Data.IsNonBuyable) 
+        {
+            if(Php_Connect.PHPisOnline) { 
+                string res = Php_Connect.Request_BuyTry(Data.Data.productCode);
+                if (res == "success")
+                {
+                    Data.Data.InOwn = true;
+                    RemoveFromWarehouse();
+                }
+            }
+            else
+            {
+                if (Data.Data.IsDonateVault) Php_Connect.Current.DCurrency -= Data.Data.productPrice;
+                else Php_Connect.Current.IGCurrency -= Data.Data.productPrice;
+                Data.Data.InOwn = true;
+                RemoveFromWarehouse();
+            }
+        }
+                
         else ProfileCustom.ProductChoosen(this);
     }
 
