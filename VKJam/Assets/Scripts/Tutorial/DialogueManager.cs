@@ -32,7 +32,7 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue (int DialogueID)
     {
-        Debug.Log("Dialogue" + DialogueList[DialogueID].name);
+        Debug.Log("Dialogue " + DialogueList[DialogueID].name);
 
         if(DialogueID != 0)
         {
@@ -70,7 +70,7 @@ public class DialogueManager : MonoBehaviour
         foreach(char letter in sentence.ToCharArray())
         {
             dialogueText.text += letter;
-            yield return new WaitForSeconds(.03f); ;
+            yield return new WaitForSeconds(.03f);
         }
     }
 
@@ -80,6 +80,4 @@ public class DialogueManager : MonoBehaviour
         DialogueList[DialogueID].EndDialogue?.Invoke();
         Debug.Log("End");
     }
-
-
 }
