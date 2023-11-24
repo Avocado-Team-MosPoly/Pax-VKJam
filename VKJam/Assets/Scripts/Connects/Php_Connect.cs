@@ -21,7 +21,8 @@ public class Php_Connect : MonoBehaviour
     public static Sprite connectionError;
     public static RandomItemList randomBase;
     public static Currency Current;
-    
+    public Currency current;
+
     public void Init()
     {
         SceneLoader.EndLoad += OnGameEnded;
@@ -30,6 +31,7 @@ public class Php_Connect : MonoBehaviour
         PHPisOnline = true;
         Nickname = 333;
         Request_Auth(Nickname);
+        if (PHPisOnline == false) Current = current;
         //Debug.Log(Php_Connect.Request_WhichCardInPackOwnering(0));
         /*Debug.Log(Request_BuyTry(0));
         StartCoroutine(Request_Auth(12));

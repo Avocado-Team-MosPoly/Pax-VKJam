@@ -58,8 +58,6 @@ public class TokenManager : NetworkBehaviour
 
     private (IReadOnlyList<ulong>, IReadOnlyList<int>) SortPlayersTokensDictionary()
     {
-        Dictionary<ulong, int> newPlayersTokens = new();
-
         List<ulong> clientIds = new();
         List<int> tokens = new();
 
@@ -250,24 +248,24 @@ public class TokenManager : NetworkBehaviour
                 break;
             case 4:
                 RemoveTokensToClient((int)(tokens[1] * 0.5f), (byte)clientIds[1]);
-                RemoveTokensToClient((int)(tokens[2] * 0.25f), (byte)clientIds[2]);
+                RemoveTokensToClient((int)(tokens[2] * 0.75f), (byte)clientIds[2]);
                 RemoveTokensToClient(tokens[3], (byte)clientIds[3]);
                 break;
         }
 
-        AddTokensToClient(20, (byte)clientIds[0]);
+        AddTokensToClient(tokens[0], (byte)clientIds[0]);
     }
 
     #region Log
 
     private void LogAdd(int value)
     {
-        Debug.Log($"[{nameof(TokenManager)}] Add {value} token(-s). Total added tokens: {TokensCountWinnedCurrentRound}");
+        Logger.Instance.Log($"[{nameof(TokenManager)}] Add {value} token(-s). Total added tokens: {TokensCountWinnedCurrentRound}");
     }
 
     private void LogRemove(int value)
     {
-        Debug.Log($"[{nameof(TokenManager)}] Remove {value} token(-s). Total removed tokens: {TokensCountLosedCurrentRound}");
+        Logger.Instance.Log($"[{nameof(TokenManager)}] Remove {value} token(-s). Total removed tokens: {TokensCountLosedCurrentRound}");
     }
 
     #endregion

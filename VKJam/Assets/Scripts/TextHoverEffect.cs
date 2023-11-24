@@ -46,7 +46,7 @@ public class TextHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
             foreach (AnimationClip animationClip in animator.runtimeAnimatorController.animationClips)
             {
-                if (animationClip.name == "OnMouseEnterCross")
+                if (animationClip.name == "OnMouseEnter")
                 {
                     animator.Play("OnMouseEnter");
                     break;

@@ -12,7 +12,7 @@ public struct Design {
 }
 
 [Serializable]
-public struct WareData
+public class WareData
 {
     
     public Design Data;

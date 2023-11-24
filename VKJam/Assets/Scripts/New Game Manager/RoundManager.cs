@@ -13,7 +13,6 @@ public abstract class RoundManager
 
     protected bool isMonsterGuessed;
 
-    protected readonly byte winningBonus = 20;
     protected readonly IngredientManager ingredientManager;
 
     protected readonly GameConfigSO config;

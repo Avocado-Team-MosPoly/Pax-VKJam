@@ -14,13 +14,13 @@ public class GameConfigSO : ScriptableObject
 
     [Header("Team Mode")]
 
-    public SetOf<int> BonusIngredientGuessed_TM = new(4, 6, 8);
+    public SetOf<int> BonusIngredientGuessed_TM = new(2, 1, 1);
     
     public SetOf<int> BonusIfAllIngredientsGuessed_TM_DM = new(1, 1, 1);
     public SetOf<int> BonusIfAllIngredientsGuessed_TM_MM = new(2, 2, 2);
 
-    public SetOf<int> BonusIfMonsterGuessed_TM_DM = new(16, 36, 64);
-    public SetOf<int> BonusIfMonsterGuessed_TM_MM = new(24, 54, 96);
+    public SetOf<int> BonusIfMonsterGuessed_TM_DM = new(4, 6, 8);
+    public SetOf<int> BonusIfMonsterGuessed_TM_MM = new(6, 9, 12);
 
     public SetOf<int> BonusIfMonsterGuessedMoreThanOnePlayer_TM = new(0, 3, 4);
 

@@ -47,7 +47,8 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
         WhatActiv.SetActive(true);
         foreach (var current in Data.Categories[(int)CustomController.Categorize(ToWhat)].products)
         {
-            if (current.Data.Type != ToWhat) break;
+            if (current.Data.Type != ToWhat || !current.Data.InOwn) continue;
+            //Debug.Log(current.Data.productName + " "+ current.Data.InOwn);
             temp = Instantiate(Template, WhereInst.transform);
             Product InWork = temp.GetComponent<Product>();
             Products.Add(InWork);
