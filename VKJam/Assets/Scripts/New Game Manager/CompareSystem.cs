@@ -19,7 +19,7 @@ public class CompareSystem : NetworkBehaviour
         if (NotificationSystem.Instance == null)
             throw new System.NullReferenceException("Add a Notification System Prefab to the Menu scene to avoid this exception");
 
-        string choosedThing = GameManager.Instance.Stage == Stage.IngredientGuess ? bestiaryIngredients.IngredientName[guessId] : bestiary.Monsters[guessId].id;
+        string choosedThing = GameManager.Instance.Stage == Stage.IngredientGuess ? bestiaryIngredients.IngredientList[guessId].Name : bestiary.Monsters[guessId].id;
         string message = $"{chooseNotificationText[0]} {senderClientId} {chooseNotificationText[0]} {choosedThing}";
         // TODO: Show player name instead of id
         NotificationSystem.Instance.SendLocal(message);
@@ -34,7 +34,7 @@ public class CompareSystem : NetworkBehaviour
         if (guessId >= 0)
             SendNotificationClientRpc(guessId, (byte)serverRpcParams.Receive.SenderClientId);
 
-        string guess = GameManager.Instance.Stage == Stage.IngredientGuess ? bestiaryIngredients.IngredientName[guessId] : bestiary.Monsters[guessId].id;
+        string guess = GameManager.Instance.Stage == Stage.IngredientGuess ? bestiaryIngredients.IngredientList[guessId].Name : bestiary.Monsters[guessId].id;
 
         if (playersStatusManager == null)
             throw new System.NullReferenceException("Add a Players Status Manager Prefab to the GameUI Canvas scene to avoid this exception");

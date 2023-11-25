@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class Bestiary : MonoBehaviour
 {
+    public UnityEvent OnBestiaryOpened;
+    public UnityEvent OnBestiaryClosed;
+
     [HideInInspector] public List<CardSO> Monsters = new();
 
     [SerializeField] private Button[] dangerousMonstersButtons;
@@ -142,5 +146,15 @@ public class Bestiary : MonoBehaviour
             currentMonster = pageIndex;
             UpdateUIMonster();
         }
+    }
+
+    public void Open()
+    {
+        OnBestiaryOpened?.Invoke();
+    }
+
+    public void Close()
+    {
+        OnBestiaryClosed?.Invoke();
     }
 }

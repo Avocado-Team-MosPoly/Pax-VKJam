@@ -6,7 +6,7 @@ using TMPro;
 public class BestiaryIngredients : MonoBehaviour
 {
     [HideInInspector] public List<Ingredient> IngredientList = new();
-    [HideInInspector] public List<string> IngredientName = new();
+    //[HideInInspector] public List<string> IngredientName = new();
 
     [SerializeField] private CompareSystem compareSystem;
     [SerializeField] private PackCardSO packCardSO;
@@ -55,7 +55,7 @@ public class BestiaryIngredients : MonoBehaviour
     public void TakePack()
     {
         IngredientList.Clear();
-        IngredientName.Clear();
+        //IngredientName.Clear();
 
         for (int i = 0; i < packCardSO.CardInPack.Length; i++)
         {
@@ -66,12 +66,12 @@ public class BestiaryIngredients : MonoBehaviour
                     if (IngredientList.Contains(ingridient) != true)
                     {
                         IngredientList.Add(ingridient);
-                        IngredientName.Add(ingridient.Name);
+                        //IngredientName.Add(ingridient.Name);
                     }
                 }
             }
         }
-        IngredientName.Sort();
+        //IngredientName.Sort();
     }
     public void SetPack(PackCardSO _packCardSO)
     {
@@ -108,7 +108,7 @@ public class BestiaryIngredients : MonoBehaviour
         int i = lastShownIngridient;
         for (; i < 10 + lastShownIngridient; i++)
         {
-            if (i >= IngredientName.Count)
+            if (i >= IngredientList.Count)
             {
                 if (i != 0)
                 {
@@ -119,7 +119,7 @@ public class BestiaryIngredients : MonoBehaviour
             }
 
             IngredientInfo ingredientInfoUI = Instantiate(ingredientInfoTemplate, ingredientListContainer);
-            ingredientInfoUI.SetIngridient(IngredientName[i], i, compareSystem);
+            ingredientInfoUI.SetIngridient(IngredientList[i].Name, i, compareSystem);
             ingredientInfoUI.gameObject.SetActive(true);
             ingredientInfoUI.OnGuess.AddListener(OnIngredientSelected);
 
@@ -140,7 +140,7 @@ public class BestiaryIngredients : MonoBehaviour
         if (spawnedIngredientObjects.Count >= spawnPositions.Length)
             return;
 
-        Transform spawnPosition = spawnPositions[spawnedIngredientObjects.Count];
+        Transform spawnPosition = spawnPositions[GameManager.Instance.IngredientManager.CurrentIngredientIndex];
         GameObject spawnedIngredientObject = Instantiate(IngredientList[ingredientIndex].Model, spawnPosition.position, Quaternion.identity, spawnPosition);
 
         if (spawnedIngredientObject == null)
@@ -152,7 +152,7 @@ public class BestiaryIngredients : MonoBehaviour
 
     private void CheckButton()
     {
-        if (lastShownIngridient >= IngredientName.Count - 1)
+        if (lastShownIngridient >= IngredientList.Count - 1)
         {
             NextButton.SetActive(false);
         }

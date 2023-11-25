@@ -73,7 +73,14 @@ public class LobbyManager : MonoBehaviour
         if (heartBeatTimer >= heartBeatTime)
         {
             heartBeatTimer = 0f;
-            await LobbyService.Instance.SendHeartbeatPingAsync(CurrentLobby.Id);
+            try
+            {
+                await LobbyService.Instance.SendHeartbeatPingAsync(CurrentLobby.Id);
+            }
+            catch (LobbyServiceException ex)
+            {
+                Logger.Instance.Log(ex);
+            }
         }
     }
 
@@ -107,8 +114,15 @@ public class LobbyManager : MonoBehaviour
     [ClientRpc]
     private async Task UpdateLocalLobbyDataClientRpc()
     {
-        CurrentLobby = await LobbyService.Instance.GetLobbyAsync(CurrentLobby.Id);
-        Logger.Instance.Log("[LobbyManager] Local Lobby Data Updated");
+        try
+        {
+            CurrentLobby = await LobbyService.Instance.GetLobbyAsync(CurrentLobby.Id);
+            Logger.Instance.Log($"[{nameof(LobbyManager)}] Local Lobby Data Updated");
+        }
+        catch (LobbyServiceException ex)
+        {
+            Logger.Instance.Log(ex);
+        }
     }
 
     private Dictionary<string, DataObject> GetLobbyData()
@@ -156,16 +170,22 @@ public class LobbyManager : MonoBehaviour
     {
         if (!IsServer && CurrentLobby == null)
             return;
-
-        UpdateLobbyOptions updateLobbyOptions = new UpdateLobbyOptions
+        try
         {
-            Data = new Dictionary<string, DataObject>
+            UpdateLobbyOptions updateLobbyOptions = new UpdateLobbyOptions
+            {
+                Data = new Dictionary<string, DataObject>
             {
                 { KEY_RELAY_CODE, new DataObject(DataObject.VisibilityOptions.Member, relayJoinCode) },
             }
-        };
+            };
 
-        LobbyService.Instance.UpdateLobbyAsync(CurrentLobby.Id, updateLobbyOptions);
+            LobbyService.Instance.UpdateLobbyAsync(CurrentLobby.Id, updateLobbyOptions);
+        }
+        catch (LobbyServiceException ex)
+        {
+            Logger.Instance.Log(ex);
+        }
     }
 
     public void ResetManager(bool isServer)
@@ -277,7 +297,7 @@ public class LobbyManager : MonoBehaviour
                 return;
 
             string playerId = AuthenticationService.Instance.PlayerId;
-            
+
             await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, playerId);
 
             Logger.Instance.Log($"You left the \"{CurrentLobby.Name}\" lobby");
@@ -286,6 +306,9 @@ public class LobbyManager : MonoBehaviour
         }
         catch (LobbyServiceException ex)
         {
+            if (ex.ErrorCode == 404)
+                CurrentLobby = null;
+
             Logger.Instance.Log(ex);
         }
     }
@@ -306,13 +329,20 @@ public class LobbyManager : MonoBehaviour
     public async void ListPlayers()
     {
         Logger.Instance.Log("ListPlayers");
-        Lobby currentLobbyUpdate = await LobbyService.Instance.GetLobbyAsync(CurrentLobby.Id);
 
-        if (currentLobbyUpdate == null)
-            return;
+        try
+        {
+            Lobby currentLobbyUpdate = await LobbyService.Instance.GetLobbyAsync(CurrentLobby.Id);
+            if (currentLobbyUpdate == null)
+                return;
 
-        CurrentLobby = currentLobbyUpdate;
-        OnPlayerListed?.Invoke(CurrentLobby.Players);
+            CurrentLobby = currentLobbyUpdate;
+            OnPlayerListed?.Invoke(CurrentLobby.Players);
+        }
+        catch (LobbyServiceException ex)
+        {
+            Logger.Instance.Log(ex);
+        }
     }
 
     public async void RemovePlayer(ulong clientId)
@@ -324,7 +354,16 @@ public class LobbyManager : MonoBehaviour
         }
 
         if (CurrentLobby != null)
-            await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, PlayersDataManager.Instance.PlayerDatas[clientId].AuthenticationServiceId);
+        {
+            try
+            {
+                await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, PlayersDataManager.Instance.PlayerDatas[clientId].AuthenticationServiceId);
+            }
+            catch (LobbyServiceException ex)
+            {
+                Logger.Instance.Log(ex);
+            }
+        }
         else
             Debug.LogWarning($"[{nameof(LobbyManager)}] You are not in the lobby");
     }
@@ -332,7 +371,16 @@ public class LobbyManager : MonoBehaviour
     public async void Disconnect()
     {
         if (CurrentLobby != null)
-            await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, AuthenticationService.Instance.PlayerId);
+        {
+            try
+            {
+                await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, AuthenticationService.Instance.PlayerId);
+            }
+            catch (LobbyServiceException ex)
+            {
+                Logger.Instance.Log(ex);
+            }
+        }
         else
             Debug.LogWarning($"[{nameof(LobbyManager)}] You are not in the lobby");
     }

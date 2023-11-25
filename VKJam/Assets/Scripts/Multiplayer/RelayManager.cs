@@ -52,6 +52,12 @@ public class RelayManager : MonoBehaviour
 
     private void Awake()
     {
+#if UNITY_EDITOR
+#if UNITY_WEBGL
+        Debug.LogError("Multiplyer doesn't work in editor on \"WebGL\" platform. You should change platform to \"Windows, Mac, Linux\"");
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+#endif
         if (Instance == null)
         {
             Instance = this;
@@ -62,19 +68,6 @@ public class RelayManager : MonoBehaviour
             Destroy(this);
             return;
         }
-
-#if UNITY_EDITOR
-#if UNITY_WEBGL
-        Debug.LogError("Multiplyer doesn't work in editor on \"WebGL\" platform. You should change platform to \"Windows, Mac, Linux\"");
-#endif
-#endif
-    }
-
-    private void SpawnPlayersDataManagerWithOwnership(ulong clientId)
-    {
-        PlayersDataManager pdmInstance = Instantiate(playersDataManagerPrefab);
-        pdmInstance.NetworkObject.SpawnAsPlayerObject(clientId, false);
-        pdmInstance.NetworkObject.DontDestroyWithOwner = false;
     }
 
     public async Task<string> CreateRelay()
@@ -138,6 +131,8 @@ public class RelayManager : MonoBehaviour
                 SceneLoader.ServerLoad(lobbySceneName);
             };
 
+            NetworkManager.Singleton.OnClientStopped += (bool isHost) => SceneLoader.Load("Menu");
+
             NetworkManager.Singleton.OnClientStarted += () =>
             {
                 Logger.Instance.Log($"Client Started on server\nCurrent Lobby: {LobbyManager.Instance.CurrentLobby.Name}\nLobby Player Id: {LobbyManager.Instance.LobbyPlayerId}");
@@ -149,7 +144,7 @@ public class RelayManager : MonoBehaviour
         }
         catch (RelayServiceException ex)
         {
-            Debug.LogError(ex);
+            Logger.Instance.LogError(ex);
             return "0";
         }
     }
@@ -205,7 +200,6 @@ public class RelayManager : MonoBehaviour
             {
                 Logger.Instance.Log("Client Started");
 
-
                 //Lobby updatedLobby = await LobbyService.Instance.UpdatePlayerAsync(LobbyManager.Instance.CurrentLobby.Id, LobbyManager.Instance.LobbyPlayerId, new UpdatePlayerOptions()
                 //{
                 //    Data = new System.Collections.Generic.Dictionary<string, Unity.Services.Lobbies.Models.PlayerDataObject>
@@ -214,6 +208,12 @@ public class RelayManager : MonoBehaviour
                 //    }
                 //});
             };
+            NetworkManager.Singleton.OnClientStopped += async (bool isHost) =>
+            {
+                Disconnect();
+                await LobbyManager.Instance.LeaveLobbyAsync();
+                SceneLoader.Load("Menu");
+            };
 
             NetworkManager.Singleton.StartClient();
 
@@ -221,7 +221,7 @@ public class RelayManager : MonoBehaviour
         }
         catch (RelayServiceException ex)
         {
-            Debug.LogError(ex);
+            Logger.Instance.LogError(ex);
         }
     }
 
@@ -239,12 +239,12 @@ public class RelayManager : MonoBehaviour
         try
         {
             NetworkManager.Singleton.Shutdown();
-            while (NetworkManager.Singleton.ShutdownInProgress) { }
+            //while (NetworkManager.Singleton.ShutdownInProgress) { }
             Logger.Instance.Log("Disconnected from server");
         }
         catch (Exception ex)
         {
-            Debug.LogError(ex);
+            Logger.Instance.LogError(ex);
         }
     }
 

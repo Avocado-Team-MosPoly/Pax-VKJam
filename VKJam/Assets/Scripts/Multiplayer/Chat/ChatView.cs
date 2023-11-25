@@ -124,6 +124,9 @@ public class ChatView : MonoBehaviour
 
     public void Open()
     {
+        if (isOpen)
+            return;
+
         isOpen = true;
 
         activeChatObject.SetActive(true);
@@ -135,6 +138,9 @@ public class ChatView : MonoBehaviour
 
     public void Close()
     {
+        if (!isOpen)
+            return;
+
         isOpen = false;
 
         inactiveChatObject.SetActive(true);

@@ -78,8 +78,6 @@ public class PlayersDataManager : NetworkBehaviour
     {
         ulong localClientId = NetworkManager.LocalClientId;
 
-        Logger.Instance.Log($"[{nameof(PlayersDataManager)}] {localClientId}. {playerDatas.Count}");
-
         if (playerDatas.ContainsKey(localClientId))
         {
             Logger.Instance.LogWarning($"[{nameof(PlayersDataManager)}] Player data already stored. You need {nameof(ChangePlayerData)} method");
