@@ -10,12 +10,8 @@ public class CustomController : TaskExecutor<CustomController>
 
     private void Start()
     {
-        //if (Php_Connect.PHPisOnline) FetchAllProductData();
-
-    }
-    private void Awake()
-    {
         Load();
+        //if (Php_Connect.PHPisOnline) FetchAllProductData();
     }
     private void Load()
     {
