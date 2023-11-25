@@ -9,8 +9,8 @@ public class LobbyManagerUI : NetworkBehaviour
     [SerializeField] private Button leaveLobbyButton;
     [SerializeField] private Button updatePlayerList;
     [SerializeField] private Button ready;
-    [SerializeField] private List<GameObject> playerGameObjectList;
-    [SerializeField] private List<GameObject> playerReady;
+    [SerializeField] private List<GameObject> playerGameObjectList = new();
+    [SerializeField] private List<GameObject> playerReady = new();
 
     //[SerializeField] private RectTransform playerListContainer;
     //[SerializeField] private GameObject playerInfoPrefab;

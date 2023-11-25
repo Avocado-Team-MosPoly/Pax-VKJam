@@ -128,6 +128,8 @@ public class Paint : NetworkBehaviour
         baseColor.a = 1f;
         drawColor.a = 1f;
 
+        material.color = Color.white;
+
         InitControlUI();
     }
 
