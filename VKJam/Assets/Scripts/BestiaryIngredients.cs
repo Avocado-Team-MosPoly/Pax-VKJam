@@ -40,7 +40,7 @@ public class BestiaryIngredients : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Instance.OnIngredientSwitchedOnClient.AddListener(() => isSpawnedSelectedIngredient = false);
+        GameManager.Instance.OnIngredientSwitchedOnClient.AddListener((int ingredientIndex) => isSpawnedSelectedIngredient = false);
         GameManager.Instance.OnRoundStartedOnClient.AddListener(() =>
         {
             foreach (GameObject spawnedIngredient in spawnedIngredientObjects)
@@ -140,7 +140,7 @@ public class BestiaryIngredients : MonoBehaviour
         if (spawnedIngredientObjects.Count >= spawnPositions.Length)
             return;
 
-        Transform spawnPosition = spawnPositions[GameManager.Instance.IngredientManager.CurrentIngredientIndex];
+        Transform spawnPosition = spawnPositions[spawnedIngredientObjects.Count];
         GameObject spawnedIngredientObject = Instantiate(IngredientList[ingredientIndex].Model, spawnPosition.position, Quaternion.identity, spawnPosition);
 
         if (spawnedIngredientObject == null)

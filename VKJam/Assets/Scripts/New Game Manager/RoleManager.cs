@@ -11,6 +11,7 @@ public class RoleManager : NetworkBehaviour
     [HideInInspector] public UnityEvent OnPainterSetted;
     [HideInInspector] public UnityEvent OnGuesserSetted;
     public byte PainterId => painterId.Value;
+    public bool IsPainter => PainterId == NetworkManager.Singleton.LocalClientId;
 
     public override void OnNetworkSpawn()
     {
@@ -19,6 +20,7 @@ public class RoleManager : NetworkBehaviour
         if (IsServer)
         {
             painterId.Value = (byte)NetworkManager.ConnectedClientsIds[0];
+
         }
         else
         {

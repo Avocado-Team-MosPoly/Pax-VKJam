@@ -43,7 +43,7 @@ public class LobbyManager : MonoBehaviour
             return;
         }
         NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => RemovePlayer(clientId);
-        NetworkManager.Singleton.OnClientStopped += (bool someBool) => LeaveLobbyAsync();
+        NetworkManager.Singleton.OnClientStopped += async (bool someBool) => await LeaveLobbyAsync();
         NetworkManager.Singleton.OnServerStopped += (bool isHostLeave) => OnServerEnded();
         //NetworkManager.Singleton.OnServerStarted += StopHeartBeatPing;
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
@@ -55,7 +55,6 @@ public class LobbyManager : MonoBehaviour
 
         Authentication.Authenticate();
     }
-
 
     private void Update()
     {

@@ -14,8 +14,6 @@ public class Chat : NetworkBehaviour
     [HideInInspector] public UnityEvent OnMessageSended = new();
     [HideInInspector] public UnityEvent OnMessageReceived = new();
 
-    [SerializeField] private RoleManager roleManager;
-
     [SerializeField] private TMP_InputField messageInputField;
     [SerializeField] private Button sendMessageButton;
 
@@ -69,26 +67,6 @@ public class Chat : NetworkBehaviour
         sendMessageButton.onClick.AddListener(SendMessage_);
 
         messageInputField.characterLimit = new Message().text.Capacity;
-
-        if (roleManager != null)
-        {
-            roleManager.OnPainterSetted.AddListener(OnRoleSetted);
-            roleManager.OnGuesserSetted.AddListener(OnRoleSetted);
-        }
-    }
-
-    private void OnRoleSetted()
-    {
-        if (GameManager.Instance.IsPainter)
-        {
-            messageInputField.interactable = false;
-            sendMessageButton.interactable = false;
-        }
-        else
-        {
-            messageInputField.interactable = true;
-            sendMessageButton.interactable = true;
-        }
     }
 
     public void SendMessage_()
@@ -126,5 +104,17 @@ public class Chat : NetworkBehaviour
             history.Add(message);
             OnMessageReceived?.Invoke();
         }
+    }
+
+    public void Disable()
+    {
+        messageInputField.interactable = false;
+        sendMessageButton.interactable = false;
+    }
+
+    public void Enable()
+    {
+        messageInputField.interactable = true;
+        sendMessageButton.interactable = true;
     }
 }

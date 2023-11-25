@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Netcode;
+using System;
 
 public class SceneObjectsManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class SceneObjectsManager : MonoBehaviour
     [SerializeField] private Bestiary bestiary;
     [SerializeField] private MoveCamera moveCamera;
     [SerializeField] private ChatView chatView;
+    private Chat chat;
 
     [SerializeField] private GameObject guessMonsterStageUI;
     [SerializeField] private GameObject mainCards;
@@ -23,6 +25,8 @@ public class SceneObjectsManager : MonoBehaviour
 
     private void Awake()
     {
+        chat = chatView.GetComponent<Chat>();
+
         GameManager.Instance.OnGuessMonsterStageActivatedOnClient.AddListener(OnGuessMonsterStageActivated);
         GameManager.Instance.OnGameEnded.AddListener(OnGameEnded);
 
@@ -62,7 +66,8 @@ public class SceneObjectsManager : MonoBehaviour
             obj.SetActive(false);
 
         mainCards.SetActive(true);
-        
+
+        chat.Disable();
         GameManager.Instance.Paint.ClearCanvas();
         GameManager.Instance.Paint.SetActive(true);
     }
@@ -80,6 +85,7 @@ public class SceneObjectsManager : MonoBehaviour
         foreach (GameObject obj in guesserGameObjects)
             obj.SetActive(true);
 
+        chat.Enable();
         painterBook.SetInteractable(true);
         guesserPaint.gameObject.SetActive(true);
         
