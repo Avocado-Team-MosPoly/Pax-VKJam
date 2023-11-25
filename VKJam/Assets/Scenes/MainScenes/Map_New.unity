@@ -13981,7 +13981,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.011000001, y: 0}
   m_AnchorMax: {x: 0.48123428, y: 1}
-  m_AnchoredPosition: {x: 6.0895996, y: -3.3151245}
+  m_AnchoredPosition: {x: 6.0910645, y: -3.3151245}
   m_SizeDelta: {x: 447.19995, y: 552.30005}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1113183132
@@ -14744,6 +14744,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   setActiveFalseOnBack:
   - {fileID: 1245305768}
+  - {fileID: 682572298}
   setActiveTrueOnBack: []
   book: {fileID: 7444453829734977428}
   mainCamera: {fileID: 385979678}
@@ -14751,7 +14752,7 @@ MonoBehaviour:
   animationName: CameraAnimBack
   setActiveFalseOnBackWithoutChosenCard:
   - {fileID: 1245305768}
-  - {fileID: 0}
+  - {fileID: 2060414252}
   setActiveTrueOnBackWithoutChosenCard: []
 --- !u!1 &1228180453
 GameObject:
@@ -18116,10 +18117,6 @@ PrefabInstance:
     - target: {fileID: 4669432597919502116, guid: 0a2bb1c970b27ed4881bb2414e2d5a3c, type: 3}
       propertyPath: m_Name
       value: Chat
-      objectReference: {fileID: 0}
-    - target: {fileID: 6614164240848740429, guid: 0a2bb1c970b27ed4881bb2414e2d5a3c, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7908184819771703838, guid: 0a2bb1c970b27ed4881bb2414e2d5a3c, type: 3}
       propertyPath: GlobalObjectIdHash
