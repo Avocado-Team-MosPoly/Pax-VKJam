@@ -289,6 +289,27 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
+    public async void QuickJoinLobby()
+    {
+        try
+        {
+            QuickJoinLobbyOptions quickJoinLobbyOptions = new()
+            {
+                Player = GetPlayer()
+            };
+
+            CurrentLobby = await LobbyService.Instance.QuickJoinLobbyAsync(quickJoinLobbyOptions);
+
+            Logger.Instance.Log("You joined lobby " + CurrentLobby.Name);
+
+            RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value);
+        }
+        catch (LobbyServiceException ex)
+        {
+            Logger.Instance.LogError(ex);
+        }
+    }
+
     public async Task LeaveLobbyAsync()
     {
         try
