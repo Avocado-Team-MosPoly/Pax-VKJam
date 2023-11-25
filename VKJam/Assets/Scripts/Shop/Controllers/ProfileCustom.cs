@@ -25,6 +25,7 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
     private void _productChoosen(Product Target)
     {
         Custom[(int)Target.Data.Data.Type].SwitchItem(Target.Data);
+        CustomController._executor.Save(Target.Data);
     }
 
     public void Drop()
