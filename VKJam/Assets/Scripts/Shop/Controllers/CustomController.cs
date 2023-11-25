@@ -20,7 +20,7 @@ public class CustomController : TaskExecutor<CustomController>
     }
     private WareData Search(int id, ItemType Type)
     {
-        foreach(var current in Categories[(int)Type].products)
+        foreach(var current in Categories[(int)Categorize(Type)].products)
         {
             if (current.Data.productCode == id) return current;
         }
@@ -44,8 +44,8 @@ public class CustomController : TaskExecutor<CustomController>
     {
         foreach (ItemType cur in System.Enum.GetValues(typeof(ItemType)))
         {
-            if (Categories[(int)cur].products.Count == 0) continue;
-            foreach (var current in Categories[(int)cur].products)
+            if (Categories[(int)Categorize(cur)].products.Count == 0) continue;
+            foreach (var current in Categories[(int)Categorize(cur)].products)
             {
                 if (current.Data.productCode == 0) Standart[(int)cur] = current;
             }
