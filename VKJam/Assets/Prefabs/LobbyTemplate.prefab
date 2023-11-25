@@ -74,8 +74,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -192,14 +192,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6509434, g: 0.6040673, b: 0.3172837, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 0df6bbdc1e9bc18489606f963e5ec6b6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -245,8 +245,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.78157973, y: 0}
   m_AnchorMax: {x: 0.9913189, y: 1}
-  m_AnchoredPosition: {x: -1.5, y: 0}
-  m_SizeDelta: {x: 7, y: 9}
+  m_AnchoredPosition: {x: -61.6442, y: -7.0507}
+  m_SizeDelta: {x: -39.7117, y: -11.8987}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8204850875158565390
 CanvasRenderer:
@@ -276,7 +276,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fbf220c0d5cc4b54dbf574190b3363ff, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7ea7c48187be2c94295f261f8df42e46, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -364,7 +364,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.61957973, y: 0.032}
   m_AnchorMax: {x: 0.7798406, y: 0.9554103}
-  m_AnchoredPosition: {x: 0.28320312, y: 1}
+  m_AnchoredPosition: {x: -113, y: 1}
   m_SizeDelta: {x: -16.388977, y: -14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &166028150272428000
@@ -557,7 +557,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8447306871814251921
 RectTransform:
   m_ObjectHideFlags: 0
@@ -610,7 +610,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: e20bb881d424fa84f9ae81dec7127387, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -635,6 +635,9 @@ MonoBehaviour:
   lobbyName: {fileID: 586640597880649529}
   playersCount: {fileID: 7043174693220144500}
   connectButton: {fileID: 4126056402351535659}
+  RegimeMode: {fileID: 1568147024078764397}
+  competitive: {fileID: 21300000, guid: 0df6bbdc1e9bc18489606f963e5ec6b6, type: 3}
+  comand: {fileID: 21300000, guid: 5493618b47133e14ebeeb5f6b31c45b0, type: 3}
 --- !u!1 &9085410218495607082
 GameObject:
   m_ObjectHideFlags: 0
