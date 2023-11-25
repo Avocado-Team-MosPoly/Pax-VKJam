@@ -75,16 +75,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9344a6c3b50ddfe4b958fcbe73b5bdc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lastShownIngridient: 0
-  firstShownIngredient: 0
-  ingredientListContainer1: {fileID: 0}
-  ingredientListContainer2: {fileID: 0}
-  ingredientInfoTemplate: {fileID: 0}
-  ingridientName: []
-  ingridientList: []
+  IngredientList: []
+  IngredientName: []
+  compareSystem: {fileID: 0}
   packCardSO: {fileID: 0}
+  ingredientInfoTemplate: {fileID: 0}
+  leftIngredientsPage: {fileID: 0}
+  rightIngredientsPage: {fileID: 0}
   NextButton: {fileID: 0}
   BeforeButton: {fileID: 0}
+  textHoverEffect: {fileID: 0}
+  spawnPositions: []
 --- !u!1 &536465967255673149
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,8 +220,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15a9214feadcd6446b0212bdd4dd4da1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ingridientName: {fileID: 2557891514432472027}
-  compareSystem: {fileID: 0}
+  IngridientName: {fileID: 0}
+  OnGuess:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2491023526747366648
 GameObject:
   m_ObjectHideFlags: 0
@@ -603,13 +606,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9344a6c3b50ddfe4b958fcbe73b5bdc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lastShownIngridient: 0
-  firstShownIngredient: 0
-  ingredientListContainer1: {fileID: 0}
-  ingredientListContainer2: {fileID: 0}
-  ingredientInfoTemplate: {fileID: 536465967255673149}
-  ingridientName: []
-  ingridientList: []
+  IngredientList: []
+  IngredientName: []
+  compareSystem: {fileID: 0}
   packCardSO: {fileID: 0}
+  ingredientInfoTemplate: {fileID: 6946840949853538353}
+  leftIngredientsPage: {fileID: 0}
+  rightIngredientsPage: {fileID: 0}
   NextButton: {fileID: 0}
   BeforeButton: {fileID: 0}
+  textHoverEffect: {fileID: 0}
+  spawnPositions: []

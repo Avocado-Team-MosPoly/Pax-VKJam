@@ -13,7 +13,7 @@ public class ChooseCardButton : MonoBehaviour
     {
         CardManager.enabled = true;
         Button.SetActive(false);
-        ButtonUI.SetActive(true);
+        //ButtonUI.SetActive(true);
         Text.SetActive(true);
     }
 
