@@ -6,11 +6,55 @@ public class CustomController : TaskExecutor<CustomController>
     [SerializeField] private int FreeIndex;
     public storeSection[] Categories = new storeSection[System.Enum.GetNames(typeof(ShopFilters)).Length];
     public WareData[] Custom = new WareData[System.Enum.GetNames(typeof(ItemType)).Length];
+    public WareData[] Standart = new WareData[System.Enum.GetNames(typeof(ItemType)).Length];
 
     private void Start()
     {
         //if (Php_Connect.PHPisOnline) FetchAllProductData();
 
+    }
+    private void Awake()
+    {
+        Load();
+    }
+    private void Load()
+    {
+        foreach(ItemType cur in System.Enum.GetValues(typeof(ItemType)))
+            Custom[(int)cur] = Search(PlayerPrefs.GetInt("Custom_" + cur),cur);
+    }
+    private WareData Search(int id, ItemType Type)
+    {
+        foreach(var current in Categories[(int)Type].products)
+        {
+            if (current.Data.productCode == id) return current;
+        }
+        return Standart[(int)Type];
+    }
+    public void Save(WareData New)
+    {
+        Custom[(int)New.Data.Type] = New;
+        PlayerPrefs.SetInt("Custom_" + New.Data.Type, New.Data.productCode);
+        PlayerPrefs.Save();
+    }
+    private void SaveAll()
+    {
+        foreach(var current in Custom)
+        {
+            PlayerPrefs.SetInt("Custom_" + current.Data.Type, current.Data.productCode);
+        }
+    }
+    [ContextMenu("Fill Data in Standart")]
+    private void StandartFill()
+    {
+        foreach (ItemType cur in System.Enum.GetValues(typeof(ItemType)))
+        {
+            if (Categories[(int)cur].products.Count == 0) continue;
+            foreach (var current in Categories[(int)cur].products)
+            {
+                if (current.Data.productCode == 0) Standart[(int)cur] = current;
+            }
+        }
+        
     }
     [ContextMenu("Renumarate all WareData")]
     private void Renumerator()
