@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 public class CardCatalogueScript : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class CardCatalogueScript : MonoBehaviour
 
     //[SerializeField] private GameObject templateCanvas;
     [SerializeField] private PackCardSO packCardSO;
+
+    private Color _transparentColor = new(1,1,1,0);
+    private Color _normalColor = new(1, 1, 1, 1);
 
     private int _currentPage;
     private const int _cardInPage = 8;
@@ -36,6 +40,7 @@ public class CardCatalogueScript : MonoBehaviour
         {
             if (packCardSO.CardInPack[i].CardIsInOwn == true)
             {
+                print(packCardSO.CardInPack[i].Card.Id);
                 Monsters.Add(packCardSO.CardInPack[i].Card);
             }
         }
@@ -86,14 +91,19 @@ public class CardCatalogueScript : MonoBehaviour
         {
             int index = startIndex + i;
 
+            print(index);
+
             if (index < Monsters.Count)
             {
-                imageHolder[i].sprite = Monsters[index].MonsterInBestiarySprite;
+                imageHolder[i].GetComponentInChildren<Button>().gameObject.SetActive(true);
+                imageHolder[i].color = _normalColor;
+                imageHolder[i].sprite = Sprite.Create(Monsters[index].CardTexture, new Rect(0.0f, 0.0f, Monsters[index].CardTexture.width, Monsters[index].CardTexture.height), new Vector2(0.5f, 0.5f), 100.0f);
                 nameHolder[i].text = Monsters[index].Id;
             }
             else
             {
-                imageHolder[i].sprite = null;
+                imageHolder[i].GetComponentInChildren<Button>().gameObject.SetActive(false);
+                imageHolder[i].color = _transparentColor;
                 nameHolder[i].text = "";
             }
         }

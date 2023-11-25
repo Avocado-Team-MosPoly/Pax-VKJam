@@ -15,32 +15,33 @@ public class PackCardSO : ScriptableObject
         public CardSO Card;
     }
     public CardSystem[] CardInPack;
-   /*private void OnValidate()
-    {
-        string temp = "";
-        for (int j = 0; j < CardInPack.Length; ++j)
-        {
-            CardInPack[j].CardDBIndex = j;
-            temp += CardInPack[j].Card.id + "\n";
-        }
-        CardInPack = CardInPack.OrderBy(cardSystem => cardSystem.Card.id).ToArray();
-        Debug.Log(temp);
-    }*/
+
+    /*private void OnValidate()
+     {
+         string temp = "";
+         for (int j = 0; j < CardInPack.Length; ++j)
+         {
+             CardInPack[j].CardDBIndex = j;
+             temp += CardInPack[j].Card.id + "\n";
+         }
+         CardInPack = CardInPack.OrderBy(cardSystem => cardSystem.Card.id).ToArray();
+         Debug.Log(temp);
+     }*\
 
 
-    /*public PackCardSO PackDataOwnering()
-    {
-        
-        string res = Php_Connect.Request_WhichCardInPackOwnering(PackDBIndex);
-        string[] result = res.Split();
-        Debug.Log(res);
-        foreach (var current in result)
-        {
-            if (current == "") break;
-            CardInPack[int.Parse(current)].CardIsInOwn = true;
-        }
-        return this;
-    }*/
+     /*public PackCardSO PackDataOwnering()
+     {
+
+         string res = Php_Connect.Request_WhichCardInPackOwnering(PackDBIndex);
+         string[] result = res.Split();
+         Debug.Log(res);
+         foreach (var current in result)
+         {
+             if (current == "") break;
+             CardInPack[int.Parse(current)].CardIsInOwn = true;
+         }
+         return this;
+     }*/
 
     /*public void ResetOwning()
     {
