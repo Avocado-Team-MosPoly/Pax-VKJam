@@ -11,7 +11,7 @@ public class GameManager : NetworkBehaviour
     /// <summary> Sends true if local player is painter, false if not </summary>
     [HideInInspector] public UnityEvent<bool> OnGuessMonsterStageActivatedOnClient;
     [HideInInspector] public UnityEvent OnGameEnded;
-    [HideInInspector] public UnityEvent OnIngredientSwitchedOnClient;
+    [HideInInspector] public UnityEvent<int> OnIngredientSwitchedOnClient;
     [HideInInspector] public UnityEvent OnRoundStartedOnClient;
 
     #region Properties
@@ -29,8 +29,8 @@ public class GameManager : NetworkBehaviour
     public RoleManager RoleManager => roleManager;
     public CardManager CardManager => cardManager;
     public GameObject SceneMonster => sceneMonster;
-    public bool IsPainter => roleManager.PainterId == NetworkManager.Singleton.LocalClientId;
     public byte PainterId => roleManager.PainterId;
+    public bool IsPainter => roleManager.IsPainter;
 
     #endregion
 
@@ -300,7 +300,7 @@ public class GameManager : NetworkBehaviour
         SetHintData(ingredientIndex);
         playersStatusManager.ResetStatuses();
 
-        OnIngredientSwitchedOnClient?.Invoke();
+        OnIngredientSwitchedOnClient?.Invoke(ingredientIndex);
     }
 
     private void OnIngredientSwitched(sbyte ingredientIndex)
