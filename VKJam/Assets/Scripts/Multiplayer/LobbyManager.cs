@@ -6,7 +6,6 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Authentication;
 using Unity.Netcode;
 using System.Threading.Tasks;
-using UnityEditor.PackageManager;
 
 public class LobbyManager : MonoBehaviour
 {

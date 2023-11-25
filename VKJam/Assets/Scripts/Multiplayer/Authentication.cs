@@ -2,7 +2,6 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.VisualScripting;
 using UnityEngine;
-using WebSocketSharp;
 
 public class Authentication : MonoBehaviour
 {
@@ -25,7 +24,7 @@ public class Authentication : MonoBehaviour
             {
                 PlayerName = "Player" + number;
             }
-            if (UserId.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(UserId))
             {
                 UserId = number;
             }

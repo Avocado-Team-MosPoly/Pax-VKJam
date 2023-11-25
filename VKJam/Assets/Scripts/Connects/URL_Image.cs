@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine;
 using UnityEngine.UI;
-using WebSocketSharp;
 
 [RequireComponent(typeof(RawImage))]
 public class URL_Image : MonoBehaviour
@@ -24,7 +23,7 @@ public class URL_Image : MonoBehaviour
     }
     private IEnumerator DownloadImage()
     {
-        if (url.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(url))
             yield break;
 
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
