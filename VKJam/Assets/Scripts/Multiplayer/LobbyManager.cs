@@ -188,7 +188,7 @@ public class LobbyManager : MonoBehaviour
 
             CreateLobbyOptions createLobbyOptions = new()
             {
-                IsPrivate = false,
+                IsPrivate = LobbyDataInput.Instance.IsPrivate,
                 Player = GetPlayer(),
                 Data = GetLobbyData()
             };
@@ -217,6 +217,7 @@ public class LobbyManager : MonoBehaviour
             Logger.Instance.Log(ex);
         }
     }
+
 
     public async void JoinLobby(string joinCode)
     {
