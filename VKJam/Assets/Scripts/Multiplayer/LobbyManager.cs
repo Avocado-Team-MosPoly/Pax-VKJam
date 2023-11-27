@@ -368,7 +368,7 @@ public class LobbyManager : MonoBehaviour
     {
         if (!IsServer)
         {
-            Debug.LogWarning($"[{nameof(LobbyManager)}] Remove a player can only the server");
+            Debug.LogWarning($"[{nameof(LobbyManager)}] Remove a player can only server");
             return;
         }
 

@@ -1062,76 +1062,6 @@ MonoBehaviour:
   PointerClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!1001 &98569941
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3890772637464068977, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3890772637464068977, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3890772637464068977, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3890772637464068977, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3890772637464068977, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3890772637464068977, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3890772637464068977, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3890772637464068977, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3890772637464068977, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3890772637464068977, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3890772637464068978, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: NameText
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3890772637464068978, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: urlImage
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3890772637464068979, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: m_Name
-      value: Connects
-      objectReference: {fileID: 0}
-    - target: {fileID: 3890772637464068979, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: m_TagString
-      value: ServerConnects
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 2904165110552100332, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 842559543b53de14f8b19d0048850e29, type: 3}
 --- !u!1 &99077713
 GameObject:
   m_ObjectHideFlags: 0
@@ -3788,8 +3718,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 2def55e11b821444a92172d7328e4f11, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_PlayOnAwake: 0
+  m_Volume: 0.4
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -3900,6 +3830,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a864970a05aaed469db98a1df6d41b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultAudioClip: {fileID: 8300000, guid: 2def55e11b821444a92172d7328e4f11, type: 3}
+  defaultAudioVolume: 0.4
+  specificScenesAudioClips:
+  - SceneName: Shop
+    AudioClip: {fileID: 8300000, guid: 8a5dc67b468cee54b8c24b3f08a4e611, type: 3}
+    Volume: 0.5
 --- !u!1 &395314510
 GameObject:
   m_ObjectHideFlags: 0
@@ -5978,7 +5914,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1128106833}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
         m_MethodName: Load
         m_Mode: 5
@@ -10645,17 +10581,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1128106833 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2913828899995353881, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-  m_PrefabInstance: {fileID: 98569941}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd3816fe3a003d4459662cb4ba3f04c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1129956286
 GameObject:
   m_ObjectHideFlags: 0
@@ -15113,7 +15038,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1128106833}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
         m_MethodName: Load
         m_Mode: 5
@@ -17751,7 +17676,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1128106833}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
         m_MethodName: Load
         m_Mode: 5
@@ -20223,6 +20148,5 @@ SceneRoots:
   - {fileID: 1850975790}
   - {fileID: 904893823}
   - {fileID: 6516733142195178121}
-  - {fileID: 98569941}
   - {fileID: 389168408}
   - {fileID: 1511514754}

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -36307,6 +36307,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a864970a05aaed469db98a1df6d41b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultAudioClip: {fileID: 8300000, guid: 2def55e11b821444a92172d7328e4f11, type: 3}
+  defaultAudioVolume: 0.4
+  specificScenesAudioClips:
+  - SceneName: Shop
+    AudioClip: {fileID: 8300000, guid: 8a5dc67b468cee54b8c24b3f08a4e611, type: 3}
+    Volume: 0.4
 --- !u!82 &1804140561
 AudioSource:
   m_ObjectHideFlags: 0
@@ -36972,7 +36978,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd3816fe3a003d4459662cb4ba3f04c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Executor: {fileID: 0}
 --- !u!4 &1836004667
 Transform:
   m_ObjectHideFlags: 0
