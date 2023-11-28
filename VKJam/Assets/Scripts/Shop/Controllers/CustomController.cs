@@ -15,8 +15,8 @@ public class CustomController : TaskExecutor<CustomController>
     }
     private void Load()
     {
-        foreach(ItemType cur in System.Enum.GetValues(typeof(ItemType)))
-            Custom[(int)cur] = Search(PlayerPrefs.GetInt("Custom_" + cur),cur);
+        foreach (ItemType cur in System.Enum.GetValues(typeof(ItemType)))
+            Custom[(int)cur] = Search(PlayerPrefs.GetInt("Custom_" + cur), cur);
     }
     private WareData Search(int id, ItemType Type)
     {
