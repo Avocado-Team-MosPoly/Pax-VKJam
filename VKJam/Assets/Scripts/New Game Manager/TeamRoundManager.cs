@@ -44,7 +44,7 @@ public class TeamRoundManager : RoundManager
     public override void OnTimeExpired()
     {
         IReadOnlyList<ulong> correctGuesserAllIds = ingredientManager.CorrectGuesserAllIds;
-
+        Logger.Instance.Log(playersCount);
         int tokensToAdd = GameManager.Instance.IsDangerousCard ?
             correctGuesserAllIds.Count * config.BonusIfAllIngredientsGuessed_TM_DM.GetValue(playersCount) :
             correctGuesserAllIds.Count * config.BonusIfAllIngredientsGuessed_TM_MM.GetValue(playersCount);

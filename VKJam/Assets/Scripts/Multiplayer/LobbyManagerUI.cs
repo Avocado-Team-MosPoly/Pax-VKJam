@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -34,16 +35,17 @@ public class LobbyManagerUI : NetworkBehaviour
             NetworkManager.Singleton.OnClientDisconnectCallback += PLayerLeave;
             NetworkManager.Singleton.OnClientConnectedCallback += PlayerConnect;
 
-            NetworkManager.Singleton.OnServerStopped += OnServerStopped_OnHost;
-
             PlayerConnect(0);
         }
     }
 
-    private void OnServerStopped_OnHost(bool obj)
+    public override void OnDestroy()
     {
-        NetworkManager.Singleton.OnClientDisconnectCallback -= PLayerLeave;
-        NetworkManager.Singleton.OnClientConnectedCallback -= PlayerConnect;
+        if (IsServer)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback -= PLayerLeave;
+            NetworkManager.Singleton.OnClientConnectedCallback -= PlayerConnect;
+        }
     }
 
     private void PlayersId_OnListChanged(NetworkListEvent<byte> changeEvent)
@@ -68,21 +70,36 @@ public class LobbyManagerUI : NetworkBehaviour
 
     private void PLayerLeave(ulong clientId)
     {
-        playersId.RemoveAt(GetClientIdIndex(clientId));
-        allPlayerReady.RemoveAt(GetClientIdIndex(clientId));
+        int clientIdIndex = GetClientIdIndex(clientId);
+
+        if (clientIdIndex < 0)
+        {
+            Logger.Instance.LogWarning($"[{nameof(LobbyManagerUI)}] Client id index below 0");
+            return;
+        }
+
+        playersId.RemoveAt(clientIdIndex);
+        allPlayerReady.RemoveAt(clientIdIndex);
     }
 
     private int GetClientIdIndex(ulong id)
     {
-        int i = 0;
-        for (; i < playersId.Count; i++)
+        try
         {
-            if (playersId[i] == id)
-            {               
-                break;
-            }
+            int i = 0;
+
+            for (; i < playersId.Count; i++)
+                if (playersId[i] == id)
+                    break;
+
+            return i;
         }
-        return i;
+        catch (ObjectDisposedException ex)
+        {
+            Logger.Instance.LogError(ex);
+        }
+
+        return -1;
     }
 
     public void ChangeReady()

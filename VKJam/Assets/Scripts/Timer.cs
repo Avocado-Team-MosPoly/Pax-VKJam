@@ -50,7 +50,7 @@ public class Timer : NetworkBehaviour
 
             if (NetworkTime.Value <= 0)
             {
-                StopServerRpc();
+                StopTimer();
 
                 OnExpired?.Invoke();
 
@@ -86,28 +86,25 @@ public class Timer : NetworkBehaviour
         return timeString;
     }
 
-    [ServerRpc]
-    public void StartServerRpc()
+    public void StartTimer()
     {
-        Debug.Log("Start Server RPC");
-
-        ResetToDefault();
-
         if (serverClockCoroutine == null)
+        {
+            ResetToDefault();
             serverClockCoroutine = StartCoroutine(Clock());
 
-        //SetPause(false);
+            Logger.Instance.Log($"[{nameof(Timer)}] Start");
+        }
     }
 
-    [ServerRpc]
-    public void StopServerRpc()
+    public void StopTimer()
     {
-        Debug.Log("Stop Server RPC");
-
         if (serverClockCoroutine != null)
         {
             StopCoroutine(serverClockCoroutine);
             serverClockCoroutine = null;
+
+            Logger.Instance.Log($"[{nameof(Timer)}] Stop");
         }
     }
     public void OnIngredientGuess()
@@ -122,7 +119,6 @@ public class Timer : NetworkBehaviour
 
     public void SetPause(bool state)
     {
-        Debug.Log("Set Pause: " + state);
         isTimePaused = state;
     }
 }

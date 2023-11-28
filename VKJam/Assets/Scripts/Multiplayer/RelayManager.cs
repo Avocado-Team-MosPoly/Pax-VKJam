@@ -12,6 +12,9 @@ using System;
 
 public class RelayManager : MonoBehaviour
 {
+    [HideInInspector] public UnityEvent<ulong> OnClientConnected;
+    [HideInInspector] public UnityEvent<ulong> OnClientDisconnect;
+
     [SerializeField] private string lobbySceneName;
 
     [Header("Prefabs")]
@@ -61,6 +64,15 @@ public class RelayManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(Instance.gameObject);
+
+            NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
+            {
+                OnClientConnected?.Invoke(clientId);
+            };
+            NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
+            {
+                OnClientDisconnect?.Invoke(clientId);
+            };
         }
         else
         {

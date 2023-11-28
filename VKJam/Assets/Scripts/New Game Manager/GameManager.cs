@@ -2,6 +2,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class GameManager : NetworkBehaviour
@@ -53,8 +54,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private Paint paint;
     
     [Header("Buttons")]
-    [SerializeField] private GameObject nextRoundButton;
-    [SerializeField] private GameObject returnToLobbyButton;
+    [SerializeField] private Button nextRoundButton;
+    [SerializeField] private Button returnToLobbyButton;
 
     [Header("Scene Monster")]
     [SerializeField] private GameObject sceneMonster;
@@ -83,15 +84,14 @@ public class GameManager : NetworkBehaviour
     {
         cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
 
-        Button nrbb = nextRoundButton.GetComponent<Button>();
-        nrbb.onClick.AddListener(() =>
+        nextRoundButton.onClick.AddListener(() =>
         {
             if (IsServer)
                 OnRoundStartedClientRpc();
             else
                 OnRoundStartedServerRpc();
         });
-        nrbb.onClick.AddListener(roleManager.ChangeRoles);
+        nextRoundButton.onClick.AddListener(roleManager.ChangeRoles);
     }
 
     public override void OnNetworkSpawn()
@@ -131,7 +131,6 @@ public class GameManager : NetworkBehaviour
 
                 ingredientManager = new CompetitiveIngredientManager(gameConfig, compareSystem);
                 roundManager = new CompetitiveRoundManager(gameConfig, compareSystem, ingredientManager);
-
             }
 
             ingredientManager.OnIngredientsEnded.AddListener(ActivateGuessMonsterStage);
@@ -140,13 +139,29 @@ public class GameManager : NetworkBehaviour
 
             roundAmount = NetworkManager.Singleton.ConnectedClientsIds.Count;
 
-            nextRoundButton.SetActive(true);
-            returnToLobbyButton.SetActive(true);
+            RelayManager.Instance.OnClientConnected.AddListener((ulong clientId) =>
+            {
+                roundAmount++;
+            });
+            RelayManager.Instance.OnClientDisconnect.AddListener((ulong clientId) =>
+            {
+                roundAmount--;
+
+                if (PainterId == clientId)
+                    nextRoundButton.onClick?.Invoke();
+
+                Logger.Instance.LogWarning(NetworkManager.ConnectedClientsIds.Count);
+                if (NetworkManager.ConnectedClientsIds.Count <= 2)
+                    OnRoundEnded();
+            });
+
+            nextRoundButton.gameObject.SetActive(true);
+            returnToLobbyButton.gameObject.SetActive(true);
         }
         else
         {
-            nextRoundButton.SetActive(false);
-            returnToLobbyButton.SetActive(false);
+            nextRoundButton.gameObject.SetActive(false);
+            returnToLobbyButton.gameObject.SetActive(false);
         }
     }
 
@@ -197,6 +212,7 @@ public class GameManager : NetworkBehaviour
 
     private void OnRoundEnded()
     {
+        timer.StopTimer();
         currentRound++;
 
         if (currentRound > roundAmount)
@@ -240,7 +256,7 @@ public class GameManager : NetworkBehaviour
         ActivateGuessMonsterStageClientRpc();
 
         timer.OnMonsterGuess();
-        timer.StartServerRpc();
+        timer.StartTimer();
 
         Debug.Log("Monster Stage " + Stage);
     }
@@ -268,7 +284,7 @@ public class GameManager : NetworkBehaviour
 
         SetHintDataClientRpc((sbyte)ingredientManager.CurrentIngredientIndex);
         timer.OnIngredientGuess();
-        timer.StartServerRpc();
+        timer.StartTimer();
 
         Stage = Stage.IngredientGuess;
 
@@ -316,7 +332,7 @@ public class GameManager : NetworkBehaviour
     private void OnIngredientSwitched(sbyte ingredientIndex)
     {
         timer.OnIngredientGuess();
-        timer.StartServerRpc();
+        timer.StartTimer();
         paint.ClearCanvas();
 
         OnIngredientSwitchedClientRpc(ingredientIndex);

@@ -19,6 +19,10 @@ public class SceneLoader : MonoBehaviour
 
     public static void Load(string sceneName)
     {
+#if UNITY_EDITOR
+        if (!UnityEditor.EditorApplication.isPlaying)
+            return;
+#endif
         SceneManager.LoadScene(sceneName);
     }
 
