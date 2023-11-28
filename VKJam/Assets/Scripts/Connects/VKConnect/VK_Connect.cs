@@ -11,13 +11,15 @@ public class VK_Connect : MonoBehaviour
     [SerializeField] private Php_Connect PHPConnect;
 
 
-    [DllImport("__Internal")]
-    private static extern void UnityPluginRequestJs();
+    [DllImport("__Internal")] private static extern void UnityPluginRequestJs();
     [DllImport("__Internal")] private static extern void UnityPluginRequestUserData();
-
+    [DllImport("__Internal")] private static extern void UnityPluginRequestAds();
+    [DllImport("__Internal")] private static extern void UnityPluginRequestRepost();
+    [DllImport("__Internal")] private static extern void UnityPluginRequestInvateNewPlayer();
+    [DllImport("__Internal")] private static extern void UnityPluginRequestInvateOldPlayer();
     private static VK_Connect instance;
 
-    private void Awake()
+    private void Start()
     {
         if (instance == null)
         {
@@ -30,12 +32,13 @@ public class VK_Connect : MonoBehaviour
             return;
         }
 
-        Init();
+        StartCoroutine(Init());
         PHPConnect.Init();
     }
 
-    private void Init()
+    private System.Collections.IEnumerator Init()
     {
+        yield return new WaitForSeconds(1);
         GameObject temp;
         if (DebugingText == null)
         {
@@ -53,20 +56,33 @@ public class VK_Connect : MonoBehaviour
         RequestUserData();
     }
 
-    public void ButClick()
-    {
-        RequestJs();
-    }
     public void RequestJs() // вызываем из событий unity
     {
         UnityPluginRequestJs();
     }
+    public void RequestAds() // вызываем из событий unity
+    {
+        UnityPluginRequestAds();
+    }
+    public void RequestRepost() // вызываем из событий unity
+    {
+        UnityPluginRequestRepost();
+    }
+    public void RequestInvateNewPlayer() // вызываем из событий unity
+    {
+        UnityPluginRequestInvateNewPlayer();
+    }
+    public void RequestInvateOldPlayer() // вызываем из событий unity
+    {
+        UnityPluginRequestInvateOldPlayer();
+    }
+    public void ResponseSuccessAds() // вызываем из событий unity
+    {
+        Php_Connect.Request_TokenWin(50);
+    }
     public void RequestUserData() // вызываем из событий unity
     {
-#if UNITY_EDITOR
-#else
         UnityPluginRequestUserData();
-#endif
     }
 
     public void ResponseOk(string message)
@@ -86,7 +102,7 @@ public class VK_Connect : MonoBehaviour
         UserData.UserName = text[2];
         if (NameText != null) NameText.text = UserData.UserName;
         if (urlImage != null) urlImage.ChangeImage(UserData.UserIMG_URL);
-        if(Php_Connect.PHPisOnline) StartCoroutine(Php_Connect.Request_Auth(User_ID));
+        if(Php_Connect.PHPisOnline) Php_Connect.Request_Auth(User_ID);
 
         //Authentication.LogInVK(User_ID.ToString(), UserData.UserName);
     }

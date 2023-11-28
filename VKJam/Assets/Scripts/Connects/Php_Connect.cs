@@ -103,7 +103,7 @@ public class Php_Connect : MonoBehaviour
         Current.IGCurrency += TokenManager.TokensCount;
         if (PHPisOnline) Request_TokenWin(TokenManager.TokensCount);
     }
-    private static string Request_TokenWin(int Count)
+    public static string Request_TokenWin(int Count)
     {
         if (!PHPisOnline) return "";
         WWWForm form = new WWWForm();
