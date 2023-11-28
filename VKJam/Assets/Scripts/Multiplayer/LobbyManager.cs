@@ -6,6 +6,8 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Authentication;
 using Unity.Netcode;
 using System.Threading.Tasks;
+using System;
+using static UnityEditor.Progress;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -28,6 +30,7 @@ public class LobbyManager : MonoBehaviour
     public string LobbyName => CurrentLobby != null ? CurrentLobby.Name : "Íå èçâåñòíî";
     public string LobbyPlayerId { get; private set; }
     public static LobbyManager Instance { get; private set; }
+    public string WhichMode = "true";
 
     private void Awake()
     {
@@ -44,6 +47,7 @@ public class LobbyManager : MonoBehaviour
         NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => RemovePlayer(clientId);
         NetworkManager.Singleton.OnClientStopped += async (bool someBool) => await LeaveLobbyAsync();
         NetworkManager.Singleton.OnServerStopped += (bool isHostLeave) => OnServerEnded();
+        WhichMode = "true";
         //NetworkManager.Singleton.OnServerStarted += StopHeartBeatPing;
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
@@ -131,11 +135,11 @@ public class LobbyManager : MonoBehaviour
         {
             lobbyData = new Dictionary<string, DataObject>
             {
-                { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.GameMode.ToString()) },
+                { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.GameMode.ToString(), DataObject.IndexOptions.S1) },
                 { KEY_ROUND_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.RoundAmount.ToString()) },
                 { KEY_TIMER_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.TimerAmount.ToString()) },
                 { KEY_RECIPE_MODE, new DataObject(DataObject.VisibilityOptions.Public, ((int)LobbyDataInput.Instance.RecipeMode).ToString()) },
-            };
+            };          
         }
         else
         {
@@ -150,6 +154,11 @@ public class LobbyManager : MonoBehaviour
         }
 
         return lobbyData;
+    }
+
+    private void GoinRandomServer()
+    {
+
     }
 
     private Player GetPlayer()
@@ -193,7 +202,7 @@ public class LobbyManager : MonoBehaviour
 
         if (isServer)
         {
-
+            ListLobbiesWithFilter();
         }
     }
 
@@ -203,6 +212,7 @@ public class LobbyManager : MonoBehaviour
         {
             if (CurrentLobby != null)
                 return;
+
 
             CreateLobbyOptions createLobbyOptions = new()
             {
@@ -214,7 +224,7 @@ public class LobbyManager : MonoBehaviour
             CurrentLobby = await LobbyService.Instance.CreateLobbyAsync
             (
                 LobbyDataInput.Instance.LobbyName == "" ? Authentication.PlayerName : LobbyDataInput.Instance.LobbyName,
-                LobbyDataInput.Instance.MaxPlayers,
+                LobbyDataInput.Instance.MaxPlayers, 
                 createLobbyOptions
             );
 
@@ -291,9 +301,25 @@ public class LobbyManager : MonoBehaviour
     {
         try
         {
+            QueryLobbiesOptions options = new QueryLobbiesOptions();
+            options.Filters = new List<QueryFilter>()
+            {
+                new QueryFilter(
+                    field: QueryFilter.FieldOptions.AvailableSlots,
+                    op: QueryFilter.OpOptions.GT,
+                    value: "0")
+            };
             QuickJoinLobbyOptions quickJoinLobbyOptions = new()
             {
-                Player = GetPlayer()
+                Player = GetPlayer(),
+                Filter = new List<QueryFilter>()
+                {
+                    new QueryFilter(
+                        field: QueryFilter.FieldOptions.AvailableSlots,
+                        op: QueryFilter.OpOptions.GT,
+                        value: "0")
+                }
+
             };
 
             CurrentLobby = await LobbyService.Instance.QuickJoinLobbyAsync(quickJoinLobbyOptions);
@@ -336,12 +362,55 @@ public class LobbyManager : MonoBehaviour
     {
         try
         {
-            QueryResponse queryResponse = await LobbyService.Instance.QueryLobbiesAsync();
-            OnLobbyListed?.Invoke(queryResponse.Results);
+            QueryLobbiesOptions options = new QueryLobbiesOptions();
+            options.Filters = new List<QueryFilter>()
+            {
+                new QueryFilter(
+                    field: QueryFilter.FieldOptions.AvailableSlots,
+                    op: QueryFilter.OpOptions.GT,
+                    value: "0")
+            };
+            QueryResponse lobbies = await Lobbies.Instance.QueryLobbiesAsync(options);
         }
         catch (LobbyServiceException ex)
         {
             Logger.Instance.Log(ex);
+        }
+    }
+    public async void ListLobbiesWithFilter()
+    {
+        try
+        {           
+
+            QueryLobbiesOptions options = new QueryLobbiesOptions();
+
+            options.Filters = new List<QueryFilter>()
+            {
+                new QueryFilter(
+                    field: QueryFilter.FieldOptions.AvailableSlots,
+                    op: QueryFilter.OpOptions.GT,
+                    value: "0"),
+                new QueryFilter(
+                    field: QueryFilter.FieldOptions.S1,
+                    op: QueryFilter.OpOptions.EQ,
+                    value: WhichMode)
+            };
+
+            // Order by newest lobbies first
+            options.Order = new List<QueryOrder>()
+            {
+            new QueryOrder(
+                asc: false,
+                field: QueryOrder.FieldOptions.Created)
+            };
+
+            QueryResponse lobbies = await Lobbies.Instance.QueryLobbiesAsync(options);
+            OnLobbyListed?.Invoke(lobbies.Results);
+
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
         }
     }
 
