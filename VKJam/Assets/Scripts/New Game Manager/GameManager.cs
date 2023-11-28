@@ -96,18 +96,27 @@ public class GameManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        Log("IsServer : " + IsServer);
+        //Log("IsServer : " + IsServer);
 
         bestiary.TakePack();
         bestiaryIngredients.TakePack();
 
         timer.Init(gameConfig);
 
+        IsTeamMode = LobbyManager.Instance.CurrentLobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True";
+
+        if (!IsTeamMode)
+        {
+            roleManager.OnGuesserSetted.AddListener(() => playersStatusManager.SetActive(false));
+            roleManager.OnPainterSetted.AddListener(() => playersStatusManager.SetActive(true));
+
+            playersStatusManager.SetActive(IsServer);
+        }
+
         if (IsServer)
         {
             timer.OnExpired.AddListener(OnTimeExpired);
 
-            IsTeamMode = LobbyManager.Instance.CurrentLobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True";
 
             if (IsTeamMode)
             {
@@ -122,6 +131,7 @@ public class GameManager : NetworkBehaviour
 
                 ingredientManager = new CompetitiveIngredientManager(gameConfig, compareSystem);
                 roundManager = new CompetitiveRoundManager(gameConfig, compareSystem, ingredientManager);
+
             }
 
             ingredientManager.OnIngredientsEnded.AddListener(ActivateGuessMonsterStage);
@@ -174,15 +184,15 @@ public class GameManager : NetworkBehaviour
         hintManager.DisableHandHint();
         TokenManager.AccrueTokens();
 
-        if (IsPainter)
-        {
-            //playersStatusManager.ResetStatuses();
-            playersStatusManager.SetActive(true);
-        }
-        else if (IsTeamMode)
-            playersStatusManager.SetActive(true);
-        else
-            playersStatusManager.SetActive(false);
+        //if (IsPainter)
+        //{
+        //    //playersStatusManager.ResetStatuses();
+        //    playersStatusManager.SetActive(true);
+        //}
+        //else if (IsTeamMode)
+        //    playersStatusManager.SetActive(true);
+        //else
+        //    playersStatusManager.SetActive(false);
     }
 
     private void OnRoundEnded()

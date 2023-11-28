@@ -19,9 +19,6 @@ public class PlayersStatusManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsServer)
-            SetActive(false);
-
         StartCoroutine(OnNetworkSpawnCoroutine());
     }
 
@@ -109,6 +106,7 @@ public class PlayersStatusManager : NetworkBehaviour
     public void SetActive(bool value)
     {
         playerStatusesContainer.gameObject.SetActive(value);
+        //Logger.Instance.Log($"[{nameof(PlayersStatusManager)}] Set Active {value}");
     }
 
     public void ResetStatuses()

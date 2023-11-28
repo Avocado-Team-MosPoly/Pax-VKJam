@@ -18,14 +18,9 @@ public class RoleManager : NetworkBehaviour
         painterId.OnValueChanged += PainterId_OnValueChanged;
 
         if (IsServer)
-        {
             painterId.Value = (byte)NetworkManager.ConnectedClientsIds[0];
-
-        }
         else
-        {
             ChooseRole();
-        }
     }
 
     private void PainterId_OnValueChanged(byte previousValue, byte newValue)
@@ -54,12 +49,6 @@ public class RoleManager : NetworkBehaviour
 
     public void ChangeRoles()
     {
-#if UNITY_EDITOR
-        // forgot why
-        GameManager.Instance.CardManager.enabled = false;
-        OnPainterSetted?.Invoke();
-#endif
-
         foreach (byte clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             if (!lastPainterIds.Contains(clientId))
