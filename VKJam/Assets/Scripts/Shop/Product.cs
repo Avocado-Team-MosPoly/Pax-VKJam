@@ -4,7 +4,10 @@ using TMPro;
 public class Product : MonoBehaviour
 {
     [SerializeField] private Image Picture;
+    [SerializeField] private Image DisplayTypeCurrency;
 
+    [SerializeField] private Sprite DonatCurrency;
+    [SerializeField] private Sprite InGameCurrency;
     public TextMeshProUGUI Name;
     [SerializeField] private TextMeshProUGUI Price;
     public WareData Data;
@@ -21,6 +24,7 @@ public class Product : MonoBehaviour
         //SystemName = Data.productName;
         Name.text = Data.Data.productName;
         Price.text = "X" + Data.Data.productPrice.ToString();
+        DisplayTypeCurrency.sprite = Data.Data.IsDonateVault ? DonatCurrency : InGameCurrency;
         BT.interactable = !Data.Data.InOwn || ChooseMode;
     }
     public void RemoveFromWarehouse()

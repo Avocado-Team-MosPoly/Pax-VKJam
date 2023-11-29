@@ -62,7 +62,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 38da3e2f761763e4fa72b391ff6a6967, type: 3}
       propertyPath: m_Name
-      value: Eldstad Variant
+      value: CampFireLeft
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 38da3e2f761763e4fa72b391ff6a6967, type: 3}
       propertyPath: m_IsActive
@@ -78,8 +78,81 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 38da3e2f761763e4fa72b391ff6a6967, type: 3}
       insertIndex: -1
       addedObject: {fileID: 92242908895218179}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 38da3e2f761763e4fa72b391ff6a6967, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8994587982907736767}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 38da3e2f761763e4fa72b391ff6a6967, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5353818334609094864}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 38da3e2f761763e4fa72b391ff6a6967, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4107725604400300218}
   m_SourcePrefab: {fileID: 100100000, guid: 38da3e2f761763e4fa72b391ff6a6967, type: 3}
+--- !u!1 &1366488193477673519 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 38da3e2f761763e4fa72b391ff6a6967, type: 3}
+  m_PrefabInstance: {fileID: 2177442128396664702}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &-8994587982907736767
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366488193477673519}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5.4587584, y: 2.896861, z: 5.3242593}
+  m_Center: {x: 0.087998234, y: 0.94843364, z: -0.080833815}
+--- !u!114 &5353818334609094864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366488193477673519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f13c20d4e5f169a4ca84a3779a35757b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetMaterialID: 
+  NewColor: {r: 0, g: 0, b: 0, a: 0}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnMouseEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnMouseExit:
+    m_PersistentCalls:
+      m_Calls: []
+  ActivityInteractable: 0
+--- !u!114 &4107725604400300218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366488193477673519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 070f0c1784f8e4f48ad49162c5ea3195, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Data: {fileID: 5353818334609094864}
+  Object: {fileID: 1366488193477673519}
 --- !u!4 &1854758920236619925 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 38da3e2f761763e4fa72b391ff6a6967, type: 3}

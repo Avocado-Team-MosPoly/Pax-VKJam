@@ -3,7 +3,7 @@ using UnityEngine;
 public class ModulePrefabSetter : MonoBehaviour
 {
     [ContextMenu("Configure and Remove This Component")]
-    private void ConfigureAndRemove()
+    public void ConfigureAndRemove()
     {
         DetecterModule temp = GetComponent<DetecterModule>();
         if (temp != null)
