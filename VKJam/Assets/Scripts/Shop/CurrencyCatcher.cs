@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CurrencyCatcher : MonoBehaviour
+public class CurrencyCatcher : TaskExecutor<CurrencyCatcher>
 {
     [SerializeField] private TMPro.TextMeshProUGUI Donat_General;
     [SerializeField] private TMPro.TextMeshProUGUI Donat_Card;
@@ -11,6 +11,7 @@ public class CurrencyCatcher : MonoBehaviour
 
     void Awake()
     {
+        Denote();
         Refresh();
     }
     public void Refresh()
