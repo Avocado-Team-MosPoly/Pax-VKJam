@@ -74,6 +74,32 @@ public class Php_Connect : MonoBehaviour
             }
         }
     }
+    public static string Request_CraftCardTry(int idCard, bool ForThePieces)
+    {
+        if (!PHPisOnline) return "";
+        WWWForm form = new WWWForm();
+        form.AddField("Nickname", Nickname);
+        form.AddField("ForThePieces", ForThePieces.ToString());
+        form.AddField("idCard", idCard.ToString());
+
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/CraftCardTry.php", form))
+        {
+            www.certificateHandler = new AcceptAllCertificates();
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return www.downloadHandler.text;
+            }
+        }
+    }
     public static string Request_WhatPackOwnering() 
     {
         if (!PHPisOnline) return "";

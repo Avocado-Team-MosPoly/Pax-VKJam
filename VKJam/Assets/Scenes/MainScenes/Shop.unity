@@ -22091,7 +22091,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.5212786, y: 0.49846697, z: 0.5536407}
   m_Center: {x: -0.0503774, y: 0.249233, z: 0.0665618}
@@ -25181,7 +25181,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1106184982}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1494258493}
+        m_TargetAssemblyTypeName: CardCatalogueScript, Assembly-CSharp
+        m_MethodName: BuyCard
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &1106184982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29932,7 +29944,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Appear
+          m_StringArgument: HandAppear
           m_BoolArgument: 1
         m_CallState: 2
   m_OnMouseEnter:
@@ -34149,6 +34161,7 @@ MonoBehaviour:
   - {fileID: 645649659}
   previousMonsterButton: {fileID: 1568592684}
   nextMonsterButton: {fileID: 167275093}
+  BuyCanvas: {fileID: 1712290497}
   packCardSO: {fileID: 11400000, guid: 040e18bcc36e564478de642a4b6f95ec, type: 2}
 --- !u!1 &1494805336
 GameObject:
@@ -40399,7 +40412,7 @@ GameObject:
   - component: {fileID: 1856371816}
   - component: {fileID: 1856371815}
   m_Layer: 5
-  m_Name: BuyForPeaces (1)
+  m_Name: BuyForCrosses
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40468,7 +40481,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1856371816}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1494258493}
+        m_TargetAssemblyTypeName: CardCatalogueScript, Assembly-CSharp
+        m_MethodName: BuyCard
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1856371816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41493,7 +41518,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8b554824ff097a247877aaa9ff773a86, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1405885072134455912, guid: 8b554824ff097a247877aaa9ff773a86, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -44998,7 +45023,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2029833061
 Transform:
   m_ObjectHideFlags: 0
