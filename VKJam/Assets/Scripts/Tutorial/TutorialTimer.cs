@@ -10,6 +10,7 @@ public class TutorialTimer : MonoBehaviour
     [SerializeField] private TMP_Text IngridientText;
     [SerializeField] private AnimateList _bookAnimator;
     [SerializeField] private TutorialPaint paint;
+    [SerializeField] private GameObject PaintUI;
 
     [SerializeField] private string ingredientName;
 
@@ -48,6 +49,7 @@ public class TutorialTimer : MonoBehaviour
         paint.ClearCanvas();
         _bookAnimator.Play("NoteBookClose");
         DialogueManager.Instance.StartDialogue(6);
+        PaintUI.SetActive(false);
 
         ingredientTimerCoroutine = null;
     }

@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TranslatePlayersNamberSlider : MonoBehaviour
+public class TranslatePlayersNumberSlider : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI PlayersCoutText;
     [SerializeField] private Slider PlayersCoundSlider;
