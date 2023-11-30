@@ -7,7 +7,6 @@ using Unity.Services.Authentication;
 using Unity.Netcode;
 using System.Threading.Tasks;
 using System;
-using static UnityEditor.Progress;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -44,10 +43,10 @@ public class LobbyManager : MonoBehaviour
             Destroy(this);
             return;
         }
-        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => RemovePlayer(clientId);
+        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => DisconnectPlayer(clientId);
         NetworkManager.Singleton.OnClientStopped += async (bool someBool) => await LeaveLobbyAsync();
         NetworkManager.Singleton.OnServerStopped += (bool isHostLeave) => OnServerEnded();
-        WhichMode = "true";
+        WhichMode = "True";
         //NetworkManager.Singleton.OnServerStarted += StopHeartBeatPing;
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
@@ -433,7 +432,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public async void RemovePlayer(ulong clientId)
+    public async void DisconnectPlayer(ulong clientId)
     {
         if (!IsServer)
         {

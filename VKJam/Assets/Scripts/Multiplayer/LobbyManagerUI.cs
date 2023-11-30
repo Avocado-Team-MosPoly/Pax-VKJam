@@ -12,6 +12,7 @@ public class LobbyManagerUI : NetworkBehaviour
     [SerializeField] private Button ready;
     [SerializeField] private List<GameObject> playerGameObjectList = new();
     [SerializeField] private List<GameObject> playerReady = new();
+    [SerializeField] private LobbyPlayerDataViewManager playerDataViewManager;
 
     //[SerializeField] private RectTransform playerListContainer;
     //[SerializeField] private GameObject playerInfoPrefab;
@@ -51,6 +52,9 @@ public class LobbyManagerUI : NetworkBehaviour
     private void PlayersId_OnListChanged(NetworkListEvent<byte> changeEvent)
     {
         //Debug.LogError("PlayersId_OnListChanged");
+
+        playerDataViewManager.AddPlayer(changeEvent.Value);
+
         foreach (GameObject player in playerGameObjectList)
         {
             player.SetActive(false);

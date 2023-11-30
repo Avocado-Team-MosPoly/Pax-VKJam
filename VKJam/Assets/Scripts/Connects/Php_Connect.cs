@@ -2,7 +2,7 @@ using System;
 using UnityEngine.Networking;
 using UnityEngine;
 [System.Serializable] 
-public struct Currency
+public class Currency
 {
     public int IGCurrency;
     public int DCurrency;

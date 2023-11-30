@@ -61,7 +61,14 @@ public class CardCatalogueScript : MonoBehaviour
     public void BuyCard(bool ForThePieces)
     {
         Debug.Log("Trying buy card by id - " + _bufferIdCard);
-        Php_Connect.Request_CraftCardTry(_bufferIdCard, ForThePieces);
+        string resp = Php_Connect.Request_CraftCardTry(_bufferIdCard, ForThePieces);
+        if (resp == "success") {
+            Debug.Log(1);
+            CardSystem temp = packCardSO.SearchCardSystemById(_bufferIdCard);
+            temp.CardIsInOwn = true;
+            CurrencyCatcher._executor.Refresh();
+            UpdateUIPage();
+        }
     }
     private void Initialize()
     {

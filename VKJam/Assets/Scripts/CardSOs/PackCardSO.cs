@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Linq;
 [System.Serializable]
-public struct CardSystem
+public class CardSystem
 {
     public int CardDBIndex;
     public bool CardIsInOwn;
@@ -53,5 +53,22 @@ public class PackCardSO : ScriptableObject
         {
             CardInPack[j].CardIsInOwn = false;
         }
+    }
+
+    public CardSO SearchCardById(int idCard)
+    {
+        foreach(var cur in CardInPack)
+        {
+            if (cur.CardDBIndex == idCard) return cur.Card;
+        }
+        return null;
+    }
+    public CardSystem SearchCardSystemById(int idCard)
+    {
+        foreach (var cur in CardInPack)
+        {
+            if (cur.CardDBIndex == idCard) return cur;
+        }
+        return null;
     }
 }
