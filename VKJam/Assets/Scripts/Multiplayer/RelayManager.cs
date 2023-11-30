@@ -242,7 +242,7 @@ public class RelayManager : MonoBehaviour
             return;
 
         NetworkManager.Singleton.DisconnectClient(clientId);
-        LobbyManager.Instance.RemovePlayer(clientId);
+        LobbyManager.Instance.DisconnectPlayer(clientId);
     }
 
     public void Disconnect()
