@@ -15,9 +15,12 @@ public class TokenManager : NetworkBehaviour
     public static UnityEvent OnAddTokens;
     public static UnityEvent OnRemoveTokens;
 
+    [Header("Spawn Tokens")]
     [SerializeField] private GameObject tokenPrefab;
     [SerializeField] private Transform tokenSpawnTransform;
-    
+    [SerializeField] private Vector2 tokenSpawnRect;
+
+    [Header("Tokens Text Labels")]
     [SerializeField] private TextMeshProUGUI tokensCount;
     [SerializeField] private TextMeshProUGUI tokensWinned;
     [SerializeField] private TextMeshProUGUI tokensLoosed;
@@ -33,14 +36,10 @@ public class TokenManager : NetworkBehaviour
         if (instance)
         {
             if (instance != this)
-            {
                 Destroy(gameObject);
-            }
         }
         else
-        {
             instance = this;
-        }
 
         tokensOnScene = new List<Token>();
     }
@@ -51,9 +50,7 @@ public class TokenManager : NetworkBehaviour
             return;
 
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
-        {
             playersTokens.Add(clientId, 0);
-        }
     }
 
     private (IReadOnlyList<ulong>, IReadOnlyList<int>) SortPlayersTokensDictionary()
@@ -96,10 +93,17 @@ public class TokenManager : NetworkBehaviour
 
         if (tokenPrefab && tokenSpawnTransform)
         {
+            Vector2 halfTokenSpawn = tokenSpawnRect / 2;
             Token token;
             for (int i = 0; i < count; i++)
             {
+                Vector3 localPosition = new(
+                    Random.Range(-halfTokenSpawn.x, halfTokenSpawn.x),
+                    0f,
+                    Random.Range(-halfTokenSpawn.y, halfTokenSpawn.y)
+                    );
                 token = Instantiate(tokenPrefab, tokenSpawnTransform).GetComponent<Token>();
+                token.transform.localPosition = localPosition;
                 tokensOnScene.Add(token);
             }
         }
@@ -170,22 +174,26 @@ public class TokenManager : NetworkBehaviour
     {
         instance.AccrueTokensClientRpc();
     }
-    
+
     public static void AddTokensToAll(int value)
     {
-        instance.AddTokensClientRpc((byte)value);
+        int tokensToAdd = value / NetworkManager.Singleton.ConnectedClientsIds.Count;
+
+        instance.AddTokensClientRpc((byte)tokensToAdd);
 
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
-            instance.playersTokens[clientId] += value;
+            instance.playersTokens[clientId] += tokensToAdd;
     }
 
     public static void RemoveTokensFromAll(int value)
     {
-        instance.RemoveTokensClientRpc((byte)value);
+        int tokensToRemove = value / NetworkManager.Singleton.ConnectedClientsIds.Count;
+
+        instance.RemoveTokensClientRpc((byte)tokensToRemove);
 
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            instance.playersTokens[clientId] -= value;
+            instance.playersTokens[clientId] -= tokensToRemove;
 
             if (instance.playersTokens[clientId] < 0)
                 instance.playersTokens[clientId] = 0;
@@ -269,4 +277,30 @@ public class TokenManager : NetworkBehaviour
     }
 
     #endregion
+
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.yellow;
+    //    Vector3 tokenSpawnBox = new Vector3(tokenSpawnRect.x, 0f, tokenSpawnRect.y);
+    //    Gizmos.DrawWireCube(tokenSpawnTransform.position, tokenSpawnBox);
+
+    //    //Vector3 prev = tokenSpawnTransform.position;
+    //    //Vector3 current = tokenSpawnTransform.position + new Vector3(tokenSpawnRect.x, 0f, 0f);
+    //    //current = tokenSpawnTransform.right * current.magnitude;
+    //    //Gizmos.DrawLine(prev, current);
+
+    //    //prev = current;
+    //    //current.z += tokenSpawnRect.y;
+    //    //current = tokenSpawnTransform.forward * current.magnitude;
+    //    //Gizmos.DrawLine(prev, current);
+
+    //    //prev = current;
+    //    //current.x = tokenSpawnTransform.position.x;
+    //    //current = -tokenSpawnTransform.right * current.magnitude;
+    //    //Gizmos.DrawLine(prev, current);
+
+    //    //prev = current;
+    //    //current = tokenSpawnTransform.position;
+    //    //Gizmos.DrawLine(prev, current);
+    //}
 }
