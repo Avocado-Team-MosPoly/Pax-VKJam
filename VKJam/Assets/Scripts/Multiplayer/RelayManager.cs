@@ -15,6 +15,8 @@ public class RelayManager : MonoBehaviour
     [HideInInspector] public UnityEvent<ulong> OnClientConnected;
     [HideInInspector] public UnityEvent<ulong> OnClientDisconnect;
 
+    public string LobbySceneName => lobbySceneName;
+
     [SerializeField] private string lobbySceneName;
 
     [Header("Prefabs")]
