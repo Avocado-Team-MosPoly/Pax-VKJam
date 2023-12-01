@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,23 +9,29 @@ public class LobbyManagerUI : NetworkBehaviour
 {
     //[SerializeField] private Button listPlayersButton;
     [SerializeField] private Button leaveLobbyButton;
-    [SerializeField] private Button updatePlayerList;
-    [SerializeField] private Button ready;
+    [SerializeField] private Button updatePlayerListButton;
+    [SerializeField] private Button readyButton;
     [SerializeField] private List<GameObject> playerGameObjectList = new();
     [SerializeField] private List<GameObject> playerReady = new();
     [SerializeField] private LobbyPlayerDataViewManager playerDataViewManager;
 
+    [SerializeField] private string notReadyText;
+    [SerializeField] private string readyText;
+
     //[SerializeField] private RectTransform playerListContainer;
     //[SerializeField] private GameObject playerInfoPrefab;
     [SerializeField] private NetworkList<bool> allPlayerReady = new();
+
     private NetworkList<byte> playersId = new();
+    private TextMeshProUGUI readyButtonTextLabel;
 
     public override void OnNetworkSpawn()
     {
         leaveLobbyButton.onClick.AddListener(Disconnect);
-        updatePlayerList.onClick.AddListener(LobbyManager.Instance.ListPlayers);
-        ready.onClick.AddListener(ChangeReady);
-
+        updatePlayerListButton.onClick.AddListener(LobbyManager.Instance.ListPlayers);
+        readyButton.onClick.AddListener(ChangeReady);
+        readyButtonTextLabel = readyButton.GetComponentInChildren<TextMeshProUGUI>();
+        readyButtonTextLabel.text = notReadyText;
         //LobbyManager.Instance.OnPlayerListed.AddListener(UpdatePlayerList);
         LobbyManager.Instance.ListPlayers();
 
@@ -111,6 +118,7 @@ public class LobbyManagerUI : NetworkBehaviour
         int clientIdIndex = GetClientIdIndex(NetworkManager.Singleton.LocalClientId);
 
         playerReady[clientIdIndex].SetActive(!allPlayerReady[clientIdIndex]);
+        readyButtonTextLabel.text = playerReady[clientIdIndex].activeSelf ? readyText : notReadyText;
 
         SwitchPlayerReadyServerRpc(clientIdIndex);
     }
