@@ -22,16 +22,19 @@ public class PaintController : MonoBehaviour
     private void Start()
     {
         localBrushSize = paint.BrushSize;
-        
-        sizeSlider.minValue = minBrushSize;
-        sizeSlider.maxValue = maxBrushSize;
-        sizeSlider.value = localBrushSize;
 
-        sizeSlider.wholeNumbers = true;
+        if (sizeSlider != null)
+        {
+            sizeSlider.minValue = minBrushSize;
+            sizeSlider.maxValue = maxBrushSize;
+            sizeSlider.value = localBrushSize;
 
-        sizeSlider.onValueChanged.AddListener(ChangeBrushSize);
+            sizeSlider.wholeNumbers = true;
 
-        sizeInfo.text = localBrushSize.ToString();
+            sizeSlider.onValueChanged.AddListener(ChangeBrushSize);
+        }
+        if (sizeInfo != null)
+            sizeInfo.text = localBrushSize.ToString();
     }
 
     private void Update()
@@ -67,7 +70,8 @@ public class PaintController : MonoBehaviour
 
     public void ChangeBrushSize(float value)
     {
-        sizeInfo.text = value.ToString();
+        if (sizeInfo != null)
+            sizeInfo.text = value.ToString();
 
         int scrollDelta = (int)value - paint.BrushSize;
 

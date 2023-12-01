@@ -4,15 +4,15 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Paint : NetworkBehaviour
 {
     [Serializable]
     private struct TextureSettings
     {
-        [Range(2, 1024)] public int sizeX;
-        [Range(2, 1024)] public int sizeY;
+        [Range(2, 2048)] public int sizeX;
+        [Range(2, 2048)] public int sizeY;
         public TextureWrapMode wrapMode;
         public FilterMode filterMode;
     }
@@ -53,6 +53,11 @@ public class Paint : NetworkBehaviour
             serializer.SerializeValue(ref x);
             serializer.SerializeValue(ref y);
         }
+
+        public override string ToString()
+        {
+            return $"({nameof(Vector2Short)}({x}, {y})";
+        }
     }
     private struct DrawingParams : INetworkSerializable
     {
@@ -92,13 +97,15 @@ public class Paint : NetworkBehaviour
         filterMode = FilterMode.Point
     };
     [SerializeField] private Texture2D texture;
+    //private Texture2D materialTextureCopy;
+    //private Texture materialMainTexture;
 
+    [SerializeField] private Color drawColor;
     [SerializeField] private Color baseColor = Color.white;
     [SerializeField] private Material material;
 
     [SerializeField] private Camera _camera;
     [SerializeField] private Collider _collider;
-    [SerializeField] private Color drawColor;
     [SerializeField] private BrushMode brushMode = BrushMode.Draw;
     [SerializeField] private byte brushSize = 12;
     private int halfBrushSize;
@@ -109,7 +116,9 @@ public class Paint : NetworkBehaviour
     private DrawingParams drawingParams;
 
     private bool isDraw = false;
-    
+
+    [SerializeField] private bool drawOnTransparent;
+
     [Header("Set if functionality is needed")]
     //[SerializeField] private Slider brushSizeSlider;
     [SerializeField] private Button switchBrushModeButton;
@@ -125,12 +134,30 @@ public class Paint : NetworkBehaviour
 
     private void Awake()
     {
-        baseColor.a = 1f;
         drawColor.a = 1f;
+        OnValidate();
 
         material.color = Color.white;
 
         InitControlUI();
+    }
+
+    //public override void OnDestroy()
+    //{
+    //    if (materialMainTexture != null)
+    //        material.mainTexture = materialMainTexture;
+    //}
+
+    private void OnValidate()
+    {
+        if (drawOnTransparent)
+        {
+            baseColor.a = 0f;
+        }
+        else
+        {
+            baseColor.a = 1f;
+        }
     }
 
     private void InitControlUI()
@@ -140,13 +167,13 @@ public class Paint : NetworkBehaviour
 
         switchBrushModeButton?.onClick.AddListener(SwitchBrushMode);
         switchBrushModeButtonImage = switchBrushModeButton?.GetComponent<Image>();
-        
-        //brushSizeSlider?.onValueChanged.AddListener( ChangeSize );
     }
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log("[Paint] Spawned");
+        Logger.Instance.Log($"[{nameof(Paint)}] Spawned on {(IsServer ? "Server" : "Client")}");
+        Scene loadedScene = SceneManager.GetActiveScene();
+
         if (IsServer)
         {
             isPainter = true;
@@ -155,7 +182,12 @@ public class Paint : NetworkBehaviour
 
         CreateTexture();
         halfBrushSize = brushSize / 2;
-        this.enabled = false;
+
+        if (loadedScene.name != RelayManager.Instance.LobbySceneName)
+            this.enabled = false;
+        else
+            isPainter = true;
+
         OnNetworkSpawned?.Invoke();
     }
 
@@ -178,17 +210,52 @@ public class Paint : NetworkBehaviour
     {
         if (!material)
         {
-            Debug.LogError("Material isn't set");
+            Logger.Instance.LogError($"[{nameof(Paint)}] Material isn't set");
             return;
         }
+
         texture = new Texture2D(textureSettings.sizeX, textureSettings.sizeY);
-        Debug.Log(texture.height + " " +  texture.width);
         texture.wrapMode = textureSettings.wrapMode;
         texture.filterMode = textureSettings.filterMode;
 
         material.mainTexture = texture;
         Fill(baseColor);
+
+        //if (material.mainTexture == null)
+        //{
+
+        //}
+        //else
+        //{
+        //    //CreateTexturesFromMaterialTexture();
+
+        //    //materialMainTexture = material.mainTexture;
+        //    //material.mainTexture = texture;
+        //}
     }
+
+    //private void CreateTexturesFromMaterialTexture()
+    //{
+    //    Color32[] materialTextureColors = (material.mainTexture as Texture2D).GetPixels32();
+
+    //    Logger.Instance.Log(material.mainTexture.width + " by " + material.mainTexture.height);
+    //    texture = new Texture2D(material.mainTexture.height, material.mainTexture.width);
+
+    //    texture.filterMode = material.mainTexture.filterMode;
+    //    texture.wrapMode = material.mainTexture.wrapMode;
+    //    texture.anisoLevel = material.mainTexture.anisoLevel;
+
+    //    texture.SetPixels32(materialTextureColors);
+    //    texture.Apply();
+
+    //    materialTextureCopy = new Texture2D(material.mainTexture.height, material.mainTexture.width);
+
+    //    materialTextureCopy.filterMode = material.mainTexture.filterMode;
+    //    materialTextureCopy.wrapMode = material.mainTexture.wrapMode;
+    //    materialTextureCopy.anisoLevel = material.mainTexture.anisoLevel;
+
+    //    materialTextureCopy.SetPixels32(materialTextureColors);
+    //}
 
     private void Update()
     {
@@ -203,19 +270,21 @@ public class Paint : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             isDraw = true;
+            //Logger.Instance.Log($"[{nameof(Paint)}] Start Curve");
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
             SendIsConnectedToLastServerRpc(false);
             isDraw = false;
+            //Logger.Instance.Log($"[{nameof(Paint)}] End Curve");
         }
 
         if (isDraw)
         {
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
-            if (_collider.Raycast(ray, out RaycastHit hitInfo, 1000f))
+            if (_collider.Raycast(ray, out RaycastHit hitInfo, 100f))
             {
                 int rayX = (int)(hitInfo.textureCoord.x * textureSettings.sizeX);
                 int rayY = (int)(hitInfo.textureCoord.y * textureSettings.sizeY);
@@ -228,8 +297,14 @@ public class Paint : NetworkBehaviour
                         rayPos.Value = newRayPos;
                     else
                         SendRayPosServerRpc(newRayPos.x, newRayPos.y);
+
+                    //Logger.Instance.Log($"[{nameof(Paint)}] Continue Curve on pixel {newRayPos}");
                 }
             }
+            //else
+            //{
+            //    Logger.Instance.Log($"[{nameof(Paint)}] {hitInfo.collider.gameObject.name}");
+            //}
         }
     }
 
@@ -319,7 +394,7 @@ public class Paint : NetworkBehaviour
         
         File.WriteAllBytes($"{dirPath}IMG_{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.png", bytes);
         
-        Debug.Log("Path: " + dirPath);
+        Logger.Instance.Log($"[{nameof(Paint)}] Path: " + dirPath);
     }
 
     public void SwitchBrushMode()
