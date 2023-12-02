@@ -36,6 +36,16 @@ public class LobbyPlayerDataView : MonoBehaviour,
         ClientId = clientId;
     }
 
+    public void SetAvatar(Sprite avatar)
+    {
+        avatarImage.sprite = avatar;
+    }
+
+    public void SetFrame(Sprite frame)
+    {
+        frameImage.sprite = frame;
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         SearchPlayerName();

@@ -18,7 +18,7 @@ public class CustomController : TaskExecutor<CustomController>
         foreach (ItemType cur in System.Enum.GetValues(typeof(ItemType)))
             Custom[(int)cur] = Search(PlayerPrefs.GetInt("Custom_" + cur), cur);
     }
-    private WareData Search(int id, ItemType Type)
+    public WareData Search(int id, ItemType Type)
     {
         foreach(var current in Categories[(int)Categorize(Type)].products)
         {
