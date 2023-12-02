@@ -42,7 +42,12 @@ public class BestiaryIngredients : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Instance.OnIngredientSwitchedOnClient.AddListener((int ingredientIndex) => isSpawnedSelectedIngredient = false);
+        GameManager.Instance.OnIngredientSwitchedOnClient.AddListener((int ingredientIndex) =>
+        {
+            isSpawnedSelectedIngredient = false;
+            spawnPositionIndex++;
+
+        });
         GameManager.Instance.OnRoundStartedOnClient.AddListener(() =>
         {
             foreach (GameObject spawnedIngredient in spawnedIngredientObjects)
@@ -53,6 +58,7 @@ public class BestiaryIngredients : MonoBehaviour
             spawnedIngredientObjects.Clear();
         });
         spawnPositionIndex = 0;
+     
     }
 
     public void TakePack()
@@ -150,7 +156,6 @@ public class BestiaryIngredients : MonoBehaviour
             throw new System.NullReferenceException($"Ingredient prefab is null ({IngredientList[ingredientIndex].Name} ingredient)");
 
         spawnedIngredientObjects.Add(spawnedIngredientObject);
-        spawnPositionIndex += 1;
         isSpawnedSelectedIngredient = true;
     }
 
