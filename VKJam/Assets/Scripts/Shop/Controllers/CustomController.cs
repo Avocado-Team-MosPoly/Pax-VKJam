@@ -135,6 +135,8 @@ public class CustomController : TaskExecutor<CustomController>
                 return ShopFilters.AvatarsAndChat;
             case ItemType.Currency:
                 return ShopFilters.Currency;
+            case ItemType.Table:
+                return ShopFilters.Paint;
             default:
                 return 0;
         }

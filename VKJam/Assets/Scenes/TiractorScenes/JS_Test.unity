@@ -143,7 +143,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &334349430
 RectTransform:
   m_ObjectHideFlags: 0
@@ -207,10 +207,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 3890772636444289652}
         m_TargetAssemblyTypeName: VK_Connect, Assembly-CSharp
-        m_MethodName: RequestInvateOldPlayer
-        m_Mode: 1
+        m_MethodName: RequestBuyTry
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -681,7 +681,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 3890772636444289652}
         m_TargetAssemblyTypeName: VK_Connect, Assembly-CSharp
         m_MethodName: RequestAds
         m_Mode: 1
@@ -765,8 +765,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6.0024, y: -28}
-  m_SizeDelta: {x: 362.94, y: 196.32}
+  m_AnchoredPosition: {x: 0, y: 100}
+  m_SizeDelta: {x: 350, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &614502525
 MonoBehaviour:
@@ -1411,7 +1411,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 3890772636444289652}
         m_TargetAssemblyTypeName: VK_Connect, Assembly-CSharp
         m_MethodName: RequestInvateNewPlayer
         m_Mode: 1
@@ -1758,11 +1758,21 @@ PrefabInstance:
     - {fileID: 9165275726675321496, guid: 842559543b53de14f8b19d0048850e29, type: 3}
     - {fileID: 5120622973797859906, guid: 842559543b53de14f8b19d0048850e29, type: 3}
     - {fileID: 2913828899995353881, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-    - {fileID: 3890772637464068976, guid: 842559543b53de14f8b19d0048850e29, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 842559543b53de14f8b19d0048850e29, type: 3}
+--- !u!114 &3890772636444289652 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3890772637464068978, guid: 842559543b53de14f8b19d0048850e29, type: 3}
+  m_PrefabInstance: {fileID: 3890772636444289651}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 719a5ba708511c341aeb705cedbcffcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

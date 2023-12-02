@@ -1,66 +1,36 @@
-mergeInto(LibraryManager.library, 
+mergeInto(LibraryManager.library, {
+    UnityPluginRequestJs: function () 
     {
-        //  Структура названий функций: UnityPlugin + Название функции в Unity
-            UnityPluginRequestJs: function () 
-            {
-                FromUnityToJs();
-            }
+        FromUnityToJs();
+    },
 
-            
-    }
-);
-mergeInto(LibraryManager.library, 
+    UnityPluginRequestUserData: function () 
     {
-        //  Структура названий функций: UnityPlugin + Название функции в Unity
-            UnityPluginRequestUserData: function () 
-            {
-                JSRequestUserData ();
-            }
+        JSRequestUserData();
+    },
 
-            
-    }
-);
-mergeInto(LibraryManager.library, 
+    UnityPluginRequestAds: function () 
     {
-        //  Структура названий функций: UnityPlugin + Название функции в Unity
-            UnityPluginRequestAds: function () 
-            {
-                JSRequestShowAds();
-            }
+        JSRequestShowAds();
+    },
 
-            
-    }
-);
-mergeInto(LibraryManager.library, 
+    UnityPluginRequestInviteNewPlayer: function () 
     {
-        //  Структура названий функций: UnityPlugin + Название функции в Unity
-            UnityPluginRequestInvateNewPlayer: function () 
-            {
-                JSRequestInvateNewPlayer();
-            }
+        JSRequestInviteNewPlayer();
+    },
 
-            
-    }
-);
-mergeInto(LibraryManager.library, 
+    UnityPluginRequestInviteOldPlayer: function () 
     {
-        //  Структура названий функций: UnityPlugin + Название функции в Unity
-            UnityPluginRequestInvateOldPlayer: function () 
-            {
-                JSRequestInvateOldPlayer();
-            }
+        JSRequestInviteOldPlayer();
+    },
 
-            
-    }
-);
-mergeInto(LibraryManager.library, 
+    UnityPluginRequestRepost: function () 
     {
-        //  Структура названий функций: UnityPlugin + Название функции в Unity
-            UnityPluginRequestRepost: function () 
-            {
-                JSRequestShowAds();
-            }
+        JSRequestRepost();
+    },
 
-            
+    UnityPluginRequestBuyTry: function (id) 
+    {
+        JSRequestBuyTry(id);
     }
-);
+});

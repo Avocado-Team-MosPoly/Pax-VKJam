@@ -24,6 +24,129 @@
       </div>
       <div id="unity-warning"> </div>
     </div>
+<script>   // Пользовательский код
+      function JSRequestUserData()   // функция для тестов - вызывается из Unity
+      {
+        userData();
+      }
+      function JSRequestShowAds()   // функция для тестов - вызывается из Unity
+      {
+        showAds();
+      }
+      function JSRequestInviteNewPlayer()   // функция для тестов - вызывается из Unity
+      {
+        newPlayer();
+      }
+      function JSRequestInviteOldPlayer()   // функция для тестов - вызывается из Unity
+      {
+        oldPlayer();
+      }
+	function JSRequestBuyTry(id)   // функция для тестов - вызывается из Unity
+      {
+        var itemId = id.toString();
+        console.log('Попытка покупки с ID:', itemId);
+        vkBridge.send('VKWebAppShowOrderBox', {
+    type: 'item',
+    item: itemId
+  })
+  .then(data => {
+    // Обработка успешного случая. Данные в data могут содержать информацию о покупке
+    if (data.status) {
+      console.log('Покупка успешно совершена', data);
+      // Тут можно отправить данные на сервер для записи в базу
+    } else {
+      console.log('Пользователь отказался от покупки или произошла ошибка');
+    }
+  })
+  .catch(error => {
+    // Логгирование ошибки, если что-то пошло не так
+    console.error('Произошла ошибка при открытии окна заказа:', error.message); // log the message
+    console.error('Неудачный объект:', error); // full error object for inspection
+  });
+      }
+
+      function newPlayer()
+      {
+        vkBridge.send('VKWebAppShowInviteBox', {
+          })
+          .then( (data) => {
+            if (data.success) {
+              // Пользователь нажал «Пригласить» 
+              // ...
+          
+              // Этим выбранным пользователям 
+              // не удалось отправить приглашения 
+              console.log('Приглашения не отправлены', data.notSentIds);
+            }
+          })
+          .catch( (error) => {
+            console.log(error); // Ошибка 
+          });
+      }
+      function oldPlayer()
+      {
+        vkBridge.send("VKWebAppShowRequestBox", {
+              uid: 142918399, // Идентификатор пользователя — получателя сообщения
+              message:    "Мне нужна помощь! Пжл, вышли 20 талеров и алмазную кирку.", // Текст запроса 
+              requestKey: "key-12345" //  Ключ запроса
+              })
+              .then( (data) => {
+                if (data.success) {
+                  // Запрос отправлен.
+                  // ...
+
+                  // Ключ
+                  console.log('Ключ переданного запроса: ', data.requestKey);
+                }
+              })  
+              .catch( (error) => { 
+                console.log(error); // Ошибка 
+              });
+      }
+      function showAds()
+      {
+        console.log('Попытка рекламы');
+        vkBridge.send('VKWebAppShowNativeAds', {
+          ad_format: 'reward' /* Тип рекламы */
+          })
+          .then( (data) => { 
+            console.log(data);
+            if (data.result) {
+              myGameInstance.SendMessage('Connects', 'ResponseSuccessAds');
+            } else {
+              console.log('Ошибка при показе');
+            }
+          })
+          .catch((error) => { 
+            console.error('Произошла ошибка при открытии окна рекламы:', error.message); // log the message
+            console.error('Неудачный объект:', error);
+          });
+      }
+
+
+      function userData() // вызываем метод ВК
+      {
+          vkBridge.send('VKWebAppGetUserInfo', {})
+          .then((data) => 
+          { 
+            if (data.id)
+            {
+              console.log(data);
+              myGameInstance.SendMessage('Connects', 'UserData_Processing', data.id.toString()+ '|' +data.photo_200 + '|' + data.first_name);
+            }
+          })
+          .catch((error) =>
+          {
+            console.log(error);
+          });
+      }
+  
+      jQuery(document).ready(function ($) // страница прогружена
+      {
+        vkBridge.send('VKWebAppInit'); // Инициализация ВК
+      });
+  
+    </script>
     <script>
       window.addEventListener("load", function () {
         if ("serviceWorker" in navigator) {
@@ -104,100 +227,6 @@
       };
       document.body.appendChild(script);
     </script>
-    <script>   // Пользовательский код
-      function JSRequestUserData()   // функция для тестов - вызывается из Unity
-      {
-        userData();
-      }
-      function JSRequestShowAds()   // функция для тестов - вызывается из Unity
-      {
-        showAds();
-      }
-      function JSRequestInvateNewPlayer()   // функция для тестов - вызывается из Unity
-      {
-        newPlayer();
-      }
-      function JSRequestInvateOldPlayer()   // функция для тестов - вызывается из Unity
-      {
-        oldPlayer();
-      }
-      function newPlayer()
-      {
-        bridge.send('VKWebAppShowInviteBox', {
-          requestKey: "key-12345" //  Ключ приглашения
-          })
-          .then( (data) => {
-            if (data.success) {
-              // Пользователь нажал «Пригласить» 
-              // ...
-          
-              // Этим выбранным пользователям 
-              // не удалось отправить приглашения 
-              console.log('Приглашения не отправлены', data.notSentIds);
-            }
-          })
-          .catch( (error) => {
-            console.log(error); // Ошибка 
-          });
-      }
-      function oldPlayer()
-      {
-        bridge.send("VKWebAppShowRequestBox", {
-              uid: 142918399, // Идентификатор пользователя — получателя сообщения
-              message:    "Мне нужна помощь! Пжл, вышли 20 талеров и алмазную кирку.", // Текст запроса 
-              requestKey: "key-12345" //  Ключ запроса
-              })
-              .then( (data) => {
-                if (data.success) {
-                  // Запрос отправлен.
-                  // ...
-
-                  // Ключ
-                  console.log('Ключ переданного запроса: ', data.requestKey);
-              })  
-              .catch( (error) => { 
-                console.log(error); // Ошибка 
-              });
-      }
-      function showAds()
-      {
-        bridge.send('VKWebAppShowNativeAds', {
-          ad_format: 'reward' /* Тип рекламы */
-          })
-          .then( (data) => { 
-            console.log(data);
-            if (data.result) {
-              myGameInstance.SendMessage('Connects', 'ResponseSuccessAds');
-            } else {
-              console.log('Ошибка при показе');
-            }
-          })
-          .catch((error) => { console.log(error); });
-      }
-
-
-      function userData() // вызываем метод ВК
-      {
-          vkBridge.send('VKWebAppGetUserInfo', {})
-          .then((data) => 
-          { 
-            if (data.id)
-            {
-              console.log(data);
-              myGameInstance.SendMessage('Connects', 'UserData_Processing', data.id.toString()+ '|' +data.photo_200 + '|' + data.first_name);
-            }
-          })
-          .catch((error) =>
-          {
-            console.log(error);
-          });
-      }
-  
-      jQuery(document).ready(function ($) // страница прогружена
-      {
-        vkBridge.send('VKWebAppInit'); // Инициализация ВК
-      });
-  
-    </script>
+    
   </body>
 </html>
