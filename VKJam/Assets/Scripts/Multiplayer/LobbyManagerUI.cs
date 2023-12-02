@@ -49,7 +49,7 @@ public class LobbyManagerUI : NetworkBehaviour
 
     public override void OnDestroy()
     {
-        if (IsServer)
+        if (IsServer && NetworkManager.Singleton != null)
         {
             NetworkManager.Singleton.OnClientDisconnectCallback -= PLayerLeave;
             NetworkManager.Singleton.OnClientConnectedCallback -= PlayerConnect;
