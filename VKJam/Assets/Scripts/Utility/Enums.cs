@@ -64,7 +64,8 @@ public enum ItemType
     DrawingColors,
     Avatars,
     AvatarFrame,
-    Currency
+    Currency,
+    Table
 }
 
 public enum RandomType

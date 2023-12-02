@@ -5,6 +5,9 @@ using Unity.Services.Authentication;
 
 public struct PlayerData : INetworkSerializable, System.IEquatable<PlayerData>
 {
+    public byte AvatarIndex;
+    public byte AvatarFrameIndex;
+
     private FixedString64Bytes authenticationServiceId;
     private FixedString64Bytes name;
 
@@ -38,27 +41,29 @@ public struct PlayerData : INetworkSerializable, System.IEquatable<PlayerData>
         }
     }
 
-    public byte ProfileImageIndex;
-
-    public PlayerData(bool useless = false)
+    public PlayerData(byte avatarIndex, byte avatarFrameIndex)
     {
         authenticationServiceId = AuthenticationService.Instance.PlayerId;
         name = Authentication.PlayerName;
-        ProfileImageIndex = UserData.UserImageIndex;
+
+        AvatarIndex = avatarIndex;
+        AvatarFrameIndex = avatarFrameIndex;
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref authenticationServiceId);
         serializer.SerializeValue(ref name);
-        serializer.SerializeValue(ref ProfileImageIndex);
+        serializer.SerializeValue(ref AvatarIndex);
+        serializer.SerializeValue(ref AvatarFrameIndex);
     }
 
     public bool Equals(PlayerData other)
     {
         return this.authenticationServiceId == other.authenticationServiceId
             && this.name == other.name
-            && this.ProfileImageIndex == other.ProfileImageIndex;
+            && this.AvatarIndex == other.AvatarIndex
+            && this.AvatarFrameIndex == other.AvatarFrameIndex;
     }
 
     public override string ToString()
@@ -66,7 +71,8 @@ public struct PlayerData : INetworkSerializable, System.IEquatable<PlayerData>
         string result = string.Empty;
 
         result += "Name: " + name + ", ";
-        result += "Profile Image Index: " + ProfileImageIndex + ", ";
+        result += "Avatar Index: " + AvatarIndex + ", ";
+        result += "Avatar Frame Index: " + AvatarFrameIndex + ", ";
         result += "Authentication Service Id: " + authenticationServiceId;
 
         return result;

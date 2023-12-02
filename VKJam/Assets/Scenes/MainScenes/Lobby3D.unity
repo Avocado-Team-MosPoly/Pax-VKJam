@@ -2010,7 +2010,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u041D\u0430\u0447\u0430\u0442\u044C"
+  m_text: "\u041D\u0435 \u0433\u043E\u0442\u043E\u0432"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
   m_sharedMaterial: {fileID: 3727686744989863773, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
@@ -4162,8 +4162,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leaveLobbyButton: {fileID: 1780831507}
-  updatePlayerList: {fileID: 1640443493}
-  ready: {fileID: 1493065764}
+  updatePlayerListButton: {fileID: 1640443493}
+  readyButton: {fileID: 1493065764}
   playerGameObjectList:
   - {fileID: 251506184}
   - {fileID: 1958560448}
@@ -4175,6 +4175,8 @@ MonoBehaviour:
   - {fileID: 1058297299}
   - {fileID: 673248810}
   playerDataViewManager: {fileID: 8419256763332442937}
+  notReadyText: "\u041D\u0435 \u0433\u043E\u0442\u043E\u0432"
+  readyText: "\u0413\u043E\u0442\u043E\u0432"
 --- !u!4 &1547181419
 Transform:
   m_ObjectHideFlags: 0

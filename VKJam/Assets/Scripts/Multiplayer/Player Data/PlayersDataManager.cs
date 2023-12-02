@@ -1,12 +1,17 @@
 using System;
 using System.Collections.Generic;
 using Unity.Netcode;
+using UnityEngine;
 
 public class PlayersDataManager : NetworkBehaviour
 {
     public static PlayersDataManager Instance { get; private set; }
 
     public IReadOnlyDictionary<ulong, PlayerData> PlayerDatas => playerDatas;
+
+    public storeSection AvatarsAndFramesStorage => avatarsAndFramesStorage;
+
+    [SerializeField] private storeSection avatarsAndFramesStorage;
 
     private Dictionary<ulong, PlayerData> playerDatas = new();
     private NetworkList<NetworkTuple_PlayerData> playerDatasList = new();
@@ -44,10 +49,52 @@ public class PlayersDataManager : NetworkBehaviour
 
         Init();
 
-        if (!playerDatas.ContainsKey(NetworkManager.LocalClientId))
-            AddPlayerData(new PlayerData(false));
-        else
-            Logger.Instance.Log($"[{nameof(PlayersDataManager)}] Your data already stored");
+        (byte, byte) avatarAndFrameIndexes = GetAvatarAndFrameIndexes();
+        AddPlayerData(new PlayerData(avatarAndFrameIndexes.Item1, avatarAndFrameIndexes.Item2));
+    }
+
+    /// <summary> </summary>
+    /// <returns> First is Avatar index, second is Frame </returns>
+    private (byte, byte) GetAvatarAndFrameIndexes()
+    {
+        (byte, byte) result = (1, 0);
+
+        //if (CustomController._executor == null)
+            return result;
+
+        //Logger.Instance.LogError("");
+        //Logger.Instance.Log(CustomController._executor.Custom[(int)ItemType.Avatars].Data.productName);
+        //Logger.Instance.LogError("");
+        for (int i = 0; i < avatarsAndFramesStorage.products.Count; i++)
+        {
+            if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.Avatars)
+            {
+                //Logger.Instance.Log(avatarsAndFramesStorage.products[i].Data.productName);
+                if (CustomController._executor.Custom[(int)ItemType.Avatars].Model == avatarsAndFramesStorage.products[i].Model)
+                {
+                    result.Item1 = (byte)i;
+                    break;
+                }
+            }
+        }
+        //Logger.Instance.LogError("");
+        //Logger.Instance.Log(CustomController._executor.Custom[(int)ItemType.AvatarFrame].Data.productName);
+        //Logger.Instance.LogError("");
+        for (int i = 0; i < avatarsAndFramesStorage.products.Count; i++)
+        {
+            if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.AvatarFrame)
+            {
+                //Logger.Instance.Log(avatarsAndFramesStorage.products[i].Data.productName);
+                if (CustomController._executor.Custom[(int)ItemType.AvatarFrame].Model == avatarsAndFramesStorage.products[i].Model)
+                {
+                    result.Item1 = (byte)i;
+                    break;
+                }
+            }
+        }
+        //Logger.Instance.LogWarning(result);
+
+        return result;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -80,7 +127,7 @@ public class PlayersDataManager : NetworkBehaviour
 
         if (playerDatas.ContainsKey(localClientId))
         {
-            Logger.Instance.LogWarning($"[{nameof(PlayersDataManager)}] Player data already stored. You need {nameof(ChangePlayerData)} method");
+            Logger.Instance.LogWarning($"[{nameof(PlayersDataManager)}] Player data already stored. Use {nameof(ChangePlayerData)} instead");
             return;
         }
 

@@ -9,14 +9,15 @@ public class VK_Connect : MonoBehaviour
     public URL_Image urlImage;
 
     [SerializeField] private Php_Connect PHPConnect;
-
+    [SerializeField] private bool NeedDebuging;
 
     [DllImport("__Internal")] private static extern void UnityPluginRequestJs();
     [DllImport("__Internal")] private static extern void UnityPluginRequestUserData();
     [DllImport("__Internal")] private static extern void UnityPluginRequestAds();
     [DllImport("__Internal")] private static extern void UnityPluginRequestRepost();
-    [DllImport("__Internal")] private static extern void UnityPluginRequestInvateNewPlayer();
-    [DllImport("__Internal")] private static extern void UnityPluginRequestInvateOldPlayer();
+    [DllImport("__Internal")] private static extern void UnityPluginRequestInviteNewPlayer();
+    [DllImport("__Internal")] private static extern void UnityPluginRequestInviteOldPlayer();
+    [DllImport("__Internal")] private static extern void UnityPluginRequestBuyTry(int id);
     private static VK_Connect instance;
 
     private void Start()
@@ -40,16 +41,16 @@ public class VK_Connect : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         GameObject temp;
-        if (DebugingText == null)
+        if (DebugingText == null && NeedDebuging)
         {
             temp = GameObject.FindGameObjectWithTag("Debug");
             if (temp != null) DebugingText = temp.GetComponent<TMPro.TMP_Text>();
         }
-        if (NameText == null) { 
+        if (NameText == null && NeedDebuging) { 
             temp = GameObject.FindGameObjectWithTag("Name");
             if(temp != null) NameText = temp.GetComponent<TMPro.TMP_Text>();
         }
-        if (urlImage == null) { 
+        if (urlImage == null && NeedDebuging) { 
             temp = GameObject.FindGameObjectWithTag("Profile_Picture");
             if (temp != null) urlImage = temp.GetComponent<URL_Image>();
         }
@@ -58,23 +59,33 @@ public class VK_Connect : MonoBehaviour
 
     public void RequestJs() // вызываем из событий unity
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestJs();
+#endif
     }
     public void RequestAds() // вызываем из событий unity
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestAds();
+#endif
     }
     public void RequestRepost() // вызываем из событий unity
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestRepost();
+#endif
     }
     public void RequestInvateNewPlayer() // вызываем из событий unity
     {
-        UnityPluginRequestInvateNewPlayer();
+#if UNITY_WEBGL && !UNITY_EDITOR
+        UnityPluginRequestInviteNewPlayer();
+#endif
     }
     public void RequestInvateOldPlayer() // вызываем из событий unity
     {
-        UnityPluginRequestInvateOldPlayer();
+#if UNITY_WEBGL && !UNITY_EDITOR
+        UnityPluginRequestInviteOldPlayer();
+#endif
     }
     public void ResponseSuccessAds() // вызываем из событий unity
     {
@@ -82,9 +93,16 @@ public class VK_Connect : MonoBehaviour
     }
     public void RequestUserData() // вызываем из событий unity
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestUserData();
+#endif
     }
-
+    public void RequestBuyTry(int id) // вызываем из событий unity
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        UnityPluginRequestBuyTry(id);
+#endif
+    }
     public void ResponseOk(string message)
     {
         DebugingText.text = message;

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -20,6 +21,9 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
 
     private LobbyPlayerDataView playerToKick;
     private RectTransform rectTransform;
+
+    private IReadOnlyDictionary<ulong, PlayerData> playerData => PlayersDataManager.Instance.PlayerDatas;
+    private storeSection avatarsAndFramesStorage => PlayersDataManager.Instance.AvatarsAndFramesStorage;
 
     private void Awake()
     {
@@ -117,7 +121,22 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
         }
 
         if (PlayersDataManager.Instance.PlayerDatas.ContainsKey(clientId))
+        {
             playerDatas[clientId].SetData(PlayersDataManager.Instance.PlayerDatas[clientId].Name, clientId);
+
+            try
+            {
+                Sprite avatar = avatarsAndFramesStorage.products[playerData[clientId].AvatarIndex].Model.GetComponent<Image>().sprite;
+                Sprite frame = avatarsAndFramesStorage.products[playerData[clientId].AvatarFrameIndex].Model.GetComponent<Image>().sprite;
+
+                playerDatas[clientId].SetAvatar(avatar);
+                playerDatas[clientId].SetFrame(frame);
+            }
+            catch (System.NullReferenceException ex)
+            {
+                Logger.Instance.LogError($"[{nameof(LobbyPlayerDataViewManager)}] {ex}");
+            }
+        }
         else
             playerDatas[clientId].SetData(null, clientId);
     }

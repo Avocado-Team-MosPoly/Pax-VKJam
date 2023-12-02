@@ -18,7 +18,7 @@ public class CustomController : TaskExecutor<CustomController>
         foreach (ItemType cur in System.Enum.GetValues(typeof(ItemType)))
             Custom[(int)cur] = Search(PlayerPrefs.GetInt("Custom_" + cur), cur);
     }
-    private WareData Search(int id, ItemType Type)
+    public WareData Search(int id, ItemType Type)
     {
         foreach(var current in Categories[(int)Categorize(Type)].products)
         {
@@ -135,6 +135,8 @@ public class CustomController : TaskExecutor<CustomController>
                 return ShopFilters.AvatarsAndChat;
             case ItemType.Currency:
                 return ShopFilters.Currency;
+            case ItemType.Table:
+                return ShopFilters.Paint;
             default:
                 return 0;
         }
