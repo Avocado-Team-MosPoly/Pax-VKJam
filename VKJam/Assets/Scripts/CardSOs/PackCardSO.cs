@@ -48,7 +48,6 @@ public class PackCardSO : ScriptableObject
     [ContextMenu("Set all CardIsInOwn - false")]
     public void ResetOwning()
     {
-        return;
         for (int j = 0; j < CardInPack.Length; ++j)
         {
             CardInPack[j].CardIsInOwn = false;

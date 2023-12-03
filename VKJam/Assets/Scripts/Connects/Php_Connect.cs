@@ -74,6 +74,31 @@ public class Php_Connect : MonoBehaviour
             }
         }
     }
+    public static string Request_TokenBuy(int id) // Переписать под инт, по схеме
+    {
+        if (!PHPisOnline) return "";
+        WWWForm form = new WWWForm();
+        form.AddField("Nickname", Nickname);
+        form.AddField("Id", id);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/TokenBuy.php", form))
+        {
+            www.certificateHandler = new AcceptAllCertificates();
+            // Запрос выполняется дожидаясь его завершения
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return www.downloadHandler.text;
+            }
+        }
+    }
     public static string Request_CraftCardTry(int idCard, bool ForThePieces)
     {
         if (!PHPisOnline) return "";

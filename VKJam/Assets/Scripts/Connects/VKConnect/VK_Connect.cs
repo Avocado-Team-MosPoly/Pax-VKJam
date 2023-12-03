@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
-public class VK_Connect : MonoBehaviour
+public class VK_Connect : TaskExecutor<VK_Connect>
 {
     public TMPro.TMP_Text DebugingText;
     public TMPro.TMP_Text NameText;
@@ -19,7 +19,6 @@ public class VK_Connect : MonoBehaviour
     [DllImport("__Internal")] private static extern void UnityPluginRequestInviteOldPlayer();
     [DllImport("__Internal")] private static extern void UnityPluginRequestBuyTry(int id);
     private static VK_Connect instance;
-
     private void Start()
     {
         if (instance == null)
@@ -65,6 +64,7 @@ public class VK_Connect : MonoBehaviour
     }
     public void RequestAds() // вызываем из событий unity
     {
+        if (!AdManager.CanShowAd()) return;
 #if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestAds();
 #endif
@@ -89,7 +89,9 @@ public class VK_Connect : MonoBehaviour
     }
     public void ResponseSuccessAds() // вызываем из событий unity
     {
+        AdManager.OnAdWatched();
         Php_Connect.Request_TokenWin(50);
+        CurrencyCatcher._executor.Refresh();
     }
     public void RequestUserData() // вызываем из событий unity
     {
