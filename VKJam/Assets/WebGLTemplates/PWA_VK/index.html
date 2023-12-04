@@ -6,12 +6,12 @@
 	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta http-equiv="Expires" content="0" />
-    <title>Unity WebGL Player | ChurMe</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-    <link rel="manifest" href="manifest.webmanifest">
+  <title> Чур Меня! </title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="TemplateData/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+  <link rel="manifest" href="manifest.webmanifest">
   </head>
   <body>
     <div id="unity-container">
@@ -185,15 +185,15 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Pax-Build.loader.js";
+      var loaderUrl = buildUrl + "/{{{LOADER_FILENAME}}}";
       var config = {
-        dataUrl: buildUrl + "/Pax-Build.data",
-        frameworkUrl: buildUrl + "/Pax-Build.framework.js",
-        codeUrl: buildUrl + "/Pax-Build.wasm",
+        dataUrl: buildUrl + "/{{{DATA_FILENAME}}}",
+        frameworkUrl: buildUrl + "/{{{FRAMEWORK_FILENAME}}}",
+        codeUrl: buildUrl + "/{{{CODE_FILENAME}}}",
         streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "ChurMe",
-        productVersion: "0.1",
+        companyName: "/{{{COMPANY_NAME}}}",
+        productName: "/{{{PRODUCT_NAME}}}",
+        productVersion: "/{{{PRODUCT_VERSION}}}",
         showBanner: unityShowBanner,
       };
 
@@ -226,6 +226,8 @@
         });
       };
       document.body.appendChild(script);
+
+      console.log("USE_THREADS: " + "{{{USE_THREADS}}}");
     </script>
     
   </body>
