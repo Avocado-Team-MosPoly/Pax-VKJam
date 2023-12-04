@@ -15,19 +15,18 @@ public class RandomItemList : RandomItem
         Massiv = Massiv.OrderBy(x => x.ResultLesserThan).ToList();
         //Debug.Log(SystemName);
     }
-    override public void Interact()
+    override public int Interact()
     {
-        float result = Random.Range(1, 100);
+        int result = Random.Range(1, 100);
         Debug.Log(SystemName + " roll - " + result);
         foreach (var current in Massiv)
         {
             if (current.ResultLesserThan + RandomStrikeMod * RandomStrike > result)
             {
                 Debug.Log(current.SystemName);
-                    current.Interact();
-                break;
+                    return current.Interact();
             }
         }
-
+        return 0;
     }
 }

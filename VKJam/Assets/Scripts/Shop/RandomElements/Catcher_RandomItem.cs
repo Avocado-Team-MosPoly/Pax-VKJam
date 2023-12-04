@@ -7,7 +7,8 @@ public class Catcher_RandomItem : MonoBehaviour
     [SerializeField] private CurrencyCatcher display;
     [SerializeField] private static RandomItem DroppedItem;
     [SerializeField] private Animator Hand;
-    [SerializeField] private GameObject SpawnPoint;
+    [SerializeField] private GameObject[] WinObjects;
+
     public static int Result;
 
     public delegate void ThisDroppedEvent();
@@ -41,6 +42,15 @@ public class Catcher_RandomItem : MonoBehaviour
         else Php_Connect.randomBase.Interact();
         display.Refresh();
     }
+
+    private void ActiveWinObject(int id)
+    {
+        for(int i = 0; i < WinObjects.Length;++i)
+        {
+            if (id == i) WinObjects[i].SetActive(true);
+            else WinObjects[i].SetActive(false);
+        }
+    }
     private void OnDroppingWhatever()
     {
         switch (DroppedItem.Type)
@@ -49,15 +59,19 @@ public class Catcher_RandomItem : MonoBehaviour
                 Hand.Play("WishFiga");
         break;
             case RandomType.Token:
+                ActiveWinObject(0);
                 Hand.Play("Wish");
                 break;
             case RandomType.Card:
+                ActiveWinObject(1);
                 Hand.Play("Wish");
                 break;
             case RandomType.CardPiece:
+                ActiveWinObject(2);
                 Hand.Play("Wish");
                 break;
             case RandomType.Custom:
+                ActiveWinObject(3);
                 Hand.Play("Wish");
                 break;
             default:

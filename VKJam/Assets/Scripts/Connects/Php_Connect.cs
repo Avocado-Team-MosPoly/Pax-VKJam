@@ -1,4 +1,3 @@
-using System;
 using UnityEngine.Networking;
 using UnityEngine;
 [System.Serializable] 
@@ -22,7 +21,13 @@ public class Php_Connect : MonoBehaviour
     public static RandomItemList randomBase;
     public static Currency Current;
     public Currency current;
-
+    [ContextMenu("Forced set static data by local data")]
+    public void ForcedLinked()
+    {
+        link = Link;
+        Nickname = 333;
+        randomBase = RandomBase;
+    }
     public void Init()
     {
         SceneLoader.EndLoad += OnGameEnded;
@@ -210,14 +215,40 @@ public class Php_Connect : MonoBehaviour
         int ID;
         if (DesignID == 0)
         {
-            randomBase.Interact();
-            ID = Catcher_RandomItem.Result;
-            if (ID >= -4 && ID < 0) return Request_BuyTry(ID);
-            else return Response_Gift(ID, TargetNickname);
+            ID = randomBase.Interact();
+            if (ID >= -5 && ID < 0) return Request_TokenWin(RandomToken(ID));
+            else switch (ID)
+                {
+                    case -6:
+                        return Request_DesignWin();
+                    case -7:
+                        return Request_CardWin(false);
+                    case -8:
+                        return Request_CardWin(true);
+                    default:
+                        return "";
+                }
         }
         else return Response_Gift(DesignID, TargetNickname);
     }
-
+    private static int RandomToken(int id)
+    {
+        switch (id)
+        {
+            case -1:
+                return Random.Range(1, 50);
+            case -2:
+                return Random.Range(51, 100);
+            case -3:
+                return Random.Range(101, 200);
+            case -4:
+                return Random.Range(201, 250);
+            case -5:
+                return Random.Range(251, 500);
+            default:
+                return 0;
+        }
+    }
     private static string Response_Gift(int DesignID, int TargetNickname)
     {
         if (!PHPisOnline) return "";
@@ -318,7 +349,55 @@ public class Php_Connect : MonoBehaviour
             }
         }
     }
-
+    public static string Request_CardWin(bool isShard)
+    {
+        //if (!PHPisOnline) return "";
+        WWWForm form = new WWWForm();
+        Debug.Log(link + "/CardWin.php");
+        form.AddField("Nickname", Nickname);
+        form.AddField("IsShard", isShard.ToString());
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/CardWin.php", form))
+        {
+            www.certificateHandler = new AcceptAllCertificates();
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return www.downloadHandler.text;
+            }
+        }
+    }
+    public static string Request_DesignWin()
+    {
+        //if (!PHPisOnline) return "";
+        WWWForm form = new WWWForm();
+        Debug.Log(link + "/DesignWin.php");
+        form.AddField("Nickname", Nickname);
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignWin.php", form))
+        {
+            www.certificateHandler = new AcceptAllCertificates();
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return www.downloadHandler.text;
+            }
+        }
+    }
     public static int Request_DesignCount()
     {
         if (!PHPisOnline) return -1;

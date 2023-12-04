@@ -33,7 +33,7 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         }
 
         StartCoroutine(Init());
-        PHPConnect.Init();
+        if(PHPConnect != null ) PHPConnect.Init();
     }
 
     private System.Collections.IEnumerator Init()

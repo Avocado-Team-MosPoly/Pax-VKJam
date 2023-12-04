@@ -13,10 +13,11 @@ public class RandomItem : ScriptableObject
     {
         return IsEmbedded;
     }
-    private void Start() => Embedded();
-    public virtual void Interact() 
+    private void Awake() => Embedded();
+    public virtual int Interact() 
     {
-        Catcher_RandomItem.SetData(this);        
+        Catcher_RandomItem.SetData(this);
+        return DesignID;
     }
 
     public float ResultLesserThan;

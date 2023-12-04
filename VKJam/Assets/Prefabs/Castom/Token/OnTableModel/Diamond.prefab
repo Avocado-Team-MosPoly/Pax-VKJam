@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3363663946625446401}
   - component: {fileID: 3602037243818784554}
   - component: {fileID: 3381774479407346654}
+  - component: {fileID: 1989688232813465935}
   m_Layer: 0
   m_Name: Diamond
   m_TagString: Untagged
@@ -118,6 +119,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1989688232813465935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9112684791807681095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 070f0c1784f8e4f48ad49162c5ea3195, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Data: {fileID: 3602037243818784554}
+  Object: {fileID: 9112684791807681095}
 --- !u!1001 &5833473545262127
 PrefabInstance:
   m_ObjectHideFlags: 0
