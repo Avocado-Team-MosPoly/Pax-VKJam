@@ -42,6 +42,7 @@ public class CustomController : TaskExecutor<CustomController>
     [ContextMenu("Fill Data in Standart")]
     private void StandartFill()
     {
+        Standart = new WareData[System.Enum.GetNames(typeof(ItemType)).Length];
         foreach (ItemType cur in System.Enum.GetValues(typeof(ItemType)))
         {
             if (Categories[(int)Categorize(cur)].products.Count == 0) continue;
