@@ -33,7 +33,7 @@ public class SceneObjectsManager : MonoBehaviour
         GameManager.Instance.RoleManager.OnPainterSetted.AddListener(OnPainterSetted);
         GameManager.Instance.RoleManager.OnGuesserSetted.AddListener(OnGuesserSetted);
 
-        if (!NetworkManager.Singleton.IsHost)
+        if (!CustomNetworkManager.Singleton.IsHost)
         {
             GameManager.Instance.Paint.OnNetworkSpawned.AddListener(() =>
             {
@@ -76,7 +76,7 @@ public class SceneObjectsManager : MonoBehaviour
     {
         OnRoleSetted();
 
-        if (isFirstSetted || NetworkManager.Singleton.IsServer)
+        if (isFirstSetted || CustomNetworkManager.Singleton.IsServer)
         {
             foreach (GameObject obj in painterGameObjects)
                 obj.SetActive(false);

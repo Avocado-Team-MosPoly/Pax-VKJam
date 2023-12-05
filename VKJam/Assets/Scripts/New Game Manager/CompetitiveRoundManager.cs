@@ -12,7 +12,7 @@ public class CompetitiveRoundManager : RoundManager
     {
         base.LoseRound();
 
-        foreach (byte clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        foreach (byte clientId in CustomNetworkManager.Singleton.ConnectedClientsIds)
         {
             if (clientId != GameManager.Instance.PainterId)
                 TokenManager.RemoveTokensToClient(config.PenaltyIfMonsterIsNotGuessed_CM_G.GetValue(playersCount), clientId);
@@ -61,7 +61,7 @@ public class CompetitiveRoundManager : RoundManager
         //if (correctGuesserIds.Count > 2)
         //    tokensIfMoreThanOnePlayerGuessedMonster += (playersCount - 1) * (correctGuesserIds.Count - 2);
 
-        foreach (byte clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        foreach (byte clientId in CustomNetworkManager.Singleton.ConnectedClientsIds)
         {
             if (correctGuesserIds.Contains(clientId))
             {
@@ -98,7 +98,7 @@ public class CompetitiveRoundManager : RoundManager
     private int CalculatePenalty(int correctGuesserIdsCount)
     {
         int wrongGuessedPlayers =
-            NetworkManager.Singleton.ConnectedClientsIds.Count -
+            CustomNetworkManager.Singleton.ConnectedClientsIds.Count -
             (correctGuesserIdsCount == 0 ? 1 : correctGuesserIdsCount);
 
         return config.PenaltyIfMonsterIsNotGuessed_CM_P.GetValue(playersCount) * wrongGuessedPlayers;

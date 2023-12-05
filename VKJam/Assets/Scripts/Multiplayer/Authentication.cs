@@ -12,6 +12,7 @@ public class Authentication : MonoBehaviour
 
     public static async void Authenticate()
     {
+        Logger.Instance.Log(typeof(Authentication), "Authentication started");
         if (UnityServices.State == ServicesInitializationState.Initialized)
         {
             Logger.Instance.Log(typeof(Authentication), "Unity Services alredy initialized");
@@ -29,7 +30,6 @@ public class Authentication : MonoBehaviour
                 UserId = number;
             }
 
-            Logger.Instance.Log(typeof(Authentication), "Player Name: " + PlayerName);
             InitializationOptions initializationOptions = new();
             initializationOptions.SetProfile(UserId);
 
@@ -47,7 +47,7 @@ public class Authentication : MonoBehaviour
         };
         Logger.Instance.Log(typeof(Authentication), "Sign in in progress...");
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        Logger.Instance.Log(typeof(Authentication), "Signed in. Your id is " + AuthenticationService.Instance.PlayerId);
+        Logger.Instance.Log(typeof(Authentication), $"Signed in. Your id is {AuthenticationService.Instance.PlayerId}, player name is {PlayerName}");
     }
 
     public static void ChangePlayerName(string playerName)

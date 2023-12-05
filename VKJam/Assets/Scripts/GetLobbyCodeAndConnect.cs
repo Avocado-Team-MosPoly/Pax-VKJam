@@ -10,7 +10,7 @@ public class GetLobbyCodeAndConnect : MonoBehaviour
     void Awake()
     {
         connect.onClick.AddListener(async () => await LobbyManager.Instance.JoinLobby(connectedLobbyCode));
-        connect.onClick.AddListener(async () => await LobbyManager.Instance.JoinLobby(LobbyCode));
+        //connect.onClick.AddListener(async () => await LobbyManager.Instance.JoinLobby(LobbyCode));
         code.onValueChanged.AddListener(ChangeConnectedLobbyCode);
     }
     public void ChangeConnectedLobbyCode(string value)

@@ -137,7 +137,7 @@ public class GameManager : NetworkBehaviour
             ingredientManager.OnIngredientSwitched.AddListener(OnIngredientSwitched);
             roundManager.OnRoundEnded.AddListener(OnRoundEnded);
 
-            roundAmount = NetworkManager.Singleton.ConnectedClientsIds.Count;
+            roundAmount = CustomNetworkManager.Singleton.ConnectedClientsIds.Count;
 
             RelayManager.Instance.OnClientConnected.AddListener((ulong clientId) =>
             {

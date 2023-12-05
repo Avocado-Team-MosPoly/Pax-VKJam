@@ -54,25 +54,10 @@ public class RelayManager : MonoBehaviour
 
     private void Awake()
     {
-#if UNITY_EDITOR
-#if UNITY_WEBGL
-        Logger.Instance.LogError(this, new PlatformNotSupportedException("Multiplyer doesn't work in editor on \"WebGL\" platform. You should change platform to \"Windows, Mac, Linux\""));
-        UnityEditor.EditorApplication.isPlaying = false;
-#endif
-#endif
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(Instance.gameObject);
-
-            NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
-            {
-                OnClientConnected?.Invoke(clientId);
-            };
-            NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
-            {
-                OnClientDisconnect?.Invoke(clientId);
-            };
         }
         else
         {
@@ -81,14 +66,46 @@ public class RelayManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        if (Instance != this)
+            return;
+
+        CustomNetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
+        {
+            OnClientConnected?.Invoke(clientId);
+        };
+        CustomNetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
+        {
+            OnClientDisconnect?.Invoke(clientId);
+        };
+    }
+
+    private bool PlatformNotSupportedException()
+    {
+#if UNITY_EDITOR
+#if UNITY_WEBGL
+        Logger.Instance.LogError(this, new PlatformNotSupportedException("Multiplyer doesn't work in editor on \"WebGL\" platform. You should change platform to \"Windows, Mac, Linux\""));
+        UnityEditor.EditorApplication.isPaused = true;
+        return true;
+#endif
+#endif
+        return false;
+    }
+
     public async Task<string> CreateRelay()
     {
+        if (PlatformNotSupportedException())
+        {
+            return "0";
+        }
+
         try
         {
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(4, connectionRegion);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             
-            UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            UnityTransport unityTransport = CustomNetworkManager.Singleton.GetComponent<UnityTransport>();
 
 #if UNITY_EDITOR
             Logger.Instance.Log(this, "EDITOR");
@@ -124,17 +141,17 @@ public class RelayManager : MonoBehaviour
             unityTransport.SetRelayServerData(relayServerData);
 #endif
 #endif
-            NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
+            CustomNetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
             {
                 Logger.Instance.Log(this, $"Client {clientId} connected");
                 //SpawnPlayersDataManagerWithOwnership(clientId);
             };
-            NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
+            CustomNetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
             {
-                Logger.Instance.Log(this, NetworkManager.Singleton.DisconnectReason);
+                Logger.Instance.Log(this, CustomNetworkManager.Singleton.DisconnectReason);
             };
 
-            NetworkManager.Singleton.OnServerStarted += () =>
+            CustomNetworkManager.Singleton.OnServerStarted += () =>
             {
                 PlayersDataManager pdmInstance = Instantiate(playersDataManagerPrefab);
                 pdmInstance.NetworkObject.Spawn();
@@ -142,9 +159,7 @@ public class RelayManager : MonoBehaviour
                 SceneLoader.ServerLoad(lobbySceneName);
             };
 
-
-
-            NetworkManager.Singleton.OnClientStopped += (bool isHost) =>
+            CustomNetworkManager.Singleton.OnClientStopped += (bool isHost) =>
             {
                 //if (PlayersDataManager.Instance != null && PlayersDataManager.Instance.NetworkObject != null)
                 //    PlayersDataManager.Instance.NetworkObject.Despawn();
@@ -152,11 +167,11 @@ public class RelayManager : MonoBehaviour
                 SceneLoader.Load("Menu");
             };
 
-            NetworkManager.Singleton.OnClientStarted += () =>
+            CustomNetworkManager.Singleton.OnClientStarted += () =>
             {
                 Logger.Instance.Log(this, $"Client Started on server\nCurrent Lobby: {LobbyManager.Instance.CurrentLobby.Name}\nLobby Player Id: {LobbyManager.Instance.LobbyPlayerId}");
             };
-            NetworkManager.Singleton.StartHost();
+            CustomNetworkManager.Singleton.StartHost();
 
             Logger.Instance.Log(this, "You created relay with code: " + joinCode);
             return joinCode;
@@ -172,14 +187,19 @@ public class RelayManager : MonoBehaviour
         }
     }
 
-    public async Task JoinRelay(string joinCode)
+    public async Task<bool> JoinRelay(string joinCode)
     {
+        if (PlatformNotSupportedException())
+        {
+            return false;
+        }
+
         try
         {
             Logger.Instance.Log(this, joinCode);
 
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
-            UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            UnityTransport unityTransport = CustomNetworkManager.Singleton.GetComponent<UnityTransport>();
 
 #if UNITY_EDITOR
             Logger.Instance.Log(this, "EDITOR");
@@ -217,38 +237,40 @@ public class RelayManager : MonoBehaviour
             unityTransport.SetRelayServerData(relayServerData);
 #endif
 #endif
-            NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => Debug.Log(NetworkManager.Singleton.DisconnectReason);
+            CustomNetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => Debug.Log(CustomNetworkManager.Singleton.DisconnectReason);
 
-            NetworkManager.Singleton.OnClientStarted += /*async*/ () =>
+            CustomNetworkManager.Singleton.OnClientStarted += /*async*/ () =>
             {
                 Logger.Instance.Log(this, "Client Started");
             };
-            NetworkManager.Singleton.OnClientStopped += async (bool isHost) =>
+            CustomNetworkManager.Singleton.OnClientStopped += async (bool isHost) =>
             {
                 Disconnect();
                 await LobbyManager.Instance.LeaveLobbyAsync();
                 SceneLoader.Load("Menu");
             };
 
-            NetworkManager.Singleton.StartClient();
+            CustomNetworkManager.Singleton.StartClient();
 
             Logger.Instance.Log(this, "You joined relay with code: " +  joinCode);
+
+            return true;
         }
         catch (RelayServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
             NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Relay servers.");
 
-            LobbyManager.Instance.Disconnect();
+            return false;
         }
     }
 
     public void DisconnectPlayer(ulong clientId)
     {
-        if (!NetworkManager.Singleton.IsServer)
+        if (!CustomNetworkManager.Singleton.IsServer)
             return;
 
-        NetworkManager.Singleton.DisconnectClient(clientId);
+        CustomNetworkManager.Singleton.DisconnectClient(clientId);
         //LobbyManager.Instance.DisconnectPlayer(clientId);
     }
 
@@ -256,8 +278,8 @@ public class RelayManager : MonoBehaviour
     {
         try
         {
-            NetworkManager.Singleton.Shutdown();
-            //while (NetworkManager.Singleton.ShutdownInProgress) { }
+            CustomNetworkManager.Singleton.Shutdown();
+            //while (CustomNetworkManager.Singleton.ShutdownInProgress) { }
             Logger.Instance.Log(this, "Disconnected from server");
         }
         catch (Exception ex)

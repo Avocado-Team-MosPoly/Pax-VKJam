@@ -73,7 +73,7 @@ public class Chat : NetworkBehaviour
     {
         Message msg = new()
         {
-            senderId = (byte)NetworkManager.Singleton.LocalClientId,
+            senderId = (byte)CustomNetworkManager.Singleton.LocalClientId,
             text = new FixedString64Bytes(messageInputField.text)
         };
 
@@ -99,7 +99,7 @@ public class Chat : NetworkBehaviour
     [ClientRpc]
     private void SendMessageClientRpc(Message message)
     {
-        if (message.senderId != NetworkManager.Singleton.LocalClientId)
+        if (message.senderId != CustomNetworkManager.Singleton.LocalClientId)
         {
             history.Add(message);
             OnMessageReceived?.Invoke();

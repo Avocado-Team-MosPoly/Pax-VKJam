@@ -64,8 +64,8 @@ public class LobbyPlayerDataView : MonoBehaviour,
         if (eventData.button != PointerEventData.InputButton.Left)
             return;
 
-        if (NetworkManager.Singleton.IsServer)
-            if (NetworkManager.Singleton.LocalClientId != ClientId)
+        if (CustomNetworkManager.Singleton.IsServer)
+            if (CustomNetworkManager.Singleton.LocalClientId != ClientId)
                 ClickedOnServer?.Invoke(this);
     }
 }

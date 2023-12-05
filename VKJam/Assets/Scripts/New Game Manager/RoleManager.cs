@@ -11,7 +11,7 @@ public class RoleManager : NetworkBehaviour
     [HideInInspector] public UnityEvent OnPainterSetted;
     [HideInInspector] public UnityEvent OnGuesserSetted;
     public byte PainterId => painterId.Value;
-    public bool IsPainter => PainterId == NetworkManager.Singleton.LocalClientId;
+    public bool IsPainter => PainterId == CustomNetworkManager.Singleton.LocalClientId;
 
     public override void OnNetworkSpawn()
     {
@@ -49,7 +49,7 @@ public class RoleManager : NetworkBehaviour
 
     public void ChangeRoles()
     {
-        foreach (byte clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        foreach (byte clientId in CustomNetworkManager.Singleton.ConnectedClientsIds)
         {
             if (!lastPainterIds.Contains(clientId))
             {
@@ -60,6 +60,6 @@ public class RoleManager : NetworkBehaviour
 
         // runs if all played for painter
         ClearLastPaintersClientRpc();
-        painterId.Value = (byte)NetworkManager.Singleton.ConnectedClientsIds[0];
+        painterId.Value = (byte)CustomNetworkManager.Singleton.ConnectedClientsIds[0];
     }
 }

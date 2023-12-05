@@ -12,15 +12,17 @@ public class LobbyCreationManagerUi : MonoBehaviour
     [SerializeField] private Button[] listLobbiesButtons;
     [SerializeField] private Button createLobbyButton;
     [SerializeField] private TMP_Dropdown filterRegim;
-    // Start is called before the first frame update
-    void Start()
+
+    private void Start()
     {
         LobbyManager.Instance.OnLobbyListed.AddListener(UpdateLobbyList);
         createLobbyButton?.onClick.AddListener(LobbyManager.Instance.CreateLobby);
-        filterRegim?.onValueChanged.AddListener(delegate { UpdateRgimFiltr(); });
+        filterRegim?.onValueChanged.AddListener(UpdateRgimFiltr);
+
         foreach (var button in listLobbiesButtons)
             button.onClick.AddListener(LobbyManager.Instance.ListLobbiesWithFilter);
     }
+
     private void UpdateLobbyList(List<Lobby> lobbyList)
     {
         foreach (Transform child in lobbyListContainer)
@@ -35,15 +37,16 @@ public class LobbyCreationManagerUi : MonoBehaviour
             lobbyInfoUI.SetLobby(lobby);
         }
     }
-    private void UpdateRgimFiltr()
+
+    private void UpdateRgimFiltr(int value)
     {
-        if (filterRegim.value==0)
+        if (value == 0)
         {
-            LobbyManager.Instance.WhichMode = "True";
+            LobbyManager.Instance.IsTeamMode = "True";
         } 
-        else if (filterRegim.value == 1)
+        else if (value == 1)
         {
-            LobbyManager.Instance.WhichMode = "False";
+            LobbyManager.Instance.IsTeamMode = "False";
         }
     }
 }

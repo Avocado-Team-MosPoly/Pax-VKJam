@@ -36,24 +36,24 @@ public abstract class IngredientManager
 
     protected readonly GameConfigSO config;
     
-    protected int playersCount => NetworkManager.Singleton.ConnectedClientsIds.Count;
+    protected int playersCount => CustomNetworkManager.Singleton.ConnectedClientsIds.Count;
 
     public IngredientManager(GameConfigSO config, CompareSystem compareSystem)
     {
-        if (NetworkManager.Singleton == null)
+        if (CustomNetworkManager.Singleton == null)
             throw new System.Exception("Ingredient Manager needs Network Manager instance on scene");
 
         this.config = config;
         compareSystem.OnIngredientGuess.AddListener(CompareIngredient);
 
-        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        foreach (ulong clientId in CustomNetworkManager.Singleton.ConnectedClientsIds)
             correctGuesserAllIds[clientId] = true;
 
-        NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
+        CustomNetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
             correctGuesserAllIds[clientId] = GameManager.Instance.CurrentRound == 1;
         };
-        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
+        CustomNetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
         {
             correctGuesserAllIds.Remove(clientId);
         };

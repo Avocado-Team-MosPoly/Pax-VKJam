@@ -10,14 +10,18 @@ using System;
 
 public class LobbyManager : MonoBehaviour
 {
-    public Lobby CurrentLobby { get; private set; }
-
-    private bool isSendHeartBeatPing = false;
-    private float heartBeatTime = 15f;
-    private float heartBeatTimer;
+    public static LobbyManager Instance { get; private set; }
 
     [HideInInspector] public UnityEvent<List<Lobby>> OnLobbyListed = new();
     [HideInInspector] public UnityEvent<List<Player>> OnPlayerListed = new();
+
+    [HideInInspector] public string IsTeamMode = "True";
+
+    public Lobby CurrentLobby { get; private set; }
+
+    public bool IsServer => CustomNetworkManager.Singleton.IsServer;
+    public string LobbyName => CurrentLobby != null ? CurrentLobby.Name : string.Empty;
+    public string LobbyPlayerId { get; private set; }
 
     public readonly string KEY_RELAY_CODE = "RelayCode";
     public readonly string KEY_TEAM_MODE = "IsTeamMode";
@@ -25,11 +29,10 @@ public class LobbyManager : MonoBehaviour
     public readonly string KEY_TIMER_AMOUNT = "TimerAmount";
     public readonly string KEY_RECIPE_MODE = "RecipeMode";
 
-    public bool IsServer => NetworkManager.Singleton.IsServer;
-    public string LobbyName => CurrentLobby != null ? CurrentLobby.Name : "Íå èçâåñòíî";
-    public string LobbyPlayerId { get; private set; }
-    public static LobbyManager Instance { get; private set; }
-    public string WhichMode = "True";
+    private bool isSendHeartBeatPing = false;
+    private float heartBeatTime = 15f;
+    private float heartBeatTimer;
+
 
     private void Awake()
     {
@@ -43,19 +46,27 @@ public class LobbyManager : MonoBehaviour
             Destroy(this);
             return;
         }
-        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => DisconnectPlayer(clientId);
-        NetworkManager.Singleton.OnClientStopped += async (bool someBool) => await LeaveLobbyAsync();
-        //NetworkManager.Singleton.OnServerStopped += (bool isHostLeave) => OnServerEnded();
-        WhichMode = "True";
-        //NetworkManager.Singleton.OnServerStarted += StopHeartBeatPing;
-        NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
+
+        Authentication.Authenticate();
+    }
+
+    private void Start()
+    {
+        if (CustomNetworkManager.Singleton == null)
+        {
+            Logger.Instance.LogError(this, "NM is null");
+        }
+
+        CustomNetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => DisconnectPlayer(clientId);
+        CustomNetworkManager.Singleton.OnClientStopped += async (bool someBool) => await LeaveLobbyAsync();
+        CustomNetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
             Logger.Instance.Log(this, "Client Connected");
-            if (clientId != NetworkManager.Singleton.LocalClientId)
+            if (clientId != CustomNetworkManager.Singleton.LocalClientId)
                 ListPlayers();
         };
 
-        Authentication.Authenticate();
+        IsTeamMode = "True";
     }
 
     private void Update()
@@ -216,12 +227,12 @@ public class LobbyManager : MonoBehaviour
                 Player = GetPlayer(),
                 Data = GetLobbyData()
             };
-           
+
             CurrentLobby = await LobbyService.Instance.CreateLobbyAsync
             (
                 lobbyName: string.IsNullOrEmpty(LobbyDataInput.Instance.LobbyName) ? Authentication.PlayerName : LobbyDataInput.Instance.LobbyName,
                 maxPlayers: LobbyDataInput.Instance.MaxPlayers,
-                options:  createLobbyOptions
+                options: createLobbyOptions
             );
 
             LobbyPlayerId = CurrentLobby.Players[CurrentLobby.Players.Count - 1].Id;
@@ -235,7 +246,10 @@ public class LobbyManager : MonoBehaviour
             if (relayJoinCode != "0")
                 SaveRelayJoinCode(relayJoinCode);
             else
+            {
                 Logger.Instance.LogError(this, new FormatException("Invalid relay join code"));
+                Disconnect();
+            }
         }
         catch (LobbyServiceException ex)
         {
@@ -255,6 +269,12 @@ public class LobbyManager : MonoBehaviour
                 return;
             }
 
+            if (string.IsNullOrEmpty(joinCode))
+            {
+                Logger.Instance.LogError(this, new FormatException($"Invalid join code"));
+                return;
+            }
+
             JoinLobbyByCodeOptions joinLobbyByCodeOptions = new()
             {
                 Player = GetPlayer()
@@ -266,7 +286,8 @@ public class LobbyManager : MonoBehaviour
 
             LobbyPlayerId = CurrentLobby.Players[CurrentLobby.Players.Count - 1].Id;
 
-            await RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value);
+            if (await RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value))
+                Disconnect();
         }
         catch (LobbyServiceException ex)
         {
@@ -378,7 +399,7 @@ public class LobbyManager : MonoBehaviour
                 (
                     field: QueryFilter.FieldOptions.S1,
                     op: QueryFilter.OpOptions.EQ,
-                    value: WhichMode
+                    value: IsTeamMode
                 )
             };
 

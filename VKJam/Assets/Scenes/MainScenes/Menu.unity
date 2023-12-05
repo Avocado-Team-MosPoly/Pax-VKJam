@@ -4173,7 +4173,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 389168410}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: SoundsSettings, Assembly-CSharp
         m_MethodName: Save
         m_Mode: 1
@@ -5253,7 +5253,6 @@ GameObject:
   - component: {fileID: 389168408}
   - component: {fileID: 389168407}
   - component: {fileID: 389168409}
-  - component: {fileID: 389168410}
   m_Layer: 0
   m_Name: Background Music
   m_TagString: Untagged
@@ -5390,21 +5389,6 @@ MonoBehaviour:
   - SceneName: Shop
     AudioClip: {fileID: 8300000, guid: 8a5dc67b468cee54b8c24b3f08a4e611, type: 3}
     Volume: 0.5
---- !u!114 &389168410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 389168406}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2eb5f59030053454fa2931d5eb777a55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MasterSlider: {fileID: 961524478}
-  AudioSlider: {fileID: 143461474}
-  MusicSlider: {fileID: 241702989}
 --- !u!1 &394783801
 GameObject:
   m_ObjectHideFlags: 0
@@ -22487,7 +22471,7 @@ MonoBehaviour:
   OnPlayerListed:
     m_PersistentCalls:
       m_Calls: []
-  WhichMode: 
+  IsTeamMode: True
 --- !u!4 &1850975790
 Transform:
   m_ObjectHideFlags: 0

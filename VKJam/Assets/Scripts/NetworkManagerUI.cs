@@ -21,18 +21,18 @@ public class NetworkManagerUI : NetworkBehaviour
 
     private void StartHost()
     {
-        NetworkManager.Singleton.OnServerStarted += () => { Debug.Log("Server started"); };
-        NetworkManager.Singleton.OnClientConnectedCallback += (ulong id) => { Debug.Log($"Client {id} connected");  };
-        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong id) => { Debug.Log($"Client {id} disconnect"); };
+        CustomNetworkManager.Singleton.OnServerStarted += () => { Debug.Log("Server started"); };
+        CustomNetworkManager.Singleton.OnClientConnectedCallback += (ulong id) => { Debug.Log($"Client {id} connected");  };
+        CustomNetworkManager.Singleton.OnClientDisconnectCallback += (ulong id) => { Debug.Log($"Client {id} disconnect"); };
         
-        NetworkManager.Singleton.StartHost();
+        CustomNetworkManager.Singleton.StartHost();
 
         SceneLoader.Load(hostScene);
     }
 
     private void StartClient()
     {
-        NetworkManager.Singleton.StartClient();
+        CustomNetworkManager.Singleton.StartClient();
 
         SceneLoader.Load(clientScene);
     }
