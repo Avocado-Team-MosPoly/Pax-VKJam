@@ -39,7 +39,8 @@ public class Php_Connect : MonoBehaviour
         else
         {
             link = string.Empty;
-            Logger.Instance.LogWarning(this, $"Unsafe or incorrect {nameof(Link)}. {nameof(Link)} should start with \"https\"");
+            Logger.Instance.LogError(this, new System.FormatException($"Unsafe or incorrect {nameof(Link)}. {nameof(Link)} should start with \"https\". {nameof(Link)}: {Link}"));
+            return;
         }
 
         randomBase = RandomBase;

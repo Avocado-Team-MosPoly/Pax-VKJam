@@ -4,8 +4,6 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.Netcode.Transports.UTP;
 using System.Threading.Tasks;
-using Unity.Services.Lobbies;
-using Unity.Services.Lobbies.Models;
 using Unity.Networking.Transport.Relay;
 using UnityEngine.Events;
 using System;
@@ -58,7 +56,7 @@ public class RelayManager : MonoBehaviour
     {
 #if UNITY_EDITOR
 #if UNITY_WEBGL
-        Debug.LogError("Multiplyer doesn't work in editor on \"WebGL\" platform. You should change platform to \"Windows, Mac, Linux\"");
+        Logger.Instance.LogError(this, new PlatformNotSupportedException("Multiplyer doesn't work in editor on \"WebGL\" platform. You should change platform to \"Windows, Mac, Linux\""));
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
 #endif
@@ -144,7 +142,15 @@ public class RelayManager : MonoBehaviour
                 SceneLoader.ServerLoad(lobbySceneName);
             };
 
-            NetworkManager.Singleton.OnClientStopped += (bool isHost) => SceneLoader.Load("Menu");
+
+
+            NetworkManager.Singleton.OnClientStopped += (bool isHost) =>
+            {
+                //if (PlayersDataManager.Instance != null && PlayersDataManager.Instance.NetworkObject != null)
+                //    PlayersDataManager.Instance.NetworkObject.Despawn();
+
+                SceneLoader.Load("Menu");
+            };
 
             NetworkManager.Singleton.OnClientStarted += () =>
             {
@@ -160,11 +166,13 @@ public class RelayManager : MonoBehaviour
             Logger.Instance.LogError(this, ex);
             NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Relay servers.");
 
+            LobbyManager.Instance.Disconnect();
+
             return "0";
         }
     }
 
-    public async void JoinRelay(string joinCode)
+    public async Task JoinRelay(string joinCode)
     {
         try
         {
@@ -230,6 +238,8 @@ public class RelayManager : MonoBehaviour
         {
             Logger.Instance.LogError(this, ex);
             NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Relay servers.");
+
+            LobbyManager.Instance.Disconnect();
         }
     }
 
@@ -239,7 +249,7 @@ public class RelayManager : MonoBehaviour
             return;
 
         NetworkManager.Singleton.DisconnectClient(clientId);
-        LobbyManager.Instance.DisconnectPlayer(clientId);
+        //LobbyManager.Instance.DisconnectPlayer(clientId);
     }
 
     public void Disconnect()

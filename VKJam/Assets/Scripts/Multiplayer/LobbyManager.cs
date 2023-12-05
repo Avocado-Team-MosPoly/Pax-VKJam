@@ -29,7 +29,7 @@ public class LobbyManager : MonoBehaviour
     public string LobbyName => CurrentLobby != null ? CurrentLobby.Name : "Íå èçâåñòíî";
     public string LobbyPlayerId { get; private set; }
     public static LobbyManager Instance { get; private set; }
-    public string WhichMode = "true";
+    public string WhichMode = "True";
 
     private void Awake()
     {
@@ -45,7 +45,7 @@ public class LobbyManager : MonoBehaviour
         }
         NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => DisconnectPlayer(clientId);
         NetworkManager.Singleton.OnClientStopped += async (bool someBool) => await LeaveLobbyAsync();
-        NetworkManager.Singleton.OnServerStopped += (bool isHostLeave) => OnServerEnded();
+        //NetworkManager.Singleton.OnServerStopped += (bool isHostLeave) => OnServerEnded();
         WhichMode = "True";
         //NetworkManager.Singleton.OnServerStarted += StopHeartBeatPing;
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
@@ -80,7 +80,7 @@ public class LobbyManager : MonoBehaviour
             }
             catch (LobbyServiceException ex)
             {
-                Logger.Instance.Log(this, ex);
+                Logger.Instance.LogError(this, ex);
             }
         }
     }
@@ -122,7 +122,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(this, ex);
+            Logger.Instance.LogError(this, ex);
         }
     }
 
@@ -138,14 +138,15 @@ public class LobbyManager : MonoBehaviour
                 { KEY_ROUND_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.RoundAmount.ToString()) },
                 { KEY_TIMER_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.TimerAmount.ToString()) },
                 { KEY_RECIPE_MODE, new DataObject(DataObject.VisibilityOptions.Public, ((int)LobbyDataInput.Instance.RecipeMode).ToString()) },
-            };          
+            };
         }
         else
         {
+            // default lobby data
             lobbyData = new Dictionary<string, DataObject>
             {
                 { KEY_RELAY_CODE, new DataObject(DataObject.VisibilityOptions.Member, "0") },
-                { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Public, "1") },
+                { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Public, "True") },
                 { KEY_ROUND_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, "4") },
                 { KEY_TIMER_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, "40") },
                 { KEY_RECIPE_MODE, new DataObject(DataObject.VisibilityOptions.Public, "0") },
@@ -155,18 +156,12 @@ public class LobbyManager : MonoBehaviour
         return lobbyData;
     }
 
-    private void GoinRandomServer()
-    {
-
-    }
-
     private Player GetPlayer()
     {
         return new Player
         {
             Data = new Dictionary<string, PlayerDataObject>
             {
-                //{ "Id", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "-1") },
                 { "Player Name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, Authentication.PlayerName) }
             }
         };
@@ -181,16 +176,16 @@ public class LobbyManager : MonoBehaviour
             UpdateLobbyOptions updateLobbyOptions = new UpdateLobbyOptions
             {
                 Data = new Dictionary<string, DataObject>
-            {
-                { KEY_RELAY_CODE, new DataObject(DataObject.VisibilityOptions.Member, relayJoinCode) },
-            }
+                {
+                    { KEY_RELAY_CODE, new DataObject(DataObject.VisibilityOptions.Member, relayJoinCode) }
+                }
             };
 
             LobbyService.Instance.UpdateLobbyAsync(CurrentLobby.Id, updateLobbyOptions);
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(this, ex);
+            Logger.Instance.LogError(this, ex);
         }
     }
 
@@ -210,8 +205,10 @@ public class LobbyManager : MonoBehaviour
         try
         {
             if (CurrentLobby != null)
+            {
+                Logger.Instance.LogWarning(this, "You are already in lobby: " + CurrentLobby.Name);
                 return;
-
+            }
 
             CreateLobbyOptions createLobbyOptions = new()
             {
@@ -222,9 +219,9 @@ public class LobbyManager : MonoBehaviour
            
             CurrentLobby = await LobbyService.Instance.CreateLobbyAsync
             (
-                LobbyDataInput.Instance.LobbyName == "" ? Authentication.PlayerName : LobbyDataInput.Instance.LobbyName,
-                LobbyDataInput.Instance.MaxPlayers, 
-                createLobbyOptions
+                lobbyName: string.IsNullOrEmpty(LobbyDataInput.Instance.LobbyName) ? Authentication.PlayerName : LobbyDataInput.Instance.LobbyName,
+                maxPlayers: LobbyDataInput.Instance.MaxPlayers,
+                options:  createLobbyOptions
             );
 
             LobbyPlayerId = CurrentLobby.Players[CurrentLobby.Players.Count - 1].Id;
@@ -234,24 +231,29 @@ public class LobbyManager : MonoBehaviour
             Logger.Instance.Log(this, $"Created lobby: {CurrentLobby.Name}, max players: {CurrentLobby.MaxPlayers}, lobby code: {CurrentLobby.LobbyCode}");
 
             string relayJoinCode = await RelayManager.Instance.CreateRelay();
+
             if (relayJoinCode != "0")
                 SaveRelayJoinCode(relayJoinCode);
             else
-                Debug.LogError($"[{name}] Invalid relay join code");
+                Logger.Instance.LogError(this, new FormatException("Invalid relay join code"));
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(this, ex);
+            Logger.Instance.LogError(this, ex);
+            NotificationSystem.Instance.SendLocal("Can't connect to Unity Lobby servers");
         }
     }
 
 
-    public async void JoinLobby(string joinCode)
+    public async Task JoinLobby(string joinCode)
     {
         try
         {
             if (CurrentLobby != null)
+            {
+                Logger.Instance.LogWarning(this, "You are already in lobby: " + CurrentLobby.Name);
                 return;
+            }
 
             JoinLobbyByCodeOptions joinLobbyByCodeOptions = new()
             {
@@ -260,40 +262,22 @@ public class LobbyManager : MonoBehaviour
 
             CurrentLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(joinCode, joinLobbyByCodeOptions);
 
-            LobbyPlayerId = CurrentLobby.Players[CurrentLobby.Players.Count - 1].Id;
-
             Logger.Instance.Log(this, "You joined lobby " + CurrentLobby.Name);
 
-            RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value);
+            LobbyPlayerId = CurrentLobby.Players[CurrentLobby.Players.Count - 1].Id;
+
+            await RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value);
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(this, ex);
+            Logger.Instance.LogError(this, ex);
+            NotificationSystem.Instance.SendLocal("Can't connect to Unity Lobby servers");
         }
     }
 
-    public async void JoinLobby(Lobby lobby)
+    public async Task JoinLobbyAsync(Lobby lobby)
     {
-        try
-        {
-            if (CurrentLobby != null)
-                return;
-
-            JoinLobbyByIdOptions joinLobbyByIdOptions = new()
-            {
-                Player = GetPlayer()
-            };
-
-            CurrentLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id, joinLobbyByIdOptions);
-
-            Logger.Instance.Log(this, "You joined lobby " + lobby.Name);
-            
-            RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value);
-        }
-        catch (LobbyServiceException ex)
-        {
-            Logger.Instance.Log(this, ex);
-        }
+        await JoinLobby(lobby.LobbyCode);
     }
 
     public async void QuickJoinLobby()
@@ -325,7 +309,7 @@ public class LobbyManager : MonoBehaviour
 
             Logger.Instance.Log(this, "You joined lobby " + CurrentLobby.Name);
 
-            RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value);
+            await RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value);
         }
         catch (LobbyServiceException ex)
         {
@@ -379,44 +363,46 @@ public class LobbyManager : MonoBehaviour
     public async void ListLobbiesWithFilter()
     {
         try
-        {           
-
+        {
             QueryLobbiesOptions options = new QueryLobbiesOptions();
 
             options.Filters = new List<QueryFilter>()
             {
-                new QueryFilter(
+                new QueryFilter
+                (
                     field: QueryFilter.FieldOptions.AvailableSlots,
                     op: QueryFilter.OpOptions.GT,
-                    value: "0"),
-                new QueryFilter(
+                    value: "0"
+                ),
+                new QueryFilter
+                (
                     field: QueryFilter.FieldOptions.S1,
                     op: QueryFilter.OpOptions.EQ,
-                    value: WhichMode)
+                    value: WhichMode
+                )
             };
 
             // Order by newest lobbies first
             options.Order = new List<QueryOrder>()
             {
-            new QueryOrder(
-                asc: false,
-                field: QueryOrder.FieldOptions.Created)
+                new QueryOrder
+                (
+                    asc: false,
+                    field: QueryOrder.FieldOptions.Created
+                )
             };
 
             QueryResponse lobbies = await Lobbies.Instance.QueryLobbiesAsync(options);
             OnLobbyListed?.Invoke(lobbies.Results);
-
         }
-        catch (LobbyServiceException e)
+        catch (LobbyServiceException ex)
         {
-            Debug.Log(e);
+            Logger.Instance.LogError(this, ex);
         }
     }
 
     public async void ListPlayers()
     {
-        Logger.Instance.Log(this, "ListPlayers");
-
         try
         {
             Lobby currentLobbyUpdate = await LobbyService.Instance.GetLobbyAsync(CurrentLobby.Id);
@@ -428,7 +414,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(this, ex);
+            Logger.Instance.LogError(this, ex);
         }
     }
 
@@ -436,7 +422,7 @@ public class LobbyManager : MonoBehaviour
     {
         if (!IsServer)
         {
-            Debug.LogWarning($"[{nameof(LobbyManager)}] Remove a player can only server");
+            Logger.Instance.LogWarning(this, "Remove a player can only server");
             return;
         }
 
@@ -444,15 +430,17 @@ public class LobbyManager : MonoBehaviour
         {
             try
             {
+                string playerName = PlayersDataManager.Instance.PlayerDatas[clientId].Name;
                 await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, PlayersDataManager.Instance.PlayerDatas[clientId].AuthenticationServiceId);
+                Logger.Instance.Log(this, "Disconnected player " + playerName);
             }
             catch (LobbyServiceException ex)
             {
-                Logger.Instance.Log(this, ex);
+                Logger.Instance.LogError(this, ex);
             }
         }
         else
-            Debug.LogWarning($"[{nameof(LobbyManager)}] You are not in the lobby");
+            Logger.Instance.LogWarning(this, "You are not in the lobby");
     }
 
     public async void Disconnect()
@@ -462,14 +450,16 @@ public class LobbyManager : MonoBehaviour
             try
             {
                 await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, AuthenticationService.Instance.PlayerId);
+                Logger.Instance.Log(this, "Disconnected from lobby: " + CurrentLobby.Name);
+                CurrentLobby = null;
             }
             catch (LobbyServiceException ex)
             {
-                Logger.Instance.Log(this, ex);
+                Logger.Instance.LogError(this, ex);
             }
         }
         else
-            Debug.LogWarning($"[{nameof(LobbyManager)}] You are not in the lobby");
+            Logger.Instance.LogWarning(this, "You are not in the lobby");
     }
 
     public void OnServerEnded()

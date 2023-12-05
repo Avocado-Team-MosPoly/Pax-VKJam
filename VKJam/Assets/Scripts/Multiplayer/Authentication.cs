@@ -44,10 +44,10 @@ public class Authentication : MonoBehaviour
 
         AuthenticationService.Instance.SignedIn += () =>
         {
-            Logger.Instance.Log(typeof(Authentication), "Signed In. Your Id is " + AuthenticationService.Instance.PlayerId);
         };
-
+        Logger.Instance.Log(typeof(Authentication), "Sign in in progress...");
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        Logger.Instance.Log(typeof(Authentication), "Signed in. Your id is " + AuthenticationService.Instance.PlayerId);
     }
 
     public static void ChangePlayerName(string playerName)

@@ -29,7 +29,7 @@ public class LobbyInfoUI : MonoBehaviour
         lobbyName.text = lobby.Name;
         playersCount.text = lobby.Players.Count + "/" + lobby.MaxPlayers;
         connectButton.onClick.AddListener(() => {
-            LobbyManager.Instance.JoinLobby(lobby);
+            LobbyManager.Instance.JoinLobbyAsync(lobby);
         });
     }
 }

@@ -29,7 +29,7 @@ public class LobbyInfo : MonoBehaviour
             Destroy(gameObject);
 
         connectButton.onClick.AddListener(() => {
-            LobbyManager.Instance.JoinLobby(lobby);
+            LobbyManager.Instance.JoinLobbyAsync(lobby);
         });
 
         closeButton.onClick.AddListener(() => {

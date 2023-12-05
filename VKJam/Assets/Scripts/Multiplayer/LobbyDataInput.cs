@@ -25,14 +25,29 @@ public class LobbyDataInput : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
-        region.onValueChanged.AddListener(delegate {RelayManager.Instance.ChangeRegion(region.options[region.value].text); });
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+            return;
+        }
+
+        region.onValueChanged.AddListener(ChangeRegion);
         maxPlayers_ButtonSet.OnClick.AddListener(ChangeMaxPlayers);
         teamMode_ButtonSet.OnClick.AddListener(ChangeTeamMode);
-        privacy_ButtonSet.OnClick.AddListener(ChangerPrivacy);
+        privacy_ButtonSet.OnClick.AddListener(ChangePrivacy);
+
         //RecipeMode_ButtonSet.OnClick.AddListener(ChangeRecipeMode);
         //timerSlider.onValueChanged.AddListener((v) => { timerText.text=v.ToString(); });
         //timerSlider.onValueChanged.AddListener(ChangeTimerAmount);
+    }
+
+    public void ChangeRegion(int value)
+    {
+        RelayManager.Instance.ChangeRegion(region.options[value].text);
     }
 
     public void ChangeLobbyCode(string value)
@@ -70,7 +85,7 @@ public class LobbyDataInput : MonoBehaviour
         RecipeMode = value;
     }
 
-    public void ChangerPrivacy(bool isPrivate)
+    public void ChangePrivacy(bool isPrivate)
     {
         IsPrivate = isPrivate;
     }
