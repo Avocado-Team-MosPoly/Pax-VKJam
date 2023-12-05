@@ -5386,9 +5386,17 @@ MonoBehaviour:
   defaultAudioClip: {fileID: 8300000, guid: 2def55e11b821444a92172d7328e4f11, type: 3}
   defaultAudioVolume: 0.4
   specificScenesAudioClips:
-  - SceneName: Shop
-    AudioClip: {fileID: 8300000, guid: 8a5dc67b468cee54b8c24b3f08a4e611, type: 3}
-    Volume: 0.5
+  - sceneName: Shop
+    defaultAudioClip: {fileID: 8300000, guid: 8a5dc67b468cee54b8c24b3f08a4e611, type: 3}
+    defaultAudioClipVolume: 0.5
+    namedAudioClips: []
+  - sceneName: Map_New
+    defaultAudioClip: {fileID: 8300000, guid: 2def55e11b821444a92172d7328e4f11, type: 3}
+    defaultAudioClipVolume: 0.4
+    namedAudioClips:
+    - name: IngredientGuess
+      clip: {fileID: 8300000, guid: 8c41669a72d704e458ce63d4244078a9, type: 3}
+      volume: 0.5
 --- !u!1 &394783801
 GameObject:
   m_ObjectHideFlags: 0

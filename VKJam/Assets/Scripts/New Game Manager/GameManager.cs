@@ -272,6 +272,8 @@ public class GameManager : NetworkBehaviour
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
 
         sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
+
+        BackgroundMusic.Instance.Play("IngredientGuess");
     }
 
     [ServerRpc(RequireOwnership = false)]

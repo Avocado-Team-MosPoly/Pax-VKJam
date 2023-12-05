@@ -259,7 +259,7 @@ public class LobbyManager : MonoBehaviour
     }
 
 
-    public async Task JoinLobby(string joinCode)
+    public async Task JoinLobbyByCodeAsync(string joinCode)
     {
         try
         {
@@ -296,9 +296,46 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
+    public async Task JoinLobbyByIdAsync(string lobbyId)
+    {
+        try
+        {
+            if (CurrentLobby != null)
+            {
+                Logger.Instance.LogWarning(this, "You are already in lobby: " + CurrentLobby.Name);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(lobbyId))
+            {
+                Logger.Instance.LogError(this, new FormatException($"Invalid join code"));
+                return;
+            }
+
+            JoinLobbyByIdOptions joinLobbyByIdOptions = new()
+            {
+                Player = GetPlayer()
+            };
+
+            CurrentLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobbyId, joinLobbyByIdOptions);
+
+            Logger.Instance.Log(this, "You joined lobby " + CurrentLobby.Name);
+
+            LobbyPlayerId = CurrentLobby.Players[CurrentLobby.Players.Count - 1].Id;
+
+            if (await RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value))
+                Disconnect();
+        }
+        catch (LobbyServiceException ex)
+        {
+            Logger.Instance.LogError(this, ex);
+            NotificationSystem.Instance.SendLocal("Can't connect to Unity Lobby servers");
+        }
+    }
+
     public async Task JoinLobbyAsync(Lobby lobby)
     {
-        await JoinLobby(lobby.LobbyCode);
+        await JoinLobbyByIdAsync(lobby.Id);
     }
 
     public async void QuickJoinLobby()

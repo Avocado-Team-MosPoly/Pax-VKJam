@@ -36,9 +36,10 @@ public class BackgroundMusic : MonoBehaviour
 
     [Space(10)]
     [Tooltip("If scene is not in array it uses default audio clip. Set up element, if you want specific audio clip on it")]
-    [SerializeField] private SceneAudioClip[] specificScenesAudioClips;
+    [SerializeField] private SceneAudioClips[] specificScenesAudioClips;
 
     private AudioSource source;
+    private string currentMusicId;
 
     private string KEY_VOLUME = "Volume";
 
@@ -87,27 +88,60 @@ public class BackgroundMusic : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
     {
-        foreach (SceneAudioClip sceneAudio in specificScenesAudioClips)
-        {
-            if (sceneAudio.SceneName == scene.name)
-            {
-                if (source.clip == sceneAudio.AudioClip)
-                    return;
-
-                source.clip = sceneAudio.AudioClip;
-                source.volume = sceneAudio.Volume;
-                source.Play();
-
-                return;
-            }
-        }
+        if (Play(scene.name + ":default"))
+            return;
 
         if (source.clip == defaultAudioClip)
             return;
 
-        source.clip = defaultAudioClip;
-        source.volume = defaultAudioVolume;
+        SetMusic("default-default", defaultAudioClip, defaultAudioVolume);
+    }
+
+    private void SetMusic(string musicId, AudioClip audioClip, float volume)
+    {
+        source.clip = audioClip;
+        source.volume = volume;
+        currentMusicId = musicId;
+
         source.Play();
+    }
+
+    /// <summary> You should be on scene that contains 'musicName' to play it </summary>
+    /// <returns> True if music found and setted, false is not </returns>
+    public bool Play(string musicName)
+    {
+        Scene activeScene = SceneManager.GetActiveScene();
+
+        foreach (SceneAudioClips sac in specificScenesAudioClips)
+        {
+            if (sac.sceneName == activeScene.name)
+            {
+                if (musicName == "default")
+                {
+                    SetMusic(activeScene.name + ":" + musicName, sac.defaultAudioClip, sac.defaultAudioClipVolume);
+                    return true;
+                }
+
+                foreach (Clip clip in sac.namedAudioClips)
+                {
+                    if (clip.name == musicName)
+                    {
+                        if (currentMusicId.Split('-')[1] == musicName && source.clip == clip.clip)
+                        {
+                            Logger.Instance.LogWarning(this, $"{musicName} clip already playing");
+                            return false;
+                        }
+
+                        SetMusic(activeScene.name + ":" + musicName, clip.clip, clip.volume);
+                        return true;
+                    }
+                }
+
+                break;
+            }
+        }
+
+        return false;
     }
 
     public void Play()
@@ -128,11 +162,28 @@ public class BackgroundMusic : MonoBehaviour
         source.Stop();
     }
 
-    [Serializable]
-    private struct SceneAudioClip
+    public void ResetProgress()
     {
-        public string SceneName;
-        public AudioClip AudioClip;
-        [Range(0f, 1f)] public float Volume;
+        source.time = 0f;
+    }
+
+    [Serializable]
+    private struct SceneAudioClips
+    {
+        public string sceneName;
+
+        public AudioClip defaultAudioClip;
+        [Range(0f, 1f)] public float defaultAudioClipVolume;
+
+        public Clip[] namedAudioClips;
+    }
+
+    [Serializable]
+    private struct Clip
+    {
+        public string name;
+
+        public AudioClip clip;
+        [Range(0f, 1f)] public float volume;
     }
 }

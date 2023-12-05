@@ -9,7 +9,7 @@ public class GetLobbyCodeAndConnect : MonoBehaviour
     [SerializeField] private TMP_InputField code;
     void Awake()
     {
-        connect.onClick.AddListener(async () => await LobbyManager.Instance.JoinLobby(connectedLobbyCode));
+        connect.onClick.AddListener(async () => await LobbyManager.Instance.JoinLobbyByCodeAsync(connectedLobbyCode));
         //connect.onClick.AddListener(async () => await LobbyManager.Instance.JoinLobby(LobbyCode));
         code.onValueChanged.AddListener(ChangeConnectedLobbyCode);
     }
