@@ -296,8 +296,9 @@ public class Php_Connect : MonoBehaviour
             www.certificateHandler = new AcceptAllCertificates();
             // «апрос выполн€етс€ дожида€сь его завершени€
             www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
+            float startTime = Time.time;
+            while (!www.isDone && Time.time - startTime < 2f) { }
+            if (www.result != UnityWebRequest.Result.Success  && www.isDone)
             {
                 ErrorProcessor(www.error);
                 return www.error;
