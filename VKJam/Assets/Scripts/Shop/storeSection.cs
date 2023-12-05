@@ -16,7 +16,7 @@ public class storeSection : ScriptableObject
         products.Add(target);
     }
     [ContextMenu("Remove Duplicates")]
-    public void RemoveDuplicates()
+    public virtual void RemoveDuplicates()
     {
         var existingModels = new HashSet<GameObject>();
         var uniqueProducts = new List<WareData>();
@@ -31,5 +31,13 @@ public class storeSection : ScriptableObject
         }
 
         products = uniqueProducts;
+    }
+    [ContextMenu("Set image from prefab to Icon")]
+    public void ImageTrief()
+    {
+        foreach (var item in products)
+        {
+            item.icon = item.Model.GetComponent<UnityEngine.UI.Image>().sprite;
+        }
     }
 }

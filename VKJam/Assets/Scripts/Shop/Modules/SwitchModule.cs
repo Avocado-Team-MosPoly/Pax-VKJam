@@ -4,14 +4,14 @@ public class SwitchModule : MonoBehaviour
 {
 
     public ItemType Type;
-    [SerializeField] private DetecterModule SwitchTarget;
+    [SerializeField] protected DetecterModule SwitchTarget;
     [SerializeField] private SwitchModule Sync;
     [HideInInspector] public SwitchModule ReverseSync;
     private void Awake()
     {
         if (Sync != null) Sync.ReverseSync = this;
     }
-    public void SwitchItem(WareData NewItem)
+    public virtual void SwitchItem(WareData NewItem)
     {
         if (NewItem.Data.Type != Type) return;
         Instantiate(NewItem.Model, transform);

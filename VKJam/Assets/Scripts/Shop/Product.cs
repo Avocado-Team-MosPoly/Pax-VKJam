@@ -13,18 +13,20 @@ public class Product : MonoBehaviour
     public WareData Data;
     [SerializeField] private Button BT;
     public bool ChooseMode;
-    public void SetData( WareData NewData)
+    public void SetData(WareData NewData)
     {
         Data = NewData;
         Refresh();
     }
     private void Refresh()
     {
+        
         Picture.sprite = Data.icon;
         //SystemName = Data.productName;
         Name.text = Data.Data.productName;
-        Price.text = "X" + Data.Data.productPrice.ToString();
-        DisplayTypeCurrency.sprite = Data.Data.IsDonateVault ? DonatCurrency : InGameCurrency;
+        Price.text = ChooseMode ? "X" + Data.Data.productPrice.ToString() : "";
+        if (!ChooseMode) DisplayTypeCurrency.sprite = Data.Data.IsDonateVault ? DonatCurrency : InGameCurrency;
+        else DisplayTypeCurrency.gameObject.SetActive(false);
         BT.interactable = !Data.Data.InOwn || ChooseMode;
     }
     public void RemoveFromWarehouse()

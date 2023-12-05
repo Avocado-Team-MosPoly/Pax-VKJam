@@ -28,7 +28,7 @@ public class WareData
         icon = Base64ToSprite(Data.icon);
     }
 
-    private static Sprite Base64ToSprite(string base64)
+    protected static Sprite Base64ToSprite(string base64)
     {
         try
         {
