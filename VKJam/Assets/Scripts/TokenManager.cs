@@ -49,7 +49,7 @@ public class TokenManager : NetworkBehaviour
         if (!IsServer)
             return;
 
-        foreach (ulong clientId in CustomNetworkManager.Singleton.ConnectedClientsIds)
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
             playersTokens.Add(clientId, 0);
     }
 
@@ -177,21 +177,21 @@ public class TokenManager : NetworkBehaviour
 
     public static void AddTokensToAll(int value)
     {
-        int tokensToAdd = value / CustomNetworkManager.Singleton.ConnectedClientsIds.Count;
+        int tokensToAdd = value / NetworkManager.Singleton.ConnectedClientsIds.Count;
 
         instance.AddTokensClientRpc((byte)tokensToAdd);
 
-        foreach (ulong clientId in CustomNetworkManager.Singleton.ConnectedClientsIds)
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
             instance.playersTokens[clientId] += tokensToAdd;
     }
 
     public static void RemoveTokensFromAll(int value)
     {
-        int tokensToRemove = value / CustomNetworkManager.Singleton.ConnectedClientsIds.Count;
+        int tokensToRemove = value / NetworkManager.Singleton.ConnectedClientsIds.Count;
 
         instance.RemoveTokensClientRpc((byte)tokensToRemove);
 
-        foreach (ulong clientId in CustomNetworkManager.Singleton.ConnectedClientsIds)
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             instance.playersTokens[clientId] -= tokensToRemove;
 
@@ -203,7 +203,7 @@ public class TokenManager : NetworkBehaviour
     [ClientRpc]
     private void AddTokensToClientRpc(byte value, byte clientId)
     {
-        if (clientId != CustomNetworkManager.Singleton.LocalClientId)
+        if (clientId != NetworkManager.Singleton.LocalClientId)
             return;
 
         TokensCountWinnedCurrentRound += value;
@@ -214,7 +214,7 @@ public class TokenManager : NetworkBehaviour
     [ClientRpc]
     private void RemoveTokensToClientRpc(byte value, byte clientId)
     {
-        if (clientId != CustomNetworkManager.Singleton.LocalClientId)
+        if (clientId != NetworkManager.Singleton.LocalClientId)
             return;
 
         TokensCountLosedCurrentRound += value;

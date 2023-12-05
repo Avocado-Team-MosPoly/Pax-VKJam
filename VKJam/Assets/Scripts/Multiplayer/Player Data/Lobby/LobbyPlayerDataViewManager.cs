@@ -95,8 +95,8 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
     {
         textLabel.text = playerData.ClientName;
 
-        if (CustomNetworkManager.Singleton.IsServer)
-            if (CustomNetworkManager.Singleton.LocalClientId != playerData.ClientId)
+        if (NetworkManager.Singleton.IsServer)
+            if (NetworkManager.Singleton.LocalClientId != playerData.ClientId)
                 textLabel.text += "\n------\n" + kickPlayerText;
 
         gameObject.SetActive(true);

@@ -17,7 +17,7 @@ public abstract class RoundManager
 
     protected readonly GameConfigSO config;
 
-    protected int playersCount => CustomNetworkManager.Singleton.ConnectedClientsIds.Count;
+    protected int playersCount => NetworkManager.Singleton.ConnectedClientsIds.Count;
 
     public RoundManager(GameConfigSO gameConfig, CompareSystem compareSystem, IngredientManager ingredientManager)
     {

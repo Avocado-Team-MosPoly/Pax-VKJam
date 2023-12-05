@@ -38,10 +38,10 @@ public class LobbyManagerUI : NetworkBehaviour
         allPlayerReady.OnListChanged += AllPlayerReady_OnListChanged;
         playersId.OnListChanged += PlayersId_OnListChanged;
 
-        if (CustomNetworkManager.Singleton.IsServer)
+        if (NetworkManager.Singleton.IsServer)
         {
-            CustomNetworkManager.Singleton.OnClientDisconnectCallback += PLayerLeave;
-            CustomNetworkManager.Singleton.OnClientConnectedCallback += PlayerConnect;
+            NetworkManager.Singleton.OnClientDisconnectCallback += PLayerLeave;
+            NetworkManager.Singleton.OnClientConnectedCallback += PlayerConnect;
 
             PlayerConnect(0);
         }
@@ -49,10 +49,10 @@ public class LobbyManagerUI : NetworkBehaviour
 
     public override void OnDestroy()
     {
-        if (IsServer && CustomNetworkManager.Singleton != null)
+        if (IsServer && NetworkManager.Singleton != null)
         {
-            CustomNetworkManager.Singleton.OnClientDisconnectCallback -= PLayerLeave;
-            CustomNetworkManager.Singleton.OnClientConnectedCallback -= PlayerConnect;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= PLayerLeave;
+            NetworkManager.Singleton.OnClientConnectedCallback -= PlayerConnect;
         }
     }
 
@@ -115,7 +115,7 @@ public class LobbyManagerUI : NetworkBehaviour
 
     public void ChangeReady()
     {
-        int clientIdIndex = GetClientIdIndex(CustomNetworkManager.Singleton.LocalClientId);
+        int clientIdIndex = GetClientIdIndex(NetworkManager.Singleton.LocalClientId);
 
         playerReady[clientIdIndex].SetActive(!allPlayerReady[clientIdIndex]);
         readyButtonTextLabel.text = playerReady[clientIdIndex].activeSelf ? readyText : notReadyText;
@@ -135,7 +135,7 @@ public class LobbyManagerUI : NetworkBehaviour
         //Debug.LogError("AllPlayerReady_OnListChanged");
         playerReady[changeEvent.Index].SetActive(changeEvent.Value);
 
-        if (CustomNetworkManager.Singleton.IsServer)
+        if (NetworkManager.Singleton.IsServer)
         {
             int howManyPlayerReady = 0;
             bool allReady = true;

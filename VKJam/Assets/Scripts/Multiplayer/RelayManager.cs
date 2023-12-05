@@ -71,11 +71,11 @@ public class RelayManager : MonoBehaviour
         if (Instance != this)
             return;
 
-        CustomNetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
+        NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
             OnClientConnected?.Invoke(clientId);
         };
-        CustomNetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
+        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
         {
             OnClientDisconnect?.Invoke(clientId);
         };
@@ -105,7 +105,7 @@ public class RelayManager : MonoBehaviour
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(4, connectionRegion);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             
-            UnityTransport unityTransport = CustomNetworkManager.Singleton.GetComponent<UnityTransport>();
+            UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
 #if UNITY_EDITOR
             Logger.Instance.Log(this, "EDITOR");
@@ -141,17 +141,17 @@ public class RelayManager : MonoBehaviour
             unityTransport.SetRelayServerData(relayServerData);
 #endif
 #endif
-            CustomNetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
+            NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
             {
                 Logger.Instance.Log(this, $"Client {clientId} connected");
                 //SpawnPlayersDataManagerWithOwnership(clientId);
             };
-            CustomNetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
+            NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
             {
-                Logger.Instance.Log(this, CustomNetworkManager.Singleton.DisconnectReason);
+                Logger.Instance.Log(this, NetworkManager.Singleton.DisconnectReason);
             };
 
-            CustomNetworkManager.Singleton.OnServerStarted += () =>
+            NetworkManager.Singleton.OnServerStarted += () =>
             {
                 PlayersDataManager pdmInstance = Instantiate(playersDataManagerPrefab);
                 pdmInstance.NetworkObject.Spawn();
@@ -159,7 +159,7 @@ public class RelayManager : MonoBehaviour
                 SceneLoader.ServerLoad(lobbySceneName);
             };
 
-            CustomNetworkManager.Singleton.OnClientStopped += (bool isHost) =>
+            NetworkManager.Singleton.OnClientStopped += (bool isHost) =>
             {
                 //if (PlayersDataManager.Instance != null && PlayersDataManager.Instance.NetworkObject != null)
                 //    PlayersDataManager.Instance.NetworkObject.Despawn();
@@ -167,11 +167,11 @@ public class RelayManager : MonoBehaviour
                 SceneLoader.Load("Menu");
             };
 
-            CustomNetworkManager.Singleton.OnClientStarted += () =>
+            NetworkManager.Singleton.OnClientStarted += () =>
             {
                 Logger.Instance.Log(this, $"Client Started on server\nCurrent Lobby: {LobbyManager.Instance.CurrentLobby.Name}\nLobby Player Id: {LobbyManager.Instance.LobbyPlayerId}");
             };
-            CustomNetworkManager.Singleton.StartHost();
+            NetworkManager.Singleton.StartHost();
 
             Logger.Instance.Log(this, "You created relay with code: " + joinCode);
             return joinCode;
@@ -199,7 +199,7 @@ public class RelayManager : MonoBehaviour
             Logger.Instance.Log(this, joinCode);
 
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
-            UnityTransport unityTransport = CustomNetworkManager.Singleton.GetComponent<UnityTransport>();
+            UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
 #if UNITY_EDITOR
             Logger.Instance.Log(this, "EDITOR");
@@ -237,20 +237,20 @@ public class RelayManager : MonoBehaviour
             unityTransport.SetRelayServerData(relayServerData);
 #endif
 #endif
-            CustomNetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => Debug.Log(CustomNetworkManager.Singleton.DisconnectReason);
+            NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => Debug.Log(NetworkManager.Singleton.DisconnectReason);
 
-            CustomNetworkManager.Singleton.OnClientStarted += /*async*/ () =>
+            NetworkManager.Singleton.OnClientStarted += /*async*/ () =>
             {
                 Logger.Instance.Log(this, "Client Started");
             };
-            CustomNetworkManager.Singleton.OnClientStopped += async (bool isHost) =>
+            NetworkManager.Singleton.OnClientStopped += async (bool isHost) =>
             {
                 Disconnect();
                 await LobbyManager.Instance.LeaveLobbyAsync();
                 SceneLoader.Load("Menu");
             };
 
-            CustomNetworkManager.Singleton.StartClient();
+            NetworkManager.Singleton.StartClient();
 
             Logger.Instance.Log(this, "You joined relay with code: " +  joinCode);
 
@@ -267,10 +267,10 @@ public class RelayManager : MonoBehaviour
 
     public void DisconnectPlayer(ulong clientId)
     {
-        if (!CustomNetworkManager.Singleton.IsServer)
+        if (!NetworkManager.Singleton.IsServer)
             return;
 
-        CustomNetworkManager.Singleton.DisconnectClient(clientId);
+        NetworkManager.Singleton.DisconnectClient(clientId);
         //LobbyManager.Instance.DisconnectPlayer(clientId);
     }
 
@@ -278,8 +278,8 @@ public class RelayManager : MonoBehaviour
     {
         try
         {
-            CustomNetworkManager.Singleton.Shutdown();
-            //while (CustomNetworkManager.Singleton.ShutdownInProgress) { }
+            NetworkManager.Singleton.Shutdown();
+            //while (NetworkManager.Singleton.ShutdownInProgress) { }
             Logger.Instance.Log(this, "Disconnected from server");
         }
         catch (Exception ex)

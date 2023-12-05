@@ -19,7 +19,7 @@ public class LobbyManager : MonoBehaviour
 
     public Lobby CurrentLobby { get; private set; }
 
-    public bool IsServer => CustomNetworkManager.Singleton.IsServer;
+    public bool IsServer => NetworkManager.Singleton.IsServer;
     public string LobbyName => CurrentLobby != null ? CurrentLobby.Name : string.Empty;
     public string LobbyPlayerId { get; private set; }
 
@@ -52,17 +52,17 @@ public class LobbyManager : MonoBehaviour
 
     private void Start()
     {
-        if (CustomNetworkManager.Singleton == null)
+        if (NetworkManager.Singleton == null)
         {
             Logger.Instance.LogError(this, "NM is null");
         }
 
-        CustomNetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => DisconnectPlayer(clientId);
-        CustomNetworkManager.Singleton.OnClientStopped += async (bool someBool) => await LeaveLobbyAsync();
-        CustomNetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
+        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => DisconnectPlayer(clientId);
+        NetworkManager.Singleton.OnClientStopped += async (bool someBool) => await LeaveLobbyAsync();
+        NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
             Logger.Instance.Log(this, "Client Connected");
-            if (clientId != CustomNetworkManager.Singleton.LocalClientId)
+            if (clientId != NetworkManager.Singleton.LocalClientId)
                 ListPlayers();
         };
 

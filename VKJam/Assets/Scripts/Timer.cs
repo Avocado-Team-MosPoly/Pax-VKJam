@@ -30,17 +30,17 @@ public class Timer : NetworkBehaviour
 
         NetworkTime.OnValueChanged += OnTimerChange;
 
-        if (CustomNetworkManager.Singleton.IsServer)
+        if (NetworkManager.Singleton.IsServer)
             NetworkTime.Value = roundTime;
     }
 
     private IEnumerator Clock()
     {
-        //Debug.Log("Clock on client " + CustomNetworkManager.Singleton.LocalClientId);
+        //Debug.Log("Clock on client " + NetworkManager.Singleton.LocalClientId);
 
         while (IsServer)
         {
-            //Debug.Log("Clock on server " + CustomNetworkManager.Singleton.LocalClientId);
+            //Debug.Log("Clock on server " + NetworkManager.Singleton.LocalClientId);
 
             if (isTimePaused)
             {

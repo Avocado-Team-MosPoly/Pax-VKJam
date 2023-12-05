@@ -94,7 +94,7 @@ public class NotificationSystem : NetworkBehaviour
     {
         SendLocal(message, showTime);
 
-        if (CustomNetworkManager.Singleton == null || !CustomNetworkManager.Singleton.IsClient)
+        if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsClient)
         {
             Logger.Instance.LogError(this, $"You should connect to relay and start host/client before call {nameof(SendGlobal)}");
             return;
