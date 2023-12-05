@@ -87,7 +87,7 @@ public class TutorialPaint : MonoBehaviour
     {
         if (!material)
         {
-            Logger.Instance.LogError("Material isn't set");
+            Logger.Instance.LogError(this, "Material isn't set");
             return;
         }
         texture = new Texture2D(textureSettings.sizeX, textureSettings.sizeY);

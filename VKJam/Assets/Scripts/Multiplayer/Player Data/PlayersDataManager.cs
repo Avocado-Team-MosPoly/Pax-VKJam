@@ -25,14 +25,14 @@ public class PlayersDataManager : NetworkBehaviour
             foreach (NetworkTuple_PlayerData tuple in playerDatasList)
             {
                 playerDatas[tuple.Id] = tuple.PlayerData;
-                Logger.Instance.Log($"[{nameof(PlayersDataManager)}] Player {tuple.Id} data added: {tuple.PlayerData})");
+                Logger.Instance.Log(this, $"Player {tuple.Id} data added: {tuple.PlayerData})");
             }
 
             playerDatasList.OnListChanged += PlayerDatasList_OnListChanged;
         }
         else
         {
-            Logger.Instance.LogError($"[{nameof(PlayersDataManager)}] Second {nameof(PlayersDataManager)} spawned");
+            Logger.Instance.LogError(this, $"Second {nameof(PlayersDataManager)} spawned");
             return;
         }
     }
@@ -40,12 +40,12 @@ public class PlayersDataManager : NetworkBehaviour
     private void PlayerDatasList_OnListChanged(NetworkListEvent<NetworkTuple_PlayerData> changeEvent)
     {
         playerDatas[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
-        Logger.Instance.Log($"[{nameof(PlayersDataManager)}] Player {changeEvent.Value.Id} data added: {changeEvent.Value.PlayerData})");
+        Logger.Instance.Log(this, "Player {changeEvent.Value.Id} data added: {changeEvent.Value.PlayerData})");
     }
 
     public override void OnNetworkSpawn()
     {
-        Logger.Instance.Log($"[{nameof(PlayersDataManager)}] Spawned");
+        Logger.Instance.Log(this, "Spawned");
 
         Init();
 
@@ -113,7 +113,7 @@ public class PlayersDataManager : NetworkBehaviour
 
         if (index > playerDatasList.Count)
         {
-            Logger.Instance.LogWarning($"[{nameof(PlayersDataManager)}] {nameof(playerDatasList)} doesn't contain player {rpcParams.Receive.SenderClientId} data");
+            Logger.Instance.LogWarning(this, $"{nameof(playerDatasList)} doesn't contain player {rpcParams.Receive.SenderClientId} data");
             return;
         }
 
@@ -127,7 +127,7 @@ public class PlayersDataManager : NetworkBehaviour
 
         if (playerDatas.ContainsKey(localClientId))
         {
-            Logger.Instance.LogWarning($"[{nameof(PlayersDataManager)}] Player data already stored. Use {nameof(ChangePlayerData)} instead");
+            Logger.Instance.LogWarning(this, $"Player data already stored. Use {nameof(ChangePlayerData)} instead");
             return;
         }
 
@@ -145,7 +145,7 @@ public class PlayersDataManager : NetworkBehaviour
 
         if (!playerDatas.ContainsKey(localClientId))
         {
-            Logger.Instance.LogWarning($"[{nameof(PlayersDataManager)}] {nameof(playerDatas)} doesn't contain player data. First you need to call {nameof(AddPlayerData)}");
+            Logger.Instance.LogWarning(this, $"{nameof(playerDatas)} doesn't contain player data. First you need to call {nameof(AddPlayerData)}");
             return;
         }
 

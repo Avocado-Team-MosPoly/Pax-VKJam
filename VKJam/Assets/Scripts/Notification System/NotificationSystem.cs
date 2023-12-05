@@ -35,11 +35,20 @@ public class NotificationSystem : NetworkBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(this);
-
-            notificationInstance = Instantiate(notificationPrefab, transform).Init();
-            notificationInstance.gameObject.SetActive(false);
-            notificationInstance.OnDisappeared += OnNotificationDisappear;
         }
+    }
+
+    private void SpawnNotificationPrefab()
+    {
+        if (notificationInstance != null)
+        {
+            Logger.Instance.LogWarning(this, $"{nameof(notificationInstance)} is already declared");
+            return;
+        }
+
+        notificationInstance = Instantiate(notificationPrefab, transform).Init();
+        notificationInstance.gameObject.SetActive(false);
+        notificationInstance.OnDisappeared += OnNotificationDisappear;
     }
 
     private void OnNotificationDisappear()
@@ -50,8 +59,6 @@ public class NotificationSystem : NetworkBehaviour
         SendLocal(notificationQueue[0]);
         notificationQueue.RemoveAt(0);
     }
-
-
 
     #region Send
     private void SendLocal(NotificationQueueItem notification)
@@ -89,7 +96,7 @@ public class NotificationSystem : NetworkBehaviour
 
         if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsClient)
         {
-            Debug.LogError($"[{this.name}] You should connect to relay and start host/client before call {nameof(SendGlobal)}");
+            Logger.Instance.LogError(this, $"You should connect to relay and start host/client before call {nameof(SendGlobal)}");
             return;
         }
 
@@ -105,9 +112,12 @@ public class NotificationSystem : NetworkBehaviour
     public void SendLocal(object message, float showTime = 3f)
     {
         if (message == null)
-            throw new NullReferenceException($"{nameof(message)} is null");
+            Logger.Instance.LogError(this, new NullReferenceException($"{nameof(message)} is null"));
         if (notificationInstance == null)
-            throw new NullReferenceException($"{nameof(notificationInstance)} is null. Don't use \"{nameof(SendLocal)}\" method on Awake");
+        {
+            SpawnNotificationPrefab();
+            //Logger.Instance.LogError(this, new NullReferenceException($"{nameof(notificationInstance)} is null. Don't use \"{nameof(SendLocal)}\" method on Awake"));
+        }
 
         if (notificationInstance.IsActive)
         {

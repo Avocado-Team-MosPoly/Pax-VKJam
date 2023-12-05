@@ -31,7 +31,17 @@ public class Php_Connect : MonoBehaviour
     public void Init()
     {
         SceneLoader.EndLoad += OnGameEnded;
-        link = Link;
+
+        if (Link.Contains("https"))
+        {
+            link = Link;
+        }
+        else
+        {
+            link = string.Empty;
+            Logger.Instance.LogWarning(this, $"Unsafe or incorrect {nameof(Link)}. {nameof(Link)} should start with \"https\"");
+        }
+
         randomBase = RandomBase;
         PHPisOnline = true;
         Nickname = 333;

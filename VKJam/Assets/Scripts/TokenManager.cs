@@ -268,12 +268,12 @@ public class TokenManager : NetworkBehaviour
 
     private void LogAdd(int value)
     {
-        Logger.Instance.Log($"[{nameof(TokenManager)}] Add {value} token(-s). Total added tokens: {TokensCountWinnedCurrentRound}");
+        Logger.Instance.Log(this, $"Add {value} token(-s). Total added tokens: {TokensCountWinnedCurrentRound}");
     }
 
     private void LogRemove(int value)
     {
-        Logger.Instance.Log($"[{nameof(TokenManager)}] Remove {value} token(-s). Total removed tokens: {TokensCountLosedCurrentRound}");
+        Logger.Instance.Log(this, $"Remove {value} token(-s). Total removed tokens: {TokensCountLosedCurrentRound}");
     }
 
     #endregion

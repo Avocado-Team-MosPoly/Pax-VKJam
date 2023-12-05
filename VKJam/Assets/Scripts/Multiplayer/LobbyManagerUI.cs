@@ -85,7 +85,7 @@ public class LobbyManagerUI : NetworkBehaviour
 
         if (clientIdIndex < 0)
         {
-            Logger.Instance.LogWarning($"[{nameof(LobbyManagerUI)}] Client id index below 0");
+            Logger.Instance.LogWarning(this, "Client id index below 0");
             return;
         }
 
@@ -107,7 +107,7 @@ public class LobbyManagerUI : NetworkBehaviour
         }
         catch (ObjectDisposedException ex)
         {
-            Logger.Instance.LogError(ex);
+            Logger.Instance.LogError(this, ex);
         }
 
         return -1;

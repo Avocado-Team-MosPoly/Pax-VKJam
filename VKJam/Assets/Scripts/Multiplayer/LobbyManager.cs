@@ -50,7 +50,7 @@ public class LobbyManager : MonoBehaviour
         //NetworkManager.Singleton.OnServerStarted += StopHeartBeatPing;
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
-            Logger.Instance.Log("Client Connected");
+            Logger.Instance.Log(this, "Client Connected");
             if (clientId != NetworkManager.Singleton.LocalClientId)
                 ListPlayers();
         };
@@ -80,7 +80,7 @@ public class LobbyManager : MonoBehaviour
             }
             catch (LobbyServiceException ex)
             {
-                Logger.Instance.Log(ex);
+                Logger.Instance.Log(this, ex);
             }
         }
     }
@@ -118,11 +118,11 @@ public class LobbyManager : MonoBehaviour
         try
         {
             CurrentLobby = await LobbyService.Instance.GetLobbyAsync(CurrentLobby.Id);
-            Logger.Instance.Log($"[{nameof(LobbyManager)}] Local Lobby Data Updated");
+            Logger.Instance.Log(this, "Local Lobby Data Updated");
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(ex);
+            Logger.Instance.Log(this, ex);
         }
     }
 
@@ -190,7 +190,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(ex);
+            Logger.Instance.Log(this, ex);
         }
     }
 
@@ -231,7 +231,7 @@ public class LobbyManager : MonoBehaviour
 
             StartHeartBeatPing();
 
-            Logger.Instance.Log($"Created lobby: {CurrentLobby.Name}, max players: {CurrentLobby.MaxPlayers}, lobby code: {CurrentLobby.LobbyCode}");
+            Logger.Instance.Log(this, $"Created lobby: {CurrentLobby.Name}, max players: {CurrentLobby.MaxPlayers}, lobby code: {CurrentLobby.LobbyCode}");
 
             string relayJoinCode = await RelayManager.Instance.CreateRelay();
             if (relayJoinCode != "0")
@@ -241,7 +241,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(ex);
+            Logger.Instance.Log(this, ex);
         }
     }
 
@@ -262,13 +262,13 @@ public class LobbyManager : MonoBehaviour
 
             LobbyPlayerId = CurrentLobby.Players[CurrentLobby.Players.Count - 1].Id;
 
-            Logger.Instance.Log("You joined lobby " + CurrentLobby.Name);
+            Logger.Instance.Log(this, "You joined lobby " + CurrentLobby.Name);
 
             RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value);
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(ex);
+            Logger.Instance.Log(this, ex);
         }
     }
 
@@ -286,13 +286,13 @@ public class LobbyManager : MonoBehaviour
 
             CurrentLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id, joinLobbyByIdOptions);
 
-            Logger.Instance.Log("You joined lobby " + lobby.Name);
+            Logger.Instance.Log(this, "You joined lobby " + lobby.Name);
             
             RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value);
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(ex);
+            Logger.Instance.Log(this, ex);
         }
     }
 
@@ -323,13 +323,13 @@ public class LobbyManager : MonoBehaviour
 
             CurrentLobby = await LobbyService.Instance.QuickJoinLobbyAsync(quickJoinLobbyOptions);
 
-            Logger.Instance.Log("You joined lobby " + CurrentLobby.Name);
+            Logger.Instance.Log(this, "You joined lobby " + CurrentLobby.Name);
 
             RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value);
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.LogError(ex);
+            Logger.Instance.LogError(this, ex);
         }
     }
 
@@ -344,7 +344,7 @@ public class LobbyManager : MonoBehaviour
 
             await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, playerId);
 
-            Logger.Instance.Log($"You left the \"{CurrentLobby.Name}\" lobby");
+            Logger.Instance.Log(this, $"You left the \"{CurrentLobby.Name}\" lobby");
             CurrentLobby = null;
             //LeaveRelay();
         }
@@ -353,7 +353,7 @@ public class LobbyManager : MonoBehaviour
             if (ex.ErrorCode == 404)
                 CurrentLobby = null;
 
-            Logger.Instance.Log(ex);
+            Logger.Instance.Log(this, ex);
         }
     }
 
@@ -373,7 +373,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(ex);
+            Logger.Instance.Log(this, ex);
         }
     }
     public async void ListLobbiesWithFilter()
@@ -415,7 +415,7 @@ public class LobbyManager : MonoBehaviour
 
     public async void ListPlayers()
     {
-        Logger.Instance.Log("ListPlayers");
+        Logger.Instance.Log(this, "ListPlayers");
 
         try
         {
@@ -428,7 +428,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (LobbyServiceException ex)
         {
-            Logger.Instance.Log(ex);
+            Logger.Instance.Log(this, ex);
         }
     }
 
@@ -448,7 +448,7 @@ public class LobbyManager : MonoBehaviour
             }
             catch (LobbyServiceException ex)
             {
-                Logger.Instance.Log(ex);
+                Logger.Instance.Log(this, ex);
             }
         }
         else
@@ -465,7 +465,7 @@ public class LobbyManager : MonoBehaviour
             }
             catch (LobbyServiceException ex)
             {
-                Logger.Instance.Log(ex);
+                Logger.Instance.Log(this, ex);
             }
         }
         else

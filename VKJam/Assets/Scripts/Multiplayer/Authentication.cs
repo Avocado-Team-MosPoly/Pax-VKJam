@@ -14,7 +14,7 @@ public class Authentication : MonoBehaviour
     {
         if (UnityServices.State == ServicesInitializationState.Initialized)
         {
-            Debug.Log("Unity Services alredy initialized");
+            Logger.Instance.Log(typeof(Authentication), "Unity Services alredy initialized");
         }
         else
         {
@@ -29,7 +29,7 @@ public class Authentication : MonoBehaviour
                 UserId = number;
             }
 
-            Logger.Instance.Log("Player Name: " + PlayerName);
+            Logger.Instance.Log(typeof(Authentication), "Player Name: " + PlayerName);
             InitializationOptions initializationOptions = new();
             initializationOptions.SetProfile(UserId);
 
@@ -38,13 +38,13 @@ public class Authentication : MonoBehaviour
 
         if (AuthenticationService.Instance.IsAuthorized)
         {
-            Debug.Log("You alredy authorized");
+            Logger.Instance.Log(typeof(Authentication), "You alredy authorized");
             return;
         }
 
         AuthenticationService.Instance.SignedIn += () =>
         {
-            Debug.Log("Signed In. Your Id is " + AuthenticationService.Instance.PlayerId);
+            Logger.Instance.Log(typeof(Authentication), "Signed In. Your Id is " + AuthenticationService.Instance.PlayerId);
         };
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();

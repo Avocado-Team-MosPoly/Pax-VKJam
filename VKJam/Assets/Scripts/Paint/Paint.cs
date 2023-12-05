@@ -171,7 +171,7 @@ public class Paint : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        Logger.Instance.Log($"[{nameof(Paint)}] Spawned on {(IsServer ? "Server" : "Client")}");
+        Logger.Instance.Log(this, $"Spawned on {(IsServer ? "Server" : "Client")}");
         Scene loadedScene = SceneManager.GetActiveScene();
 
         if (IsServer)
@@ -210,7 +210,7 @@ public class Paint : NetworkBehaviour
     {
         if (!material)
         {
-            Logger.Instance.LogError($"[{nameof(Paint)}] Material isn't set");
+            Logger.Instance.LogError(this, "Material isn't set");
             return;
         }
 
@@ -394,7 +394,7 @@ public class Paint : NetworkBehaviour
         
         File.WriteAllBytes($"{dirPath}IMG_{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.png", bytes);
         
-        Logger.Instance.Log($"[{nameof(Paint)}] Path: " + dirPath);
+        Logger.Instance.Log(this, "Saved image directory: " + dirPath);
     }
 
     public void SwitchBrushMode()

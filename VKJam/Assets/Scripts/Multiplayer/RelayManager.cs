@@ -93,7 +93,7 @@ public class RelayManager : MonoBehaviour
             UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
 #if UNITY_EDITOR
-            Logger.Instance.Log("EDITOR");
+            Logger.Instance.Log(this, "EDITOR");
 
             unityTransport.SetRelayServerData
             (
@@ -104,9 +104,9 @@ public class RelayManager : MonoBehaviour
                 allocation.ConnectionData
             );
 #else
-            Logger.Instance.Log("BUILD");
+            Logger.Instance.Log(this, "BUILD");
 #if UNITY_STANDALONE_WIN
-            Logger.Instance.Log("Windows");
+            Logger.Instance.Log(this, "Windows");
 
             unityTransport.SetRelayServerData
             (
@@ -118,7 +118,7 @@ public class RelayManager : MonoBehaviour
             );
 #endif
 #if UNITY_WEBGL
-            Logger.Instance.Log("WebGL");
+            Logger.Instance.Log(this, "WebGL");
 
             RelayServerData relayServerData = new RelayServerData(allocation, "wss");
 
@@ -128,12 +128,12 @@ public class RelayManager : MonoBehaviour
 #endif
             NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
             {
-                Logger.Instance.Log($"Client {clientId} connected");
+                Logger.Instance.Log(this, $"Client {clientId} connected");
                 //SpawnPlayersDataManagerWithOwnership(clientId);
             };
             NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
             {
-                Logger.Instance.Log(NetworkManager.Singleton.DisconnectReason);
+                Logger.Instance.Log(this, NetworkManager.Singleton.DisconnectReason);
             };
 
             NetworkManager.Singleton.OnServerStarted += () =>
@@ -148,16 +148,18 @@ public class RelayManager : MonoBehaviour
 
             NetworkManager.Singleton.OnClientStarted += () =>
             {
-                Logger.Instance.Log($"Client Started on server\nCurrent Lobby: {LobbyManager.Instance.CurrentLobby.Name}\nLobby Player Id: {LobbyManager.Instance.LobbyPlayerId}");
+                Logger.Instance.Log(this, $"Client Started on server\nCurrent Lobby: {LobbyManager.Instance.CurrentLobby.Name}\nLobby Player Id: {LobbyManager.Instance.LobbyPlayerId}");
             };
             NetworkManager.Singleton.StartHost();
 
-            Logger.Instance.Log("You created relay with code: " + joinCode);
+            Logger.Instance.Log(this, "You created relay with code: " + joinCode);
             return joinCode;
         }
         catch (RelayServiceException ex)
         {
-            Logger.Instance.LogError(ex);
+            Logger.Instance.LogError(this, ex);
+            NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Relay servers.");
+
             return "0";
         }
     }
@@ -166,13 +168,13 @@ public class RelayManager : MonoBehaviour
     {
         try
         {
-            Logger.Instance.Log(joinCode);
+            Logger.Instance.Log(this, joinCode);
 
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
             UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
 #if UNITY_EDITOR
-            Logger.Instance.Log("EDITOR");
+            Logger.Instance.Log(this, "EDITOR");
 
             unityTransport.SetRelayServerData
             (
@@ -184,9 +186,9 @@ public class RelayManager : MonoBehaviour
                 joinAllocation.HostConnectionData
             );
 #else
-            Logger.Instance.Log("BUILD");
+            Logger.Instance.Log(this, "BUILD");
 #if UNITY_STANDALONE_WIN
-            Logger.Instance.Log("Windows");
+            Logger.Instance.Log(this, "Windows");
             
             unityTransport.SetRelayServerData
             (
@@ -199,7 +201,7 @@ public class RelayManager : MonoBehaviour
             );
 #endif
 #if UNITY_WEBGL
-            Logger.Instance.Log("WebGL");
+            Logger.Instance.Log(this, "WebGL");
 
             RelayServerData relayServerData = new RelayServerData(joinAllocation, "wss");
 
@@ -211,15 +213,7 @@ public class RelayManager : MonoBehaviour
 
             NetworkManager.Singleton.OnClientStarted += /*async*/ () =>
             {
-                Logger.Instance.Log("Client Started");
-
-                //Lobby updatedLobby = await LobbyService.Instance.UpdatePlayerAsync(LobbyManager.Instance.CurrentLobby.Id, LobbyManager.Instance.LobbyPlayerId, new UpdatePlayerOptions()
-                //{
-                //    Data = new System.Collections.Generic.Dictionary<string, Unity.Services.Lobbies.Models.PlayerDataObject>
-                //    {
-                //        { "Id", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, NetworkManager.Singleton.LocalClientId.ToString()) }
-                //    }
-                //});
+                Logger.Instance.Log(this, "Client Started");
             };
             NetworkManager.Singleton.OnClientStopped += async (bool isHost) =>
             {
@@ -230,11 +224,12 @@ public class RelayManager : MonoBehaviour
 
             NetworkManager.Singleton.StartClient();
 
-            Logger.Instance.Log("You joined relay with code: " +  joinCode);
+            Logger.Instance.Log(this, "You joined relay with code: " +  joinCode);
         }
         catch (RelayServiceException ex)
         {
-            Logger.Instance.LogError(ex);
+            Logger.Instance.LogError(this, ex);
+            NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Relay servers.");
         }
     }
 
@@ -253,11 +248,11 @@ public class RelayManager : MonoBehaviour
         {
             NetworkManager.Singleton.Shutdown();
             //while (NetworkManager.Singleton.ShutdownInProgress) { }
-            Logger.Instance.Log("Disconnected from server");
+            Logger.Instance.Log(this, "Disconnected from server");
         }
         catch (Exception ex)
         {
-            Logger.Instance.LogError(ex);
+            Logger.Instance.LogError(this, ex);
         }
     }
 

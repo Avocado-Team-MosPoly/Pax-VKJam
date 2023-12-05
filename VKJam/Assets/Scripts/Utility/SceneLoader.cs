@@ -12,7 +12,7 @@ public class SceneLoader : MonoBehaviour
     public static void ServerLoad(string sceneName)
     {
         if (!NetworkManager.Singleton.IsServer)
-            Logger.Instance.LogWarning($"[{nameof(SceneLoader)}] Server scene loader can use only server");
+            Logger.Instance.LogWarning("typeof(SceneLoader)", "Server scene loader can use only server");
 
         NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
     }

@@ -93,7 +93,7 @@ public class Timer : NetworkBehaviour
             ResetToDefault();
             serverClockCoroutine = StartCoroutine(Clock());
 
-            Logger.Instance.Log($"[{nameof(Timer)}] Start");
+            Logger.Instance.Log(this, "Start");
         }
     }
 
@@ -104,7 +104,7 @@ public class Timer : NetworkBehaviour
             StopCoroutine(serverClockCoroutine);
             serverClockCoroutine = null;
 
-            Logger.Instance.Log($"[{nameof(Timer)}] Stop");
+            Logger.Instance.Log(this, "Stop");
         }
     }
     public void OnIngredientGuess()

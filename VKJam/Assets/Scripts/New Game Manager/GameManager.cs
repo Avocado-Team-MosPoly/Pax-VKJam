@@ -150,7 +150,7 @@ public class GameManager : NetworkBehaviour
                 if (PainterId == clientId)
                     nextRoundButton.onClick?.Invoke();
 
-                Logger.Instance.LogWarning(NetworkManager.ConnectedClientsIds.Count);
+                LogWarning(NetworkManager.ConnectedClientsIds.Count);
                 if (NetworkManager.ConnectedClientsIds.Count <= 2)
                     OnRoundEnded();
             });
@@ -361,9 +361,9 @@ public class GameManager : NetworkBehaviour
         RelayManager.Instance.ReturnToLobby();
     }
 
-    private void Log(object message) => Logger.Instance.Log($"[{name}] {message}");
-    private void LogWarning(object message) => Debug.LogWarning($"[{name}] {message}");
-    private void LogError(object message) => Debug.LogError($"[{name}] {message}");
+    private void Log(object message) => Logger.Instance.Log(this, message);
+    private void LogWarning(object message) => Logger.Instance.LogWarning(this, message);
+    private void LogError(object message) => Logger.Instance.LogError(this, message);
 
     #region Get
 

@@ -111,12 +111,12 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
     {
         if (playerDatas.Length < 0)
         {
-            Logger.Instance.LogError(new System.ArgumentOutOfRangeException("Client Id shouldn't be less than 0"));
+            Logger.Instance.LogError(this, new System.ArgumentOutOfRangeException("Client Id shouldn't be less than 0"));
             return;
         }
         if (playerDatas.Length <= (int)clientId)
         {
-            Logger.Instance.LogError(new System.ArgumentOutOfRangeException("Not enough player data for client"));
+            Logger.Instance.LogError(this, new System.ArgumentOutOfRangeException("Not enough player data for client"));
             return;
         }
 
@@ -134,7 +134,7 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
             }
             catch (System.NullReferenceException ex)
             {
-                Logger.Instance.LogError($"[{nameof(LobbyPlayerDataViewManager)}] {ex}");
+                Logger.Instance.LogError(this, ex);
             }
         }
         else
