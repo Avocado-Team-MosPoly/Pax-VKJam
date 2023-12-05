@@ -15,19 +15,19 @@ MonoBehaviour:
   products:
   - Data:
       productCode: 23
-      productName: "\u0410\u043B\u0445\u0438\u043C\u0438\u044F"
+      productName: "\u041A\u043D\u0438\u0433\u0430 \u0430\u043B\u0445\u0438\u043C\u0438\u043A\u0430"
       icon: 
       productPrice: 12
       IsDonateVault: 1
       InOwn: 0
       Type: 6
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: cd39c22937f1c8946bba9fe398da4800, type: 3}
     isPreloaded: 0
     Model: {fileID: 7835001735471541926, guid: ffeb0c8610f72364aa72d625e8264643, type: 3}
   - Data:
       productCode: 24
-      productName: "\u0414\u0435\u043C\u043E\u043D\u043E\u043C\u0438\u043A\u043E\u043D"
+      productName: "\u0422\u0435\u0442\u0440\u0430\u0434\u044C \u0434\u044C\u044F\u0432\u043E\u043B\u0430"
       icon: 
       productPrice: 12
       IsDonateVault: 1
@@ -39,7 +39,8 @@ MonoBehaviour:
     Model: {fileID: 3569441074103676131, guid: 3c966a9fc2d38c346a185fc17a5cad12, type: 3}
   - Data:
       productCode: 25
-      productName: "\u0413\u0440\u0438\u043C\u0443\u0430\u0440"
+      productName: "\u0418\u0437\u0443\u043C\u0440\u0443\u0434\u043D\u044B\u0439
+        \u043F\u0435\u0440\u0435\u043F\u043B\u0435\u0442"
       icon: 
       productPrice: 12
       IsDonateVault: 1
@@ -87,7 +88,7 @@ MonoBehaviour:
     Model: {fileID: 658457994375389749, guid: e608be10a067b5b4db881edb0a1baf87, type: 3}
   - Data:
       productCode: 29
-      productName: "\u041A\u0440\u0430\u0441\u043D\u044B\u0439 \u0411\u043B\u043E\u043A\u043D\u043E\u0442"
+      productName: "\u0412\u0435\u0447\u0435\u0440\u0430 \u043D\u0430 \u0445\u0443\u0442\u043E\u0440\u0435"
       icon: 
       productPrice: 2000
       IsDonateVault: 0
@@ -131,15 +132,15 @@ MonoBehaviour:
       InOwn: 0
       Type: 7
     IsNonBuyable: 0
-    icon: {fileID: 21300000, guid: 9e1ded26eda170747a2366ef1be9754b, type: 3}
+    icon: {fileID: 21300000, guid: ff9c9948a63415f4e85bc7f36f08da2b, type: 3}
     isPreloaded: 0
     Model: {fileID: 8943132662427059316, guid: f2c7a6efff887b84a83f6d71978a8c47, type: 3}
   - Data:
       productCode: 33
       productName: "\u0411\u0435\u0441\u0442\u0438\u0430\u0440\u0438\u0439 \u0414\u0440\u0435\u0432\u043D\u0438\u0445"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 12
+      IsDonateVault: 1
       InOwn: 0
       Type: 7
     IsNonBuyable: 0
@@ -150,8 +151,8 @@ MonoBehaviour:
       productCode: 34
       productName: "\u0414\u0440\u0435\u0432\u043D\u0438\u0435 \u0421\u0432\u0438\u0442\u043A\u0438"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 10
+      IsDonateVault: 1
       InOwn: 0
       Type: 7
     IsNonBuyable: 0
@@ -160,7 +161,7 @@ MonoBehaviour:
     Model: {fileID: 8299307090568014253, guid: 7894c399730ba0c49923c1dc8c535985, type: 3}
   - Data:
       productCode: 35
-      productName: "\u041A\u043D\u0438\u0433\u0430 \u0421\u0432\u0435\u0442\u0438\u043B\u0430"
+      productName: "\u0421\u043E\u043B\u043D\u0435\u0447\u043D\u044B\u0439 \u0442\u043E\u043C"
       icon: 
       productPrice: 12
       IsDonateVault: 1
@@ -180,11 +181,11 @@ MonoBehaviour:
       Type: 7
     IsNonBuyable: 0
     icon: {fileID: 21300000, guid: 8ed027acc4924894fa47fa5661d54e62, type: 3}
-    isPreloaded: 0
+    isPreloaded: 1
     Model: {fileID: 6905912305833113678, guid: 41b704bdb71af344aa8b38f3a6fff1e3, type: 3}
   - Data:
       productCode: 37
-      productName: "\u0414\u0443\u0431\u043E\u0432\u044B\u0439 \u0431\u0435\u0441\u0442\u0438\u0430\u0440\u0438\u0439"
+      productName: "\u0417\u0430\u043C\u0448\u0435\u043B\u044B\u0439 \u0434\u0443\u0431"
       icon: 
       productPrice: 2000
       IsDonateVault: 0
@@ -192,246 +193,255 @@ MonoBehaviour:
       Type: 7
     IsNonBuyable: 0
     icon: {fileID: 21300000, guid: 1761b3eba428d3e4ab3942750ef729ef, type: 3}
-    isPreloaded: 0
+    isPreloaded: 1
     Model: {fileID: 4547055089492412685, guid: 3c7a9faca8c843d42bf6e19d75f7bf0b, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 70
+      productName: "\u041F\u0443\u0442\u0435\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C"
       icon: 
-      productPrice: 0
+      productPrice: 2000
       IsDonateVault: 0
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
-    isPreloaded: 0
+    icon: {fileID: 21300000, guid: 3c57b6e695876bb488d0cba9d5a520c4, type: 3}
+    isPreloaded: 1
     Model: {fileID: 4416268629614543589, guid: 6821191290d092448b33d35acea5793c, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 71
+      productName: "\u0417\u0430\u043F\u0440\u0435\u0442\u043D\u043E\u0435 \u0437\u043D\u0430\u043D\u0438\u0435"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 12
+      IsDonateVault: 1
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
-    isPreloaded: 0
+    icon: {fileID: 21300000, guid: 5f00253f8068c9c4082886a98328b2b6, type: 3}
+    isPreloaded: 1
     Model: {fileID: 8141688525414687685, guid: b1202ee68227b6d41829ca1fa407b4d9, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 72
+      productName: "\u041C\u0438\u0441\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u043D\u043E\u0443\u0442\u0431\u0443\u043A"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 15
+      IsDonateVault: 1
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
-    isPreloaded: 0
+    icon: {fileID: 21300000, guid: dd346f427b8b2784196ea1e6082cc650, type: 3}
+    isPreloaded: 1
     Model: {fileID: 976361802944086125, guid: 90af75f6587d1184dac4f5e587451668, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 73
+      productName: "\u0421\u0442\u043E\u043F\u043A\u0430 \u043A\u043D\u0438\u0433"
       icon: 
-      productPrice: 0
+      productPrice: 2000
       IsDonateVault: 0
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 13001f70b3ed5bf479f33fcfaa08d71b, type: 3}
     isPreloaded: 0
     Model: {fileID: 7369835132033288014, guid: b9d1b904937b683478c31dda0fde825e, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 74
+      productName: "\u0421\u0442\u0430\u0440\u044B\u0439 \u043A\u043E\u043C\u043F\u044C\u044E\u0442\u0435\u0440"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 15
+      IsDonateVault: 1
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 74bb45c38e9db6442bedab533d1e2aae, type: 3}
     isPreloaded: 0
     Model: {fileID: 4602625695466768685, guid: bf9f03c1687e8db4ea7b72ab0228143c, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 75
+      productName: "\u0418\u0441\u0442\u043E\u0440\u0438\u0438 \u0412\u0430\u043B\u044C\u0433\u0430\u043B\u043B\u044B"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 12
+      IsDonateVault: 1
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: bdaf2fba560e56d4d889673914ed4143, type: 3}
     isPreloaded: 0
     Model: {fileID: 3954107568248916362, guid: 799b53beac724ea4e969dbf60e780352, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 76
+      productName: "\u0412\u0435\u0434\u043C\u0430\u0447\u044C\u0435 \u043F\u043E\u0441\u043E\u0431\u0438\u0435"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 12
+      IsDonateVault: 1
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: efb4816fa6e0da545a9f44b504934e9b, type: 3}
     isPreloaded: 0
     Model: {fileID: 2389030212729992867, guid: 08e5d971bddda1d47a3d00e4fe5da21e, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 77
+      productName: "\u042D\u043D\u0446\u0438\u043A\u043B\u043E\u043F\u0435\u0434\u0438\u044F
+        \u043B\u0435\u0441\u043D\u043E\u0439 \u043D\u0435\u0436\u0438\u0442\u0438"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 12
+      IsDonateVault: 1
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 0940e2722f7eb27408666ab9f50ccdf5, type: 3}
     isPreloaded: 0
     Model: {fileID: 1334639668992139623, guid: 3a311d7efc7f51c48a64e1d8a9960ec2, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 78
+      productName: "\u0413\u0440\u0430\u0444\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u043F\u043B\u0430\u043D\u0448\u0435\u0442"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 15
+      IsDonateVault: 1
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 19915356c72364347a8f05850a45d6b2, type: 3}
     isPreloaded: 0
     Model: {fileID: 1794804021750156725, guid: 5a53f7049d15f12469f8349b745186b5, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 79
+      productName: "\u041E\u043A\u043A\u0443\u043B\u044C\u0442\u043D\u0430\u044F
+        \u0437\u0430\u043C\u0435\u0442\u043A\u0430"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 12
+      IsDonateVault: 1
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 2e4dec41f7fc5c04db29321ed6bd7889, type: 3}
     isPreloaded: 0
     Model: {fileID: 8616226844423342389, guid: 83ea3a155f571ae498e0af59d68039da, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 80
+      productName: "\u0421\u043E\u0432\u0440\u0435\u043C\u0435\u043D\u043D\u044B\u0439
+        \u0431\u043B\u043E\u043A\u043D\u043E\u0442"
       icon: 
-      productPrice: 0
+      productPrice: 1500
       IsDonateVault: 0
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: c7c8766a29b389e41bd9d0e200960897, type: 3}
     isPreloaded: 0
     Model: {fileID: 941039732743978538, guid: 6c4daf0418ee0554ca414c26b8bd0713, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 81
+      productName: "\u0422\u043E\u043C \u043B\u044E\u0431\u0432\u0438"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 13
+      IsDonateVault: 1
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 5d73e3997cbcf8c4cbe8974b88e7eada, type: 3}
     isPreloaded: 0
     Model: {fileID: 4928324534431500806, guid: fbd1540bdf221e946b87c6a69fb6b048, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 82
+      productName: "\u0420\u0443\u0431\u0438\u043D\u043E\u0432\u044B\u0439 \u0441\u0432\u0438\u0442\u043E\u043A"
       icon: 
-      productPrice: 0
+      productPrice: 1500
       IsDonateVault: 0
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 82a71ee8d6ed2fa4a918072730f3e0ce, type: 3}
     isPreloaded: 0
     Model: {fileID: 2787511937508226797, guid: 89b5030e75e703a429483b1e9246dd52, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 83
+      productName: "\u0420\u0430\u0441\u043A\u0440\u044B\u0442\u044B\u0439 \u0441\u0432\u0438\u0442\u043E\u043A"
       icon: 
-      productPrice: 0
+      productPrice: 1500
       IsDonateVault: 0
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 0ba693a8732a11b40855be2c4637da78, type: 3}
     isPreloaded: 0
     Model: {fileID: 329345756873124073, guid: 8400baf873e467740ae0123ecc8c7f13, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 84
+      productName: "\u0422\u0435\u043C\u043D\u044B\u0439 \u043F\u043B\u0430\u043D\u0448\u0435\u0442"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 15
+      IsDonateVault: 1
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 49fa5897028071c42a538fd059bb7156, type: 3}
     isPreloaded: 0
     Model: {fileID: 801717695615619160, guid: ed4c6758d82bb064e9f3726adc7559c1, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 85
+      productName: "\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0430\u044F
+        \u0440\u0443\u043A\u043E\u043F\u0438\u0441\u044C"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 10
+      IsDonateVault: 1
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 5e8e64b591246db4d85d1aea0e66f2f4, type: 3}
     isPreloaded: 0
     Model: {fileID: 770497950098295852, guid: 8e50f4055d6e95b4192fc3093ce03fba, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 86
+      productName: "\u041C\u0435\u0440\u0442\u0432\u044B\u0435 \u0434\u0443\u0448\u0438"
       icon: 
       productPrice: 0
       IsDonateVault: 0
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: a3f292ecbf6778444baff5cf1455a376, type: 3}
     isPreloaded: 0
     Model: {fileID: 8619961808735331500, guid: 09865810a21f74441a48adf3dfbb2443, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 87
+      productName: "\u0422\u0430\u0439\u043D\u044B\u0435 \u0437\u043D\u0430\u043D\u0438\u044F
+        \u043F\u0440\u043E\u0441\u0432\u0435\u0449\u0435\u043D\u043D\u044B\u0445"
       icon: 
-      productPrice: 0
+      productPrice: 1500
       IsDonateVault: 0
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 70878ebe0120f8643ad651d9e6a30f23, type: 3}
     isPreloaded: 0
     Model: {fileID: 1623640259520628785, guid: 94df0c34611adb44bab9ad593d4aa532, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 88
+      productName: "\u0420\u0443\u043D\u0438\u0447\u0435\u0441\u043A\u0430\u044F
+        \u043A\u043D\u0438\u0433\u0430"
       icon: 
-      productPrice: 0
-      IsDonateVault: 0
+      productPrice: 12
+      IsDonateVault: 1
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: d65123e283bf5bb4481ae24b4194e3c3, type: 3}
     isPreloaded: 0
     Model: {fileID: 4335236966727372352, guid: da99f58832822424d8aa7551dbe6bd4d, type: 3}
   - Data:
-      productCode: 0
-      productName: 
+      productCode: 89
+      productName: "\u0410\u043B\u044C\u0442\u0435\u0440\u043D\u0430\u0442\u0438\u0432\u043D\u0430\u044F
+        \u0438\u0441\u0442\u043E\u0440\u0438\u044F \u0422\u043E\u043C 1"
       icon: 
-      productPrice: 0
+      productPrice: 200
       IsDonateVault: 0
       InOwn: 0
       Type: 0
     IsNonBuyable: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: fc49e670e3994954b9c7a0a9af5e132d, type: 3}
     isPreloaded: 0
     Model: {fileID: 2727859431936239292, guid: de005ac0467610e46821387bde08e076, type: 3}
   sectionType: 6
