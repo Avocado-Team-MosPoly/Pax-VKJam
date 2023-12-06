@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class TutorialPaint : MonoBehaviour
@@ -46,8 +47,9 @@ public class TutorialPaint : MonoBehaviour
 
     private bool isDraw = false;
 
-    [Header("Set if functionality is needed")]
     [Header("Controls")]
+    [SerializeField, Range(0, 15)] private int scrollRate = 2;
+    [Header("Set if functionality is needed")]
     [SerializeField] private Slider brushSizeSlider;
     [SerializeField] private Button switchBrushModeButton;
     [SerializeField] private Button saveAsPNGButton;
@@ -102,11 +104,20 @@ public class TutorialPaint : MonoBehaviour
     private void Update()
     {
         Draw();
+
+        int scrollDelta = (int)Input.mouseScrollDelta.y;
+
+        if (scrollDelta != 0)
+        {
+            brushSize += scrollRate * scrollDelta;
+            brushSize = Mathf.Clamp(brushSize, 4, 16);
+            halfBrushSize = brushSize / 2;
+        }
     }
 
     private void Draw()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && !EventSystem.current.IsPointerOverGameObject())
         {
             isDraw = true;
         }

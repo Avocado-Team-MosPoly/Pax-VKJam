@@ -27282,6 +27282,7 @@ MonoBehaviour:
   drawColor: {r: 0, g: 0, b: 0, a: 0}
   brushMode: 0
   brushSize: 12
+  scrollRate: 2
   brushSizeSlider: {fileID: 0}
   switchBrushModeButton: {fileID: 1469634290}
   saveAsPNGButton: {fileID: 0}
@@ -29849,17 +29850,26 @@ MonoBehaviour:
   defaultAudioClip: {fileID: 8300000, guid: 2def55e11b821444a92172d7328e4f11, type: 3}
   defaultAudioVolume: 0.4
   specificScenesAudioClips:
-  - sceneName: Shop
-    defaultAudioClip: {fileID: 8300000, guid: 8a5dc67b468cee54b8c24b3f08a4e611, type: 3}
-    defaultAudioClipVolume: 0.5
-    namedAudioClips: []
   - sceneName: Map_New
     defaultAudioClip: {fileID: 8300000, guid: 2def55e11b821444a92172d7328e4f11, type: 3}
     defaultAudioClipVolume: 0.4
     namedAudioClips:
-    - name: IngredientGuess
-      clip: {fileID: 8300000, guid: 8c41669a72d704e458ce63d4244078a9, type: 3}
-      volume: 0.5
+    - name: painting
+      clip: {fileID: 8300000, guid: 01e283e657d09504080837f2fceedceb, type: 3}
+      volume: 0.25
+    - name: ingredientGuess120s
+      clip: {fileID: 8300000, guid: a3d25a54bc3e2df448c6a80b1cf59252, type: 3}
+      volume: 0.25
+    - name: ingredientGuess150s
+      clip: {fileID: 8300000, guid: f576a2c8da639424ba8b16595252c4b4, type: 3}
+      volume: 0.25
+    - name: monsterGuess
+      clip: {fileID: 8300000, guid: 21d77b7f671af0b4195060ef0ac646f6, type: 3}
+      volume: 0.25
+  - sceneName: Shop
+    defaultAudioClip: {fileID: 8300000, guid: 8a5dc67b468cee54b8c24b3f08a4e611, type: 3}
+    defaultAudioClipVolume: 0.5
+    namedAudioClips: []
 --- !u!82 &1549680960
 AudioSource:
   m_ObjectHideFlags: 0

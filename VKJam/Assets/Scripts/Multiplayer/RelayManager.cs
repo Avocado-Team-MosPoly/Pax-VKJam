@@ -181,7 +181,7 @@ public class RelayManager : MonoBehaviour
             Logger.Instance.LogError(this, ex);
             NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Relay servers.");
 
-            LobbyManager.Instance.Disconnect();
+            await LobbyManager.Instance.DisconnectAsync();
 
             return "0";
         }
@@ -246,7 +246,7 @@ public class RelayManager : MonoBehaviour
             NetworkManager.Singleton.OnClientStopped += async (bool isHost) =>
             {
                 Disconnect();
-                await LobbyManager.Instance.LeaveLobbyAsync();
+                await LobbyManager.Instance.DisconnectAsync();
                 SceneLoader.Load("Menu");
             };
 

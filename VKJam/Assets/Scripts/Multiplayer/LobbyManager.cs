@@ -57,8 +57,8 @@ public class LobbyManager : MonoBehaviour
             Logger.Instance.LogError(this, "NM is null");
         }
 
-        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => DisconnectPlayer(clientId);
-        NetworkManager.Singleton.OnClientStopped += async (bool someBool) => await LeaveLobbyAsync();
+        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => DisconnectPlayerAsync(clientId);
+        NetworkManager.Singleton.OnClientStopped += async (bool someBool) => await DisconnectAsync();
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
             Logger.Instance.Log(this, "Client Connected");
@@ -248,7 +248,7 @@ public class LobbyManager : MonoBehaviour
             else
             {
                 Logger.Instance.LogError(this, new FormatException("Invalid relay join code"));
-                Disconnect();
+                await DisconnectAsync();
             }
         }
         catch (LobbyServiceException ex)
@@ -287,7 +287,7 @@ public class LobbyManager : MonoBehaviour
             LobbyPlayerId = CurrentLobby.Players[CurrentLobby.Players.Count - 1].Id;
 
             if (await RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value))
-                Disconnect();
+                await DisconnectAsync();
         }
         catch (LobbyServiceException ex)
         {
@@ -324,7 +324,7 @@ public class LobbyManager : MonoBehaviour
             LobbyPlayerId = CurrentLobby.Players[CurrentLobby.Players.Count - 1].Id;
 
             if (await RelayManager.Instance.JoinRelay(CurrentLobby.Data[KEY_RELAY_CODE].Value))
-                Disconnect();
+                await DisconnectAsync();
         }
         catch (LobbyServiceException ex)
         {
@@ -372,30 +372,6 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-        }
-    }
-
-    public async Task LeaveLobbyAsync()
-    {
-        try
-        {
-            if (CurrentLobby == null)
-                return;
-
-            string playerId = AuthenticationService.Instance.PlayerId;
-
-            await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, playerId);
-
-            Logger.Instance.Log(this, $"You left the \"{CurrentLobby.Name}\" lobby");
-            CurrentLobby = null;
-            //LeaveRelay();
-        }
-        catch (LobbyServiceException ex)
-        {
-            if (ex.ErrorCode == 404)
-                CurrentLobby = null;
-
-            Logger.Instance.Log(this, ex);
         }
     }
 
@@ -476,7 +452,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public async void DisconnectPlayer(ulong clientId)
+    public async void DisconnectPlayerAsync(ulong clientId)
     {
         if (!IsServer)
         {
@@ -501,18 +477,21 @@ public class LobbyManager : MonoBehaviour
             Logger.Instance.LogWarning(this, "You are not in the lobby");
     }
 
-    public async void Disconnect()
+    public async Task DisconnectAsync()
     {
         if (CurrentLobby != null)
         {
             try
             {
                 await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, AuthenticationService.Instance.PlayerId);
-                Logger.Instance.Log(this, "Disconnected from lobby: " + CurrentLobby.Name);
+                Logger.Instance.Log(this, $"You left the \"{CurrentLobby.Name}\" lobby");
                 CurrentLobby = null;
             }
             catch (LobbyServiceException ex)
             {
+                if (ex.ErrorCode == 404)
+                    CurrentLobby = null;
+
                 Logger.Instance.LogError(this, ex);
             }
         }
