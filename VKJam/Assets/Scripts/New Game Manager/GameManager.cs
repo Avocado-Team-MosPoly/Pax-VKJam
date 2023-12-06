@@ -55,6 +55,7 @@ public class GameManager : NetworkBehaviour
     
     [Header("Buttons")]
     [SerializeField] private Button nextRoundButton;
+    [SerializeField] private string nextRoundButtonText;
     [SerializeField] private string returnToLobbyButtonText;
 
     [Header("Scene Monster")]
@@ -83,20 +84,17 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
-
-
     }
 
     public override void OnNetworkSpawn()
     {
-        //Log("IsServer : " + IsServer);
-
         bestiary.TakePack();
         bestiaryIngredients.TakePack();
 
         timer.Init(gameConfig);
 
-        IsTeamMode = LobbyManager.Instance.CurrentLobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True";
+        if (LobbyManager.Instance.CurrentLobby != null)
+            IsTeamMode = LobbyManager.Instance.CurrentLobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True";
 
         if (!IsTeamMode)
         {
@@ -106,10 +104,12 @@ public class GameManager : NetworkBehaviour
             playersStatusManager.SetActive(IsServer);
         }
 
+        roleManager.OnPainterSetted.AddListener(() => BackgroundMusic.Instance.Play("tokens_take-card"));
+        roleManager.OnGuesserSetted.AddListener(() => BackgroundMusic.Instance.Play("default"));
+
         if (IsServer)
         {
             timer.OnExpired.AddListener(OnTimeExpired);
-
 
             if (IsTeamMode)
             {
@@ -169,6 +169,7 @@ public class GameManager : NetworkBehaviour
                 OnRoundStartedServerRpc();
         });
         nextRoundButton.onClick.AddListener(roleManager.ChangeRoles);
+        nextRoundButton.GetComponentInChildren<TextMeshProUGUI>().text = nextRoundButtonText;
     }
 
     private void SetNRBLobby()
@@ -200,7 +201,6 @@ public class GameManager : NetworkBehaviour
     private void OnRoundStartedClientRpc()
     {
         playersStatusManager.ResetStatuses();
-        BackgroundMusic.Instance.Play("default");
         OnRoundStartedOnClient?.Invoke();
     }
 
@@ -213,7 +213,8 @@ public class GameManager : NetworkBehaviour
         sceneObjectsManager.OnRoundEnded();
         hintManager.DisableHandHint();
         TokenManager.AccrueTokens();
-        BackgroundMusic.Instance.Play("tokens");
+
+        BackgroundMusic.Instance.Play("tokens_take-card");
     }
 
     private void OnRoundEnded()

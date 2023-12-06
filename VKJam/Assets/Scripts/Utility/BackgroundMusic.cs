@@ -98,12 +98,12 @@ public class BackgroundMusic : MonoBehaviour
         SetMusic($"default{splitter}default", defaultAudioClip, defaultAudioVolume);
     }
 
-    private bool SetMusic(string musicId, AudioClip audioClip, float volume)
+    private void SetMusic(string musicId, AudioClip audioClip, float volume)
     {
         if (source.clip == audioClip)
         {
             Logger.Instance.LogWarning(this, $"{musicId} already playing");
-            return false;
+            return;
         }
 
         source.clip = audioClip;
@@ -112,7 +112,7 @@ public class BackgroundMusic : MonoBehaviour
 
         source.Play();
 
-        return true;
+        Logger.Instance.Log(this, $"Setted {musicId} music");
     }
 
     /// <summary> You should be on scene that contains 'musicName' to play it </summary>
@@ -132,15 +132,20 @@ public class BackgroundMusic : MonoBehaviour
                 }
 
                 foreach (Clip clip in sac.namedAudioClips)
+                {
                     if (clip.name == musicName)
-                        if (SetMusic(activeScene.name + splitter + musicName, clip.clip, clip.volume))
-                            return true;
+                    {
+                        SetMusic(activeScene.name + splitter + musicName, clip.clip, clip.volume);
+                        return true;
+                    }
+                }
 
+                Logger.Instance.LogWarning(this, $"Unable to find {activeScene.name + splitter + musicName} music. Will be setted {activeScene.name + splitter}default");
+                SetMusic(activeScene.name + splitter + "default", sac.defaultAudioClip, sac.defaultAudioClipVolume);
                 break;
             }
         }
 
-        SetMusic($"default{splitter}default", defaultAudioClip, defaultAudioVolume);
         return false;
     }
 

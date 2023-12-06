@@ -33,7 +33,7 @@ public class RoleManager : NetworkBehaviour
 
     private void ChooseRole()
     {
-        if (GameManager.Instance.IsPainter)
+        if (IsPainter)
             OnPainterSetted?.Invoke();
         else
             OnGuesserSetted?.Invoke();

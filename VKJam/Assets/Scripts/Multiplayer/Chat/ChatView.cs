@@ -44,7 +44,7 @@ public class ChatView : MonoBehaviour
 
         foreach (Player player in LobbyManager.Instance.CurrentLobby.Players)
         {
-            if (player.Id == AuthenticationService.Instance.PlayerId)
+            if (player.Id == LobbyManager.Instance.PlayerId)
                 Debug.Log("player " + player.Data["Player Name"].Value + " is me, id: " + player.Id);
         }
     }

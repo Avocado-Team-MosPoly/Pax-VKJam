@@ -8,21 +8,21 @@ public struct PlayerData : INetworkSerializable, System.IEquatable<PlayerData>
     public byte AvatarIndex;
     public byte AvatarFrameIndex;
 
-    private FixedString64Bytes authenticationServiceId;
+    private FixedString64Bytes lobbyPlayerId;
     private FixedString64Bytes name;
 
-    public string AuthenticationServiceId
+    public string LobbyPlayerId
     {
         get
         {
-            return authenticationServiceId.ToString();
+            return lobbyPlayerId.ToString();
         }
         set
         {
-            authenticationServiceId = new(value);
+            lobbyPlayerId = new(value);
 
             if (name.Length < value.Length)
-                Debug.LogWarning($"[{nameof(PlayerData)}] {nameof(value)} parameter is bigger than {nameof(authenticationServiceId)} can store");
+                Debug.LogWarning($"[{nameof(PlayerData)}] {nameof(value)} parameter is bigger than {nameof(lobbyPlayerId)} can store");
         }
     }
 
@@ -43,7 +43,7 @@ public struct PlayerData : INetworkSerializable, System.IEquatable<PlayerData>
 
     public PlayerData(byte avatarIndex, byte avatarFrameIndex)
     {
-        authenticationServiceId = AuthenticationService.Instance.PlayerId;
+        lobbyPlayerId = LobbyManager.Instance.PlayerId;
         name = Authentication.PlayerName;
 
         AvatarIndex = avatarIndex;
@@ -52,7 +52,7 @@ public struct PlayerData : INetworkSerializable, System.IEquatable<PlayerData>
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
-        serializer.SerializeValue(ref authenticationServiceId);
+        serializer.SerializeValue(ref lobbyPlayerId);
         serializer.SerializeValue(ref name);
         serializer.SerializeValue(ref AvatarIndex);
         serializer.SerializeValue(ref AvatarFrameIndex);
@@ -60,7 +60,7 @@ public struct PlayerData : INetworkSerializable, System.IEquatable<PlayerData>
 
     public bool Equals(PlayerData other)
     {
-        return this.authenticationServiceId == other.authenticationServiceId
+        return this.lobbyPlayerId == other.lobbyPlayerId
             && this.name == other.name
             && this.AvatarIndex == other.AvatarIndex
             && this.AvatarFrameIndex == other.AvatarFrameIndex;
@@ -73,7 +73,7 @@ public struct PlayerData : INetworkSerializable, System.IEquatable<PlayerData>
         result += "Name: " + name + ", ";
         result += "Avatar Index: " + AvatarIndex + ", ";
         result += "Avatar Frame Index: " + AvatarFrameIndex + ", ";
-        result += "Authentication Service Id: " + authenticationServiceId;
+        result += "Authentication Service Id: " + lobbyPlayerId;
 
         return result;
     }
