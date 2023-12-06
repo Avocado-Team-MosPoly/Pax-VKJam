@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
-//using UnityEngine.EventSystems;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Collider))]
 public class Interactable : MonoBehaviour
@@ -14,7 +14,7 @@ public class Interactable : MonoBehaviour
     public UnityEvent m_OnMouseExit;
     public bool ActivityInteractable;
 
-    //private bool isMouseEntered;
+    private bool isMouseEntered;
 
     public void Set(Interactable New)
     {
@@ -34,27 +34,27 @@ public class Interactable : MonoBehaviour
     }
     void OnMouseEnter()
     {
-        if (!ActivityInteractable/* || EventSystem.current.IsPointerOverGameObject()*/)
+        if (!ActivityInteractable || EventSystem.current.IsPointerOverGameObject())
             return;
 
-        //isMouseEntered = true;
+        isMouseEntered = true;
         m_OnMouseEnter.Invoke();
         foreach (int current in TargetMaterialID)
             Rend.materials[current].color = NewColor;
     }
     void OnMouseExit()
     {
-        if (!ActivityInteractable/* || !isMouseEntered*/)
+        if (!ActivityInteractable || !isMouseEntered)
             return;
 
-        //isMouseEntered = false;
+        isMouseEntered = false;
         m_OnMouseExit.Invoke();
         for (int i = 0; i < TargetMaterialID.Length; ++i)
             Rend.materials[TargetMaterialID[i]].color = TargetColorMaterial[i];
     }
     void OnMouseDown()
     {
-        if (!ActivityInteractable/* || EventSystem.current.IsPointerOverGameObject()*/)
+        if (!ActivityInteractable || EventSystem.current.IsPointerOverGameObject())
             return;
 
         m_OnClick.Invoke();
