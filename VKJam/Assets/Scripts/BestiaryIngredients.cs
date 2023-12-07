@@ -20,6 +20,7 @@ public class BestiaryIngredients : MonoBehaviour
     [SerializeField] private TextHoverEffect textHoverEffect;
 
     [SerializeField] private Transform[] spawnPositions;
+    [SerializeField] private Button closeBestiaryButton;
 
     private List<TMP_Text> ingredientsTexts = new();
     private List<GameObject> spawnedIngredientObjects = new();
@@ -119,7 +120,7 @@ public class BestiaryIngredients : MonoBehaviour
             }
 
             IngredientInfo ingredientInfoUI = Instantiate(ingredientInfoTemplate, ingredientListContainer);
-            ingredientInfoUI.SetIngridient(IngredientList[i].Name, i, compareSystem);
+            ingredientInfoUI.SetIngridient(IngredientList[i].Name, i, compareSystem, closeBestiaryButton);
             ingredientInfoUI.gameObject.SetActive(true);
             ingredientInfoUI.OnGuess.AddListener(OnIngredientSelected);
 
