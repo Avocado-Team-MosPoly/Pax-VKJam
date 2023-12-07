@@ -14,7 +14,7 @@ public class RelayManager : MonoBehaviour
     [HideInInspector] public UnityEvent<ulong> OnClientDisconnect;
 
     public string LobbySceneName => lobbySceneName;
-
+    public bool IsServer => NetworkManager.Singleton.IsServer;
     [SerializeField] private string lobbySceneName;
 
     [Header("Prefabs")]
@@ -74,10 +74,16 @@ public class RelayManager : MonoBehaviour
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
             OnClientConnected?.Invoke(clientId);
+
+            Logger.Instance.Log(this, "Client Connected");
         };
+
         NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
         {
             OnClientDisconnect?.Invoke(clientId);
+
+            if (IsServer)
+                LobbyManager.Instance.DisconnectPlayerAsync(clientId);
         };
     }
 
@@ -131,14 +137,16 @@ public class RelayManager : MonoBehaviour
                 allocation.Key,
                 allocation.ConnectionData
             );
-#endif
-#if UNITY_WEBGL
+#elif UNITY_WEBGL
             Logger.Instance.Log(this, "WebGL");
 
             RelayServerData relayServerData = new RelayServerData(allocation, "wss");
 
             unityTransport.UseWebSockets = true;
             unityTransport.SetRelayServerData(relayServerData);
+#else
+            Logger.Instance.LogError(this, "Unsupported Platform. Supprted Platforms: UNITY_WEBGL, UNITY_STANDALONE_WIN");
+            return "0";
 #endif
 #endif
             NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
@@ -169,7 +177,7 @@ public class RelayManager : MonoBehaviour
 
             NetworkManager.Singleton.OnClientStarted += () =>
             {
-                Logger.Instance.Log(this, $"Client Started on server\nCurrent Lobby: {LobbyManager.Instance.CurrentLobby.Name}\nLobby Player Id: {LobbyManager.Instance.LobbyPlayerId}");
+                Logger.Instance.Log(this, $"Client Started on server\nCurrent Lobby: {LobbyManager.Instance.CurrentLobby.Name}\nLobby Player Id: {LobbyManager.Instance.PlayerId}");
             };
             NetworkManager.Singleton.StartHost();
 
@@ -181,7 +189,7 @@ public class RelayManager : MonoBehaviour
             Logger.Instance.LogError(this, ex);
             NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Relay servers.");
 
-            LobbyManager.Instance.Disconnect();
+            await LobbyManager.Instance.DisconnectAsync();
 
             return "0";
         }
@@ -246,7 +254,7 @@ public class RelayManager : MonoBehaviour
             NetworkManager.Singleton.OnClientStopped += async (bool isHost) =>
             {
                 Disconnect();
-                await LobbyManager.Instance.LeaveLobbyAsync();
+                await LobbyManager.Instance.DisconnectAsync();
                 SceneLoader.Load("Menu");
             };
 
@@ -267,7 +275,7 @@ public class RelayManager : MonoBehaviour
 
     public void DisconnectPlayer(ulong clientId)
     {
-        if (!NetworkManager.Singleton.IsServer)
+        if (!IsServer)
             return;
 
         NetworkManager.Singleton.DisconnectClient(clientId);

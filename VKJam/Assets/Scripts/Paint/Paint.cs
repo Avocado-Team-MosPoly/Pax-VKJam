@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class Paint : NetworkBehaviour
 {
@@ -267,7 +268,7 @@ public class Paint : NetworkBehaviour
 
     private void Draw()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && !EventSystem.current.IsPointerOverGameObject())
         {
             isDraw = true;
             //Logger.Instance.Log($"[{nameof(Paint)}] Start Curve");

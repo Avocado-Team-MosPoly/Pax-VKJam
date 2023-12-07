@@ -15,6 +15,7 @@ public class GetLobbyCodeAndConnect : MonoBehaviour
     }
     public void ChangeConnectedLobbyCode(string value)
     {
+        code.text = value.ToUpper();
         connectedLobbyCode = value;
         LobbyCode = code.text;
     }

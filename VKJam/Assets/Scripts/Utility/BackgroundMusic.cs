@@ -41,7 +41,8 @@ public class BackgroundMusic : MonoBehaviour
     private AudioSource source;
     private string currentMusicId;
 
-    private string KEY_VOLUME = "Volume";
+    private readonly string KEY_VOLUME = "Volume";
+    private readonly string splitter = ":";
 
     private void Awake()
     {
@@ -88,22 +89,30 @@ public class BackgroundMusic : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
     {
-        if (Play(scene.name + ":default"))
+        if (Play(scene.name + splitter + "default"))
             return;
 
         if (source.clip == defaultAudioClip)
             return;
 
-        SetMusic("default-default", defaultAudioClip, defaultAudioVolume);
+        SetMusic($"default{splitter}default", defaultAudioClip, defaultAudioVolume);
     }
 
     private void SetMusic(string musicId, AudioClip audioClip, float volume)
     {
+        if (source.clip == audioClip)
+        {
+            Logger.Instance.LogWarning(this, $"{musicId} already playing");
+            return;
+        }
+
         source.clip = audioClip;
         source.volume = volume;
         currentMusicId = musicId;
 
         source.Play();
+
+        Logger.Instance.Log(this, $"Setted {musicId} music");
     }
 
     /// <summary> You should be on scene that contains 'musicName' to play it </summary>
@@ -118,7 +127,7 @@ public class BackgroundMusic : MonoBehaviour
             {
                 if (musicName == "default")
                 {
-                    SetMusic(activeScene.name + ":" + musicName, sac.defaultAudioClip, sac.defaultAudioClipVolume);
+                    SetMusic(activeScene.name + splitter + musicName, sac.defaultAudioClip, sac.defaultAudioClipVolume);
                     return true;
                 }
 
@@ -126,17 +135,13 @@ public class BackgroundMusic : MonoBehaviour
                 {
                     if (clip.name == musicName)
                     {
-                        if (currentMusicId.Split('-')[1] == musicName && source.clip == clip.clip)
-                        {
-                            Logger.Instance.LogWarning(this, $"{musicName} clip already playing");
-                            return false;
-                        }
-
-                        SetMusic(activeScene.name + ":" + musicName, clip.clip, clip.volume);
+                        SetMusic(activeScene.name + splitter + musicName, clip.clip, clip.volume);
                         return true;
                     }
                 }
 
+                Logger.Instance.LogWarning(this, $"Unable to find {activeScene.name + splitter + musicName} music. Will be setted {activeScene.name + splitter}default");
+                SetMusic(activeScene.name + splitter + "default", sac.defaultAudioClip, sac.defaultAudioClipVolume);
                 break;
             }
         }

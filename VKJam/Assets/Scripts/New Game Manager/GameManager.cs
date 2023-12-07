@@ -55,7 +55,8 @@ public class GameManager : NetworkBehaviour
     
     [Header("Buttons")]
     [SerializeField] private Button nextRoundButton;
-    [SerializeField] private Button returnToLobbyButton;
+    [SerializeField] private string nextRoundButtonText;
+    [SerializeField] private string returnToLobbyButtonText;
 
     [Header("Scene Monster")]
     [SerializeField] private GameObject sceneMonster;
@@ -83,27 +84,17 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
-
-        nextRoundButton.onClick.AddListener(() =>
-        {
-            if (IsServer)
-                OnRoundStartedClientRpc();
-            else
-                OnRoundStartedServerRpc();
-        });
-        nextRoundButton.onClick.AddListener(roleManager.ChangeRoles);
     }
 
     public override void OnNetworkSpawn()
     {
-        //Log("IsServer : " + IsServer);
-
         bestiary.TakePack();
         bestiaryIngredients.TakePack();
 
         timer.Init(gameConfig);
 
-        IsTeamMode = LobbyManager.Instance.CurrentLobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True";
+        if (LobbyManager.Instance.CurrentLobby != null)
+            IsTeamMode = LobbyManager.Instance.CurrentLobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True";
 
         if (!IsTeamMode)
         {
@@ -113,10 +104,12 @@ public class GameManager : NetworkBehaviour
             playersStatusManager.SetActive(IsServer);
         }
 
+        roleManager.OnPainterSetted.AddListener(() => BackgroundMusic.Instance.Play("tokens_take-card"));
+        roleManager.OnGuesserSetted.AddListener(() => BackgroundMusic.Instance.Play("default"));
+
         if (IsServer)
         {
             timer.OnExpired.AddListener(OnTimeExpired);
-
 
             if (IsTeamMode)
             {
@@ -155,14 +148,36 @@ public class GameManager : NetworkBehaviour
                     OnRoundEnded();
             });
 
+            SetNRBRoles();
             nextRoundButton.gameObject.SetActive(true);
-            returnToLobbyButton.gameObject.SetActive(true);
         }
         else
         {
             nextRoundButton.gameObject.SetActive(false);
-            returnToLobbyButton.gameObject.SetActive(false);
         }
+    }
+
+    private void SetNRBRoles()
+    {
+        nextRoundButton.onClick.RemoveAllListeners();
+
+        nextRoundButton.onClick.AddListener(() =>
+        {
+            if (IsServer)
+                OnRoundStartedClientRpc();
+            else
+                OnRoundStartedServerRpc();
+        });
+        nextRoundButton.onClick.AddListener(roleManager.ChangeRoles);
+        nextRoundButton.GetComponentInChildren<TextMeshProUGUI>().text = nextRoundButtonText;
+    }
+
+    private void SetNRBLobby()
+    {
+        nextRoundButton.onClick.RemoveAllListeners();
+
+        nextRoundButton.onClick.AddListener(ReturnToLobby);
+        nextRoundButton.GetComponentInChildren<TextMeshProUGUI>().text = returnToLobbyButtonText;
     }
 
     private void OnTimeExpired()
@@ -199,15 +214,7 @@ public class GameManager : NetworkBehaviour
         hintManager.DisableHandHint();
         TokenManager.AccrueTokens();
 
-        //if (IsPainter)
-        //{
-        //    //playersStatusManager.ResetStatuses();
-        //    playersStatusManager.SetActive(true);
-        //}
-        //else if (IsTeamMode)
-        //    playersStatusManager.SetActive(true);
-        //else
-        //    playersStatusManager.SetActive(false);
+        BackgroundMusic.Instance.Play("tokens_take-card");
     }
 
     private void OnRoundEnded()
@@ -245,6 +252,7 @@ public class GameManager : NetworkBehaviour
             sceneMonsterMaterial.mainTexture = hiddenMonsterTexture;
         }
 
+        BackgroundMusic.Instance.Play("monsterGuess");
         OnGuessMonsterStageActivatedOnClient?.Invoke(IsPainter);
     }
 
@@ -257,8 +265,6 @@ public class GameManager : NetworkBehaviour
 
         timer.OnMonsterGuess();
         timer.StartTimer();
-
-        Debug.Log("Monster Stage " + Stage);
     }
 
     #endregion
@@ -273,7 +279,15 @@ public class GameManager : NetworkBehaviour
 
         sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
 
-        BackgroundMusic.Instance.Play("IngredientGuess");
+        if (IsPainter)
+            BackgroundMusic.Instance.Play("painting");
+        else
+        {
+            if (IsDangerousCard)
+                BackgroundMusic.Instance.Play("ingredientGuess120s");
+            else
+                BackgroundMusic.Instance.Play("ingredientGuess150s");
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -347,9 +361,7 @@ public class GameManager : NetworkBehaviour
 
         EndGameClientRpc();
 
-        nextRoundButton.GetComponent<Button>().onClick.RemoveAllListeners();
-        nextRoundButton.GetComponent<Button>().onClick.AddListener(ReturnToLobby);
-        nextRoundButton.GetComponentInChildren<TextMeshProUGUI>().text = "To Lobby";
+        SetNRBLobby();
     }
 
     [ClientRpc]
