@@ -39,7 +39,7 @@ public class TutorialPaint : MonoBehaviour
     [SerializeField] private Collider _collider;
     [SerializeField] private Color drawColor;
     [SerializeField] private BrushMode brushMode = BrushMode.Draw;
-    [SerializeField] private int brushSize = 12;
+    [SerializeField] private int brushSize = 10;
     private int halfBrushSize;
     private bool isConnectedToPrevious;
 
@@ -48,7 +48,7 @@ public class TutorialPaint : MonoBehaviour
     private bool isDraw = false;
 
     [Header("Controls")]
-    [SerializeField, Range(0, 15)] private int scrollRate = 2;
+    //[SerializeField, Range(0, 15)] private int scrollRate = 2;
     [Header("Set if functionality is needed")]
     [SerializeField] private Slider brushSizeSlider;
     [SerializeField] private Button switchBrushModeButton;
@@ -105,14 +105,14 @@ public class TutorialPaint : MonoBehaviour
     {
         Draw();
 
-        int scrollDelta = (int)Input.mouseScrollDelta.y;
+        //int scrollDelta = (int)Input.mouseScrollDelta.y;
 
-        if (scrollDelta != 0)
-        {
-            brushSize += scrollRate * scrollDelta;
-            brushSize = Mathf.Clamp(brushSize, 4, 16);
-            halfBrushSize = brushSize / 2;
-        }
+        //if (scrollDelta != 0)
+        //{
+        //    brushSize += scrollRate * scrollDelta;
+        //    brushSize = Mathf.Clamp(brushSize, 4, 16);
+        //    halfBrushSize = brushSize / 2;
+        //}
     }
 
     private void Draw()

@@ -94,7 +94,7 @@ public class BackgroundMusic : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
     {
-        if (Play(scene.name + splitter + "default"))
+        if (Play("default"))
             return;
 
         if (source.clip == defaultAudioClip)
