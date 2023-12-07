@@ -143,7 +143,9 @@ public class BestiaryIngredients : MonoBehaviour
         
         if (isSpawnedSelectedIngredient)
         {
-            return;
+            Destroy(spawnedIngredientObjects[spawnPositionIndex]);
+            spawnedIngredientObjects.RemoveAt(spawnPositionIndex);
+            isSpawnedSelectedIngredient= false;
         }
 
         if (spawnedIngredientObjects.Count >= spawnPositions.Length)

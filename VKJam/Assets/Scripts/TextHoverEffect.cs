@@ -15,6 +15,13 @@ public class TextHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExit
         if (texts.Length > 0)
             Initialize();
     }
+    private void Start()
+    {
+        for (int i = 0; i < underlineAnimations.Length; i++)
+        {
+            underlineAnimations[i].SetActive(false);
+        }
+    }
 
     private void Initialize()
     {
@@ -62,4 +69,13 @@ public class TextHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExit
             underlineAnimations[i].SetActive(false);
         }
     }
+    private void OnDisable()
+    {
+        for (int i = 0; i < underlineAnimations.Length; i++)
+        {
+            underlineAnimations[i].SetActive(false);
+        }
+    }
+
+
 }
