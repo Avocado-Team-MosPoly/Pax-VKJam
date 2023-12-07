@@ -26,15 +26,15 @@ public class NotificationSystem : NetworkBehaviour
 
     private void Awake()
     {
-        if (Instance != null)
-        {
-            Debug.LogWarning($"[{this.name}] Two or more Message Systems on scene");
-            Destroy(this);
-        }
-        else
+        if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Logger.Instance.LogWarning(this, $"Two or more {nameof(NotificationSystem)} on scene");
+            Destroy(this);
         }
     }
 

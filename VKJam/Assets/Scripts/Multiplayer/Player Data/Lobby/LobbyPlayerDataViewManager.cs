@@ -126,8 +126,8 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
 
             try
             {
-                Sprite avatar = avatarsAndFramesStorage.products[playerData[clientId].AvatarIndex].Model.GetComponent<Image>().sprite;
-                Sprite frame = avatarsAndFramesStorage.products[playerData[clientId].AvatarFrameIndex].Model.GetComponent<Image>().sprite;
+                Sprite avatar = avatarsAndFramesStorage.products[playerData[clientId].AvatarIndex].icon;
+                Sprite frame = avatarsAndFramesStorage.products[playerData[clientId].AvatarFrameIndex].icon;
 
                 playerDatas[clientId].SetAvatar(avatar);
                 playerDatas[clientId].SetFrame(frame);

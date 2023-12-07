@@ -7,7 +7,8 @@ public class PlayerStatus : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public ulong OwnerClientId { get; private set; }
 
     [Header("Player status visual")]
-    [SerializeField] private RawImage playerProfilePicture;
+    [SerializeField] private Image avatarImage;
+    [SerializeField] private Image frameImage;
     [SerializeField] private Image checkBoxImage;
 
     [Header("Checkbox states")]
@@ -17,10 +18,11 @@ public class PlayerStatus : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private string guessStatusText;
     private PlayerStatusDescription statusDescription;
 
-    public PlayerStatus Init(ulong ownerClientId, Texture profilePicture, string guessStatusText, PlayerStatusDescription statusDescription)
+    public PlayerStatus Init(ulong ownerClientId, Sprite avatarImage, Sprite frameImage, string guessStatusText, PlayerStatusDescription statusDescription)
     {
         OwnerClientId = ownerClientId;
-        playerProfilePicture.texture = profilePicture;
+        this.avatarImage.sprite = avatarImage;
+        this.frameImage.sprite = frameImage;
 
         checkBoxImage.sprite = uncheckedSprite;
         this.guessStatusText = guessStatusText;

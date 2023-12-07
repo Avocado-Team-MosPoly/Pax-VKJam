@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
-using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class PlayersStatusManager : NetworkBehaviour
@@ -16,6 +15,9 @@ public class PlayersStatusManager : NetworkBehaviour
     [SerializeField] private PlayerStatusDescription playerStatusDescription;
 
     private Dictionary<ulong, PlayerStatus> playerStatuses = new();
+
+    private IReadOnlyDictionary<ulong, PlayerData> playerData => PlayersDataManager.Instance.PlayerDatas;
+    private storeSection avatarsAndFramesStorage => PlayersDataManager.Instance.AvatarsAndFramesStorage;
 
     public override void OnNetworkSpawn()
     {
@@ -36,8 +38,11 @@ public class PlayersStatusManager : NetworkBehaviour
     [ClientRpc]
     private void CreatePlayerStatusClientRpc(byte ownerClientId)
     {
+        Sprite avatar = avatarsAndFramesStorage.products[playerData[ownerClientId].AvatarIndex].icon;
+        Sprite frame = avatarsAndFramesStorage.products[playerData[ownerClientId].AvatarFrameIndex].icon;
+
         PlayerStatus playerStatusInstance = Instantiate(playerStatusPrefab, playerStatusesContainer).
-            Init(ownerClientId, /*URL_Image.ProfileTexture ?? */defaultPlayerProfileTexture, defaultPlayerStatus, playerStatusDescription);
+            Init(ownerClientId, avatar, frame, defaultPlayerStatus, playerStatusDescription);
 
         playerStatuses.Add(ownerClientId, playerStatusInstance);
 

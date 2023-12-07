@@ -11,11 +11,13 @@ public class BackgroundMusic : MonoBehaviour
     {
         get
         {
-            return source.volume;
+            return masterVolume;
         }
         set
         {
-            source.volume = Mathf.Clamp01(value);
+            masterVolume = Mathf.Clamp01(value);
+
+            source.volume = masterVolume * currentMusicVolume;
         }
     }
 
@@ -40,6 +42,9 @@ public class BackgroundMusic : MonoBehaviour
 
     private AudioSource source;
     private string currentMusicId;
+
+    private float currentMusicVolume;
+    private float masterVolume = 1f;
 
     private readonly string KEY_VOLUME = "Volume";
     private readonly string splitter = ":";
@@ -106,10 +111,11 @@ public class BackgroundMusic : MonoBehaviour
             return;
         }
 
-        source.clip = audioClip;
-        source.volume = volume;
         currentMusicId = musicId;
+        currentMusicVolume = volume;
 
+        source.clip = audioClip;
+        source.volume = masterVolume * currentMusicVolume;
         source.Play();
 
         Logger.Instance.Log(this, $"Setted {musicId} music");
