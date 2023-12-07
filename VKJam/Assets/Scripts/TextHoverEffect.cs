@@ -2,30 +2,18 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 using System.Collections.Generic;
-using System.Linq;
 
-public class TextHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
+public class TextHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private TMP_Text[] texts;
     [SerializeField] private GameObject underlineAnimationPrefab;
 
     [SerializeField] private GameObject[] underlineAnimations;
 
-    private int clicked=new();
-    [SerializeField] private bool isLock;
-
     private void Awake()
     {
         if (texts.Length > 0)
             Initialize();
-
-    }
-    private void Start()
-    {
-        GameManager.Instance.OnRoundStartedOnClient.AddListener(() =>
-        {
-            Clear();
-        });
     }
 
     private void Initialize()
@@ -71,25 +59,7 @@ public class TextHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         for (int i = 0; i < underlineAnimations.Length; i++)
         {
-            if (clicked!=i)
-            {
-                underlineAnimations[i].SetActive(false);
-            }
+            underlineAnimations[i].SetActive(false);
         }
-    }
-    public void Clear()
-    {
-    
-        underlineAnimations[clicked].SetActive(false);
-        clicked=-1;
-    }
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        underlineAnimations[clicked].SetActive(false);
-
-        int index = System.Array.IndexOf(texts, eventData.pointerEnter.GetComponent<TMP_Text>());
-
-        clicked=index;
     }
 }
