@@ -78,8 +78,8 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
         if (playerToKick == null)
             return;
 
-        RelayManager.Instance.DisconnectPlayer(playerToKick.ClientId);
         LobbyManager.Instance.DisconnectPlayerAsync(playerToKick.ClientId);
+        RelayManager.Instance.DisconnectPlayer(playerToKick.ClientId);
 
         playerToKick = null;
         kickPlayerConfirmationObject.SetActive(false);
