@@ -58,6 +58,12 @@ public class LobbyManager : MonoBehaviour
                 ListPlayers();
         };
 
+        NetworkManager.Singleton.OnClientDisconnectCallback += async (ulong clientId) =>
+        {
+            if (clientId == NetworkManager.Singleton.LocalClientId)
+                await DisconnectAsync();
+        };
+
         IsTeamMode = "True";
     }
 
