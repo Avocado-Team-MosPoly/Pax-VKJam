@@ -8,12 +8,12 @@ public class Currency
     public int CardPiece;
 }
 [System.Serializable]
-public class Php_Connect : MonoBehaviour
+public class Php_Connect : TaskExecutor<Php_Connect>
 {
     public static bool PHPisOnline = true;
     
     [SerializeField] private string Link;
-    [SerializeField] private RandomItemList RandomBase;
+    public RandomItemList RandomBase;
     [SerializeField] private Sprite ConnectionError;
     static public int Nickname;
     private static string link;
@@ -39,6 +39,7 @@ public class Php_Connect : MonoBehaviour
         else
         {
             link = string.Empty;
+            PHPisOnline = false;
             Logger.Instance.LogError(this, new System.FormatException($"Unsafe or incorrect {nameof(Link)}. {nameof(Link)} should start with \"https\". {nameof(Link)}: {Link}"));
             return;
         }

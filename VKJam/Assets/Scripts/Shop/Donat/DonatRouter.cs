@@ -4,6 +4,10 @@ using UnityEngine;
 public class DonatRouter : MonoBehaviour
 {
     public TMPro.TMP_Text AdsCounterTest;
+    private void Awake()
+    {
+        StartCoroutine(DelayRefresh());
+    }
     public void BuyCross(int id)
     {
         VK_Connect._executor.RequestBuyTry(id);
@@ -17,8 +21,9 @@ public class DonatRouter : MonoBehaviour
     private IEnumerator DelayRefresh()
     {
         yield return new WaitForSeconds(1);
-        CurrencyCatcher._executor.Refresh();
         AdsCounterTest.text = "Реклама " + AdManager.GetAdsWatchedToday() + "/3";
+        CurrencyCatcher._executor.Refresh();
+        
     }
     public void BuyTokens(int id)
     {

@@ -12,6 +12,8 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
     [SerializeField] private CustomController Data;
     [SerializeField]
     private GameObject WhatActiv;
+
+    [SerializeField] private TMPro.TextMeshProUGUI TextType;
     private void Awake()
     {
         Data = CustomController._executor;
@@ -45,6 +47,7 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
         GameObject temp;
         Drop();
         WhatActiv.SetActive(true);
+        TextType.text = Naming(ToWhat);
         foreach (var current in Data.Categories[(int)CustomController.Categorize(ToWhat)].products)
         {
             if (current.Data.Type != ToWhat || !current.Data.InOwn) continue;
@@ -56,5 +59,54 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
             InWork.SetData(current);
         }
     }
-   
+    public static string Naming(ItemType data)
+    {
+        switch (data)
+        {
+            case ItemType.PackCard:
+                return "";
+            case ItemType.Watch:
+                return "Часы";
+            case ItemType.Token:
+                return "Жетоны";
+            case ItemType.LeftItem:
+                return "Левый предмет";
+            case ItemType.RightItem:
+                return "Правый предмет";
+            case ItemType.Cauldron:
+                return "Котел";
+            case ItemType.Notebook:
+                return "Блокнот";
+            case ItemType.Bestiary:
+                return "Бестиарий";
+            case ItemType.CardShirts:
+                return "Рубашки Карт";
+            case ItemType.UI_Notebook:
+                return "Блокнот";
+            case ItemType.UI_Bestiary:
+                return "Бестиарий";
+            case ItemType.Arm:
+                return "Рука";
+            case ItemType.Mirror:
+                return "Зеркало";
+            case ItemType.Eyes:
+                return "Глаза";
+            case ItemType.UI_Eraser:
+                return "Ластик";
+            case ItemType.UI_Painter:
+                return "Мел";
+            case ItemType.DrawingColors:
+                return "Цвет";
+            case ItemType.Avatars:
+                return "Аватар";
+            case ItemType.AvatarFrame:
+                return "Рамка";
+            case ItemType.Currency:
+                return "Валюта";
+            case ItemType.Table:
+                return "Стол";
+            default:
+                return "";
+        }
+    }
 }

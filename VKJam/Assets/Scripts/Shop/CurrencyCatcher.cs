@@ -18,10 +18,15 @@ public class CurrencyCatcher : TaskExecutor<CurrencyCatcher>
     {
         Currency Data;
         if (Php_Connect.PHPisOnline) Data = Php_Connect.Request_CurrentCurrency();
-        else Data = Php_Connect.Current;
-        Donat_General.text = Data.DCurrency.ToString();
-        Donat_Card.text = Data.DCurrency.ToString();
-        IG.text = Data.IGCurrency.ToString();
-        CP.text = Data.CardPiece.ToString();
+        else
+        {
+            if (Php_Connect.Current != null) Data = Php_Connect.Current;
+            else  Data = Php_Connect._executor.current;
+        }
+        Debug.Log(Data);
+        if(Donat_General != null) Donat_General.text = Data.DCurrency.ToString();
+        if (Donat_Card != null) Donat_Card.text = Data.DCurrency.ToString();
+        if (IG != null) IG.text = Data.IGCurrency.ToString();
+        if (CP != null) CP.text = Data.CardPiece.ToString();
     }
 }

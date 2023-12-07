@@ -39,7 +39,10 @@ public class Catcher_RandomItem : MonoBehaviour
     {
         Debug.Log(0);
         if (Php_Connect.PHPisOnline) Php_Connect.Request_Gift(0, Php_Connect.Nickname);
-        else Php_Connect.randomBase.Interact();
+        else Php_Connect
+                ._executor
+                .RandomBase
+                .Interact();
         display.Refresh();
     }
 

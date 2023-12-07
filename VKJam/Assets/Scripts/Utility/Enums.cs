@@ -67,6 +67,30 @@ public enum ItemType
     Currency,
     Table
 }
+public enum ItemScale
+{
+    PackCard = 100,
+    Watch = 100,
+    Token = 100,
+    LeftItem = 100,
+    RightItem = 100,
+    Cauldron = 100,
+    Notebook = 100,
+    Bestiary = 100,
+    CardShirts = 100,
+    UI_Notebook = 100,
+    UI_Bestiary = 100,
+    Arm = 100,
+    Mirror = 100,
+    Eyes = 100,
+    UI_Eraser = 100,
+    UI_Painter = 100,
+    DrawingColors = 100,
+    Avatars = 100,
+    AvatarFrame = 100,
+    Currency = 100,
+    Table = 100
+}
 
 public enum RandomType
 {

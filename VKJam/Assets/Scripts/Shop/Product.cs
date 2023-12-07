@@ -20,8 +20,8 @@ public class Product : MonoBehaviour
     }
     private void Refresh()
     {
-        
         Picture.sprite = Data.icon;
+        //transform.localScale *= (int)ItemScale/100;
         //SystemName = Data.productName;
         Name.text = Data.Data.productName;
         Price.text = ChooseMode ? "X" + Data.Data.productPrice.ToString() : "";

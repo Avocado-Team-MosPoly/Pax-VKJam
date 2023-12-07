@@ -7,9 +7,16 @@ public class SwitchModule : MonoBehaviour
     [SerializeField] protected DetecterModule SwitchTarget;
     [SerializeField] private SwitchModule Sync;
     [HideInInspector] public SwitchModule ReverseSync;
-    private void Awake()
+    private void Start()
     {
+        StartCoroutine(DelayStart());
+        
+    }
+    private System.Collections.IEnumerator DelayStart()
+    {
+        yield return new WaitForSeconds(0.5f);
         if (Sync != null) Sync.ReverseSync = this;
+        SwitchItem(CustomController._executor.Custom[(int)Type]);
     }
     public virtual void SwitchItem(WareData NewItem)
     {
