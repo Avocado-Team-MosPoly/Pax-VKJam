@@ -8,6 +8,8 @@ public class DetecterModule : MonoBehaviour
     public GameObject Object;
     private void Awake()
     {
-        GetComponentInParent<SwitchModule>().NewItem(this);
+        SwitchModule temp = GetComponentInParent<SwitchModule>();
+        if(temp != null) temp.NewItem(this);
+
     }
 }

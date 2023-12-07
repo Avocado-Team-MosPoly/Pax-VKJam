@@ -12388,6 +12388,7 @@ MonoBehaviour:
   - {fileID: 251685216}
   createLobbyButton: {fileID: 557364526}
   filterRegim: {fileID: 2024879824}
+  filterMaxPlayer: {fileID: 0}
 --- !u!1 &1015890201
 GameObject:
   m_ObjectHideFlags: 0
@@ -15526,10 +15527,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Connects
       objectReference: {fileID: 0}
-    - target: {fileID: 9165275726675321496, guid: 842559543b53de14f8b19d0048850e29, type: 3}
-      propertyPath: Standart.Array.data[18].Model
-      value: 
-      objectReference: {fileID: 896502405877762179, guid: ae9a6d12a749e4644abfb7f5c51e34e1, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -22360,6 +22357,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   IsTeamMode: True
+  PlayerNumber: 4
 --- !u!4 &1850975790
 Transform:
   m_ObjectHideFlags: 0
