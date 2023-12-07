@@ -288,10 +288,9 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Can't connect to Unity Lobby servers");
+            NotificationSystem.Instance.SendLocal("Не удалось подключиться к лобби, вохможно игра в нём уже началась.");
         }
 
-        Logger.Instance.LogWarning(this, $"{CurrentLobby.Id}, {CurrentLobby.Name}");
     }
 
     public async Task JoinLobbyByIdAsync(string lobbyId)
@@ -325,10 +324,8 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Can't connect to Unity Lobby servers");
+            NotificationSystem.Instance.SendLocal("Не удалось подключиться к лобби, вохможно игра в нём уже началась.");
         }
-
-        Logger.Instance.LogWarning(this, $"{CurrentLobby.Id}, {CurrentLobby.Name}");
     }
 
     public async Task JoinLobbyAsync(Lobby lobby)
@@ -373,7 +370,6 @@ public class LobbyManager : MonoBehaviour
             Logger.Instance.LogError(this, ex);
         }
 
-        Logger.Instance.LogWarning(this, $"{CurrentLobby.Id}, {CurrentLobby.Name}");
     }
 
     public async void ListLobbies()
