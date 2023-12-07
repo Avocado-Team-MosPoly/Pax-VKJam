@@ -54,8 +54,8 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
             //Debug.Log(current.Data.productName + " "+ current.Data.InOwn);
             temp = Instantiate(Template, WhereInst.transform);
             Product InWork = temp.GetComponent<Product>();
-            Products.Add(InWork);
             InWork.ChooseMode = true;
+            Products.Add(InWork);
             InWork.SetData(current);
         }
     }

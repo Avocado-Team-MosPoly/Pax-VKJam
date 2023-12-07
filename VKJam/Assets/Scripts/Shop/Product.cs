@@ -20,11 +20,12 @@ public class Product : MonoBehaviour
     }
     private void Refresh()
     {
+        if (Data.Data.Type == ItemType.AvatarFrame) Picture.gameObject.transform.localScale *= 1.4f;
         Picture.sprite = Data.icon;
         //transform.localScale *= (int)ItemScale/100;
         //SystemName = Data.productName;
         Name.text = Data.Data.productName;
-        Price.text = ChooseMode ? "X" + Data.Data.productPrice.ToString() : "";
+        Price.text = !ChooseMode ? "X" + Data.Data.productPrice.ToString() : "";
         if (!ChooseMode) DisplayTypeCurrency.sprite = Data.Data.IsDonateVault ? DonatCurrency : InGameCurrency;
         else DisplayTypeCurrency.gameObject.SetActive(false);
         BT.interactable = !Data.Data.InOwn || ChooseMode;
