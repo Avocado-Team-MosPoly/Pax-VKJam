@@ -114,6 +114,8 @@ public class Paint : NetworkBehaviour
     private bool isPainter;
 
     private NetworkVariable<Vector2Short> rayPos = new NetworkVariable<Vector2Short>(new Vector2Short(), NetworkVariableReadPermission.Everyone);
+    private NetworkVariable<sbyte> currentPainterId = new(-1);
+
     private DrawingParams drawingParams;
 
     private bool isDraw = false;
@@ -270,15 +272,18 @@ public class Paint : NetworkBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0) && !EventSystem.current.IsPointerOverGameObject())
         {
+            if (currentPainterId.Value != -1)
+                if (currentPainterId.Value != (sbyte)NetworkManager.LocalClientId)
+                    return;
+
             isDraw = true;
-            //Logger.Instance.Log($"[{nameof(Paint)}] Start Curve");
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
             SendIsConnectedToLastServerRpc(false);
             isDraw = false;
-            //Logger.Instance.Log($"[{nameof(Paint)}] End Curve");
+            ResetCurrentPainterIdServerRpc();
         }
 
         if (isDraw)
@@ -295,24 +300,28 @@ public class Paint : NetworkBehaviour
                 if (Vector2Short.Distance(rayPos.Value, newRayPos) > halfBrushSize)
                 {
                     if (IsServer)
+                    {
                         rayPos.Value = newRayPos;
+                        currentPainterId.Value = (sbyte)NetworkManager.ServerClientId;
+                    }
                     else
-                        SendRayPosServerRpc(newRayPos.x, newRayPos.y);
-
-                    //Logger.Instance.Log($"[{nameof(Paint)}] Continue Curve on pixel {newRayPos}");
+                        SendRayPosServerRpc(newRayPos.x, newRayPos.y, new ServerRpcParams());
                 }
             }
-            //else
-            //{
-            //    Logger.Instance.Log($"[{nameof(Paint)}] {hitInfo.collider.gameObject.name}");
-            //}
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void SendRayPosServerRpc(short x, short y)
+    private void SendRayPosServerRpc(short x, short y, ServerRpcParams rpcParams)
     {
         rayPos.Value = new Vector2Short(x, y);
+        currentPainterId.Value = (sbyte)rpcParams.Receive.SenderClientId;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ResetCurrentPainterIdServerRpc()
+    {
+        currentPainterId.Value = -1;
     }
 
     [ServerRpc (RequireOwnership = false)]
