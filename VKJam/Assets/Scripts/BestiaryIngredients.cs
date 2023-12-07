@@ -21,12 +21,14 @@ public class BestiaryIngredients : MonoBehaviour
 
     [SerializeField] private Transform[] spawnPositions;
 
+
     private List<TMP_Text> ingredientsTexts = new();
     private List<GameObject> spawnedIngredientObjects = new();
     private bool isSpawnedSelectedIngredient;
 
     private int lastShownIngridient;
     private int firstShownIngredient;
+    private int spawnPositionIndex;
 
     private void Awake()
     {
@@ -40,7 +42,12 @@ public class BestiaryIngredients : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Instance.OnIngredientSwitchedOnClient.AddListener((int ingredientIndex) => isSpawnedSelectedIngredient = false);
+        GameManager.Instance.OnIngredientSwitchedOnClient.AddListener((int ingredientIndex) =>
+        {
+            isSpawnedSelectedIngredient = false;
+            spawnPositionIndex++;
+
+        });
         GameManager.Instance.OnRoundStartedOnClient.AddListener(() =>
         {
             foreach (GameObject spawnedIngredient in spawnedIngredientObjects)
@@ -50,6 +57,8 @@ public class BestiaryIngredients : MonoBehaviour
 
             spawnedIngredientObjects.Clear();
         });
+        spawnPositionIndex = 0;
+
     }
 
     public void TakePack()
@@ -66,12 +75,11 @@ public class BestiaryIngredients : MonoBehaviour
                     if (IngredientList.Contains(ingridient) != true)
                     {
                         IngredientList.Add(ingridient);
-                        //IngredientName.Add(ingridient.Name);
                     }
                 }
             }
         }
-        //IngredientName.Sort();
+        IngredientList.Sort((x, y) => x.Name.CompareTo(y.Name));
     }
     public void SetPack(PackCardSO _packCardSO)
     {
@@ -131,16 +139,16 @@ public class BestiaryIngredients : MonoBehaviour
 
     private void OnIngredientSelected(int ingredientIndex)
     {
+        
         if (isSpawnedSelectedIngredient)
         {
-            Destroy(spawnedIngredientObjects[^1]);
-            spawnedIngredientObjects.RemoveAt(spawnedIngredientObjects.Count - 1);
+            return;
         }
 
         if (spawnedIngredientObjects.Count >= spawnPositions.Length)
             return;
 
-        Transform spawnPosition = spawnPositions[spawnedIngredientObjects.Count];
+        Transform spawnPosition = spawnPositions[spawnPositionIndex];
         GameObject spawnedIngredientObject = Instantiate(IngredientList[ingredientIndex].Model, spawnPosition.position, Quaternion.identity, spawnPosition);
 
         if (spawnedIngredientObject == null)
