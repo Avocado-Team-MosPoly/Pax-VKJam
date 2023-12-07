@@ -12,12 +12,14 @@ public class LobbyCreationManagerUi : MonoBehaviour
     [SerializeField] private Button[] listLobbiesButtons;
     [SerializeField] private Button createLobbyButton;
     [SerializeField] private TMP_Dropdown filterRegim;
+    [SerializeField] private TMP_Dropdown filterMaxPlayer;
 
     private void Start()
     {
         LobbyManager.Instance.OnLobbyListed.AddListener(UpdateLobbyList);
         createLobbyButton?.onClick.AddListener(LobbyManager.Instance.CreateLobby);
         filterRegim?.onValueChanged.AddListener(UpdateRgimFiltr);
+        filterMaxPlayer?.onValueChanged.AddListener(UpdatePlayerNumber);
 
         foreach (var button in listLobbiesButtons)
             button.onClick.AddListener(LobbyManager.Instance.ListLobbiesWithFilter);
@@ -48,5 +50,9 @@ public class LobbyCreationManagerUi : MonoBehaviour
         {
             LobbyManager.Instance.IsTeamMode = "False";
         }
+    }
+    private void UpdatePlayerNumber(int value)
+    {
+        LobbyManager.Instance.PlayerNumber = value;
     }
 }

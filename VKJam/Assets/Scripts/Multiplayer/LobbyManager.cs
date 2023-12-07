@@ -16,6 +16,7 @@ public class LobbyManager : MonoBehaviour
     [HideInInspector] public UnityEvent<List<Player>> OnPlayerListed = new();
 
     [HideInInspector] public string IsTeamMode = "True";
+    [HideInInspector] public int PlayerNumber=4;
 
     public Lobby CurrentLobby { get; private set; }
 
@@ -288,10 +289,9 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Can't connect to Unity Lobby servers");
+            NotificationSystem.Instance.SendLocal("Не удалось подключиться к лобби, вохможно игра в нём уже началась.");
         }
 
-        Logger.Instance.LogWarning(this, $"{CurrentLobby.Id}, {CurrentLobby.Name}");
     }
 
     public async Task JoinLobbyByIdAsync(string lobbyId)
@@ -325,10 +325,8 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Can't connect to Unity Lobby servers");
+            NotificationSystem.Instance.SendLocal("Не удалось подключиться к лобби, вохможно игра в нём уже началась.");
         }
-
-        Logger.Instance.LogWarning(this, $"{CurrentLobby.Id}, {CurrentLobby.Name}");
     }
 
     public async Task JoinLobbyAsync(Lobby lobby)
@@ -373,7 +371,6 @@ public class LobbyManager : MonoBehaviour
             Logger.Instance.LogError(this, ex);
         }
 
-        Logger.Instance.LogWarning(this, $"{CurrentLobby.Id}, {CurrentLobby.Name}");
     }
 
     public async void ListLobbies()
@@ -414,6 +411,12 @@ public class LobbyManager : MonoBehaviour
                     field: QueryFilter.FieldOptions.S1,
                     op: QueryFilter.OpOptions.EQ,
                     value: IsTeamMode
+                ),
+                new QueryFilter
+                (
+                    field: QueryFilter.FieldOptions.MaxPlayers,
+                    op: QueryFilter.OpOptions.EQ,
+                    value: PlayerNumber.ToString()
                 )
             };
 
