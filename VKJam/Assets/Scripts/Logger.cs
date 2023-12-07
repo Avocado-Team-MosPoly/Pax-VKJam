@@ -25,7 +25,6 @@ public class Logger : MonoBehaviour
 
     private string GetClassName(object obj)
     {
-        //return string.Empty;
         return obj is Type ? (obj as Type).Name : obj.GetType().Name;
     }
 

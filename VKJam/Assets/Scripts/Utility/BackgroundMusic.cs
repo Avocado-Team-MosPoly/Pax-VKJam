@@ -55,13 +55,19 @@ public class BackgroundMusic : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
-            InitAudio();
-            LoadData();
-            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
             Destroy(gameObject);
+    }
+
+    private void Start()
+    {
+        if (Instance != this)
+            return;
+
+        InitAudio();
+        LoadData();
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDestroy()

@@ -71,20 +71,9 @@ public class RelayManager : MonoBehaviour
         if (Instance != this)
             return;
 
-        NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
-        {
-            OnClientConnected?.Invoke(clientId);
-
-            Logger.Instance.Log(this, "Client Connected");
-        };
-
-        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
-        {
-            OnClientDisconnect?.Invoke(clientId);
-
-            if (IsServer)
-                LobbyManager.Instance.DisconnectPlayerAsync(clientId);
-        };
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
+        NetworkManager.Singleton.OnClientStopped += OnClientStopped;
     }
 
     private bool PlatformNotSupportedException()
@@ -92,6 +81,7 @@ public class RelayManager : MonoBehaviour
 #if UNITY_EDITOR
 #if UNITY_WEBGL
         Logger.Instance.LogError(this, new PlatformNotSupportedException("Multiplyer doesn't work in editor on \"WebGL\" platform. You should change platform to \"Windows, Mac, Linux\""));
+        NotificationSystem.Instance.SendLocal("Platform not supporteed");
         UnityEditor.EditorApplication.isPaused = true;
         return true;
 #endif
@@ -149,36 +139,12 @@ public class RelayManager : MonoBehaviour
             return "0";
 #endif
 #endif
-            NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
-            {
-                Logger.Instance.Log(this, $"Client {clientId} connected");
-                //SpawnPlayersDataManagerWithOwnership(clientId);
-            };
-            NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
-            {
-                Logger.Instance.Log(this, NetworkManager.Singleton.DisconnectReason);
-            };
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallbackServer;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallbackServer;
+            NetworkManager.Singleton.OnServerStarted += OnServerStartedServer;
+            NetworkManager.Singleton.OnClientStarted += OnClientStartedServer;
+            NetworkManager.Singleton.OnClientStopped += OnClientStoppedServer;
 
-            NetworkManager.Singleton.OnServerStarted += () =>
-            {
-                PlayersDataManager pdmInstance = Instantiate(playersDataManagerPrefab);
-                pdmInstance.NetworkObject.Spawn();
-
-                SceneLoader.ServerLoad(lobbySceneName);
-            };
-
-            NetworkManager.Singleton.OnClientStopped += (bool isHost) =>
-            {
-                //if (PlayersDataManager.Instance != null && PlayersDataManager.Instance.NetworkObject != null)
-                //    PlayersDataManager.Instance.NetworkObject.Despawn();
-
-                SceneLoader.Load("Menu");
-            };
-
-            NetworkManager.Singleton.OnClientStarted += () =>
-            {
-                Logger.Instance.Log(this, $"Client Started on server\nCurrent Lobby: {LobbyManager.Instance.CurrentLobby.Name}\nLobby Player Id: {LobbyManager.Instance.PlayerId}");
-            };
             NetworkManager.Singleton.StartHost();
 
             Logger.Instance.Log(this, "You created relay with code: " + joinCode);
@@ -189,7 +155,7 @@ public class RelayManager : MonoBehaviour
             Logger.Instance.LogError(this, ex);
             NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Relay servers.");
 
-            await LobbyManager.Instance.DisconnectAsync();
+            //await LobbyManager.Instance.DisconnectAsync();
 
             return "0";
         }
@@ -245,18 +211,9 @@ public class RelayManager : MonoBehaviour
             unityTransport.SetRelayServerData(relayServerData);
 #endif
 #endif
-            NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) => Debug.Log(NetworkManager.Singleton.DisconnectReason);
-
-            NetworkManager.Singleton.OnClientStarted += /*async*/ () =>
-            {
-                Logger.Instance.Log(this, "Client Started");
-            };
-            NetworkManager.Singleton.OnClientStopped += async (bool isHost) =>
-            {
-                Disconnect();
-                await LobbyManager.Instance.DisconnectAsync();
-                SceneLoader.Load("Menu");
-            };
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallbackClient;
+            NetworkManager.Singleton.OnClientStarted += OnClientStartedClient;
+            NetworkManager.Singleton.OnClientStopped += OnClientStoppedClient;
 
             NetworkManager.Singleton.StartClient();
 
@@ -272,6 +229,104 @@ public class RelayManager : MonoBehaviour
             return false;
         }
     }
+
+    #region Events
+
+    // common
+    private void OnClientConnectedCallback(ulong clientId)
+    {
+        OnClientConnected?.Invoke(clientId);
+
+        Logger.Instance.Log(this, "Client connected " + clientId);
+    }
+
+    private void OnClientDisconnectCallback(ulong clientId)
+    {
+        OnClientDisconnect?.Invoke(clientId);
+
+        if (IsServer)
+            LobbyManager.Instance.DisconnectPlayerAsync(clientId);
+    }
+
+    private void OnClientStopped(bool isHost)
+    {
+        Logger.Instance.Log(this, "Client Stopped");
+
+        if (isHost)
+        {
+            Logger.Instance.Log(this, "Host");
+            // server
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallbackServer;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallbackServer;
+            NetworkManager.Singleton.OnClientStarted -= OnServerStartedServer;
+            NetworkManager.Singleton.OnClientStarted -= OnClientStartedServer;
+            NetworkManager.Singleton.OnClientStopped -= OnClientStoppedServer;
+        }
+        else
+        {
+            Logger.Instance.Log(this, "Client");
+            // client
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallbackClient;
+            NetworkManager.Singleton.OnClientStarted -= OnClientStartedClient;
+            NetworkManager.Singleton.OnClientStopped -= OnClientStoppedClient;
+        }
+
+        //await LobbyManager.Instance.DisconnectAsync();
+        Logger.Instance.Log(this, "Disconnected");
+    }
+
+    // server
+    private void OnClientConnectedCallbackServer(ulong clientId)
+    {
+        Logger.Instance.Log(this, $"Client {clientId} connected");
+        //SpawnPlayersDataManagerWithOwnership(clientId);
+    }
+
+    private void OnClientDisconnectCallbackServer(ulong clientId)
+    {
+        //Logger.Instance.Log(this, NetworkManager.Singleton.DisconnectReason);
+    }
+
+    private void OnServerStartedServer()
+    {
+        PlayersDataManager pdmInstance = Instantiate(playersDataManagerPrefab);
+        pdmInstance.NetworkObject.Spawn();
+
+        SceneLoader.ServerLoad(lobbySceneName);
+    }
+
+    private void OnClientStartedServer()
+    {
+        Logger.Instance.Log(this, $"Client Started on server\nCurrent Lobby: {LobbyManager.Instance.CurrentLobby.Name}\nLobby Player Id: {LobbyManager.Instance.PlayerId}");
+    }
+
+    private void OnClientStoppedServer(bool isHost)
+    {
+        //if (PlayersDataManager.Instance != null && PlayersDataManager.Instance.NetworkObject != null)
+        //    PlayersDataManager.Instance.NetworkObject.Despawn();
+
+        SceneLoader.Load("Menu");
+    }
+
+    // client
+    private void OnClientDisconnectCallbackClient(ulong clientId)
+    {
+        //Logger.Instance.Log(this, NetworkManager.Singleton.DisconnectReason);
+    }
+
+    private void OnClientStartedClient()
+    {
+        Logger.Instance.Log(this, "Client Started");
+    }
+
+    private void OnClientStoppedClient(bool isHost)
+    {
+        Disconnect();
+        //await LobbyManager.Instance.DisconnectAsync();
+        SceneLoader.Load("Menu");
+    }
+
+    #endregion
 
     public void DisconnectPlayer(ulong clientId)
     {

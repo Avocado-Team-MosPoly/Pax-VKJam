@@ -16,7 +16,7 @@ public class LobbyManager : MonoBehaviour
     [HideInInspector] public UnityEvent<List<Player>> OnPlayerListed = new();
 
     [HideInInspector] public string IsTeamMode = "True";
-    [HideInInspector] public int PlayerNumber=4;
+    [HideInInspector] public int PlayerNumber = 4;
 
     public Lobby CurrentLobby { get; private set; }
 
@@ -59,11 +59,17 @@ public class LobbyManager : MonoBehaviour
                 ListPlayers();
         };
 
-        NetworkManager.Singleton.OnClientDisconnectCallback += async (ulong clientId) =>
+        NetworkManager.Singleton.OnClientStopped += (bool isHost) =>
         {
-            if (clientId == NetworkManager.Singleton.LocalClientId)
-                await DisconnectAsync();
+            Logger.Instance.LogError(this, "Me");
+            ResetManager(IsServer);
         };
+
+        //NetworkManager.Singleton.OnClientDisconnectCallback += async (ulong clientId) =>
+        //{
+        //    if (clientId == NetworkManager.Singleton.LocalClientId)
+        //        await DisconnectAsync();
+        //};
 
         IsTeamMode = "True";
     }
@@ -251,10 +257,8 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Can't connect to Unity Lobby servers");
+            NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Lobby servers");
         }
-
-        Logger.Instance.LogWarning(this, $"{CurrentLobby.Id}, {CurrentLobby.Name}");
     }
 
 
@@ -289,9 +293,8 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Не удалось подключиться к лобби, вохможно игра в нём уже началась.");
+            NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Lobby servers");
         }
-
     }
 
     public async Task JoinLobbyByIdAsync(string lobbyId)
@@ -325,7 +328,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Не удалось подключиться к лобби, вохможно игра в нём уже началась.");
+            NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Lobby servers");
         }
     }
 
@@ -370,7 +373,6 @@ public class LobbyManager : MonoBehaviour
         {
             Logger.Instance.LogError(this, ex);
         }
-
     }
 
     public async void ListLobbies()
@@ -487,14 +489,26 @@ public class LobbyManager : MonoBehaviour
         {
             try
             {
-                await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, PlayerId);
-                Logger.Instance.Log(this, $"You left the \"{CurrentLobby.Name}\" lobby");
+                Lobby lobby = await LobbyService.Instance.GetLobbyAsync(CurrentLobby.Id);
+
+                foreach (Player player in lobby.Players)
+                {
+                    if (player.Id == PlayerId)
+                    {
+                        await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, PlayerId);
+                        Logger.Instance.Log(this, $"You left the \"{CurrentLobby.Name}\" lobby");
+                    }
+                }
+
                 ResetManager(IsServer);
             }
             catch (LobbyServiceException ex)
             {
                 if (ex.ErrorCode == 404)
+                {
                     ResetManager(IsServer);
+                    return;
+                }
 
                 Logger.Instance.LogError(this, ex);
             }

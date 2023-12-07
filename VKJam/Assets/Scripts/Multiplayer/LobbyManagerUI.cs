@@ -162,9 +162,9 @@ public class LobbyManagerUI : NetworkBehaviour
         }
     }
 
-    private async void Disconnect()
+    private void Disconnect()
     {
         RelayManager.Instance.Disconnect();
-        await LobbyManager.Instance.DisconnectAsync();
+        //await LobbyManager.Instance.DisconnectAsync();
     }
 }

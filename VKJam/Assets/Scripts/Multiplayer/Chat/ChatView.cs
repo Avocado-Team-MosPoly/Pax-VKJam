@@ -42,11 +42,11 @@ public class ChatView : MonoBehaviour
         chat.OnMessageSended.AddListener(UpdateView);
         chat.OnMessageReceived.AddListener(OnMessageReceived);
 
-        foreach (Player player in LobbyManager.Instance.CurrentLobby.Players)
-        {
-            if (player.Id == LobbyManager.Instance.PlayerId)
-                Debug.Log("player " + player.Data["Player Name"].Value + " is me, id: " + player.Id);
-        }
+        //foreach (Player player in LobbyManager.Instance.CurrentLobby.Players)
+        //{
+        //    if (player.Id == LobbyManager.Instance.PlayerId)
+        //        Debug.Log("player " + player.Data["Player Name"].Value + " is me, id: " + player.Id);
+        //}
     }
 
     private void SpawnMessage(Chat.Message message)

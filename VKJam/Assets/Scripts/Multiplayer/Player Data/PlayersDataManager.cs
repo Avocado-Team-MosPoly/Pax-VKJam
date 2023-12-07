@@ -40,7 +40,7 @@ public class PlayersDataManager : NetworkBehaviour
     private void PlayerDatasList_OnListChanged(NetworkListEvent<NetworkTuple_PlayerData> changeEvent)
     {
         playerDatas[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
-        Logger.Instance.Log(this, "Player {changeEvent.Value.Id} data added: {changeEvent.Value.PlayerData})");
+        Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data added: {changeEvent.Value.PlayerData})");
     }
 
     public override void OnNetworkSpawn()

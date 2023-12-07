@@ -20,7 +20,7 @@ public class CompareSystem : NetworkBehaviour
             throw new System.NullReferenceException("Add a Notification System Prefab to the Menu scene to avoid this exception");
 
         string choosedThing = GameManager.Instance.Stage == Stage.IngredientGuess ? bestiaryIngredients.IngredientList[guessId].Name : bestiary.Monsters[guessId].id;
-        string message = $"{chooseNotificationText[0]} {senderClientId} {chooseNotificationText[0]} {choosedThing}";
+        string message = $"{chooseNotificationText[0]} {senderClientId} {chooseNotificationText[1]} {choosedThing}";
         // TODO: Show player name instead of id
         NotificationSystem.Instance.SendLocal(message);
     }
