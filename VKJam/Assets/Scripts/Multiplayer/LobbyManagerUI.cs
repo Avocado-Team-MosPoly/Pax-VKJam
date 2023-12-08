@@ -22,7 +22,7 @@ public class LobbyManagerUI : NetworkBehaviour
     //[SerializeField] private GameObject playerInfoPrefab;
     [SerializeField] private NetworkList<bool> allPlayerReady = new();
 
-    private NetworkList<byte> playersId = new();
+    private NetworkList<byte> playersId = new(); // tie to PlayerDatasManager
     private TextMeshProUGUI readyButtonTextLabel;
 
     public override void OnNetworkSpawn()
@@ -40,8 +40,8 @@ public class LobbyManagerUI : NetworkBehaviour
 
         if (NetworkManager.Singleton.IsServer)
         {
-            NetworkManager.Singleton.OnClientDisconnectCallback += PLayerLeave;
             NetworkManager.Singleton.OnClientConnectedCallback += PlayerConnect;
+            NetworkManager.Singleton.OnClientDisconnectCallback += PLayerLeave;
 
             PlayerConnect(0);
         }
@@ -59,8 +59,10 @@ public class LobbyManagerUI : NetworkBehaviour
     private void PlayersId_OnListChanged(NetworkListEvent<byte> changeEvent)
     {
         //Debug.LogError("PlayersId_OnListChanged");
+        if (changeEvent.Type != NetworkListEvent<byte>.EventType.Add)
+            return;
 
-        playerDataViewManager.AddPlayer(changeEvent.Value);
+        playerDataViewManager.AddPlayer(playersId[changeEvent.Index]);
 
         foreach (GameObject player in playerGameObjectList)
         {

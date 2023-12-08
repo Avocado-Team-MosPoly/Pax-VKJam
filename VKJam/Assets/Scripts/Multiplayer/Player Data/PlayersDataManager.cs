@@ -39,8 +39,27 @@ public class PlayersDataManager : NetworkBehaviour
 
     private void PlayerDatasList_OnListChanged(NetworkListEvent<NetworkTuple_PlayerData> changeEvent)
     {
-        playerDatas[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
-        Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data added: {changeEvent.Value.PlayerData})");
+        if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.RemoveAt ||
+            changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Remove)
+        {
+            Logger.Instance.Log(this, $"change event id {changeEvent.PreviousValue.Id} {changeEvent.Value.Id}");
+            playerDatas.Remove(changeEvent.Value.Id);
+            Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data removed");
+        }
+        else if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Add)
+        {
+            playerDatas[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
+            Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data added: {changeEvent.Value.PlayerData}");
+        }
+        else if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Value)
+        {
+            playerDatas[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
+            Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data added: {changeEvent.Value.PlayerData} {changeEvent.Type}");
+        }
+        else
+        {
+            Logger.Instance.LogError(this, $"Unexpected change event type: {changeEvent.Type}");
+        }
     }
 
     public override void OnNetworkSpawn()
@@ -51,6 +70,24 @@ public class PlayersDataManager : NetworkBehaviour
 
         (byte, byte) avatarAndFrameIndexes = GetAvatarAndFrameIndexes();
         AddPlayerData(new PlayerData(avatarAndFrameIndexes.Item1, avatarAndFrameIndexes.Item2));
+
+        if (IsServer)
+            RelayManager.Instance.OnClientDisconnect.AddListener(OnClientDisconnect);
+            //NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
+    }
+
+    private void OnClientDisconnect(ulong clientId)
+    {
+        // server
+
+
+            return;
+
+        for (int i = 0; i < playerDatasList.Count; i++)
+        {
+            if (playerDatasList[i].Id == clientId)
+                playerDatasList.RemoveAt(i);
+        }
     }
 
     /// <summary> </summary>

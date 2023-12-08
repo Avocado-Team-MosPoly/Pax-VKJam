@@ -244,6 +244,9 @@ public class RelayManager : MonoBehaviour
     {
         OnClientDisconnect?.Invoke(clientId);
 
+        Logger.Instance.Log(this, $"Client {clientId} disconnected");
+
+        return;
         if (IsServer)
             LobbyManager.Instance.DisconnectPlayerAsync(clientId);
     }
@@ -334,7 +337,7 @@ public class RelayManager : MonoBehaviour
     {
         //Logger.Instance.Log(this, "OnClientStoppedClient");
 
-        Disconnect();
+        //Disconnect();
         //await LobbyManager.Instance.DisconnectAsync();
         SceneLoader.Load("Menu");
     }
@@ -347,6 +350,7 @@ public class RelayManager : MonoBehaviour
             return;
 
         NetworkManager.Singleton.DisconnectClient(clientId);
+        Logger.Instance.Log(this, clientId + " disconnected");
         //LobbyManager.Instance.DisconnectPlayer(clientId);
     }
 
