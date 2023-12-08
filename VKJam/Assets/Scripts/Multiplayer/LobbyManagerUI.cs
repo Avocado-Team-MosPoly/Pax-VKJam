@@ -59,10 +59,10 @@ public class LobbyManagerUI : NetworkBehaviour
     private void PlayersId_OnListChanged(NetworkListEvent<byte> changeEvent)
     {
         //Debug.LogError("PlayersId_OnListChanged");
-        if (changeEvent.Type != NetworkListEvent<byte>.EventType.Add)
-            return;
+        //if (changeEvent.Type != NetworkListEvent<byte>.EventType.Add)
+            //return;
 
-        playerDataViewManager.AddPlayer(playersId[changeEvent.Index]);
+        playerDataViewManager.AddPlayer(changeEvent.Value);
 
         foreach (GameObject player in playerGameObjectList)
         {

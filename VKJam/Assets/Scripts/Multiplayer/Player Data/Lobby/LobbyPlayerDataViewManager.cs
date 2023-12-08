@@ -76,7 +76,11 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
     private void ConfirmKickPlayer()
     {
         if (playerToKick == null)
+        {
+            Debug.LogError("Null player kick");
             return;
+        }    
+            
 
         RelayManager.Instance.DisconnectPlayer(playerToKick.ClientId);
         LobbyManager.Instance.DisconnectPlayerAsync(playerToKick.ClientId);
@@ -122,15 +126,16 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
 
         if (PlayersDataManager.Instance.PlayerDatas.ContainsKey(clientId))
         {
-            playerDatas[clientId].SetData(PlayersDataManager.Instance.PlayerDatas[clientId].Name, clientId);
+            Debug.LogError(clientId);
+            playerDatas[LobbyManager.Instance.CurrentLobby.Players.Count - 1].SetData(PlayersDataManager.Instance.PlayerDatas[clientId].Name, clientId);
 
             try
             {
                 Sprite avatar = avatarsAndFramesStorage.products[playerData[clientId].AvatarIndex].icon;
                 Sprite frame = avatarsAndFramesStorage.products[playerData[clientId].AvatarFrameIndex].icon;
 
-                playerDatas[clientId].SetAvatar(avatar);
-                playerDatas[clientId].SetFrame(frame);
+                playerDatas[LobbyManager.Instance.CurrentLobby.Players.Count - 1].SetAvatar(avatar);
+                playerDatas[LobbyManager.Instance.CurrentLobby.Players.Count - 1].SetFrame(frame);
             }
             catch (System.NullReferenceException ex)
             {
@@ -138,6 +143,9 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
             }
         }
         else
-            playerDatas[clientId].SetData(null, clientId);
+        {
+            playerDatas[LobbyManager.Instance.CurrentLobby.Players.Count - 1].SetData(null, clientId);
+        }        
+
     }
 }
