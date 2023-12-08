@@ -413,12 +413,12 @@ public class LobbyManager : MonoBehaviour
                     field: QueryFilter.FieldOptions.S1,
                     op: QueryFilter.OpOptions.EQ,
                     value: IsTeamMode
-                ),
-                new QueryFilter
-                (
-                    field: QueryFilter.FieldOptions.MaxPlayers,
-                    op: QueryFilter.OpOptions.EQ,
-                    value: PlayerNumber.ToString()
+                //),
+                //new QueryFilter
+                //(
+                //    field: QueryFilter.FieldOptions.MaxPlayers,
+                //    op: QueryFilter.OpOptions.EQ,
+                //    value: PlayerNumber.ToString()
                 )
             };
 

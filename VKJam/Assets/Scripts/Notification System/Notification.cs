@@ -22,7 +22,7 @@ public class Notification : MonoBehaviour
     {
         if (IsActive)
         {
-            Debug.LogWarning("Can't change notification because it is active");
+            Logger.Instance.LogWarning(this, "Can't change notification because it is active");
             return;
         }
 
@@ -38,7 +38,7 @@ public class Notification : MonoBehaviour
 
     public void OnDisappear()
     {
-        Debug.Log($"[Notification] Text: {tmProUGUI.text}. Show time: {1f / animator.speed}");
+        Logger.Instance.Log(this, $"Text: {tmProUGUI.text}"); // Show time: {1f / animator.speed});
 
         IsActive = false;
         gameObject.SetActive(IsActive);

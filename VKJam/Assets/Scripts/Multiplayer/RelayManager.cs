@@ -237,7 +237,7 @@ public class RelayManager : MonoBehaviour
     {
         OnClientConnected?.Invoke(clientId);
 
-        Logger.Instance.Log(this, "Client connected " + clientId);
+        Logger.Instance.Log(this, $"Client {clientId} connected");
     }
 
     private void OnClientDisconnectCallback(ulong clientId)
@@ -254,7 +254,7 @@ public class RelayManager : MonoBehaviour
 
         if (isHost)
         {
-            Logger.Instance.Log(this, "Host");
+            Logger.Instance.Log(this, "Host unsub");
             // server
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallbackServer;
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallbackServer;
@@ -264,7 +264,7 @@ public class RelayManager : MonoBehaviour
         }
         else
         {
-            Logger.Instance.Log(this, "Client");
+            Logger.Instance.Log(this, "Client unsub");
             // client
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallbackClient;
             NetworkManager.Singleton.OnClientStarted -= OnClientStartedClient;
@@ -278,17 +278,20 @@ public class RelayManager : MonoBehaviour
     // server
     private void OnClientConnectedCallbackServer(ulong clientId)
     {
-        Logger.Instance.Log(this, $"Client {clientId} connected");
+        //Logger.Instance.Log(this, "OnClientConnectedCallbackServer");
         //SpawnPlayersDataManagerWithOwnership(clientId);
     }
 
     private void OnClientDisconnectCallbackServer(ulong clientId)
     {
+        //Logger.Instance.Log(this, "OnClientDisconnectCallbackServer");
         //Logger.Instance.Log(this, NetworkManager.Singleton.DisconnectReason);
     }
 
     private void OnServerStartedServer()
     {
+        //Logger.Instance.Log(this, "OnServerStartedServer");
+
         PlayersDataManager pdmInstance = Instantiate(playersDataManagerPrefab);
         pdmInstance.NetworkObject.Spawn();
 
@@ -297,11 +300,15 @@ public class RelayManager : MonoBehaviour
 
     private void OnClientStartedServer()
     {
+        //Logger.Instance.Log(this, "OnClientStartedServer");
+
         Logger.Instance.Log(this, $"Client Started on server\nCurrent Lobby: {LobbyManager.Instance.CurrentLobby.Name}\nLobby Player Id: {LobbyManager.Instance.PlayerId}");
     }
 
     private void OnClientStoppedServer(bool isHost)
     {
+        Logger.Instance.Log(this, "OnClientStoppedServer");
+
         //if (PlayersDataManager.Instance != null && PlayersDataManager.Instance.NetworkObject != null)
         //    PlayersDataManager.Instance.NetworkObject.Despawn();
 
@@ -311,16 +318,22 @@ public class RelayManager : MonoBehaviour
     // client
     private void OnClientDisconnectCallbackClient(ulong clientId)
     {
+        //Logger.Instance.Log(this, "OnClientDisconnectCallbackClient");
+
         //Logger.Instance.Log(this, NetworkManager.Singleton.DisconnectReason);
     }
 
     private void OnClientStartedClient()
     {
+        //Logger.Instance.Log(this, "OnClientStartedClient");
+
         Logger.Instance.Log(this, "Client Started");
     }
 
     private void OnClientStoppedClient(bool isHost)
     {
+        //Logger.Instance.Log(this, "OnClientStoppedClient");
+
         Disconnect();
         //await LobbyManager.Instance.DisconnectAsync();
         SceneLoader.Load("Menu");
