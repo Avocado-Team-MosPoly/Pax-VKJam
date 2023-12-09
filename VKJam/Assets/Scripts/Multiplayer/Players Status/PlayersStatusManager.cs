@@ -33,6 +33,30 @@ public class PlayersStatusManager : NetworkBehaviour
             foreach (ulong clientId in NetworkManager.ConnectedClientsIds)
                 CreatePlayerStatusClientRpc((byte)clientId);
         }
+
+        GameManager.Instance.RoleManager.OnPainterSetted.AddListener(OnRolesChanged);
+        GameManager.Instance.RoleManager.OnGuesserSetted.AddListener(OnRolesChanged);
+    }
+
+    private void OnRolesChanged()
+    {
+        foreach (PlayerStatus playerStatus in playerStatuses.Values)
+        {
+            if (GameManager.Instance.IsTeamMode)
+            {
+                if (playerStatus.OwnerClientId != NetworkManager.LocalClientId && playerStatus.OwnerClientId != GameManager.Instance.PainterId)
+                    playerStatus.gameObject.SetActive(true);
+                else
+                    playerStatus.gameObject.SetActive(false);
+            }
+            else
+            {
+                if (playerStatus.OwnerClientId != NetworkManager.LocalClientId && GameManager.Instance.IsPainter)
+                    playerStatus.gameObject.SetActive(true);
+                else
+                    playerStatus.gameObject.SetActive(false);
+            }
+        }
     }
 
     [ClientRpc]
@@ -46,8 +70,18 @@ public class PlayersStatusManager : NetworkBehaviour
 
         playerStatuses.Add(ownerClientId, playerStatusInstance);
 
-        if (ownerClientId == NetworkManager.LocalClientId)
-            playerStatusInstance.gameObject.SetActive(false);
+        playerStatusInstance.gameObject.SetActive(false);
+
+        if (GameManager.Instance.IsTeamMode)
+        {
+            if (ownerClientId != NetworkManager.LocalClientId && ownerClientId != GameManager.Instance.PainterId)
+                playerStatusInstance.gameObject.SetActive(true);
+        }
+        else
+        {
+            if (ownerClientId != NetworkManager.LocalClientId && GameManager.Instance.IsPainter)
+                playerStatusInstance.gameObject.SetActive(true);
+        }
     }
 
     private void UpdateStatus(string status, ulong senderClientId)

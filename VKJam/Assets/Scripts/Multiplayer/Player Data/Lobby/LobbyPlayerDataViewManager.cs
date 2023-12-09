@@ -87,10 +87,9 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
     {
         if (playerToKick == null)
         {
-            Debug.LogError("Null player kick");
+            Logger.Instance.LogError(this, $"{nameof(playerToKick)} is null");
             return;
-        }    
-            
+        }
 
         RelayManager.Instance.DisconnectPlayer(playerToKick.ClientId);
         LobbyManager.Instance.DisconnectPlayerAsync(playerToKick.ClientId);
@@ -175,7 +174,6 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
         if (PlayersDataManager.Instance.PlayerDatas.ContainsKey(clientId))
         {
             playerDataView.SetData(PlayersDataManager.Instance.PlayerDatas[clientId].Name, clientId);
-            Logger.Instance.LogError(this, playerDataView);
 
             try
             {

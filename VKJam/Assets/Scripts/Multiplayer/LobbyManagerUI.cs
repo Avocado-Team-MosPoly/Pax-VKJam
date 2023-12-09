@@ -83,7 +83,7 @@ public class LobbyManagerUI : NetworkBehaviour
             Logger.Instance.LogWarning(this, "Client id index below 0");
             return;
         }
-        Logger.Instance.LogError(this, clientIdIndex);
+
         PlayersId.RemoveAt(clientIdIndex);
         allPlayerReady.RemoveAt(clientIdIndex);
     }
