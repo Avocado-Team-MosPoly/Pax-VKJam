@@ -341,9 +341,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7533121785460809824}
-  - component: {fileID: -5902029994472003462}
   - component: {fileID: -6978107694071838983}
   - component: {fileID: -3899384764269358929}
+  - component: {fileID: 466408324998537037}
   m_Layer: 0
   m_Name: Cauldron V1
   m_TagString: Untagged
@@ -375,27 +375,6 @@ Transform:
   - {fileID: 7810181109407770981}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -25.402, z: 0}
---- !u!65 &-5902029994472003462
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3073515518225687774}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-6978107694071838983
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -434,6 +413,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Data: {fileID: -6978107694071838983}
   Object: {fileID: 3073515518225687774}
+  _Anim: {fileID: 0}
+--- !u!65 &466408324998537037
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3073515518225687774}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.0797817, y: 1.0329304, z: 0.9410209}
+  m_Center: {x: 0.04149701, y: 0.50374925, z: -0.03869323}
 --- !u!1 &5527086642509213353
 GameObject:
   m_ObjectHideFlags: 0
