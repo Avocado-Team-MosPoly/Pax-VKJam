@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class LobbyManagerUI : NetworkBehaviour
 {
+    public NetworkList<byte> PlayersId = new(); // tie to PlayerDatasManager
+
     //[SerializeField] private Button listPlayersButton;
     [SerializeField] private Button leaveLobbyButton;
     [SerializeField] private Button updatePlayerListButton;
@@ -22,8 +24,8 @@ public class LobbyManagerUI : NetworkBehaviour
     //[SerializeField] private GameObject playerInfoPrefab;
     [SerializeField] private NetworkList<bool> allPlayerReady = new();
 
-    private NetworkList<byte> playersId = new(); // tie to PlayerDatasManager
     private TextMeshProUGUI readyButtonTextLabel;
+
 
     public override void OnNetworkSpawn()
     {
@@ -36,7 +38,7 @@ public class LobbyManagerUI : NetworkBehaviour
         LobbyManager.Instance.ListPlayers();
 
         allPlayerReady.OnListChanged += AllPlayerReady_OnListChanged;
-        playersId.OnListChanged += PlayersId_OnListChanged;
+        PlayersId.OnListChanged += PlayersId_OnListChanged;
 
         if (NetworkManager.Singleton.IsServer)
         {
@@ -59,25 +61,16 @@ public class LobbyManagerUI : NetworkBehaviour
     private void PlayersId_OnListChanged(NetworkListEvent<byte> changeEvent)
     {
         //Debug.LogError("PlayersId_OnListChanged");
-        //if (changeEvent.Type != NetworkListEvent<byte>.EventType.Add)
-            //return;
-
-        playerDataViewManager.AddPlayer(changeEvent.Value);
-
-        foreach (GameObject player in playerGameObjectList)
-        {
-            player.SetActive(false);
-        }
-        for (int i = 0; i < playersId.Count; i++)
-        {
-            playerGameObjectList[i].SetActive(true);
-        }
+        if (changeEvent.Type == NetworkListEvent<byte>.EventType.Add)
+            playerDataViewManager.AddPlayer(changeEvent.Value);
+        if (changeEvent.Type == NetworkListEvent<byte>.EventType.RemoveAt)
+            playerDataViewManager.RemovePlayer(changeEvent.Value);
     }
 
     private void PlayerConnect(ulong clientId)
     {
         //Debug.LogError("Player conected");
-        playersId.Add((byte)clientId);
+        PlayersId.Add((byte)clientId);
         allPlayerReady.Add(false);
     }
 
@@ -90,8 +83,8 @@ public class LobbyManagerUI : NetworkBehaviour
             Logger.Instance.LogWarning(this, "Client id index below 0");
             return;
         }
-
-        playersId.RemoveAt(clientIdIndex);
+        Logger.Instance.LogError(this, clientIdIndex);
+        PlayersId.RemoveAt(clientIdIndex);
         allPlayerReady.RemoveAt(clientIdIndex);
     }
 
@@ -101,8 +94,8 @@ public class LobbyManagerUI : NetworkBehaviour
         {
             int i = 0;
 
-            for (; i < playersId.Count; i++)
-                if (playersId[i] == id)
+            for (; i < PlayersId.Count; i++)
+                if (PlayersId[i] == id)
                     break;
 
             return i;
