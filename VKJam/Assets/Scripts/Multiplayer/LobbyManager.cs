@@ -59,10 +59,10 @@ public class LobbyManager : MonoBehaviour
                 ListPlayers();
         };
 
-        NetworkManager.Singleton.OnClientStopped += (bool isHost) =>
+        NetworkManager.Singleton.OnClientStopped += async (bool isHost) =>
         {
-            Logger.Instance.LogError(this, "Me");
-            ResetManager(IsServer);
+            //Logger.Instance.LogError(this, "Me");
+            await DisconnectAsync();
         };
 
         //NetworkManager.Singleton.OnClientDisconnectCallback += async (ulong clientId) =>
@@ -113,6 +113,15 @@ public class LobbyManager : MonoBehaviour
     }
 
     #endregion
+
+    private bool CheckCurrentLobbyIsNull()
+    {
+        if (CurrentLobby == null)
+            return true;
+
+        NotificationSystem.Instance.SendLocal("You already in lobby " + CurrentLobby.Name);
+        return false;
+    }
 
     public async Task UpdateLocalLobbyData()
     {
@@ -206,25 +215,17 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public void ResetManager(bool isServer)
+    public void ResetManager()
     {
         CurrentLobby = null;
-
-        if (isServer)
-        {
-            ListLobbiesWithFilter();
-        }
     }
 
     public async void CreateLobby()
     {
         try
         {
-            if (CurrentLobby != null)
-            {
-                Logger.Instance.LogWarning(this, "You are already in lobby: " + CurrentLobby.Name);
+            if (!CheckCurrentLobbyIsNull())
                 return;
-            }
 
             CreateLobbyOptions createLobbyOptions = new()
             {
@@ -266,11 +267,8 @@ public class LobbyManager : MonoBehaviour
     {
         try
         {
-            if (CurrentLobby != null)
-            {
-                Logger.Instance.LogWarning(this, "You are already in lobby: " + CurrentLobby.Name);
+            if (!CheckCurrentLobbyIsNull())
                 return;
-            }
 
             if (string.IsNullOrEmpty(joinCode))
             {
@@ -301,11 +299,8 @@ public class LobbyManager : MonoBehaviour
     {
         try
         {
-            if (CurrentLobby != null)
-            {
-                Logger.Instance.LogWarning(this, "You are already in lobby: " + CurrentLobby.Name);
+            if (!CheckCurrentLobbyIsNull())
                 return;
-            }
 
             if (string.IsNullOrEmpty(lobbyId))
             {
@@ -341,6 +336,9 @@ public class LobbyManager : MonoBehaviour
     {
         try
         {
+            if (!CheckCurrentLobbyIsNull())
+                return;
+
             QueryLobbiesOptions options = new QueryLobbiesOptions();
             options.Filters = new List<QueryFilter>()
             {
@@ -470,6 +468,8 @@ public class LobbyManager : MonoBehaviour
         {
             try
             {
+                foreach (var clientIds in PlayersDataManager.Instance.PlayerDatas.Keys)
+                    Logger.Instance.LogWarning(this, clientIds);
                 string playerName = PlayersDataManager.Instance.PlayerDatas[clientId].Name;
                 await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, PlayersDataManager.Instance.PlayerDatas[clientId].LobbyPlayerId);
                 Logger.Instance.Log(this, "Disconnected player " + playerName);
@@ -500,16 +500,11 @@ public class LobbyManager : MonoBehaviour
                     }
                 }
 
-                ResetManager(IsServer);
+                ResetManager();
             }
             catch (LobbyServiceException ex)
             {
-                if (ex.ErrorCode == 404)
-                {
-                    ResetManager(IsServer);
-                    return;
-                }
-
+                ResetManager();
                 Logger.Instance.LogError(this, ex);
             }
         }

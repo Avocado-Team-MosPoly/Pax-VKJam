@@ -66,6 +66,10 @@ public class LobbyPlayerDataView : MonoBehaviour,
 
         if (NetworkManager.Singleton.IsServer)
             if (NetworkManager.Singleton.LocalClientId != ClientId)
+            {
+                Debug.LogError(ClientId);
                 ClickedOnServer?.Invoke(this);
+            }
+
     }
 }

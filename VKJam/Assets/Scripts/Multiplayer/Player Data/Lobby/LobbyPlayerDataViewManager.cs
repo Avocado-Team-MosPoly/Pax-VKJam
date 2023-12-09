@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class LobbyPlayerDataViewManager : MonoBehaviour
 {
+    [SerializeField] private LobbyManagerUI lobbyManagerUI;
     [SerializeField] private LobbyPlayerDataView[] playerDatas;
 
     [Header("Description")]
@@ -32,6 +33,9 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
         rectTransform.anchorMin = Vector2.zero;
         rectTransform.anchorMax = Vector2.zero;
         rectTransform.pivot = Vector2.zero;
+
+        foreach (LobbyPlayerDataView playerData in playerDatas)
+            playerData.gameObject.SetActive(false);
     }
 
     private void Start()
@@ -48,6 +52,12 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
         kickPlayerConfirmationObject.SetActive(false);
 
         gameObject.SetActive(false);
+
+        foreach (byte playerId in lobbyManagerUI.PlayersId)
+        {
+            if (playerId != NetworkManager.Singleton.LocalClientId)
+                AddPlayer(playerId);
+        }
     }
 
     private void Update()
@@ -76,10 +86,13 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
     private void ConfirmKickPlayer()
     {
         if (playerToKick == null)
+        {
+            Logger.Instance.LogError(this, $"{nameof(playerToKick)} is null");
             return;
+        }
 
-        LobbyManager.Instance.DisconnectPlayerAsync(playerToKick.ClientId);
         RelayManager.Instance.DisconnectPlayer(playerToKick.ClientId);
+        LobbyManager.Instance.DisconnectPlayerAsync(playerToKick.ClientId);
 
         playerToKick = null;
         kickPlayerConfirmationObject.SetActive(false);
@@ -107,6 +120,28 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    private LobbyPlayerDataView GetInactivePlayerDataView()
+    {
+        foreach (LobbyPlayerDataView playerDataView in playerDatas)
+        {
+            if (!playerDataView.gameObject.activeSelf)
+                return playerDataView;
+        }
+
+        return null;
+    }
+
+    private LobbyPlayerDataView GetPlayerDataViewById(ulong clientId)
+    {
+        foreach (LobbyPlayerDataView playerDataView in playerDatas)
+        {
+            if (playerDataView.ClientId == clientId)
+                return playerDataView;
+        }
+
+        return null;
+    }
+
     public void AddPlayer(ulong clientId)
     {
         if (playerDatas.Length < 0)
@@ -114,23 +149,39 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
             Logger.Instance.LogError(this, new System.ArgumentOutOfRangeException("Client Id shouldn't be less than 0"));
             return;
         }
-        if (playerDatas.Length <= (int)clientId)
+
+        int playerDataViewIndex = lobbyManagerUI.PlayersId.IndexOf((byte)clientId);
+
+        if (playerDataViewIndex < 0)
         {
-            Logger.Instance.LogError(this, new System.ArgumentOutOfRangeException("Not enough player data for client"));
+            Logger.Instance.LogError(this, $"{nameof(playerDataViewIndex)} is not correct. Value = '{playerDataViewIndex}'");
             return;
         }
 
+        LobbyPlayerDataView playerDataView = playerDatas[playerDataViewIndex];
+
+        if (playerDataView.gameObject.activeSelf)
+            playerDataView = GetInactivePlayerDataView();
+
+        if (playerDataView == null)
+        {
+            Logger.Instance.LogError(this, $"{nameof(playerDataView)}Is not enough {nameof(playerDatas)}");
+            return;
+        }
+
+        playerDataView.gameObject.SetActive(true);
+
         if (PlayersDataManager.Instance.PlayerDatas.ContainsKey(clientId))
         {
-            playerDatas[clientId].SetData(PlayersDataManager.Instance.PlayerDatas[clientId].Name, clientId);
+            playerDataView.SetData(PlayersDataManager.Instance.PlayerDatas[clientId].Name, clientId);
 
             try
             {
                 Sprite avatar = avatarsAndFramesStorage.products[playerData[clientId].AvatarIndex].icon;
                 Sprite frame = avatarsAndFramesStorage.products[playerData[clientId].AvatarFrameIndex].icon;
 
-                playerDatas[clientId].SetAvatar(avatar);
-                playerDatas[clientId].SetFrame(frame);
+                playerDataView.SetAvatar(avatar);
+                playerDataView.SetFrame(frame);
             }
             catch (System.NullReferenceException ex)
             {
@@ -138,6 +189,26 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
             }
         }
         else
-            playerDatas[clientId].SetData(null, clientId);
+        {
+            playerDataView.SetData(null, clientId);
+        }
+    }
+
+    public void RemovePlayer(ulong clientId)
+    {
+        if (playerDatas.Length < 0)
+        {
+            Logger.Instance.LogError(this, new System.ArgumentOutOfRangeException("Client Id shouldn't be less than 0"));
+            return;
+        }
+
+        LobbyPlayerDataView playerDataView = GetPlayerDataViewById(clientId);
+        if (playerDataView == null)
+        {
+            Logger.Instance.LogError(this, $"{nameof(playerDataView)} is null");
+            return;
+        }
+
+        playerDataView.gameObject.SetActive(false);
     }
 }

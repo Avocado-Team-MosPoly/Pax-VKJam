@@ -875,9 +875,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 330455451}
-  - component: {fileID: 330455453}
-  - component: {fileID: 330455452}
   - component: {fileID: 330455454}
+  - component: {fileID: 330455452}
+  - component: {fileID: 330455453}
   m_Layer: 0
   m_Name: Paint
   m_TagString: Untagged
@@ -1333,18 +1333,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 611080506}
-  m_LocalRotation: {x: -0, y: -0, z: -0.030538544, w: 0.99953365}
+  m_LocalRotation: {x: 0, y: 0, z: -0.0028797674, w: 0.9999958}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2118709351}
   m_Father: {fileID: 1083470078}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -3.5}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.33}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 40, y: 10}
-  m_SizeDelta: {x: 120, y: 90}
+  m_AnchoredPosition: {x: 50, y: 10}
+  m_SizeDelta: {x: 200, y: 120}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &611080508
 MonoBehaviour:
@@ -1539,8 +1539,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.33}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -40, y: 10}
-  m_SizeDelta: {x: 120, y: 90}
+  m_AnchoredPosition: {x: -50, y: 10}
+  m_SizeDelta: {x: 200, y: 120}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &681148358
 MonoBehaviour:
@@ -1659,7 +1659,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 110}
+  m_SizeDelta: {x: 0, y: 170}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &707451209
 MonoBehaviour:
@@ -1681,7 +1681,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u0412\u044B \u0443\u0432\u0435\u0440\u0435\u043D\u044B?"
+  m_text: "\u0412\u044B \u0443\u0432\u0435\u0440\u0435\u043D\u044B, \u0447\u0442\u043E
+    \u0445\u043E\u0442\u0438\u0442\u0435\n\u0432\u044B\u0433\u043D\u0430\u0442\u044C
+    \u0438\u0433\u0440\u043E\u043A\u0430?"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
   m_sharedMaterial: {fileID: 3727686744989863773, guid: 6e41e583fd6209b43bb8f4a177ff6e2f, type: 2}
@@ -2866,7 +2868,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 70}
-  m_SizeDelta: {x: 350, y: 200}
+  m_SizeDelta: {x: 550, y: 280}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1083470079
 MonoBehaviour:
@@ -6139,6 +6141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eb87718e5203e142b3bdcab94f244c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lobbyManagerUI: {fileID: 1547181418}
   playerDatas:
   - {fileID: 251506188}
   - {fileID: 1958560452}
