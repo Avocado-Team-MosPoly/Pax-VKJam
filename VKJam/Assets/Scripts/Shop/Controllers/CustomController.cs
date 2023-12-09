@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class CustomController : TaskExecutor<CustomController>
 {
@@ -10,8 +10,26 @@ public class CustomController : TaskExecutor<CustomController>
 
     private void Start()
     {
+        foreach (var section in Categories)
+        {
+            foreach (var ware in section.products)
+            {
+                ware.CheckOwning();
+            }
+        }
         Load();
         //if (Php_Connect.PHPisOnline) FetchAllProductData();
+    }
+    [ContextMenu("Upload Data into DB")]
+    private void Upload()
+    {
+        foreach (var section in Categories)
+        {
+            foreach (var ware in section.products)
+            {
+                Php_Connect.Request_UploadData(ware);
+            }
+        }
     }
     private void Load()
     {
@@ -22,7 +40,7 @@ public class CustomController : TaskExecutor<CustomController>
     {
         foreach(var current in Categories[(int)Categorize(Type)].products)
         {
-            if (current.Data.productCode == id) return current;
+            if (current.Data.productCode == id && current.Data.InOwn) return current;
         }
         return Standart[(int)Type];
     }
@@ -32,23 +50,41 @@ public class CustomController : TaskExecutor<CustomController>
         PlayerPrefs.SetInt("Custom_" + New.Data.Type, New.Data.productCode);
         PlayerPrefs.Save();
     }
-    private void SaveAll()
+    [ContextMenu("Denote Exist ItemType")]
+    private void DenoteExist()
     {
-        foreach(var current in Custom)
+        HashSet<ItemType> uniqueItemTypes = new HashSet<ItemType>();
+
+        foreach (var section in Categories)
         {
-            PlayerPrefs.SetInt("Custom_" + current.Data.Type, current.Data.productCode);
+            foreach (var ware in section.products)
+            {
+                if (ware.Data.Type == ItemType.PackCard) Debug.Log(ware.Data.productName + " " + Categories);
+                uniqueItemTypes.Add(ware.Data.Type);
+            }
         }
+        string output = "";
+        foreach (var itemType in uniqueItemTypes)
+        {
+            output += itemType.ToString() + "\n";
+        }
+        Debug.Log(output);
     }
     [ContextMenu("Fill Data in Standart")]
     private void StandartFill()
     {
+        Debug.Log("Start filling");
         Standart = new WareData[System.Enum.GetNames(typeof(ItemType)).Length];
         foreach (ItemType cur in System.Enum.GetValues(typeof(ItemType)))
         {
             if (Categories[(int)Categorize(cur)].products.Count == 0) continue;
             foreach (var current in Categories[(int)Categorize(cur)].products)
             {
-                if (current.Data.productCode == 0) Standart[(int)cur] = current;
+                if (current.Data.productCode == 0)
+                {
+                    Debug.Log(current.Data.Type + " - is added to standart");
+                    Standart[(int)cur] = current;
+                }
             }
         }
         
@@ -141,5 +177,11 @@ public class CustomController : TaskExecutor<CustomController>
             default:
                 return 0;
         }
+    }
+    [ContextMenu("Forced set static Executor by this")]
+    protected void MenuDenote()
+    {
+        _executor = this;
+        Debug.Log("Success Denote");
     }
 }

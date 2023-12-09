@@ -7,16 +7,13 @@ public class SwitchModule : MonoBehaviour
     [SerializeField] protected DetecterModule SwitchTarget;
     [SerializeField] private SwitchModule Sync;
     [HideInInspector] public SwitchModule ReverseSync;
-    private void Start()
+    private System.Collections.IEnumerator Start()
     {
-        StartCoroutine(DelayStart());
-        
-    }
-    private System.Collections.IEnumerator DelayStart()
-    {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.1f);
         if (Sync != null) Sync.ReverseSync = this;
-        SwitchItem(CustomController._executor.Custom[(int)Type]);
+        if(CustomController._executor.Custom[(int)Type].Data.productName != "" && 
+           CustomController._executor.Custom[(int)Type].Data.productCode != 0) 
+           SwitchItem(CustomController._executor.Custom[(int)Type]);
     }
     public virtual void SwitchItem(WareData NewItem)
     {
@@ -41,9 +38,17 @@ public class SwitchModule : MonoBehaviour
     }
     public void NewItem(DetecterModule NewItem)
     {
-        if (SwitchTarget != null)
+        if (SwitchTarget != null && NewItem != SwitchTarget)
         {
-            NewItem.Data.Set(SwitchTarget.Data);
+            if(SwitchTarget._Anim != null)
+            {
+                if (NewItem._Anim == null)
+                {
+                    NewItem._Anim = NewItem.gameObject.AddComponent<Animator>();
+                }
+                    NewItem._Anim.runtimeAnimatorController = SwitchTarget._Anim.runtimeAnimatorController;
+            }
+            if(SwitchTarget.Data != null) NewItem.Data.Set(SwitchTarget.Data);
             Destroy(SwitchTarget.Object);
         }
         SwitchTarget = NewItem;

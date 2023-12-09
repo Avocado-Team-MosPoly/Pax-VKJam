@@ -27,7 +27,10 @@ public class WareData
         Data = Php_Connect.Request_DataAboutDesign(Data.productCode);
         icon = Base64ToSprite(Data.icon);
     }
-
+    public void CheckOwning()
+    {
+        Data.InOwn = Php_Connect.Request_CheckOwningDesign(Data.productCode);
+    }
     protected static Sprite Base64ToSprite(string base64)
     {
         try
@@ -45,5 +48,13 @@ public class WareData
             Debug.Log("Base64 string is not valid: " + e.Message);
             return null;
         }
+    }
+    [ContextMenu("Set in Choosen Custom")]
+    public void ChooseThis()
+    {
+        Debug.Log(CustomController._executor);
+        Debug.Log(Data.Type);
+        Debug.Log(this);
+        CustomController._executor.Custom[(int)Data.Type] = this;
     }
 }

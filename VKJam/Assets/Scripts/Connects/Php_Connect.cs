@@ -142,6 +142,47 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             }
         }
     }
+    public static string Request_UploadData(WareData Upload)
+    {
+        return Request_UploadData(Upload.Data);
+    }
+    public static string Request_UploadData(Design Upload)
+    {
+        string JSON = JsonUtility.ToJson(Upload);
+        Debug.Log(JSON);
+        return "";
+        
+    }
+    public static bool Request_CheckOwningDesign(int idDesign)
+    {
+        if (idDesign == 0) return true;
+        if (!PHPisOnline) return false;
+        WWWForm form = new WWWForm();
+        form.AddField("idDesign", idDesign);
+        form.AddField("Nickname", Nickname);
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/CheckOwningDesign.php", form))
+        {
+            www.certificateHandler = new AcceptAllCertificates();
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return false;
+            }
+            else if (www.downloadHandler.text == "error - 404")
+            {
+                ErrorProcessor("404");
+                return false;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return www.downloadHandler.text == "true" ? true : false;
+            }
+        }
+    }
     public static string Request_WhatPackOwnering() 
     {
         if (!PHPisOnline) return "";

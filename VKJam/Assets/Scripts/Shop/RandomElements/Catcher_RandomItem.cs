@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Catcher_RandomItem : MonoBehaviour
+public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
 {
     [SerializeField] private static TMPro.TMP_Text NameOutput;
     [SerializeField] private static GameObject Window;
@@ -10,13 +10,11 @@ public class Catcher_RandomItem : MonoBehaviour
     [SerializeField] private GameObject[] WinObjects;
 
     public static int Result;
-
-    public delegate void ThisDroppedEvent();
-    public static event ThisDroppedEvent OnDropped;
+    
 
     private void Awake()
     {
-        OnDropped += OnDroppingWhatever;
+        Denote();
         /*if (NameOutput == null)
         {
             GameObject.FindGameObjectWithTag("Random_Frame").TryGetComponent<TMPro.TMP_Text>(out NameOutput);
@@ -30,7 +28,7 @@ public class Catcher_RandomItem : MonoBehaviour
     public static void SetData(RandomItem Data)
     {
         DroppedItem = Data;
-        OnDropped?.Invoke();
+        _executor.OnDroppingWhatever();
         Result = Data.DesignID;
         if(Window != null) Window.SetActive(true);
         if (NameOutput != null) NameOutput.text = Data.SystemName;
@@ -45,7 +43,10 @@ public class Catcher_RandomItem : MonoBehaviour
                 .Interact();
         display.Refresh();
     }
+    private void GenerateWin()
+    {
 
+    }
     private void ActiveWinObject(int id)
     {
         for(int i = 0; i < WinObjects.Length;++i)
@@ -60,7 +61,7 @@ public class Catcher_RandomItem : MonoBehaviour
         {
             case RandomType.Nothing:
                 Hand.Play("WishFiga");
-        break;
+                break;
             case RandomType.Token:
                 ActiveWinObject(0);
                 Hand.Play("Wish");
@@ -78,8 +79,8 @@ public class Catcher_RandomItem : MonoBehaviour
                 Hand.Play("Wish");
                 break;
             default:
-                
-        break;
+
+                break;
         }
     }
 

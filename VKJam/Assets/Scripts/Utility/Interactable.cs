@@ -18,12 +18,12 @@ public class Interactable : MonoBehaviour
 
     public void Set(Interactable New)
     {
-        TargetMaterialID = New.TargetMaterialID;
-        NewColor = New.NewColor;
-        m_OnClick = New.m_OnClick;
-        m_OnMouseEnter = New.m_OnMouseEnter;
-        m_OnMouseExit = New.m_OnMouseExit;
-        ActivityInteractable = New.ActivityInteractable;
+        if(New.TargetMaterialID != null) TargetMaterialID = New.TargetMaterialID;
+        if (New.NewColor != null) NewColor = New.NewColor;
+        if (New.m_OnClick != null) m_OnClick = New.m_OnClick;
+        if (New.m_OnMouseEnter != null) m_OnMouseEnter = New.m_OnMouseEnter;
+        if (New.m_OnMouseExit != null) m_OnMouseExit = New.m_OnMouseExit;
+         ActivityInteractable = New.ActivityInteractable;
     }
     private void Awake()
     {

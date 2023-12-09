@@ -6,10 +6,11 @@ public class DetecterModule : MonoBehaviour
 {
     public Interactable Data;
     public GameObject Object;
+    public Animator _Anim;
     private void Awake()
     {
         SwitchModule temp = GetComponentInParent<SwitchModule>();
-        if(temp != null) temp.NewItem(this);
-
+        _Anim = GetComponent<Animator>();
+        if (temp != null) temp.NewItem(this);
     }
 }
