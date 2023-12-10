@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using Unity.VisualScripting;
 
 public class Bestiary : MonoBehaviour
 {
@@ -42,12 +43,21 @@ public class Bestiary : MonoBehaviour
         int dangerousMonstersCount = 0;
         int murderousMonstersCount = 0;
 
+        foreach (Button button in dangerousMonstersButtons)
+        {
+            button.gameObject.SetActive(false);
+        }
+        foreach (Button button in murderousMonstersButtons)
+        {
+            button.gameObject.SetActive(false);
+        }
         foreach (CardSO monster in Monsters)
         {
             int pageIndex = dangerousMonstersCount + murderousMonstersCount;
-
+            Debug.LogError(pageIndex);
             if (monster.Difficulty == CardDifficulty.Dangerous)
             {
+                dangerousMonstersButtons[dangerousMonstersCount].gameObject.SetActive(true);
                 dangerousMonstersButtons[dangerousMonstersCount].GetComponentInChildren<TextMeshProUGUI>().text = monster.Id;
                 dangerousMonstersButtons[dangerousMonstersCount].onClick.AddListener(() => GoToPage(pageIndex));
 
@@ -55,6 +65,7 @@ public class Bestiary : MonoBehaviour
             }
             else
             {
+                murderousMonstersButtons[murderousMonstersCount].gameObject.SetActive(true);
                 murderousMonstersButtons[murderousMonstersCount].GetComponentInChildren<TextMeshProUGUI>().text = monster.Id;
                 murderousMonstersButtons[murderousMonstersCount].onClick.AddListener(() => GoToPage(pageIndex));
 
