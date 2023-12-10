@@ -278,16 +278,19 @@ public class LobbyManagerUI : NetworkBehaviour
                
                 if (PackManager.Instance.PlayersOwnedCard.Count == PlayersId.Count)
                 {
+                    Debug.LogError("1");
                     bool allGet = true;
                     for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
                     {
                         if (PackManager.Instance.PlayersOwnedCard[PlayersId[i]].Count != PackManager.Instance.PlayersOwnedCard[NetworkManager.LocalClientId].Count)
                         {
+                            Debug.LogError("0");
                             allGet = false;
                         }
                     }
                     if (allGet)
                     {
+                        Debug.LogError("2");
                         GetAllServerRpc(new ServerRpcParams());
                     }
                 }                   
