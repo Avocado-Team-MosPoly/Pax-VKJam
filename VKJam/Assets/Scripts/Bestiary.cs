@@ -63,7 +63,6 @@ public class Bestiary : MonoBehaviour
         foreach (CardSO monster in Monsters)
         {
             int pageIndex = dangerousMonstersCount + murderousMonstersCount;
-            Debug.LogError(pageIndex);
             if (monster.Difficulty == CardDifficulty.Dangerous)
             {
                 dangerousMonstersButtons[dangerousMonstersCount].gameObject.SetActive(true);
