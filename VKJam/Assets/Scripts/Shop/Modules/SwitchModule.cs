@@ -7,11 +7,16 @@ public class SwitchModule : MonoBehaviour
     [SerializeField] protected DetecterModule SwitchTarget;
     [SerializeField] private SwitchModule Sync;
     [HideInInspector] public SwitchModule ReverseSync;
+    [SerializeField] private bool NeedSavePosition;
     private System.Collections.IEnumerator Start()
     {
         yield return new WaitForSeconds(0.1f);
-        if (Sync != null) Sync.ReverseSync = this;
-        if(CustomController._executor.Custom[(int)Type].Data.productName != "" && 
+        if (Sync != null)
+        {
+            Sync.ReverseSync = this;
+            Sync.NeedSavePosition = NeedSavePosition;
+        }
+            if (CustomController._executor.Custom[(int)Type].Data.productName != "" && 
            CustomController._executor.Custom[(int)Type].Data.productCode != 0) 
            SwitchItem(CustomController._executor.Custom[(int)Type]);
     }
@@ -24,7 +29,8 @@ public class SwitchModule : MonoBehaviour
     }
     private void Synchronization(WareData NewItem, bool NormalDir)
     {
-        Instantiate(NewItem.Model, transform);
+        if(!NeedSavePosition) Instantiate(NewItem.Model, transform);
+        else Instantiate(NewItem.Model, SwitchTarget.transform.position, SwitchTarget.transform.rotation, transform);
         if (Sync != null && NormalDir) Sync.SwitchNextNormal(NewItem);
         if (ReverseSync != null && !NormalDir) ReverseSync.SwitchNextReverse(NewItem);
     }

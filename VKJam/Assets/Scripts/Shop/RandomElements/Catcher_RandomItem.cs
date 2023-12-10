@@ -48,14 +48,24 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     {
         if (Current != null) Destroy(Current);
         WareData temp = CustomController._executor.Search(Sel);
-        if (Sel.design <= 10 && Sel.design >= 7) ActiveWinObject(3);
-        else Current = Instantiate(temp.Model, WinObjects[4].transform);
+        Debug.Log(Sel.type + " " + (Sel.type >= 8));
+        if (Sel.type >= 8)
+        {
+            Debug.Log(Mathf.Clamp(WinObjects.Length, 0, 3));
+            ActiveWinObject(3);
+        }
+        else
+        {
+            Debug.Log("Try create " + temp.Model);
+            Current = Instantiate(temp.Model, WinObjects[4].transform);
+        }
         UIWin(temp);
     }
     public void UIWin(WareData data)
     {
         UI.SetActive(true);
-            Custom.SetData(data);
+        Custom.SetData(data);
+        Custom.gameObject.SetActive(true);
     }
 
     public void UIWin(RandomType Type, int data)
@@ -75,7 +85,7 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     private void ActiveWinObject(int id)
     {
         if (Current != null) Destroy(Current);
-        for (int i = 0; i < Mathf.Clamp(WinObjects.Length, 0, 3);++i)
+        for (int i = 0; i <= Mathf.Clamp(WinObjects.Length, 0, 3);++i)
         {
             if (id == i) WinObjects[i].SetActive(true);
             else WinObjects[i].SetActive(false);
@@ -103,7 +113,6 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
                 Hand.Play("Wish");
                 break;
             case RandomType.Custom:
-                ActiveWinObject(4);
                 Hand.Play("Wish");
                 break;
             default:

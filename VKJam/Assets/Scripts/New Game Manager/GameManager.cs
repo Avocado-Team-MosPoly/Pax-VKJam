@@ -1,3 +1,4 @@
+using CartoonFX;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
