@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
 using System;
+using CartoonFX;
 
 public class SceneObjectsManager : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class SceneObjectsManager : MonoBehaviour
     [SerializeField] private GameObject tokensSummary;
     [SerializeField] private GameObject gameSummary;
 
+    [Header("Fire")]
+    [SerializeField] private CFXR_Effect fireParticle;
+
     private bool isFirstSetted = false;
 
     private void Awake()
@@ -32,6 +36,7 @@ public class SceneObjectsManager : MonoBehaviour
 
         GameManager.Instance.RoleManager.OnPainterSetted.AddListener(OnPainterSetted);
         GameManager.Instance.RoleManager.OnGuesserSetted.AddListener(OnGuesserSetted);
+        GameManager.Instance.OnIngredientSwitchedOnClient.AddListener(OnIngredientSwitched);
 
         if (!NetworkManager.Singleton.IsHost)
         {
@@ -41,7 +46,6 @@ public class SceneObjectsManager : MonoBehaviour
                     obj.SetActive(false);
             });
         }
-        //Card.OnChoose.AddListener((Card card) => moveCamera.transform.parent.GetComponent<Animator>().Play("CameraAnimBack"));
     }
 
     private void OnRoleSetted()
@@ -93,6 +97,12 @@ public class SceneObjectsManager : MonoBehaviour
         GameManager.Instance.CardManager.enabled = false;
 
         isFirstSetted = true;
+    }
+
+    private void OnIngredientSwitched(int ingredientIndex)
+    {
+        if (GameManager.Instance.Paint.gameObject.activeInHierarchy)
+            fireParticle.gameObject.SetActive(true);
     }
 
     private void OnGuessMonsterStageActivated(bool isPainter)
