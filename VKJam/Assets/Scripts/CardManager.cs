@@ -41,23 +41,18 @@ public class CardManager : MonoBehaviour
 
     private void Awake()
     {
-
+        StartCoroutine(start());
         //Array.Clear(cardSOArray, 0, cardSOCount);
 
         Card.OnChoose.AddListener(ChooseCardInstance);
         Card.OnSelect.AddListener(DisableInteractable);
 
     }
-    private void Start()
-    {
-        StartCoroutine(start());
-    }
 
     private IEnumerator start()
     {
         yield return new WaitForSeconds(0.1f);
         TakePack();
-        yield return new WaitForSeconds(0.3f);
         foreach (CardDifficulty cardDifficulty in Enum.GetValues(typeof(CardDifficulty)))
             cardSODictionary.Add(cardDifficulty, new List<CardSO>());
         foreach (CardSO cardSO in cardSOArray)
