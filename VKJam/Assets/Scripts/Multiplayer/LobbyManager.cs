@@ -411,16 +411,9 @@ public class LobbyManager : MonoBehaviour
                     field: QueryFilter.FieldOptions.S1,
                     op: QueryFilter.OpOptions.EQ,
                     value: IsTeamMode
-                //),
-                //new QueryFilter
-                //(
-                //    field: QueryFilter.FieldOptions.MaxPlayers,
-                //    op: QueryFilter.OpOptions.EQ,
-                //    value: PlayerNumber.ToString()
                 )
             };
 
-            // Order by newest lobbies first
             options.Order = new List<QueryOrder>()
             {
                 new QueryOrder

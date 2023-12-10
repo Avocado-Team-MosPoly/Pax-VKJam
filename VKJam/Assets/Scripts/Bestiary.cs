@@ -29,6 +29,7 @@ public class Bestiary : MonoBehaviour
 
     [SerializeField] private GameObject catalougeCanvas;
     [SerializeField] private GameObject templateCanvas;
+
     [SerializeField] private PackCardSO packCardSO;
 
     private int currentMonster;
@@ -70,9 +71,9 @@ public class Bestiary : MonoBehaviour
     {
         Monsters.Clear();
 
-        for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+        for (int i = 0; i < PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId].Count; i++)
         {
-            if (packCardSO.CardInPack[i].CardIsInOwn == true)
+            if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i] == true)
             {
                 Monsters.Add(packCardSO.CardInPack[i].Card);
             }
@@ -157,4 +158,5 @@ public class Bestiary : MonoBehaviour
     {
         OnBestiaryClosed?.Invoke();
     }
+
 }

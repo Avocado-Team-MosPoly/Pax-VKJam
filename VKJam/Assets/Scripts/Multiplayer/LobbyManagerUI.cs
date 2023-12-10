@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +21,12 @@ public class LobbyManagerUI : NetworkBehaviour
 
     [SerializeField] private string notReadyText;
     [SerializeField] private string readyText;
+    [SerializeField] private PackCardSO packCardSO;
+
+    private List<ulong> playerSendAllDataId=new();
+    private List<ulong> playerGetAllDataId = new();
+    private ulong sendedPlayerId = new();
+
 
     //[SerializeField] private RectTransform playerListContainer;
     //[SerializeField] private GameObject playerInfoPrefab;
@@ -150,10 +158,151 @@ public class LobbyManagerUI : NetworkBehaviour
             }
             
             if (allReady && howManyPlayerReady >= 2)
-            {
-                LobbyManager.Instance.StopHeartBeatPing();
-                SceneLoader.ServerLoad("Map_New");
+            {                
+                SendPack();
             }
+        }
+    }
+
+    private void SendPack()
+    {
+        List<bool> bools = new List<bool>();
+        for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+        {
+            bools.Add(packCardSO.CardInPack[i].CardIsInOwn);            
+        }
+        Debug.LogError(PackManager.Instance);
+        PackManager.Instance.PlayersOwnedCard.Clear();       
+        PackManager.Instance.PlayersOwnedCard.Add(NetworkManager.LocalClientId, bools);
+
+        playerSendAllDataId.Add(NetworkManager.LocalClientId);
+        playerGetAllDataId.Add(NetworkManager.LocalClientId);
+        Debug.LogError("SendPack");
+        SendToHostServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SendToHostServerRpc()
+    {
+        SendToHostClientRpc();
+    }
+
+    [ClientRpc]
+    private void SendToHostClientRpc()
+    {
+        StartCoroutine(SendToHost());
+    }
+    private IEnumerator SendToHost()
+    {
+        List<bool> bools = new List<bool>();
+        for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+        {
+            bools.Add(packCardSO.CardInPack[i].CardIsInOwn);
+        }
+        PackManager.Instance.PlayersOwnedCard.Clear();
+        PackManager.Instance.PlayersOwnedCard.Add(NetworkManager.LocalClientId, bools);
+
+        Debug.LogError("SendToHostClientRpc");
+
+        for (int i = 0; i < bools.Count; i++)
+        {
+            GetPackFromPlayersServerRpc(bools[i], new ServerRpcParams());
+            yield return new WaitForSeconds(0.2f);
+        }
+        SendAllServerRpc(new ServerRpcParams());
+    }
+    [ServerRpc(RequireOwnership = false)]
+    private void GetPackFromPlayersServerRpc(bool SendBool, ServerRpcParams serverRpcParams)
+    {
+        if (!PackManager.Instance.PlayersOwnedCard.ContainsKey(serverRpcParams.Receive.SenderClientId))
+        {
+            PackManager.Instance.PlayersOwnedCard.Add(serverRpcParams.Receive.SenderClientId, new List<bool>());
+        }
+        PackManager.Instance.PlayersOwnedCard[serverRpcParams.Receive.SenderClientId].Add(SendBool);        
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SendAllServerRpc(ServerRpcParams serverRpcParams)
+    {
+        Debug.LogError("SendAll");
+        playerSendAllDataId.Add(serverRpcParams.Receive.SenderClientId);
+        if (playerSendAllDataId.Count == allPlayerReady.Count)
+        {
+            SendPackToPlayersServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SendPackToPlayersServerRpc()
+    {
+        StartCoroutine(SendPackToPlayers());
+    }
+    private IEnumerator SendPackToPlayers()
+    {
+        Debug.LogError("SendPackToPlayersServerRpc");
+        for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
+        {
+            SetPlayerIdOfSendPackClientRpc(playerSendAllDataId[i]);
+            yield return new WaitForSeconds(0.1f);
+            for (int io = 0; io < PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]].Count; io++)
+            {
+                GetPackFromHostClientRpc(PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]][io]);
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void SetPlayerIdOfSendPackClientRpc(ulong Sendid)
+    {
+        sendedPlayerId = Sendid;
+        if (!NetworkManager.Singleton.IsServer)
+        {
+            if (sendedPlayerId != NetworkManager.LocalClientId)
+            {
+                PackManager.Instance.PlayersOwnedCard.Add(sendedPlayerId, new List<bool>());
+            }
+        }
+
+    }
+
+    [ClientRpc]
+    private void GetPackFromHostClientRpc(bool SendBool)
+    {
+        if (!NetworkManager.Singleton.IsServer)
+        {
+            if (sendedPlayerId != NetworkManager.LocalClientId)
+            {
+                PackManager.Instance.PlayersOwnedCard[sendedPlayerId].Add(SendBool);
+               
+                if (PackManager.Instance.PlayersOwnedCard.Count == PlayersId.Count)
+                {
+                    bool allGet = true;
+                    for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
+                    {
+                        if (PackManager.Instance.PlayersOwnedCard[PlayersId[i]].Count != PackManager.Instance.PlayersOwnedCard[NetworkManager.LocalClientId].Count)
+                        {
+                            allGet = false;
+                        }
+                    }
+                    if (allGet)
+                    {
+                        GetAllServerRpc(new ServerRpcParams());
+                    }
+                }                   
+            }
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void GetAllServerRpc(ServerRpcParams serverRpcParams)
+    {
+        Debug.LogError("GetAllServerRpc");
+        playerGetAllDataId.Add(serverRpcParams.Receive.SenderClientId);
+        if (playerGetAllDataId.Count == allPlayerReady.Count)
+        {
+            LobbyManager.Instance.StopHeartBeatPing();
+            SceneLoader.ServerLoad("Map_New");
         }
     }
 
