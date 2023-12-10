@@ -13,27 +13,41 @@ public class Product : MonoBehaviour
     public WareData Data;
     [SerializeField] private Button BT;
     public bool ChooseMode;
+
     public void SetData(WareData NewData)
     {
+        if (Data.Data.Type == ItemType.AvatarFrame)
+        {
+            if (NewData.Data.Type != ItemType.AvatarFrame)
+                Picture.transform.localScale *= 1.4f;
+        }
+        else if (NewData.Data.Type == ItemType.AvatarFrame)
+        {
+            Picture.transform.localScale /= 1.4f;
+        }
+
         Data = NewData;
         Refresh();
     }
     private void Refresh()
     {
-        if (Data.Data.Type == ItemType.AvatarFrame) Picture.gameObject.transform.localScale *= 1.4f;
         Picture.sprite = Data.icon;
         //transform.localScale *= (int)ItemScale/100;
         //SystemName = Data.productName;
         Name.text = Data.Data.productName;
         Price.text = !ChooseMode ? "X" + Data.Data.productPrice.ToString() : "";
-        if (!ChooseMode) DisplayTypeCurrency.sprite = !Data.Data.IsDonateVault ? DonatCurrency : InGameCurrency;
-        else DisplayTypeCurrency.gameObject.SetActive(false);
+
+        if (!ChooseMode)
+            DisplayTypeCurrency.sprite = !Data.Data.IsDonateVault ? DonatCurrency : InGameCurrency;
+        else
+            DisplayTypeCurrency.gameObject.SetActive(false);
+
         BT.interactable = !Data.Data.InOwn || ChooseMode;
     }
     public void RemoveFromWarehouse()
     {
         WarehouseScript._executor.RemoveProduct(this);
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 
     public void Interact()
@@ -57,8 +71,7 @@ public class Product : MonoBehaviour
                 RemoveFromWarehouse();
             }
         }
-                
+
         else ProfileCustom.ProductChoosen(this);
     }
-
 }

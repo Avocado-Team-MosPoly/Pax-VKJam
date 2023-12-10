@@ -94,9 +94,9 @@ public class PlayersDataManager : NetworkBehaviour
     /// <returns> First is Avatar index, second is Frame </returns>
     private (byte, byte) GetAvatarAndFrameIndexes()
     {
-        (byte, byte) result = (1, 0);
+        (byte, byte) result = (7, 0);
 
-        //if (CustomController._executor == null)
+        if (CustomController._executor == null)
             return result;
 
         //Logger.Instance.LogError("");

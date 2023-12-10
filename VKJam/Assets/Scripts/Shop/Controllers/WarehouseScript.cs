@@ -1,55 +1,131 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class WarehouseScript : TaskExecutor<WarehouseScript>
 {
-	[SerializeField] private List<Product> Products = new();
-    
+	[SerializeField] private List<Product> ProductInstances = new();
+
     [SerializeField] private CurrencyCatcher Display;
     [SerializeField]
-    private GameObject Template;
+    private Product Template;
     [SerializeField]
-    private GameObject WhereInst;
+    private Transform WhereInst;
     [SerializeField]
-    private CustomController Data;
+    private CustomController customController;
+    [SerializeField, Range(1, 10)]
+    private int defaultSection = 1;
 
+    [SerializeField] private Button leftButton;
+    [SerializeField] private Button rightButton;
+
+    private const int maxInstancesCount = 8;
+
+    private int currentSection = -1;
+    private int currentPage = 0;
 
     private void Awake()
     {
-        Data = CustomController._executor;
+        customController = CustomController._executor;
         Denote();
+
+        SpawnProducts();
+        ChangeSection(defaultSection);
+
+        leftButton.onClick.AddListener(PrevPage);
+        rightButton.onClick.AddListener(NextPage);
     }
 
-    public void ChangeSection(int ToWhat)
+    private void SpawnProducts()
     {
-        ChangeSection((ShopFilters)ToWhat);
+        for (int i = 0; i < maxInstancesCount; i++)
+            ProductInstances.Add(Instantiate(Template, WhereInst));
     }
-    public void ChangeSection(ShopFilters ToWhat)
+
+    public void ChangeSection(int section)
     {
-        GameObject temp;
-        Drop();
-        foreach (var current in Data.Categories[(int)ToWhat].products)
+        if (section < 1 && section > 10)
+            return;
+
+        currentSection = section;
+        currentPage = 0;
+        int sectionPagesCount = (customController.Categories[currentSection].products.Count + maxInstancesCount - 1) / maxInstancesCount;
+
+        leftButton.gameObject.SetActive(false);
+        rightButton.gameObject.SetActive(currentPage <= sectionPagesCount);
+
+        RefreshView();
+    }
+
+    public void NextPage()
+    {
+        currentPage++;
+        int sectionPagesCount = (customController.Categories[currentSection].products.Count + maxInstancesCount - 1) / maxInstancesCount;
+        leftButton.gameObject.SetActive(true);
+        rightButton.gameObject.SetActive(true);
+
+        if (currentPage >= sectionPagesCount)
         {
-            if (current.Data.InOwn || current.Data.productName == "") continue;
-            temp = Instantiate(Template, WhereInst.transform);
-            Product InWork = temp.GetComponent<Product>();
-            InWork.ChooseMode = false;
-            Products.Add(InWork);
-            InWork.SetData(current);
+            currentPage = Mathf.Max(0, sectionPagesCount - 1);
+        }
+        else if (currentPage == sectionPagesCount - 1)
+            rightButton.gameObject.SetActive(false);
+
+        RefreshView();
+    }
+
+    public void PrevPage()
+    {
+        currentPage--;
+        leftButton.gameObject.SetActive(true);
+        rightButton.gameObject.SetActive(true);
+
+        if (currentPage <= 0)
+        {
+            currentPage = 0;
+            leftButton.gameObject.SetActive(false);
+        }
+
+        RefreshView();
+    }
+    public void RefreshView()
+    {
+        int startProductIndex = currentPage * maxInstancesCount;
+
+        if (startProductIndex >= customController.Categories[currentSection].products.Count)
+        {
+            if (maxInstancesCount > customController.Categories[currentSection].products.Count)
+                startProductIndex = 0;
+        }
+
+        for (int instanceIndex = 0, productIndex = startProductIndex; instanceIndex < maxInstancesCount; instanceIndex++, productIndex++)
+        {
+            if (productIndex >= customController.Categories[currentSection].products.Count)
+            {
+                ProductInstances[instanceIndex].gameObject.SetActive(false);
+                continue;
+            }
+
+            ProductInstances[instanceIndex].ChooseMode = false;
+            ProductInstances[instanceIndex].SetData(customController.Categories[currentSection].products[productIndex]);
+            ProductInstances[instanceIndex].gameObject.SetActive(true);
         }
     }
 
     public void RemoveProduct(Product productToRemove)
     {
-        Products.Remove(productToRemove);
+        productToRemove.gameObject.SetActive(false);
+        //ProductInstances.Remove(productToRemove);
     }
-    public void Drop()
+
+    public void DestroyProductInstances()
     {
-        foreach (var current in Products)
+        foreach (var current in ProductInstances)
         {
             Destroy(current.gameObject);
         }
-        Products.Clear();
+
+        ProductInstances.Clear();
     }
-  
 }

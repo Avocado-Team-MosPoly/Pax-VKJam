@@ -207,7 +207,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             }
             else
             {
-                Debug.Log("Server response: " + www.downloadHandler.text);
+                //Debug.Log("Server response: " + www.downloadHandler.text);
                 onComplete?.Invoke(www.downloadHandler.text == "true");
             }
         }
