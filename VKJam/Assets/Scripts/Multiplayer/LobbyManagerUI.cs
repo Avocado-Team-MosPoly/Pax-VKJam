@@ -178,12 +178,6 @@ public class LobbyManagerUI : NetworkBehaviour
         playerSendAllDataId.Add(NetworkManager.LocalClientId);
         playerGetAllDataId.Add(NetworkManager.LocalClientId);
         Debug.LogError("SendPack");
-        SendToHostServerRpc();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void SendToHostServerRpc()
-    {
         SendToHostClientRpc();
     }
 
@@ -194,22 +188,26 @@ public class LobbyManagerUI : NetworkBehaviour
     }
     private IEnumerator SendToHost()
     {
-        List<bool> bools = new List<bool>();
-        for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+        if (!IsServer)
         {
-            bools.Add(packCardSO.CardInPack[i].CardIsInOwn);
-        }
-        PackManager.Instance.PlayersOwnedCard.Clear();
-        PackManager.Instance.PlayersOwnedCard.Add(NetworkManager.LocalClientId, bools);
+            List<bool> bools = new List<bool>();
+            for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+            {
+                bools.Add(packCardSO.CardInPack[i].CardIsInOwn);
+            }
+            PackManager.Instance.PlayersOwnedCard.Clear();
+            PackManager.Instance.PlayersOwnedCard.Add(NetworkManager.LocalClientId, bools);
 
-        Debug.LogError("SendToHostClientRpc");
+            Debug.LogError("SendToHostClientRpc");
 
-        for (int i = 0; i < bools.Count; i++)
-        {
-            GetPackFromPlayersServerRpc(bools[i], new ServerRpcParams());
-            yield return new WaitForSeconds(0.2f);
+            for (int i = 0; i < bools.Count; i++)
+            {
+                GetPackFromPlayersServerRpc(bools[i], new ServerRpcParams());
+                yield return new WaitForSeconds(0.2f);
+            }
+            SendAllServerRpc(new ServerRpcParams());
         }
-        SendAllServerRpc(new ServerRpcParams());
+
     }
     [ServerRpc(RequireOwnership = false)]
     private void GetPackFromPlayersServerRpc(bool SendBool, ServerRpcParams serverRpcParams)
@@ -256,7 +254,7 @@ public class LobbyManagerUI : NetworkBehaviour
     private void SetPlayerIdOfSendPackClientRpc(ulong Sendid)
     {
         sendedPlayerId = Sendid;
-        if (!NetworkManager.Singleton.IsServer)
+        if (!IsServer)
         {
             if (sendedPlayerId != NetworkManager.LocalClientId)
             {
@@ -270,7 +268,7 @@ public class LobbyManagerUI : NetworkBehaviour
     private void GetPackFromHostClientRpc(bool SendBool)
     {
         Debug.LogError("GetPackFromHostClientRpc");
-        if (!NetworkManager.Singleton.IsServer)
+        if (!IsServer)
         {
             if (sendedPlayerId != NetworkManager.LocalClientId)
             {
