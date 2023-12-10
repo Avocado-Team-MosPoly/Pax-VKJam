@@ -67,9 +67,9 @@ public class BestiaryIngredients : MonoBehaviour
         IngredientList.Clear();
         //IngredientName.Clear();
 
-        for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+        for (int i = 0; i < PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId].Count; i++)
         {
-            if(packCardSO.CardInPack[i].CardIsInOwn == true)
+            if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i] == true)
             {
                 foreach (Ingredient ingridient in packCardSO.CardInPack[i].Card.IngredientsSO)
                 {
