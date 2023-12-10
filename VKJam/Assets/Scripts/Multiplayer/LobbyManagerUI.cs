@@ -269,6 +269,7 @@ public class LobbyManagerUI : NetworkBehaviour
     [ClientRpc]
     private void GetPackFromHostClientRpc(bool SendBool)
     {
+        Debug.LogError("GetPackFromHostClientRpc");
         if (!NetworkManager.Singleton.IsServer)
         {
             if (sendedPlayerId != NetworkManager.LocalClientId)
