@@ -57,6 +57,7 @@ public class CardManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         TakePack();
+        yield return new WaitForSeconds(0.3f);
         foreach (CardDifficulty cardDifficulty in Enum.GetValues(typeof(CardDifficulty)))
             cardSODictionary.Add(cardDifficulty, new List<CardSO>());
         foreach (CardSO cardSO in cardSOArray)
