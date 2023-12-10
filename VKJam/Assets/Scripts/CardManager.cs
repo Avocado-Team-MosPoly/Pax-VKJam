@@ -46,7 +46,8 @@ public class CardManager : MonoBehaviour
 
         Card.OnChoose.AddListener(ChooseCardInstance);
         Card.OnSelect.AddListener(DisableInteractable);
-
+        GameManager.Instance.RoleManager.OnGuesserSetted.AddListener(TakePack);
+        GameManager.Instance.RoleManager.OnPainterSetted.AddListener(TakePack);
     }
 
     private IEnumerator start()
