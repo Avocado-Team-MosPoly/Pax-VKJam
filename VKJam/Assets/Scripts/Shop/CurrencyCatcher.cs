@@ -23,7 +23,7 @@ public class CurrencyCatcher : TaskExecutor<CurrencyCatcher>
             if (Php_Connect.Current != null) Data = Php_Connect.Current;
             else  Data = Php_Connect._executor.current;
         }
-        Debug.Log(Data);
+        //Debug.Log(Data);
         if(Donat_General != null) Donat_General.text = Data.DCurrency.ToString();
         if (Donat_Card != null) Donat_Card.text = Data.DCurrency.ToString();
         if (IG != null) IG.text = Data.IGCurrency.ToString();

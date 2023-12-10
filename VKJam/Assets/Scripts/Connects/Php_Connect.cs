@@ -1,5 +1,6 @@
 using UnityEngine.Networking;
 using UnityEngine;
+using System.Collections;
 [System.Serializable] 
 public class Currency
 {
@@ -149,9 +150,67 @@ public class Php_Connect : TaskExecutor<Php_Connect>
     public static string Request_UploadData(Design Upload)
     {
         string JSON = JsonUtility.ToJson(Upload);
-        Debug.Log(JSON);
-        return "";
-        
+        if (!PHPisOnline) return "";
+        WWWForm form = new WWWForm();
+        form.AddField("JSON", JSON);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/UploadData.php", form))
+        {
+            www.certificateHandler = new AcceptAllCertificates();
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                return www.downloadHandler.text;
+            }
+        }
+
+    }
+    public static IEnumerator Request_CheckOwningDesign(int idDesign, System.Action<bool> onComplete)
+    {
+        if (idDesign == 0)
+        {
+            onComplete?.Invoke(true);
+            yield break;
+        }
+        if (!PHPisOnline)
+        {
+            onComplete?.Invoke(false);
+            yield break;
+        }
+
+        WWWForm form = new WWWForm();
+        form.AddField("idDesign", idDesign);
+        form.AddField("Nickname", Nickname);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/CheckOwningDesign.php", form))
+        {
+            www.certificateHandler = new AcceptAllCertificates();
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                onComplete?.Invoke(false);
+            }
+            else if (www.downloadHandler.text == "error - 404")
+            {
+                ErrorProcessor("404");
+                onComplete?.Invoke(false);
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                onComplete?.Invoke(www.downloadHandler.text == "true");
+            }
+        }
     }
     public static bool Request_CheckOwningDesign(int idDesign)
     {
@@ -231,6 +290,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             }
             else
             {
+                Catcher_RandomItem._executor.UIWin(RandomType.Token,Count);
                 Debug.Log("Server response: " + www.downloadHandler.text);
                 return www.downloadHandler.text;
             }
@@ -269,6 +329,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         if (DesignID == 0)
         {
             ID = randomBase.Interact();
+            Debug.Log(ID);
             if (ID >= -5 && ID < 0) return Request_TokenWin(RandomToken(ID));
             else switch (ID)
                 {
@@ -289,17 +350,68 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         switch (id)
         {
             case -1:
-                return Random.Range(1, 50);
+                return UnityEngine.Random.Range(1, 50);
             case -2:
-                return Random.Range(51, 100);
+                return UnityEngine.Random.Range(51, 100);
             case -3:
-                return Random.Range(101, 200);
+                return UnityEngine.Random.Range(101, 200);
             case -4:
-                return Random.Range(201, 250);
+                return UnityEngine.Random.Range(201, 250);
             case -5:
-                return Random.Range(251, 500);
+                return UnityEngine.Random.Range(251, 500);
             default:
                 return 0;
+        }
+    }
+    private static string Request_CardWin(bool isShard)
+    {
+        if (!PHPisOnline) return "";
+        WWWForm form = new WWWForm();
+        form.AddField("Nickname", Nickname);
+        form.AddField("IsShard", isShard.ToString());
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/CardWin.php", form))
+        {
+            www.certificateHandler = new AcceptAllCertificates();
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+                Catcher_RandomItem._executor.UIWin(RandomType.Card, int.Parse(www.downloadHandler.text));
+                return www.downloadHandler.text;
+            }
+        }
+    }
+    private static string Request_DesignWin()
+    {
+        //if (!PHPisOnline) return "";
+        WWWForm form = new WWWForm();
+        form.AddField("Nickname", Nickname);
+        using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignWin.php", form))
+        {
+            www.certificateHandler = new AcceptAllCertificates();
+            // «апрос выполн€етс€ дожида€сь его завершени€
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ErrorProcessor(www.error);
+                return www.error;
+            }
+            else
+            {
+                Debug.Log("Server response: " + www.downloadHandler.text);
+
+                DesignSelect temp = JsonUtility.FromJson<DesignSelect>(www.downloadHandler.text);
+                Catcher_RandomItem._executor.GenerateWin(temp);
+                return www.downloadHandler.text;
+            }
         }
     }
     private static string Response_Gift(int DesignID, int TargetNickname)
@@ -403,55 +515,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             }
         }
     }
-    public static string Request_CardWin(bool isShard)
-    {
-        //if (!PHPisOnline) return "";
-        WWWForm form = new WWWForm();
-        Debug.Log(link + "/CardWin.php");
-        form.AddField("Nickname", Nickname);
-        form.AddField("IsShard", isShard.ToString());
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/CardWin.php", form))
-        {
-            www.certificateHandler = new AcceptAllCertificates();
-            // «апрос выполн€етс€ дожида€сь его завершени€
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                ErrorProcessor(www.error);
-                return www.error;
-            }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return www.downloadHandler.text;
-            }
-        }
-    }
-    public static string Request_DesignWin()
-    {
-        //if (!PHPisOnline) return "";
-        WWWForm form = new WWWForm();
-        Debug.Log(link + "/DesignWin.php");
-        form.AddField("Nickname", Nickname);
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignWin.php", form))
-        {
-            www.certificateHandler = new AcceptAllCertificates();
-            // «апрос выполн€етс€ дожида€сь его завершени€
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                ErrorProcessor(www.error);
-                return www.error;
-            }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return www.downloadHandler.text;
-            }
-        }
-    }
+   
     public static int Request_DesignCount()
     {
         if (!PHPisOnline) return -1;

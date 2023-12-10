@@ -8,13 +8,14 @@ public class CustomController : TaskExecutor<CustomController>
     public WareData[] Custom = new WareData[System.Enum.GetNames(typeof(ItemType)).Length];
     public WareData[] Standart = new WareData[System.Enum.GetNames(typeof(ItemType)).Length];
 
-    private void Start()
+    private System.Collections.IEnumerator Start()
     {
+        yield return new WaitForSeconds(0.1f);
         foreach (var section in Categories)
         {
             foreach (var ware in section.products)
             {
-                ware.CheckOwning();
+                StartCoroutine(Php_Connect.Request_CheckOwningDesign(ware.Data.productCode, ware.OnCheckOwningDesignComplete));
             }
         }
         Load();
@@ -27,6 +28,7 @@ public class CustomController : TaskExecutor<CustomController>
         {
             foreach (var ware in section.products)
             {
+                if (ware.Data.productCode == 0) continue;
                 Php_Connect.Request_UploadData(ware);
             }
         }
@@ -43,6 +45,18 @@ public class CustomController : TaskExecutor<CustomController>
             if (current.Data.productCode == id && current.Data.InOwn) return current;
         }
         return Standart[(int)Type];
+    }
+    public WareData Search(DesignSelect Sel)
+    {
+        foreach (var current in Categories[(int)Categorize((ItemType)Sel.type)].products)
+        {
+            if (current.Data.productCode == Sel.design)
+            {
+                current.Data.InOwn = true;
+                return current;
+            }
+        }
+        return null;
     }
     public void Save(WareData New)
     {

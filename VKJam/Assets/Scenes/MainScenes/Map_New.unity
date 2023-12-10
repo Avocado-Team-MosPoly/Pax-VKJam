@@ -3010,6 +3010,7 @@ MonoBehaviour:
   Sync: {fileID: 0}
   ReverseSync: {fileID: 0}
   SwitchTargetMaterial: {fileID: 2100000, guid: b5b372cee43eb9045a0197050873a219, type: 2}
+  FromPrefab: 0
 --- !u!1 &315087638
 GameObject:
   m_ObjectHideFlags: 0
@@ -18958,6 +18959,7 @@ GameObject:
   - component: {fileID: 1648163574}
   - component: {fileID: 1648163573}
   - component: {fileID: 1648163577}
+  - component: {fileID: 1648163578}
   m_Layer: 5
   m_Name: ReceptHand
   m_TagString: Untagged
@@ -19057,6 +19059,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ingredientText: {fileID: 0}
+--- !u!114 &1648163578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1648163572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3884bab3cb82d9c4eb10aa420ecfbc11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 11
+  SwitchTarget: {fileID: 0}
+  Sync: {fileID: 0}
+  ReverseSync: {fileID: 0}
+  SwitchTargetUI: {fileID: 1648163574}
 --- !u!1001 &1648445832
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29227,6 +29246,7 @@ MonoBehaviour:
   Sync: {fileID: 0}
   ReverseSync: {fileID: 0}
   SwitchTargetMaterial: {fileID: 0}
+  FromPrefab: 0
 --- !u!1 &8104898351161327361
 GameObject:
   m_ObjectHideFlags: 0

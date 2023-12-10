@@ -10,6 +10,13 @@ public struct Design {
     public bool InOwn;
     public ItemType Type;
 }
+[Serializable]
+public struct DesignSelect
+{
+    public string text;
+    public int design;
+    public int type;
+}
 
 [Serializable]
 public class WareData
@@ -27,9 +34,9 @@ public class WareData
         Data = Php_Connect.Request_DataAboutDesign(Data.productCode);
         icon = Base64ToSprite(Data.icon);
     }
-    public void CheckOwning()
+    public void OnCheckOwningDesignComplete(bool result)
     {
-        Data.InOwn = Php_Connect.Request_CheckOwningDesign(Data.productCode);
+        Data.InOwn = result;
     }
     protected static Sprite Base64ToSprite(string base64)
     {

@@ -30,7 +30,14 @@ public class PackCardSO : ScriptableObject
          CardInPack = CardInPack.OrderBy(cardSystem => cardSystem.Card.id).ToArray();
          Debug.Log(temp);
      }
-
+    public CardSystem Search(int Target)
+    {
+        foreach(var cur in CardInPack)
+        {
+            if (cur.CardDBIndex == Target) return cur;
+        }
+        return null;
+    }
 
     /*public PackCardSO PackDataOwnering()
     {

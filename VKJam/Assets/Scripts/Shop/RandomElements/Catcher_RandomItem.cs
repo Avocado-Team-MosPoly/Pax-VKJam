@@ -2,15 +2,18 @@ using UnityEngine;
 
 public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
 {
-    [SerializeField] private static TMPro.TMP_Text NameOutput;
-    [SerializeField] private static GameObject Window;
     [SerializeField] private CurrencyCatcher display;
     [SerializeField] private static RandomItem DroppedItem;
     [SerializeField] private Animator Hand;
     [SerializeField] private GameObject[] WinObjects;
-
+    [SerializeField] private GameObject Current;
+    [Header("Display UI")]
+    [SerializeField] private GameObject UI;
+    [SerializeField] private Displayer Token;
+    [SerializeField] private Displayer Custom;
+    [SerializeField] private Displayer Card;
     public static int Result;
-    
+    [SerializeField] private PackCardSO Pack;
 
     private void Awake()
     {
@@ -30,8 +33,6 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
         DroppedItem = Data;
         _executor.OnDroppingWhatever();
         Result = Data.DesignID;
-        if(Window != null) Window.SetActive(true);
-        if (NameOutput != null) NameOutput.text = Data.SystemName;
     }
     public void Gifter()
     {
@@ -43,23 +44,50 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
                 .Interact();
         display.Refresh();
     }
-    private void GenerateWin()
+    public void GenerateWin(DesignSelect Sel)
     {
+        if (Current != null) Destroy(Current);
+        WareData temp = CustomController._executor.Search(Sel);
+        if (Sel.design <= 10 && Sel.design >= 7) ActiveWinObject(3);
+        else Current = Instantiate(temp.Model, WinObjects[4].transform);
+        UIWin(temp);
+    }
+    public void UIWin(WareData data)
+    {
+        UI.SetActive(true);
+            Custom.SetData(data);
+    }
 
+    public void UIWin(RandomType Type, int data)
+    {
+        UI.SetActive(true);
+        if (Type == RandomType.Token)
+        {
+            Token.gameObject.SetActive(true);
+            Token.SetData(data);
+        }
+        else if (Type == RandomType.Card)
+        {
+            Card.gameObject.SetActive(true);
+            Card.SetData(Pack.SearchCardSystemById(data));
+        }
     }
     private void ActiveWinObject(int id)
     {
-        for(int i = 0; i < WinObjects.Length;++i)
+        if (Current != null) Destroy(Current);
+        for (int i = 0; i < Mathf.Clamp(WinObjects.Length, 0, 3);++i)
         {
             if (id == i) WinObjects[i].SetActive(true);
             else WinObjects[i].SetActive(false);
         }
+
     }
     private void OnDroppingWhatever()
     {
         switch (DroppedItem.Type)
         {
             case RandomType.Nothing:
+                ActiveWinObject(-1);
                 Hand.Play("WishFiga");
                 break;
             case RandomType.Token:
@@ -75,7 +103,7 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
                 Hand.Play("Wish");
                 break;
             case RandomType.Custom:
-                ActiveWinObject(3);
+                ActiveWinObject(4);
                 Hand.Play("Wish");
                 break;
             default:
