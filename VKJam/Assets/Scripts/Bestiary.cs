@@ -47,6 +47,7 @@ public class Bestiary : MonoBehaviour
         nextMonsterButton.onClick.AddListener(NextMoster);
         GameManager.Instance.OnGuessMonsterStageActivatedOnClient.AddListener(MonsterGuess);
         GameManager.Instance.OnIngredientSwitchedOnClient.AddListener(IngredientGuess);
+        IngredientGuess(0);
 
         int dangerousMonstersCount = 0;
         int murderousMonstersCount = 0;
