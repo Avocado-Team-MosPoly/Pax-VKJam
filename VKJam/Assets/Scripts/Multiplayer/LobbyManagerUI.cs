@@ -279,7 +279,7 @@ public class LobbyManagerUI : NetworkBehaviour
                     bool allGet = true;
                     for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
                     {
-                        if (PackManager.Instance.PlayersOwnedCard[PlayersId[i]].Count == PackManager.Instance.PlayersOwnedCard[NetworkManager.LocalClientId].Count)
+                        if (PackManager.Instance.PlayersOwnedCard[PlayersId[i]].Count != PackManager.Instance.PlayersOwnedCard[NetworkManager.LocalClientId].Count)
                         {
                             allGet = false;
                         }
