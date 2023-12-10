@@ -278,13 +278,11 @@ public class LobbyManagerUI : NetworkBehaviour
                
                 if (PackManager.Instance.PlayersOwnedCard.Count == PlayersId.Count)
                 {
-                    Debug.LogError("1");
                     bool allGet = true;
                     for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
                     {
-                        if (PackManager.Instance.PlayersOwnedCard[PlayersId[i]].Count != PackManager.Instance.PlayersOwnedCard[NetworkManager.LocalClientId].Count)
+                        if (PackManager.Instance.PlayersOwnedCard[PlayersId[i]].Count == PackManager.Instance.PlayersOwnedCard[NetworkManager.LocalClientId].Count)
                         {
-                            Debug.LogError("0");
                             allGet = false;
                         }
                     }
@@ -302,6 +300,11 @@ public class LobbyManagerUI : NetworkBehaviour
     private void GetAllServerRpc(ServerRpcParams serverRpcParams)
     {
         Debug.LogError("GetAllServerRpc");
+        Debug.LogError("PlayersOwnedCard.Count =" +PackManager.Instance.PlayersOwnedCard.Count);
+        for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
+        {
+            Debug.LogError("PlayersOwnedCard[PlayersId["+i+"]].Count =" + PackManager.Instance.PlayersOwnedCard[PlayersId[i]].Count);
+        }
         playerGetAllDataId.Add(serverRpcParams.Receive.SenderClientId);
         if (playerGetAllDataId.Count == allPlayerReady.Count)
         {
