@@ -2,6 +2,7 @@ using CartoonFX;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using System.Collections;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -89,9 +90,8 @@ public class GameManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        bestiary.TakePack();
-        bestiaryIngredients.TakePack();
 
+        StartCoroutine(TakePack());
         timer.Init(gameConfig);
 
         if (LobbyManager.Instance.CurrentLobby != null)
@@ -156,6 +156,12 @@ public class GameManager : NetworkBehaviour
         {
             nextRoundButton.gameObject.SetActive(false);
         }
+    }
+    private IEnumerator TakePack()
+    {
+        yield return new WaitForSeconds(0.1f);
+        bestiary.TakePack();
+        bestiaryIngredients.TakePack();
     }
 
     private void SetNRBRoles()
