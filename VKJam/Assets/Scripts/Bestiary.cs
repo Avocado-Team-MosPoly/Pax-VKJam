@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using Unity.VisualScripting;
+using System;
 
 public class Bestiary : MonoBehaviour
 {
@@ -31,6 +32,11 @@ public class Bestiary : MonoBehaviour
     [SerializeField] private GameObject catalougeCanvas;
     [SerializeField] private GameObject templateCanvas;
 
+    [SerializeField] private GameObject MonsterBookmark; 
+    [SerializeField] private GameObject IngridientsBookmark;
+    [SerializeField] private GameObject MonstersCatalogue;
+    [SerializeField] private GameObject IngridientsCatalouge;
+
     [SerializeField] private PackCardSO packCardSO;
 
     private int currentMonster;
@@ -39,6 +45,8 @@ public class Bestiary : MonoBehaviour
     {
         previousMonsterButton.onClick.AddListener(PreviousMoster);
         nextMonsterButton.onClick.AddListener(NextMoster);
+        GameManager.Instance.OnGuessMonsterStageActivatedOnClient.AddListener(MonsterGuess);
+        GameManager.Instance.OnIngredientSwitchedOnClient.AddListener(IngredientGuess);
 
         int dangerousMonstersCount = 0;
         int murderousMonstersCount = 0;
@@ -76,6 +84,21 @@ public class Bestiary : MonoBehaviour
         Debug.Log($"[Bestiary] Loaded {dangerousMonstersCount + murderousMonstersCount} monsters");
 
         Initialize();
+    }
+
+    private void IngredientGuess(int arg0)
+    {
+        MonsterBookmark.SetActive(false);
+        IngridientsBookmark.SetActive(true);
+        MonstersCatalogue.SetActive(false);
+        IngridientsCatalouge.SetActive(true);
+    }
+    private void MonsterGuess(bool arg0)
+    {
+        MonsterBookmark.SetActive(true);
+        IngridientsBookmark.SetActive(false);
+        MonstersCatalogue.SetActive(true);
+        IngridientsCatalouge.SetActive(false);
     }
 
     public void TakePack()
