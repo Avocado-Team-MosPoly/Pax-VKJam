@@ -59,7 +59,7 @@ public class BestiaryIngredients : MonoBehaviour
             spawnedIngredientObjects.Clear();
         });
         spawnPositionIndex = 0;
-
+        TakePack();
     }
 
     public void TakePack()
@@ -143,8 +143,8 @@ public class BestiaryIngredients : MonoBehaviour
         
         if (isSpawnedSelectedIngredient)
         {
-            Destroy(spawnedIngredientObjects[spawnPositionIndex]);
-            spawnedIngredientObjects.RemoveAt(spawnPositionIndex);
+            Destroy(spawnedIngredientObjects[spawnedIngredientObjects.Count-1]);
+            spawnedIngredientObjects.RemoveAt(spawnedIngredientObjects.Count - 1);
             isSpawnedSelectedIngredient= false;
         }
 

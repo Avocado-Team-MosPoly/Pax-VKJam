@@ -51,7 +51,7 @@ public class Bestiary : MonoBehaviour
 
         int dangerousMonstersCount = 0;
         int murderousMonstersCount = 0;
-
+        TakePack();
         foreach (Button button in dangerousMonstersButtons)
         {
             button.gameObject.SetActive(false);
