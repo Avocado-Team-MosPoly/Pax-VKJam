@@ -38,6 +38,7 @@ public class LobbyManagerUI : NetworkBehaviour
     [SerializeField] private GameObject exit;
     [SerializeField] private GameObject refresh;
     [SerializeField] private GameObject ready;
+    [SerializeField] private string LoadingFraze;
 
     private void Start()
     {
@@ -199,7 +200,7 @@ public class LobbyManagerUI : NetworkBehaviour
     [ClientRpc]
     private void PrepareToSandDataClientRpc()
     {
-        loading.text ="Загрузка";
+        loading.text = LoadingFraze;
         exit.SetActive(false) ;
         refresh.SetActive(false) ;
         ready.SetActive(false);
