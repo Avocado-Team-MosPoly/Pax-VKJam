@@ -10,6 +10,7 @@ public class CustomController : TaskExecutor<CustomController>
 
     private System.Collections.IEnumerator Start()
     {
+        Load();
         yield return new WaitForSeconds(0.1f);
         foreach (var section in Categories)
         {
@@ -18,7 +19,6 @@ public class CustomController : TaskExecutor<CustomController>
                 StartCoroutine(Php_Connect.Request_CheckOwningDesign(ware.Data.productCode, ware.OnCheckOwningDesignComplete));
             }
         }
-        Load();
         //if (Php_Connect.PHPisOnline) FetchAllProductData();
     }
     [ContextMenu("Upload Data into DB")]
