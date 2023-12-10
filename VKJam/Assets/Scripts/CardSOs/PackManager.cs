@@ -8,7 +8,7 @@ public class PackManager : MonoBehaviour
 
     public PackCardSO Active;
     public PackCardSO[] All;
-    public Dictionary<ulong,List<bool>> PlayersOwnedCard;
+    public Dictionary<ulong,List<bool>> PlayersOwnedCard = new Dictionary<ulong, List<bool>>();
 
     public static PackManager Instance { get; private set; }
 

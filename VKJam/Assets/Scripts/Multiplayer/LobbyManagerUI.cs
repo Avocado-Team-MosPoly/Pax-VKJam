@@ -23,6 +23,7 @@ public class LobbyManagerUI : NetworkBehaviour
     [SerializeField] private PackCardSO packCardSO;
 
     private List<ulong> playerSendAllDataId;
+    private List<ulong> playerGetAllDataId;
     private ulong sendedPlayerId;
 
 
@@ -157,7 +158,7 @@ public class LobbyManagerUI : NetworkBehaviour
             
             if (allReady && howManyPlayerReady >= 2)
             {
-
+                Debug.LogError("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                 SendPack();
             }
         }
@@ -170,11 +171,11 @@ public class LobbyManagerUI : NetworkBehaviour
         {
             bools.Add(packCardSO.CardInPack[i].CardIsInOwn);            
         }
-        PackManager.Instance.PlayersOwnedCard.Clear();
+        Debug.LogError(PackManager.Instance);
+        PackManager.Instance.PlayersOwnedCard.Clear();       
         PackManager.Instance.PlayersOwnedCard.Add(NetworkManager.LocalClientId, bools);
+        Debug.LogError("SendPack");
         SendToHostServerRpc();
-        LobbyManager.Instance.StopHeartBeatPing();
-        SceneLoader.ServerLoad("Map_New");
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -193,6 +194,8 @@ public class LobbyManagerUI : NetworkBehaviour
         }
         PackManager.Instance.PlayersOwnedCard.Clear();
         PackManager.Instance.PlayersOwnedCard.Add(NetworkManager.LocalClientId, bools);
+
+        Debug.LogError("SendToHostClientRpc");
 
         for (int i = 0; i < bools.Count; i++)
         {
@@ -214,6 +217,7 @@ public class LobbyManagerUI : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SendAllServerRpc(ServerRpcParams serverRpcParams)
     {
+        Debug.LogError("SendAll");
         playerSendAllDataId.Add(serverRpcParams.Receive.SenderClientId);
         if (playerSendAllDataId.Count == allPlayerReady.Count)
         {
@@ -224,11 +228,12 @@ public class LobbyManagerUI : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SendPackToPlayersServerRpc()
     {
+        Debug.LogError("SendPackToPlayersServerRpc");
         for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
         {
             SetPlayerIdOfSendPackClientRpc(playerSendAllDataId[i]);
 
-            for (int io = 0; io < PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]].Count; i++)
+            for (int io = 0; io < PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]].Count; io++)
             {
                 GetPackFromHostClientRpc(PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]][io]);
             }
@@ -244,12 +249,43 @@ public class LobbyManagerUI : NetworkBehaviour
             PackManager.Instance.PlayersOwnedCard.Add(sendedPlayerId, new List<bool>());
         }
     }
+
     [ClientRpc]
     private void GetPackFromHostClientRpc(bool SendBool)
     {
-        if (sendedPlayerId != NetworkManager.LocalClientId)
+        if (!NetworkManager.Singleton.IsServer)
         {
-            PackManager.Instance.PlayersOwnedCard[sendedPlayerId].Add(SendBool);
+            if (sendedPlayerId != NetworkManager.LocalClientId)
+            {
+                PackManager.Instance.PlayersOwnedCard[sendedPlayerId].Add(SendBool);
+               
+                if (PackManager.Instance.PlayersOwnedCard.Count == PlayersId.Count)
+                {
+                    bool allGet = true;
+                    for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
+                    {
+                        if (PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]].Count != PackManager.Instance.PlayersOwnedCard[NetworkManager.LocalClientId].Count)
+                        {
+                            allGet = false;
+                        }
+                    }
+                    if (allGet)
+                    {
+                        GetAllServerRpc(new ServerRpcParams());
+                    }
+                }                   
+            }
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void GetAllServerRpc(ServerRpcParams serverRpcParams)
+    {
+        playerGetAllDataId.Add(serverRpcParams.Receive.SenderClientId);
+        if (playerGetAllDataId.Count == allPlayerReady.Count)
+        {
+            LobbyManager.Instance.StopHeartBeatPing();
+            SceneLoader.ServerLoad("Map_New");
         }
     }
 
