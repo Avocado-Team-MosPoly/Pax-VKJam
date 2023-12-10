@@ -40,29 +40,33 @@ public class CardManager : MonoBehaviour
 
     private void Awake()
     {
-        TakePack();
-        foreach (CardDifficulty cardDifficulty in Enum.GetValues(typeof(CardDifficulty)))
-            cardSODictionary.Add(cardDifficulty, new List<CardSO>());
-        foreach (CardSO cardSO in cardSOArray)
-            cardSODictionary[cardSO.Difficulty].Add(cardSO);
-        
-        cardSOCount = cardSOArray.Count;
+
         //Array.Clear(cardSOArray, 0, cardSOCount);
 
         Card.OnChoose.AddListener(ChooseCardInstance);
         Card.OnSelect.AddListener(DisableInteractable);
 
     }
+    private void Start()
+    {
+        TakePack();
+        foreach (CardDifficulty cardDifficulty in Enum.GetValues(typeof(CardDifficulty)))
+            cardSODictionary.Add(cardDifficulty, new List<CardSO>());
+        foreach (CardSO cardSO in cardSOArray)
+            cardSODictionary[cardSO.Difficulty].Add(cardSO);
+
+        cardSOCount = cardSOArray.Count;
+    }
     public void TakePack()
     {
         cardSOArray.Clear();
-        for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+        for (int i = 0; i < PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId].Count; i++)
         {
-            if (packCardSO.CardInPack[i].CardIsInOwn == true)
+            if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i] == true)
             {
                 cardSOArray.Add(packCardSO.CardInPack[i].Card);
             }
-        }
+        }       
     }
     public void SetPack(PackCardSO _packCardSO)
     {
