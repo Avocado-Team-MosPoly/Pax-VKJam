@@ -41,7 +41,7 @@ public class CardManager : MonoBehaviour
 
     private void Awake()
     {
-        StartCoroutine(start());
+        StartCoroutine(InitCards());
         //Array.Clear(cardSOArray, 0, cardSOCount);
 
         Card.OnChoose.AddListener(ChooseCardInstance);
@@ -50,7 +50,7 @@ public class CardManager : MonoBehaviour
         GameManager.Instance.RoleManager.OnPainterSetted.AddListener(TakePack);
     }
 
-    private IEnumerator start()
+    private IEnumerator InitCards()
     {
         yield return new WaitForSeconds(0.1f);
         TakePack();
@@ -70,8 +70,9 @@ public class CardManager : MonoBehaviour
             if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i] == true)
             {
                 cardSOArray.Add(packCardSO.CardInPack[i].Card);
+                Logger.Instance.Log(this, "pack card so : " + packCardSO.CardInPack[i].Card.Id);
             }
-        }       
+        }
     }
     public void SetPack(PackCardSO _packCardSO)
     {
@@ -161,8 +162,28 @@ public class CardManager : MonoBehaviour
         return cardSOs[cardIndex];
     }
 
-    public byte GetCardSOIndex(CardSO cardSO) => (byte)cardSOArray.IndexOf(cardSO);
-    public CardSO GetCardSOByIndex(ushort cardSOIndex) => cardSOArray[cardSOIndex];
+    public byte GetCardSOIndex(CardSO cardSO)
+    {
+        int index = cardSOArray.IndexOf(cardSO);
+        Logger.Instance.LogWarning(this, $"{nameof(index)} = 0");
+
+        if (index < 0)
+        {
+            Logger.Instance.LogError(this, $"{nameof(index)} below 0");
+        }
+
+        return (byte)index;
+    }
+
+    public CardSO GetCardSOByIndex(ushort cardSOIndex)
+    {
+        Logger.Instance.LogWarning(this, "cardSOIndex : " + cardSOIndex);
+
+        if (cardSOIndex < 0 || cardSOIndex >= cardSOArray.Count)
+            Logger.Instance.LogError(this, new ArgumentOutOfRangeException($"{nameof(cardSOIndex)} below 0"));
+
+        return cardSOArray[cardSOIndex];
+    }
 
     #endregion
     #region Interaction

@@ -213,10 +213,8 @@ public class LobbyManagerUI : NetworkBehaviour
     }
     private IEnumerator SendToHost()
     {
-
         if (!IsServer)
         {
-
             List<bool> bools = new List<bool>();
             for (int i = 0; i < packCardSO.CardInPack.Length; i++)
             {
@@ -236,6 +234,7 @@ public class LobbyManagerUI : NetworkBehaviour
                 catch (Exception e)
                 {
                     exit.SetActive(true);
+                    Logger.Instance.LogError(this, e);
                 }
                 
                 yield return new WaitForSeconds(0.1f);
