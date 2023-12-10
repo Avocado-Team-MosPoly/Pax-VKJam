@@ -54,12 +54,6 @@ public class CardManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         TakePack();
-        foreach (CardDifficulty cardDifficulty in Enum.GetValues(typeof(CardDifficulty)))
-            cardSODictionary.Add(cardDifficulty, new List<CardSO>());
-        foreach (CardSO cardSO in cardSOArray)
-            cardSODictionary[cardSO.Difficulty].Add(cardSO);
-
-        cardSOCount = cardSOArray.Count;
     }
 
     public void TakePack()
@@ -73,6 +67,14 @@ public class CardManager : MonoBehaviour
                 Logger.Instance.Log(this, "pack card so : " + packCardSO.CardInPack[i].Card.Id);
             }
         }
+
+        cardSODictionary.Clear();
+        foreach (CardDifficulty cardDifficulty in Enum.GetValues(typeof(CardDifficulty)))
+            cardSODictionary.Add(cardDifficulty, new List<CardSO>());
+        foreach (CardSO cardSO in cardSOArray)
+            cardSODictionary[cardSO.Difficulty].Add(cardSO);
+
+        cardSOCount = cardSOArray.Count;
     }
     public void SetPack(PackCardSO _packCardSO)
     {
