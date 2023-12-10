@@ -23,12 +23,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
     public static Currency Current;
     public Currency current;
     [ContextMenu("Forced set static data by local data")]
-    public void ForcedLinked()
-    {
-        link = Link;
-        Nickname = 333;
-        randomBase = RandomBase;
-    }
+
     public void Init()
     {
         SceneLoader.EndLoad += OnGameEnded;

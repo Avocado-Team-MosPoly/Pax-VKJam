@@ -11,11 +11,11 @@ public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    [HideInInspector] public UnityEvent OnRoundStartedOnClient;
+    [HideInInspector] public UnityEvent<int> OnIngredientSwitchedOnClient;
     /// <summary> Sends true if local player is painter, false if not </summary>
     [HideInInspector] public UnityEvent<bool> OnGuessMonsterStageActivatedOnClient;
     [HideInInspector] public UnityEvent OnGameEnded;
-    [HideInInspector] public UnityEvent<int> OnIngredientSwitchedOnClient;
-    [HideInInspector] public UnityEvent OnRoundStartedOnClient;
 
     #region Properties
 
@@ -32,6 +32,7 @@ public class GameManager : NetworkBehaviour
     public RoleManager RoleManager => roleManager;
     public CardManager CardManager => cardManager;
     public GameObject SceneMonster => sceneMonster;
+    public Animator SceneMonsterAnimator => sceneMonsterAnimator;
     public byte PainterId => roleManager.PainterId;
     public bool IsPainter => roleManager.IsPainter;
 
@@ -64,6 +65,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private GameObject sceneMonster;
     [SerializeField] private Material sceneMonsterMaterial;
     [SerializeField] private Texture hiddenMonsterTexture;
+    private Animator sceneMonsterAnimator;
 
     private IngredientManager ingredientManager;
     private RoundManager roundManager;
@@ -86,11 +88,12 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
+
+        sceneMonsterAnimator = sceneMonster.GetComponent<Animator>();
     }
 
     public override void OnNetworkSpawn()
     {
-
         StartCoroutine(TakePack());
         timer.Init(gameConfig);
 
@@ -127,6 +130,9 @@ public class GameManager : NetworkBehaviour
                 roundManager = new CompetitiveRoundManager(gameConfig, compareSystem, ingredientManager);
             }
 
+            roundManager.OnMonsterGuessed.AddListener(OnMonsterGuessedClientRpc);
+            roundManager.OnMonsterNotGuessed.AddListener(OnMonsterNotGuessedClientRpc);
+
             ingredientManager.OnIngredientsEnded.AddListener(ActivateGuessMonsterStage);
             ingredientManager.OnIngredientSwitched.AddListener(OnIngredientSwitched);
             roundManager.OnRoundEnded.AddListener(OnRoundEnded);
@@ -159,7 +165,7 @@ public class GameManager : NetworkBehaviour
     }
     private IEnumerator TakePack()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
         bestiary.TakePack();
         bestiaryIngredients.TakePack();
     }
@@ -255,8 +261,9 @@ public class GameManager : NetworkBehaviour
         }
         else
         {
-            sceneMonster.SetActive(true);
             sceneMonsterMaterial.mainTexture = hiddenMonsterTexture;
+            SceneMonster.SetActive(true);
+            SceneMonsterAnimator.Play("Idle");
         }
 
         BackgroundMusic.Instance.Play("monsterGuess");
@@ -272,6 +279,21 @@ public class GameManager : NetworkBehaviour
 
         timer.OnMonsterGuess();
         timer.StartTimer();
+    }
+
+    [ClientRpc]
+    private void OnMonsterGuessedClientRpc()
+    {
+        SceneMonster.SetActive(true);
+        SceneMonsterAnimator.Play("Win");
+    }
+
+
+    [ClientRpc]
+    private void OnMonsterNotGuessedClientRpc()
+    {
+        SceneMonster.SetActive(true);
+        SceneMonsterAnimator.Play("Loose");
     }
 
     #endregion
@@ -319,7 +341,8 @@ public class GameManager : NetworkBehaviour
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
 
         sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
-        sceneMonster.SetActive(true);
+        SceneMonster.SetActive(true);
+        SceneMonsterAnimator.Play("Idle");
 
         SetCardSOServerRpc(cardSOIndex);
     }

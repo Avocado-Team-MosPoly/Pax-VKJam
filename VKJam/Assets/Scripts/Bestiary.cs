@@ -46,8 +46,8 @@ public class Bestiary : MonoBehaviour
         previousMonsterButton.onClick.AddListener(PreviousMoster);
         nextMonsterButton.onClick.AddListener(NextMoster);
         GameManager.Instance.OnGuessMonsterStageActivatedOnClient.AddListener(MonsterGuess);
-        GameManager.Instance.OnIngredientSwitchedOnClient.AddListener(IngredientGuess);
-        IngredientGuess(0);
+        GameManager.Instance.OnRoundStartedOnClient.AddListener(IngredientGuess);
+        IngredientGuess();
 
         int dangerousMonstersCount = 0;
         int murderousMonstersCount = 0;
@@ -86,7 +86,7 @@ public class Bestiary : MonoBehaviour
         Initialize();
     }
 
-    private void IngredientGuess(int arg0)
+    private void IngredientGuess()
     {
         MonsterBookmark.SetActive(false);
         IngridientsBookmark.SetActive(true);

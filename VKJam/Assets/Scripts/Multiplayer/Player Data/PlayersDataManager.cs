@@ -79,9 +79,7 @@ public class PlayersDataManager : NetworkBehaviour
     private void OnClientDisconnect(ulong clientId)
     {
         // server
-
-
-            return;
+        return;
 
         for (int i = 0; i < playerDatasList.Count; i++)
         {
@@ -96,8 +94,8 @@ public class PlayersDataManager : NetworkBehaviour
     {
         (byte, byte) result = (7, 0);
 
-        if (CustomController._executor == null)
-            return result;
+        //if (CustomController._executor == null)
+        return result;
 
         //Logger.Instance.LogError("");
         //Logger.Instance.Log(CustomController._executor.Custom[(int)ItemType.Avatars].Data.productName);

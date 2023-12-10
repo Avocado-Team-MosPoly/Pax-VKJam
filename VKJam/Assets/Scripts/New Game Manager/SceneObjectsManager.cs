@@ -136,7 +136,8 @@ public class SceneObjectsManager : MonoBehaviour
         bestiary.Close();
 
         chatView.Close();
-        GameManager.Instance.SceneMonster.SetActive(true);
+        //GameManager.Instance.SceneMonster.SetActive(true);
+
         //moveCamera.SetActivity(false);
     }
 

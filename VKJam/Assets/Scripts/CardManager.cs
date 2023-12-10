@@ -146,7 +146,7 @@ public class CardManager : MonoBehaviour
                 cardIndex = 0;
 
             if (cardIndex == startCardIndex)
-                return default;
+                return null;
         }
 
         return cardSOs[cardIndex];

@@ -1447,9 +1447,9 @@ GameObject:
   - component: {fileID: 1868545608155243106}
   - component: {fileID: 1267641955746114908}
   - component: {fileID: 1181779922877255752}
+  - component: {fileID: 7908184819771703838}
   - component: {fileID: 3782522742571133370}
   - component: {fileID: 8519356375861679062}
-  - component: {fileID: 7908184819771703838}
   m_Layer: 5
   m_Name: Chat
   m_TagString: Untagged
@@ -1496,7 +1496,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -1541,6 +1541,26 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &7908184819771703838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4669432597919502116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3310280860
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!114 &3782522742571133370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1559,7 +1579,6 @@ MonoBehaviour:
   OnMessageReceived:
     m_PersistentCalls:
       m_Calls: []
-  roleManager: {fileID: 0}
   messageInputField: {fileID: 5214710450047592472}
   sendMessageButton: {fileID: 8134940757286262729}
 --- !u!114 &8519356375861679062
@@ -1581,26 +1600,6 @@ MonoBehaviour:
   unreadMessagesCountObject: {fileID: 1803895933668534322}
   unreadMessagesCountText: {fileID: 1350182159712913245}
   messagePrefab: {fileID: 4113952317711816023, guid: da0c4b71822fef149b848827e173031a, type: 3}
---- !u!114 &7908184819771703838
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4669432597919502116}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!1 &5922891394240191384
 GameObject:
   m_ObjectHideFlags: 0

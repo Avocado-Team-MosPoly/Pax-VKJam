@@ -7,6 +7,8 @@ using UnityEngine.Events;
 public abstract class RoundManager
 {
     [HideInInspector] public UnityEvent OnRoundEnded = new();
+    [HideInInspector] public UnityEvent OnMonsterGuessed = new();
+    [HideInInspector] public UnityEvent OnMonsterNotGuessed = new();
 
     /// <summary> Correct guessed in this round </summary>
     protected List<ulong> correctGuesserIds = new();
@@ -32,12 +34,16 @@ public abstract class RoundManager
     // called if one or more players guessed monster correctly
     protected virtual void WinRound()
     {
-        Debug.Log("Round Win");
+        Log("Round Win");
+        OnMonsterGuessed?.Invoke();
+        //GameManager.Instance.SceneMonsterAnimator.Play("Win");
     }
 
     protected virtual void LoseRound()
     {
-        Debug.Log("Round Losed");
+        Log("Round Losed");
+        OnMonsterNotGuessed?.Invoke();
+        //GameManager.Instance.SceneMonsterAnimator.Play("Loose");
     }
 
     protected virtual void OnCorrectMonsterGuess(ulong clientId)
@@ -90,5 +96,5 @@ public abstract class RoundManager
         { TokenManager.AddTokensToClient(2, (byte)GameManager.Instance.PainterId); }
     }
 
-    private void Log(object message) => Debug.Log($"[{nameof(RoundManager)}] " + message);
+    private void Log(object message) => Logger.Instance.Log(this, message);
 }
