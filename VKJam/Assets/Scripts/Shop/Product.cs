@@ -26,7 +26,7 @@ public class Product : MonoBehaviour
         //SystemName = Data.productName;
         Name.text = Data.Data.productName;
         Price.text = !ChooseMode ? "X" + Data.Data.productPrice.ToString() : "";
-        if (!ChooseMode) DisplayTypeCurrency.sprite = Data.Data.IsDonateVault ? DonatCurrency : InGameCurrency;
+        if (!ChooseMode) DisplayTypeCurrency.sprite = !Data.Data.IsDonateVault ? DonatCurrency : InGameCurrency;
         else DisplayTypeCurrency.gameObject.SetActive(false);
         BT.interactable = !Data.Data.InOwn || ChooseMode;
     }
@@ -47,6 +47,7 @@ public class Product : MonoBehaviour
                     Data.Data.InOwn = true;
                     RemoveFromWarehouse();
                 }
+                CurrencyCatcher._executor.Refresh();
             }
             else
             {
