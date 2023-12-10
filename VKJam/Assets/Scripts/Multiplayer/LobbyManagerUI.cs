@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +20,11 @@ public class LobbyManagerUI : NetworkBehaviour
 
     [SerializeField] private string notReadyText;
     [SerializeField] private string readyText;
+    [SerializeField] private PackCardSO packCardSO;
+
+    private List<ulong> playerSendAllDataId;
+    private ulong sendedPlayerId;
+
 
     //[SerializeField] private RectTransform playerListContainer;
     //[SerializeField] private GameObject playerInfoPrefab;
@@ -151,9 +157,99 @@ public class LobbyManagerUI : NetworkBehaviour
             
             if (allReady && howManyPlayerReady >= 2)
             {
-                LobbyManager.Instance.StopHeartBeatPing();
-                SceneLoader.ServerLoad("Map_New");
+
+                SendPack();
             }
+        }
+    }
+
+    private void SendPack()
+    {
+        List<bool> bools = new List<bool>();
+        for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+        {
+            bools.Add(packCardSO.CardInPack[i].CardIsInOwn);            
+        }
+        PackManager.Instance.PlayersOwnedCard.Clear();
+        PackManager.Instance.PlayersOwnedCard.Add(NetworkManager.LocalClientId, bools);
+        SendToHostServerRpc();
+        LobbyManager.Instance.StopHeartBeatPing();
+        SceneLoader.ServerLoad("Map_New");
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SendToHostServerRpc()
+    {
+        SendToHostClientRpc();
+    }
+
+    [ClientRpc]
+    private void SendToHostClientRpc()
+    {
+        List<bool> bools = new List<bool>();
+        for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+        {
+            bools.Add(packCardSO.CardInPack[i].CardIsInOwn);
+        }
+        PackManager.Instance.PlayersOwnedCard.Clear();
+        PackManager.Instance.PlayersOwnedCard.Add(NetworkManager.LocalClientId, bools);
+
+        for (int i = 0; i < bools.Count; i++)
+        {
+            GetPackFromPlayersServerRpc(bools[i], new ServerRpcParams());
+        }
+        SendAllServerRpc(new ServerRpcParams());
+
+    }
+    [ServerRpc(RequireOwnership = false)]
+    private void GetPackFromPlayersServerRpc(bool SendBool, ServerRpcParams serverRpcParams)
+    {
+        if (!PackManager.Instance.PlayersOwnedCard.ContainsKey(serverRpcParams.Receive.SenderClientId))
+        {
+            PackManager.Instance.PlayersOwnedCard.Add(serverRpcParams.Receive.SenderClientId, new List<bool>());
+        }
+        PackManager.Instance.PlayersOwnedCard[serverRpcParams.Receive.SenderClientId].Add(SendBool);        
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SendAllServerRpc(ServerRpcParams serverRpcParams)
+    {
+        playerSendAllDataId.Add(serverRpcParams.Receive.SenderClientId);
+        if (playerSendAllDataId.Count == allPlayerReady.Count)
+        {
+            SendPackToPlayersServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SendPackToPlayersServerRpc()
+    {
+        for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
+        {
+            SetPlayerIdOfSendPackClientRpc(playerSendAllDataId[i]);
+
+            for (int io = 0; io < PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]].Count; i++)
+            {
+                GetPackFromHostClientRpc(PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]][io]);
+            }
+        }            
+    }
+
+    [ClientRpc]
+    private void SetPlayerIdOfSendPackClientRpc(ulong Sendid)
+    {
+        sendedPlayerId = Sendid;
+        if (sendedPlayerId!= NetworkManager.LocalClientId)
+        {
+            PackManager.Instance.PlayersOwnedCard.Add(sendedPlayerId, new List<bool>());
+        }
+    }
+    [ClientRpc]
+    private void GetPackFromHostClientRpc(bool SendBool)
+    {
+        if (sendedPlayerId != NetworkManager.LocalClientId)
+        {
+            PackManager.Instance.PlayersOwnedCard[sendedPlayerId].Add(SendBool);
         }
     }
 
