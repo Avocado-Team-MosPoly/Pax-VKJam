@@ -286,6 +286,11 @@ public class LobbyManagerUI : NetworkBehaviour
                             allGet = false;
                         }
                     }
+                    Debug.LogError("PlayersOwnedCard.Count =" + PackManager.Instance.PlayersOwnedCard.Count);
+                    for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
+                    {
+                        Debug.LogError("PlayersOwnedCard[PlayersId[" + i + "]].Count =" + PackManager.Instance.PlayersOwnedCard[PlayersId[i]].Count);
+                    }
                     if (allGet)
                     {
                         Debug.LogError("2");
@@ -300,11 +305,7 @@ public class LobbyManagerUI : NetworkBehaviour
     private void GetAllServerRpc(ServerRpcParams serverRpcParams)
     {
         Debug.LogError("GetAllServerRpc");
-        Debug.LogError("PlayersOwnedCard.Count =" +PackManager.Instance.PlayersOwnedCard.Count);
-        for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
-        {
-            Debug.LogError("PlayersOwnedCard[PlayersId["+i+"]].Count =" + PackManager.Instance.PlayersOwnedCard[PlayersId[i]].Count);
-        }
+
         playerGetAllDataId.Add(serverRpcParams.Receive.SenderClientId);
         if (playerGetAllDataId.Count == allPlayerReady.Count)
         {
