@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -49,6 +50,12 @@ public class CardManager : MonoBehaviour
     }
     private void Start()
     {
+        StartCoroutine(start());
+    }
+
+    private IEnumerator start()
+    {
+        yield return new WaitForSeconds(0.1f);
         TakePack();
         foreach (CardDifficulty cardDifficulty in Enum.GetValues(typeof(CardDifficulty)))
             cardSODictionary.Add(cardDifficulty, new List<CardSO>());
@@ -57,6 +64,7 @@ public class CardManager : MonoBehaviour
 
         cardSOCount = cardSOArray.Count;
     }
+
     public void TakePack()
     {
         cardSOArray.Clear();
