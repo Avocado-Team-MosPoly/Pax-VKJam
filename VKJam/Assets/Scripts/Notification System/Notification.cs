@@ -22,7 +22,7 @@ public class Notification : MonoBehaviour
     {
         if (IsActive)
         {
-            Logger.Instance.LogWarning(this, "Can't change notification because it is active");
+            Logger.Instance.LogWarning(this, "Unable to change notification because it is active");
             return;
         }
 

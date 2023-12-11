@@ -11,6 +11,8 @@ public class DetecterModule : MonoBehaviour
     {
         SwitchModule temp = GetComponentInParent<SwitchModule>();
         _Anim = GetComponent<Animator>();
-        if (temp != null) temp.NewItem(this);
+
+        if (temp != null)
+            temp.NewItem(this);
     }
 }

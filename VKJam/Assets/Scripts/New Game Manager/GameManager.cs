@@ -1,10 +1,8 @@
-using CartoonFX;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class GameManager : NetworkBehaviour
@@ -55,7 +53,7 @@ public class GameManager : NetworkBehaviour
 
     [Header("Paint")]
     [SerializeField] private Paint paint;
-    
+
     [Header("Buttons")]
     [SerializeField] private Button nextRoundButton;
     [SerializeField] private string nextRoundButtonText;
@@ -197,7 +195,7 @@ public class GameManager : NetworkBehaviour
     {
         if (Stage == Stage.MonsterGuess)
         {
-            timer.OnIngredientGuess();
+            timer.SetIngredientGuessTime();
             roundManager.OnTimeExpired();
         }
         else
@@ -249,7 +247,7 @@ public class GameManager : NetworkBehaviour
     private void ActivateGuessMonsterStageClientRpc()
     {
         Stage = Stage.MonsterGuess;
-        
+
         if (IsPainter)
         {
             paint.SetActive(false);
@@ -277,7 +275,7 @@ public class GameManager : NetworkBehaviour
 
         ActivateGuessMonsterStageClientRpc();
 
-        timer.OnMonsterGuess();
+        timer.SetMonsterGuessTime();
         timer.StartTimer();
     }
 
@@ -302,21 +300,9 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void SetCardSOClientRpc(byte cardSOIndex)
     {
-        Stage = Stage.IngredientGuess;
-
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
 
         sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
-
-        if (IsPainter)
-            BackgroundMusic.Instance.Play("painting");
-        else
-        {
-            if (IsDangerousCard)
-                BackgroundMusic.Instance.Play("ingredientGuess120s");
-            else
-                BackgroundMusic.Instance.Play("ingredientGuess150s");
-        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -328,8 +314,6 @@ public class GameManager : NetworkBehaviour
         SetCardSOClientRpc(cardSOIndex);
 
         SetHintDataClientRpc((sbyte)ingredientManager.CurrentIngredientIndex);
-        timer.OnIngredientGuess();
-        timer.StartTimer();
 
         Stage = Stage.IngredientGuess;
 
@@ -377,7 +361,7 @@ public class GameManager : NetworkBehaviour
 
     private void OnIngredientSwitched(sbyte ingredientIndex)
     {
-        timer.OnIngredientGuess();
+        timer.SetIngredientGuessTime();
         timer.StartTimer();
         paint.ClearCanvas();
 
@@ -403,6 +387,43 @@ public class GameManager : NetworkBehaviour
     private void ReturnToLobby()
     {
         RelayManager.Instance.ReturnToLobby();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void StartGameServerRpc()
+    {
+        Stage = Stage.IngredientGuess;
+
+        timer.SetIngredientGuessTime();
+        timer.StartTimer();
+
+        StartGameClientRpc();
+    }
+
+    [ClientRpc]
+    private void StartGameClientRpc()
+    {
+        Stage = Stage.IngredientGuess;
+
+        if (IsPainter)
+            BackgroundMusic.Instance.Play("painting");
+        else
+        {
+            if (IsDangerousCard)
+                BackgroundMusic.Instance.Play("ingredientGuess120s");
+            else
+                BackgroundMusic.Instance.Play("ingredientGuess150s");
+        }
+    }
+
+    public void StartGame()
+    {
+        if (Stage != Stage.Waiting)
+            return;
+
+        Stage = Stage.IngredientGuess;
+
+        StartGameServerRpc();
     }
 
     private void Log(object message) => Logger.Instance.Log(this, message);

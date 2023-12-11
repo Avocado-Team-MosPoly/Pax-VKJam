@@ -15,9 +15,14 @@ public class CardCatalogueScript : MonoBehaviour
     [SerializeField] private Button nextMonsterButton;
     [SerializeField] private GameObject BuyCanvas;
 
+    [SerializeField] private string buyText;
+    [SerializeField] private string inOwnText;
+
     //[SerializeField] private GameObject templateCanvas;
     [SerializeField] private PackCardSO packCardSO;
 
+    private Button[] imageHolderButtons = new Button[_cardInPage];
+    
     private Color _transparentColor = new(1,1,1,0);
     private Color _normalColor = new(1, 1, 1, 1);
 
@@ -47,10 +52,8 @@ public class CardCatalogueScript : MonoBehaviour
         for (int i = 0; i < packCardSO.CardInPack.Length; i++)
         {
             //if (packCardSO.CardInPack[i].CardIsInOwn == true)
-            
-                print(packCardSO.CardInPack[i].Card.Id);
-                Monsters.Add(packCardSO.CardInPack[i]);
-            
+            print(packCardSO.CardInPack[i].Card.Id);
+            Monsters.Add(packCardSO.CardInPack[i]);
         }
     }
 
@@ -60,10 +63,10 @@ public class CardCatalogueScript : MonoBehaviour
     }
     public void BuyCard(bool ForThePieces)
     {
-        Debug.Log("Trying buy card by id - " + _bufferIdCard);
+        Debug.Log("Trying buy card by id : " + _bufferIdCard);
         string resp = Php_Connect.Request_CraftCardTry(_bufferIdCard, ForThePieces);
         if (resp == "success") {
-            Debug.Log(1);
+            Debug.Log("Successfully purchased card by id : " + _bufferIdCard);
             CardSystem temp = packCardSO.SearchCardSystemById(_bufferIdCard);
             temp.CardIsInOwn = true;
             CurrencyCatcher._executor.Refresh();
@@ -78,7 +81,6 @@ public class CardCatalogueScript : MonoBehaviour
 
     private void PreviousPage()
     {
-
         if (_currentPage <= 0)
         {
             return;
@@ -111,28 +113,33 @@ public class CardCatalogueScript : MonoBehaviour
         {
             int index = startIndex + i;
 
-            print(index);
+            if (imageHolderButtons[i] == null)
+                imageHolderButtons[i] = imageHolder[i].GetComponentInChildren<Button>();
 
             if (index < Monsters.Count)
             {
-                Button temp = imageHolder[i].GetComponentInChildren<Button>();
-                temp.gameObject.SetActive(!Monsters[index].CardIsInOwn);
-                temp.onClick.RemoveAllListeners();
-                temp.onClick.AddListener(() => 
-                SetBuffer(Monsters[index].CardDBIndex));
-                temp.onClick.AddListener(() =>
-                BuyCanvas.SetActive(true));
+                imageHolderButtons[i].gameObject.SetActive(true);
+                imageHolderButtons[i].interactable = !Monsters[index].CardIsInOwn;
+                imageHolderButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = Monsters[index].CardIsInOwn ? inOwnText : buyText;
+                imageHolderButtons[i].onClick.RemoveAllListeners();
+                imageHolderButtons[i].onClick.AddListener(() =>
+                {
+                    SetBuffer(Monsters[index].CardDBIndex);
+                    BuyCanvas.SetActive(true);
+                });
+
                 imageHolder[i].color = _normalColor;
-                imageHolder[i].sprite = Sprite.Create(Monsters[index].Card.CardTexture, new Rect(0.0f, 0.0f, Monsters[index].Card.CardTexture.width, Monsters[index].Card.CardTexture.height), new Vector2(0.5f, 0.5f), 100.0f);
+                imageHolder[i].sprite = Sprite.Create(Monsters[index].Card.CardTexture,
+                    new Rect(0.0f, 0.0f, Monsters[index].Card.CardTexture.width, Monsters[index].Card.CardTexture.height),
+                    new Vector2(0.5f, 0.5f), 100.0f);
                 nameHolder[i].text = Monsters[index].Card.Id;
             }
             else
             {
-                imageHolder[i].GetComponentInChildren<Button>().gameObject.SetActive(false);
+                imageHolderButtons[i].gameObject.SetActive(false);
                 imageHolder[i].color = _transparentColor;
                 nameHolder[i].text = "";
             }
         }
     }
-
 }

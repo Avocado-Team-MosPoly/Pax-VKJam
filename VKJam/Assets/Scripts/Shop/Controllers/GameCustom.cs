@@ -18,7 +18,7 @@ public class GameCustom : TaskExecutor<GameCustom>
     {
         foreach(var cur in Data.Custom)
         {
-            Logger.Instance.LogError(this, "[Swap] name : " + cur.Data.productName + "; model : " + cur.Model);
+            //Logger.Instance.LogError(this, "[Swap] name : " + cur.Data.productName + "; model : " + cur.Model);
             Custom[(int)cur.Data.Type].SwitchItem(cur);
         }
     }

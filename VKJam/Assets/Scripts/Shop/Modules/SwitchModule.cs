@@ -12,7 +12,7 @@ public class SwitchModule : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         if (CustomController._executor.Custom[(int)Type].Data.productName != "" &&
-       CustomController._executor.Custom[(int)Type].Data.productCode != 0)
+            CustomController._executor.Custom[(int)Type].Data.productCode != 0)
             SwitchItem(CustomController._executor.Custom[(int)Type]);
     }
     public virtual void SwitchItem(WareData NewItem)
@@ -20,11 +20,13 @@ public class SwitchModule : MonoBehaviour
         if (NewItem.Data.Type != Type) 
             return;
 
-        Instantiate(NewItem.Model, transform);
+        Transform instanceTransform = Instantiate(NewItem.Model, transform).transform;
+        if (NewItem.Data.Type == ItemType.Token)
+            instanceTransform.localScale = 3f * Vector3.one;
 
         if (Sync != null) 
         { 
-            Sync.Synchronization(NewItem); 
+            Sync.Synchronization(NewItem);
         }
     }
     private void Synchronization(WareData NewItem)

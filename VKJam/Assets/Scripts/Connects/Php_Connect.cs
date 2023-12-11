@@ -50,7 +50,10 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         PHPisOnline = true;
         Nickname = 333;
         Request_Auth(Nickname);
-        if (PHPisOnline == false) Current = current;
+
+        if (PHPisOnline == false)
+            Current = current;
+
         //Debug.Log(Php_Connect.Request_WhichCardInPackOwnering(0));
         /*Debug.Log(Request_BuyTry(0));
         StartCoroutine(Request_Auth(12));
@@ -67,7 +70,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             PHPisOnline = false;
         }
     }
-    
+
     public static string Request_WhichCardInPackOwnering(int idPack) // Переписать под инт, по схеме
     {
         if (!PHPisOnline) return "";

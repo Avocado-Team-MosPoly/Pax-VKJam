@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using TMPro;
 
 public class WarehouseScript : TaskExecutor<WarehouseScript>
 {
@@ -19,6 +20,9 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
 
     [SerializeField] private Button leftButton;
     [SerializeField] private Button rightButton;
+
+    [SerializeField] private string buyText;
+    [SerializeField] private string inOwnText;
 
     private const int maxInstancesCount = 8;
 
@@ -109,6 +113,8 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
 
             ProductInstances[instanceIndex].ChooseMode = false;
             ProductInstances[instanceIndex].SetData(customController.Categories[currentSection].products[productIndex]);
+            if (ProductInstances[instanceIndex].Button)
+                ProductInstances[instanceIndex].Button.GetComponentInChildren<TextMeshProUGUI>().text = !ProductInstances[instanceIndex].Data.Data.InOwn || ProductInstances[instanceIndex].ChooseMode ? buyText : inOwnText;
             ProductInstances[instanceIndex].gameObject.SetActive(true);
         }
     }

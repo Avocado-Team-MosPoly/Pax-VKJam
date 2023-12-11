@@ -30,14 +30,18 @@ public class WareData
     
     public void Request()
     {
-        if (isPreloaded) return;
+        if (isPreloaded)
+            return;
+
         Data = Php_Connect.Request_DataAboutDesign(Data.productCode);
         icon = Base64ToSprite(Data.icon);
     }
+
     public void OnCheckOwningDesignComplete(bool result)
     {
         Data.InOwn = result;
     }
+
     protected static Sprite Base64ToSprite(string base64)
     {
         try
@@ -52,7 +56,7 @@ public class WareData
         }
         catch (System.FormatException e)
         {
-            Debug.Log("Base64 string is not valid: " + e.Message);
+            Debug.LogError("Base64 string is not valid: " + e.Message);
             return null;
         }
     }

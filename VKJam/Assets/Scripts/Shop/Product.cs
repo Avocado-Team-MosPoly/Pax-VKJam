@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 public class Product : MonoBehaviour
 {
+    public Button Button => BT;
+
     [SerializeField] private Image Picture;
     [SerializeField] private Image DisplayTypeCurrency;
 
@@ -26,9 +28,9 @@ public class Product : MonoBehaviour
             Picture.transform.localScale /= 1.4f;
         }
 
-        Logger.Instance.LogWarning(this, "Type : " + NewData.Data.Type.ToString());
-        Logger.Instance.Log(this, "Name : " + NewData.Data.productName);
-        Logger.Instance.Log(this, "Model : " + NewData.Model);
+        //Logger.Instance.LogWarning(this, "Type : " + NewData.Data.Type.ToString());
+        //Logger.Instance.Log(this, "Name : " + NewData.Data.productName);
+        //Logger.Instance.Log(this, "Model : " + NewData.Model);
 
         Data = NewData;
         Refresh();
@@ -46,7 +48,8 @@ public class Product : MonoBehaviour
         else
             DisplayTypeCurrency.gameObject.SetActive(false);
 
-        BT.interactable = !Data.Data.InOwn || ChooseMode;
+        bool canBuy = !Data.Data.InOwn || ChooseMode;
+        BT.interactable = canBuy;
     }
     public void RemoveFromWarehouse()
     {
@@ -79,7 +82,7 @@ public class Product : MonoBehaviour
 
         else
         {
-            Logger.Instance.LogError(this, "name : " + Data.Data.productName + "; model : " + Data.Model);
+            //Logger.Instance.LogError(this, "name : " + Data.Data.productName + "; model : " + Data.Model);
             ProfileCustom.ProductChoosen(this);
         }
     }

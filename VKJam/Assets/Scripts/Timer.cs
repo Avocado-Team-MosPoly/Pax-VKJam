@@ -107,12 +107,12 @@ public class Timer : NetworkBehaviour
             Logger.Instance.Log(this, "Stop");
         }
     }
-    public void OnIngredientGuess()
+    public void SetIngredientGuessTime()
     {
         roundTime = ingredientGuessTime;
     }
 
-    public void OnMonsterGuess()
+    public void SetMonsterGuessTime()
     {
         roundTime = monsterGuessTime;
     }

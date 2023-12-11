@@ -258,7 +258,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Lobby servers");
+            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Lobby servers");
         }
     }
 
@@ -291,7 +291,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Lobby servers");
+            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Lobby servers");
         }
     }
 
@@ -323,7 +323,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Connection error: Can't connect to Unity Lobby servers");
+            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Lobby servers");
         }
     }
 
@@ -369,6 +369,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
+            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Lobby servers.");
         }
     }
 
@@ -389,6 +390,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.Log(this, ex);
+            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Lobby servers.");
         }
     }
     public async void ListLobbiesWithFilter()
@@ -428,6 +430,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
+            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Lobby servers.");
         }
     }
 
@@ -460,8 +463,6 @@ public class LobbyManager : MonoBehaviour
         {
             try
             {
-                foreach (var clientIds in PlayersDataManager.Instance.PlayerDatas.Keys)
-                    Logger.Instance.LogWarning(this, clientIds);
                 string playerName = PlayersDataManager.Instance.PlayerDatas[clientId].Name;
                 await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, PlayersDataManager.Instance.PlayerDatas[clientId].LobbyPlayerId);
                 Logger.Instance.Log(this, "Disconnected player " + playerName);

@@ -32,7 +32,7 @@ public class Logger : MonoBehaviour
     {
         string senderClassName = GetClassName(sender);
 
-        Debug.Log($"[{senderClassName}] {message}");
+        Debug.Log($"[{senderClassName}] {message ?? "Null"}");
         //NotificationSystem.Instance.SendLocal(message);
         //output.text += message + "\n";
     }
@@ -41,7 +41,7 @@ public class Logger : MonoBehaviour
     {
         string senderClassName = GetClassName(sender);
 
-        Debug.LogWarning($"[{senderClassName}] {message}");
+        Debug.LogWarning($"[{senderClassName}] {message ?? "Null"}");
         //NotificationSystem.Instance.SendLocal(message);
         //output.text += message + "\n";
     }
@@ -50,7 +50,7 @@ public class Logger : MonoBehaviour
     {
         string senderClassName = GetClassName(sender);
 
-        Debug.LogError($"[{senderClassName}] {message}");
+        Debug.LogError($"[{senderClassName}] {message ?? "Null"}");
         //NotificationSystem.Instance.SendLocal(message);
         //output.text += message + "\n";
     }

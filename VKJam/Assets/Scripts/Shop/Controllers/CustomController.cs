@@ -17,7 +17,7 @@ public class CustomController : TaskExecutor<CustomController>
             foreach (var ware in section.products)
             {
                 StartCoroutine(Php_Connect.Request_CheckOwningDesign(ware.Data.productCode, ware.OnCheckOwningDesignComplete));
-                Logger.Instance.LogWarning(this, ware.Data.Type.ToString() + " " + ware.Data.productName + " : " + ware.Model);
+                //Logger.Instance.LogWarning(this, ware.Data.Type.ToString() + " " + ware.Data.productName + " : " + ware.Model);
             }
         }
         //if (Php_Connect.PHPisOnline) FetchAllProductData();

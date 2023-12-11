@@ -12,7 +12,7 @@ public class Interactable : MonoBehaviour
     public UnityEvent m_OnClick;
     public UnityEvent m_OnMouseEnter;
     public UnityEvent m_OnMouseExit;
-    public bool ActivityInteractable;
+    public bool ActivityInteractable = true;
 
     private bool isMouseEntered;
 
