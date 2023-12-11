@@ -418,7 +418,7 @@ public class GameManager : NetworkBehaviour
 
     public void StartGame()
     {
-        if (Stage != Stage.Waiting)
+        if (answerCardSO == null || Stage == Stage.Waiting)
             return;
 
         Stage = Stage.IngredientGuess;

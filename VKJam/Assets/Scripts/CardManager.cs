@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UIElements;
 
 public class CardManager : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class CardManager : MonoBehaviour
     private void OnValidate()
     {
         if (spawnedCardDifficulties.Length != spawnTransforms.Length)
-            LogWarning("Please set the same number of elements in [ Spawned Card Difficulties ] and [ Spawn Transforms ] arrays.");
+            LogWarning($"Please set the same number of elements in [{nameof(spawnedCardDifficulties)}] and [{nameof(spawnTransforms)}] arrays.");
     }
 
     private void Awake()
@@ -64,7 +65,6 @@ public class CardManager : MonoBehaviour
             if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i] == true)
             {
                 cardSOArray.Add(packCardSO.CardInPack[i].Card);
-                Logger.Instance.Log(this, "pack card so : " + packCardSO.CardInPack[i].Card.Id);
             }
         }
 
@@ -167,7 +167,6 @@ public class CardManager : MonoBehaviour
     public byte GetCardSOIndex(CardSO cardSO)
     {
         int index = cardSOArray.IndexOf(cardSO);
-        Logger.Instance.LogWarning(this, $"{nameof(index)} = 0");
 
         if (index < 0)
         {
@@ -179,7 +178,6 @@ public class CardManager : MonoBehaviour
 
     public CardSO GetCardSOByIndex(ushort cardSOIndex)
     {
-        Logger.Instance.LogWarning(this, "cardSOIndex : " + cardSOIndex);
 
         if (cardSOIndex < 0 || cardSOIndex >= cardSOArray.Count)
             Logger.Instance.LogError(this, new ArgumentOutOfRangeException($"{nameof(cardSOIndex)} below 0"));
