@@ -25,6 +25,7 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
     }
     private void _productChoosen(Product Target)
     {
+        Logger.Instance.LogError(this, "name : " + Target.Data.Data.productName + "; model : " + Target.Data.Model);
         Custom[(int)Target.Data.Data.Type].SwitchItem(Target.Data);
         CustomController._executor.Save(Target.Data);
     }
@@ -44,16 +45,18 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
     }
     public void ChangeSection(ItemType ToWhat)
     {
-        GameObject temp;
         Drop();
         WhatActiv.SetActive(true);
         TextType.text = Naming(ToWhat);
         foreach (var current in Data.Categories[(int)CustomController.Categorize(ToWhat)].products)
         {
-            if (current.Data.Type != ToWhat || !current.Data.InOwn) continue;
-            //Debug.Log(current.Data.productName + " "+ current.Data.InOwn);
-            temp = Instantiate(Template, WhereInst.transform);
-            Product InWork = temp.GetComponent<Product>();
+            if (current.Data.Type != ToWhat || !current.Data.InOwn)
+                continue;
+
+            Logger.Instance.LogError(this, "name: " + current.Data.productName);
+            Logger.Instance.Log(this, "name: " + current.Model);
+
+            Product InWork = Instantiate(Template, WhereInst.transform).GetComponent<Product>();
             InWork.ChooseMode = true;
             Products.Add(InWork);
             InWork.SetData(current);

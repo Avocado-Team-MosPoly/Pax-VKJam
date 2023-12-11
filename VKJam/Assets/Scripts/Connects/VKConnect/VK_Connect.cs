@@ -124,6 +124,6 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         if (urlImage != null) urlImage.ChangeImage(UserData.UserIMG_URL);
         if(Php_Connect.PHPisOnline) Php_Connect.Request_Auth(User_ID);
 
-        //Authentication.LogInVK(User_ID.ToString(), UserData.UserName);
+        Authentication.LogInVK(User_ID.ToString(), UserData.UserName);
     }
 }

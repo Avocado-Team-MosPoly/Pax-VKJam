@@ -357,7 +357,6 @@ public class LobbyManager : MonoBehaviour
                         op: QueryFilter.OpOptions.GT,
                         value: "0")
                 }
-
             };
 
             CurrentLobby = await LobbyService.Instance.QuickJoinLobbyAsync(quickJoinLobbyOptions);

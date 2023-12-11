@@ -26,6 +26,10 @@ public class Product : MonoBehaviour
             Picture.transform.localScale /= 1.4f;
         }
 
+        Logger.Instance.LogWarning(this, "Type : " + NewData.Data.Type.ToString());
+        Logger.Instance.Log(this, "Name : " + NewData.Data.productName);
+        Logger.Instance.Log(this, "Model : " + NewData.Model);
+
         Data = NewData;
         Refresh();
     }
@@ -52,9 +56,10 @@ public class Product : MonoBehaviour
 
     public void Interact()
     {
-        if (!Data.Data.InOwn && !Data.IsNonBuyable) 
+        if (!Data.Data.InOwn && !Data.IsNonBuyable)
         {
-            if(Php_Connect.PHPisOnline) { 
+            if (Php_Connect.PHPisOnline)
+            {
                 string res = Php_Connect.Request_BuyTry(Data.Data.productCode);
                 if (res == "success")
                 {
@@ -72,6 +77,10 @@ public class Product : MonoBehaviour
             }
         }
 
-        else ProfileCustom.ProductChoosen(this);
+        else
+        {
+            Logger.Instance.LogError(this, "name : " + Data.Data.productName + "; model : " + Data.Model);
+            ProfileCustom.ProductChoosen(this);
+        }
     }
 }

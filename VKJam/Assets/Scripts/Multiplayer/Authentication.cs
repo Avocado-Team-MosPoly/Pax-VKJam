@@ -59,17 +59,15 @@ public class Authentication : MonoBehaviour
     {
         UserId = userId;
 
-        if (AuthenticationService.Instance.IsAuthorized)
+        if (!AuthenticationService.Instance.IsAuthorized)
             AuthenticationService.Instance.SwitchProfile(userId);
     }
 
-    public static void LogInVK(string userId, string playerName)
+    public static void LogInVK(string userId)
     {
         UserId = userId;
-        PlayerName = playerName;
 
-        if (AuthenticationService.Instance.IsAuthorized)
-            AuthenticationService.Instance.SwitchProfile(playerName);
+        AuthenticationService.Instance.SwitchProfile(UserId);
 
         IsLoggedInThroughVK = true;
     }
@@ -77,5 +75,6 @@ public class Authentication : MonoBehaviour
     public static void SignOut()
     {
         AuthenticationService.Instance.SignOut(true);
+        IsLoggedInThroughVK = false;
     }
 }
