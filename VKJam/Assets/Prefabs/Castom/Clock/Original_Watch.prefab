@@ -34,31 +34,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: eab554c788c09994e809f072e4381542, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.98862326
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: eab554c788c09994e809f072e4381542, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: eab554c788c09994e809f072e4381542, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.15041324
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: eab554c788c09994e809f072e4381542, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: eab554c788c09994e809f072e4381542, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -2.3009073e-16
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: eab554c788c09994e809f072e4381542, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 2.6023562
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: eab554c788c09994e809f072e4381542, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -180
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -6784730457064234362, guid: eab554c788c09994e809f072e4381542, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -138,7 +138,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: eab554c788c09994e809f072e4381542, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5672493410339812893}
+      addedObject: {fileID: 1564800248800555325}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: eab554c788c09994e809f072e4381542, type: 3}
       insertIndex: -1
       addedObject: {fileID: -1704527062943782556}
@@ -154,7 +154,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: eab554c788c09994e809f072e4381542, type: 3}
   m_PrefabInstance: {fileID: 1576468513021328096}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &5672493410339812893
+--- !u!95 &1564800248800555325
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -164,7 +164,7 @@ Animator:
   m_GameObject: {fileID: 1810961705165146033}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 01f9a5d4d0c2ebb4cb8234dbfd72ae69, type: 2}
+  m_Controller: {fileID: 9100000, guid: c7c9ec25f1459b846b87cb88f208423e, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -212,19 +212,7 @@ MonoBehaviour:
   NewColor: {r: 0.8396226, g: 0.7350361, b: 0.4250919, a: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ProfileCustom, Assembly-CSharp
-        m_MethodName: ChangeSection
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnMouseEnter:
     m_PersistentCalls:
       m_Calls: []
@@ -246,3 +234,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Data: {fileID: 6260799114263010588}
   Object: {fileID: 1810961705165146033}
+  _Anim: {fileID: 1564800248800555325}

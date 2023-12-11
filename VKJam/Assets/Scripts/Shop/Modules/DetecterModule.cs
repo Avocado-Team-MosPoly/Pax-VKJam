@@ -6,7 +6,7 @@ public class DetecterModule : MonoBehaviour
 {
     public Interactable Data;
     public GameObject Object;
-    public Animator _Anim;
+    [HideInInspector] public Animator _Anim;
     private void Awake()
     {
         SwitchModule temp = GetComponentInParent<SwitchModule>();
