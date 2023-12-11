@@ -16652,6 +16652,55 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1162957458
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1162957459}
+  - component: {fileID: 1162957460}
+  m_Layer: 6
+  m_Name: ChooseCard
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1162957459
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1162957458}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1779166702}
+  m_Father: {fileID: 1739958843}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1162957460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1162957458}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96c660f8c71d84e46ab16e05855cd898, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 8
+  SwitchTarget: {fileID: 1779166706}
+  Sync: {fileID: 0}
+  NeedSavePosition: 0
 --- !u!1 &1174319866
 GameObject:
   m_ObjectHideFlags: 0
@@ -21691,11 +21740,11 @@ MonoBehaviour:
   - {fileID: 1033973570}
   - {fileID: 1784370882}
   - {fileID: 1528876369}
+  - {fileID: 1162957460}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 2078567891}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -25144,6 +25193,9 @@ GameObject:
   - component: {fileID: 1723213314}
   - component: {fileID: 1723213316}
   - component: {fileID: 1723213315}
+  - component: {fileID: 1723213319}
+  - component: {fileID: 1723213317}
+  - component: {fileID: 1723213318}
   m_Layer: 7
   m_Name: Frame
   m_TagString: Untagged
@@ -25216,6 +25268,78 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1723213313}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1723213317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1723213313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 070f0c1784f8e4f48ad49162c5ea3195, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Data: {fileID: 1723213318}
+  Object: {fileID: 1723213313}
+  _Anim: {fileID: 0}
+--- !u!114 &1723213318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1723213313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f13c20d4e5f169a4ca84a3779a35757b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetMaterialID: 
+  NewColor: {r: 0, g: 0, b: 0, a: 0}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1440248392}
+        m_TargetAssemblyTypeName: ProfileCustom, Assembly-CSharp
+        m_MethodName: ChangeSection
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 12
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnMouseEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnMouseExit:
+    m_PersistentCalls:
+      m_Calls: []
+  ActivityInteractable: 1
+--- !u!65 &1723213319
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1723213313}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.0000002, y: 1.0000002, z: 6.123234e-17}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1727614179
 GameObject:
   m_ObjectHideFlags: 0
@@ -25470,7 +25594,7 @@ Transform:
   - {fileID: 873228044}
   - {fileID: 584779989}
   - {fileID: 1433741805}
-  - {fileID: 1779166702}
+  - {fileID: 1162957459}
   - {fileID: 148545965}
   m_Father: {fileID: 1306785389}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -26016,7 +26140,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1739958843}
+    m_TransformParent: {fileID: 1162957459}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
       propertyPath: m_RootOrder
@@ -26032,7 +26156,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.091
+      value: -0.09099999
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
       propertyPath: m_LocalRotation.w
@@ -26069,11 +26193,11 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 2100000, guid: b7910d95d67caf74fa6a36efe575d399, type: 2}
+      objectReference: {fileID: 2100000, guid: 6c8a65fd900efb248ab20c786aad12c4, type: 2}
     - target: {fileID: -7511558181221131132, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
       propertyPath: m_Materials.Array.data[2]
       value: 
-      objectReference: {fileID: 2100000, guid: b7910d95d67caf74fa6a36efe575d399, type: 2}
+      objectReference: {fileID: 2100000, guid: 6c8a65fd900efb248ab20c786aad12c4, type: 2}
     - target: {fileID: -7511558181221131132, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
       propertyPath: m_Materials.Array.data[3]
       value: 
@@ -26081,11 +26205,11 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
       propertyPath: m_Materials.Array.data[4]
       value: 
-      objectReference: {fileID: 2100000, guid: b7910d95d67caf74fa6a36efe575d399, type: 2}
+      objectReference: {fileID: 2100000, guid: 6c8a65fd900efb248ab20c786aad12c4, type: 2}
     - target: {fileID: -7511558181221131132, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
       propertyPath: m_Materials.Array.data[5]
       value: 
-      objectReference: {fileID: 2100000, guid: b7910d95d67caf74fa6a36efe575d399, type: 2}
+      objectReference: {fileID: 2100000, guid: 6c8a65fd900efb248ab20c786aad12c4, type: 2}
     - target: {fileID: 919132149155446097, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
       propertyPath: m_Name
       value: Choose Card Button
@@ -26104,6 +26228,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1779166704}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1779166706}
   m_SourcePrefab: {fileID: 100100000, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
 --- !u!4 &1779166702 stripped
 Transform:
@@ -26160,6 +26287,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0103581, y: 0.08917259, z: 1.2274634}
   m_Center: {x: 0.03585096, y: -0.0000000055879354, z: 0.009399326}
+--- !u!114 &1779166706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1779166703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 070f0c1784f8e4f48ad49162c5ea3195, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Data: {fileID: 1779166704}
+  Object: {fileID: 1779166703}
+  _Anim: {fileID: 0}
 --- !u!1 &1784370880
 GameObject:
   m_ObjectHideFlags: 0
@@ -31340,6 +31482,7 @@ GameObject:
   - component: {fileID: 2078567887}
   - component: {fileID: 2078567890}
   - component: {fileID: 2078567889}
+  - component: {fileID: 2078567891}
   m_Layer: 7
   m_Name: GuesserPainting
   m_TagString: Untagged
@@ -31413,6 +31556,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2078567886}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2078567891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078567886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96c660f8c71d84e46ab16e05855cd898, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 0
+  SwitchTarget: {fileID: 1723213317}
+  Sync: {fileID: 0}
+  NeedSavePosition: 0
 --- !u!1 &2100563209
 GameObject:
   m_ObjectHideFlags: 0
@@ -32306,11 +32465,23 @@ MonoBehaviour:
         m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 610182190}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: TokensGroup
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
-  ActivityInteractable: 0
+  ActivityInteractable: 1
 --- !u!65 &532379903407359123
 BoxCollider:
   m_ObjectHideFlags: 0

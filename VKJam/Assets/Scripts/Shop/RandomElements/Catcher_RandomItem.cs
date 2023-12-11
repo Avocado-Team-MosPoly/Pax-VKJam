@@ -8,7 +8,7 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     [SerializeField] private GameObject[] WinObjects;
     [SerializeField] private GameObject Current;
     [Header("Display UI")]
-    [SerializeField] private GameObject UI;
+    //[SerializeField] private GameObject UI;
     [SerializeField] private Displayer Token;
     [SerializeField] private Displayer Custom;
     [SerializeField] private Displayer Card;
@@ -63,14 +63,14 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     }
     public void UIWin(WareData data)
     {
-        UI.SetActive(true);
+        //UI.SetActive(true);
         Custom.SetData(data);
         Custom.gameObject.SetActive(true);
     }
 
     public void UIWin(RandomType Type, int data)
     {
-        UI.SetActive(true);
+        //UI.SetActive(true);
         if (Type == RandomType.Token)
         {
             Token.gameObject.SetActive(true);
