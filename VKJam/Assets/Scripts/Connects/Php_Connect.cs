@@ -64,7 +64,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
     }
     private static void ErrorProcessor(string error)
     {
-        Debug.LogWarning("Server Error: " + error);
+        Debug.LogError("Server Error: " + error);
         if (error == "Cannot connect to destination host")
         {
             PHPisOnline = false;
@@ -201,6 +201,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
             if (www.result != UnityWebRequest.Result.Success)
             {
+                Debug.LogWarning($"Can not load element with idDesign {idDesign}");
                 ErrorProcessor(www.error);
                 onComplete?.Invoke(false);
             }
@@ -212,6 +213,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             else
             {
                 //Debug.Log("Server response: " + www.downloadHandler.text);
+                Debug.Log($"Loaded element with idDesign { idDesign}");
                 onComplete?.Invoke(www.downloadHandler.text == "true");
             }
         }

@@ -7034,6 +7034,7 @@ GameObject:
   m_Component:
   - component: {fileID: 467564278}
   - component: {fileID: 467564279}
+  - component: {fileID: 467564280}
   m_Layer: 0
   m_Name: RightItem
   m_TagString: Untagged
@@ -7073,6 +7074,27 @@ MonoBehaviour:
   SwitchTarget: {fileID: 0}
   Sync: {fileID: 0}
   NeedSavePosition: 0
+--- !u!95 &467564280
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 467564277}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 92f7e7dd1f9393748896b266297eedb0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &476124982
 GameObject:
   m_ObjectHideFlags: 0
@@ -10017,7 +10039,7 @@ Animator:
   m_GameObject: {fileID: 610182185}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f90ceec94869c43488848c5d74b9cd4a, type: 2}
+  m_Controller: {fileID: 9100000, guid: dafd2887d7c9f664d8da740cb0986eda, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -11895,7 +11917,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: ClockInteract
           m_BoolArgument: 0
         m_CallState: 2
   m_OnMouseExit:
@@ -12286,7 +12308,7 @@ Animator:
   m_GameObject: {fileID: 873228043}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0fec66ad818c93540a5b9abd0ebde763, type: 2}
+  m_Controller: {fileID: 9100000, guid: 76ffa0a67bd74fe4096ba7958e81312c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -12838,6 +12860,7 @@ GameObject:
   m_Component:
   - component: {fileID: 919398084}
   - component: {fileID: 919398085}
+  - component: {fileID: 919398086}
   m_Layer: 7
   m_Name: Watch
   m_TagString: Untagged
@@ -12877,6 +12900,27 @@ MonoBehaviour:
   SwitchTarget: {fileID: 1075499908}
   Sync: {fileID: 873228045}
   NeedSavePosition: 0
+--- !u!95 &919398086
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919398083}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: df7f65058d9b97946b87142faa8ced90, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &920051381
 GameObject:
   m_ObjectHideFlags: 0
@@ -13786,6 +13830,7 @@ GameObject:
   m_Component:
   - component: {fileID: 980235524}
   - component: {fileID: 980235525}
+  - component: {fileID: 980235526}
   m_Layer: 0
   m_Name: LeftItem
   m_TagString: Untagged
@@ -13825,6 +13870,27 @@ MonoBehaviour:
   SwitchTarget: {fileID: 0}
   Sync: {fileID: 0}
   NeedSavePosition: 0
+--- !u!95 &980235526
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980235523}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a0441a118eadbe347a33ec0dccde7d81, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &982439491
 GameObject:
   m_ObjectHideFlags: 0
@@ -14057,7 +14123,19 @@ MonoBehaviour:
         m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 467564280}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: CandleRight
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
@@ -14573,7 +14651,19 @@ MonoBehaviour:
         m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 980235526}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: CandleLeft
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
@@ -15284,6 +15374,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1033973569}
   - component: {fileID: 1033973570}
+  - component: {fileID: 1033973571}
   m_Layer: 7
   m_Name: Cauldron
   m_TagString: Untagged
@@ -15323,6 +15414,27 @@ MonoBehaviour:
   SwitchTarget: {fileID: 0}
   Sync: {fileID: 0}
   NeedSavePosition: 0
+--- !u!95 &1033973571
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033973568}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1f80a6b5cbb23c54dbfd93d42c4ce8c0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1036761693
 GameObject:
   m_ObjectHideFlags: 0
@@ -15887,12 +15999,24 @@ MonoBehaviour:
         m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 919398086}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ClockInteractGuesser
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &1075499910
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22017,7 +22141,19 @@ MonoBehaviour:
         m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1784370883}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: NoteBook
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
@@ -23639,6 +23775,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1528876368}
   - component: {fileID: 1528876369}
+  - component: {fileID: 1528876370}
   m_Layer: 7
   m_Name: Bestiary
   m_TagString: Untagged
@@ -23678,6 +23815,27 @@ MonoBehaviour:
   SwitchTarget: {fileID: 0}
   Sync: {fileID: 0}
   NeedSavePosition: 0
+--- !u!95 &1528876370
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1528876367}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a27a9670f58b86048af12a38fa91ebbe, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1548838687
 GameObject:
   m_ObjectHideFlags: 0
@@ -26135,7 +26293,19 @@ MonoBehaviour:
         m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2078567892}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Mirror
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
@@ -27183,6 +27353,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1784370881}
   - component: {fileID: 1784370882}
+  - component: {fileID: 1784370883}
   m_Layer: 6
   m_Name: Notebook
   m_TagString: Untagged
@@ -27222,6 +27393,27 @@ MonoBehaviour:
   SwitchTarget: {fileID: 0}
   Sync: {fileID: 0}
   NeedSavePosition: 0
+--- !u!95 &1784370883
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1784370880}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 01c7dc22790ef314da235f5afa008944, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1786654465
 GameObject:
   m_ObjectHideFlags: 0
@@ -29466,7 +29658,19 @@ MonoBehaviour:
         m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1528876370}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Bestiary
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
@@ -32578,6 +32782,7 @@ GameObject:
   - component: {fileID: 2078567890}
   - component: {fileID: 2078567889}
   - component: {fileID: 2078567891}
+  - component: {fileID: 2078567892}
   m_Layer: 7
   m_Name: GuesserPainting
   m_TagString: Untagged
@@ -32667,6 +32872,27 @@ MonoBehaviour:
   SwitchTarget: {fileID: 1723213317}
   Sync: {fileID: 0}
   NeedSavePosition: 0
+--- !u!95 &2078567892
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078567886}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 12d0d1dc9814bfd4d9c3917093ac6466, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2100563209
 GameObject:
   m_ObjectHideFlags: 0
@@ -33570,14 +33796,14 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: TokensGroup
+          m_StringArgument: Token
           m_BoolArgument: 0
         m_CallState: 2
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &532379903407359123
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -34614,6 +34840,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
+      propertyPath: m_OnMouseEnter.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 3
       objectReference: {fileID: 0}
@@ -34626,8 +34856,24 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
+      propertyPath: m_OnMouseEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ChangeSection
+      objectReference: {fileID: 0}
+    - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
+      propertyPath: m_OnMouseEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1033973571}
+    - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
+      propertyPath: m_OnMouseEnter.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
+      propertyPath: m_OnMouseEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Play
       objectReference: {fileID: 0}
     - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -34638,7 +34884,19 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
+      propertyPath: m_OnMouseEnter.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.Animator, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
+      propertyPath: m_OnMouseEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Cauldron
+      objectReference: {fileID: 0}
+    - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
+      propertyPath: m_OnMouseEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []

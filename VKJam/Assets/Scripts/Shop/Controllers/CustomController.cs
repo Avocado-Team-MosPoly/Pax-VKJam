@@ -16,11 +16,11 @@ public class CustomController : TaskExecutor<CustomController>
         {
             foreach (var ware in section.products)
             {
-                StartCoroutine(Php_Connect.Request_CheckOwningDesign(ware.Data.productCode, ware.OnCheckOwningDesignComplete));
                 //Logger.Instance.LogWarning(this, ware.Data.Type.ToString() + " " + ware.Data.productName + " : " + ware.Model);
+                yield return StartCoroutine(Php_Connect.Request_CheckOwningDesign(ware.Data.productCode, ware.OnCheckOwningDesignComplete));
             }
         }
-        //if (Php_Connect.PHPisOnline) FetchAllProductData();
+        if (Php_Connect.PHPisOnline) FetchAllProductData();
     }
     [ContextMenu("Upload Data into DB")]
     private void Upload()
