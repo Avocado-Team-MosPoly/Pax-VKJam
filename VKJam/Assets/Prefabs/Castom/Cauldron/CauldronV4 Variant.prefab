@@ -22,19 +22,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b72be799ea66c348a9152af4876a81d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.79957134
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b72be799ea66c348a9152af4876a81d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.278
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b72be799ea66c348a9152af4876a81d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.6914897
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b72be799ea66c348a9152af4876a81d, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.94061977
+      value: 0.9059555
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b72be799ea66c348a9152af4876a81d, type: 3}
       propertyPath: m_LocalRotation.x
@@ -42,7 +42,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b72be799ea66c348a9152af4876a81d, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.33946195
+      value: 0.42337295
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b72be799ea66c348a9152af4876a81d, type: 3}
       propertyPath: m_LocalRotation.z
@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b72be799ea66c348a9152af4876a81d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 39.688
+      value: 50.095
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b72be799ea66c348a9152af4876a81d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -110,8 +110,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.54307604, y: 0.41760126, z: 0.58737504}
+  m_Center: {x: -0.008143012, y: 0.23189843, z: -0.00013835724}
 --- !u!114 &274071799330169566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,6 +136,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 0
+  EnableMaterialSwitch: 1
 --- !u!114 &2677255688103685655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,3 +151,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Data: {fileID: 274071799330169566}
   Object: {fileID: 7388296662492393914}
+  _Anim: {fileID: 0}
