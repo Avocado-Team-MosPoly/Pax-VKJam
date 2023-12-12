@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,37 +20,59 @@ public class BootManager : MonoBehaviour
 
 
     [Header("Loading UI")]
+    [SerializeField] private TextMeshProUGUI statusLabel;
     [SerializeField] private Image loadingBar;
+
+    [Header("Loading Statuses")]
+    [SerializeField] private string vkConnect_Initialization;
+    [SerializeField] private string phpConnect_Initialization;
+    [SerializeField] private string phpConnect_Authentication;
+    [SerializeField] private string customController_Initialization;
+    [SerializeField] private string authentication_Authentication;
+    [SerializeField] private string relayManager_Initialization;
+    [SerializeField] private string lobbyManager_Initialization;
+    [SerializeField] private string sceneLoading;
 
     private IEnumerator Start()
     {
         loadingBar.fillAmount = 0f;
-
+        statusLabel.text = vkConnect_Initialization;
         yield return StartCoroutine(vkConnect.Init());
-        loadingBar.fillAmount += 1f / 7;
-        yield return StartCoroutine(phpConnect.Init());
-        loadingBar.fillAmount += 1f / 7;
-        yield return StartCoroutine(relayManager.Init());
-        loadingBar.fillAmount += 1f / 7;
-        yield return StartCoroutine(lobbyManager.Init());
-        loadingBar.fillAmount += 1f / 7;
-        yield return StartCoroutine(customController.Init());
-        loadingBar.fillAmount += 1f / 7;
 
+        UpdateLoadingStatus(phpConnect_Initialization);
+        yield return StartCoroutine(phpConnect.Init());
+
+        UpdateLoadingStatus(phpConnect_Authentication);
         if (UserData.UserId < 0)
         {
             yield return StartCoroutine(Php_Connect.Request_Auth(333));
+            Logger.Instance.LogWarning(this, "");
         }
         else
         {
             yield return StartCoroutine(Php_Connect.Request_Auth(UserData.UserId));
         }
-        loadingBar.fillAmount += 1f / 7;
 
+        UpdateLoadingStatus(customController_Initialization);
+        yield return StartCoroutine(customController.Init());
+
+        UpdateLoadingStatus(authentication_Authentication);
         yield return Authentication.Authenticate(UserData.UserId.ToString(), UserData.UserName);
-        loadingBar.fillAmount = 1f;
 
+        UpdateLoadingStatus(relayManager_Initialization);
+        yield return StartCoroutine(relayManager.Init());
+
+        UpdateLoadingStatus(lobbyManager_Initialization);
+        yield return StartCoroutine(lobbyManager.Init());
+
+        UpdateLoadingStatus(sceneLoading);
         LoadStartScene();
+    }
+
+    private void UpdateLoadingStatus(string status)
+    {
+        loadingBar.fillAmount += 1f / 7;
+        statusLabel.text = status;
     }
 
     private void LoadStartScene()
