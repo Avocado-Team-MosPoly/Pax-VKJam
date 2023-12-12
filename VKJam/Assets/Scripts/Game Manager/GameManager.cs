@@ -31,6 +31,8 @@ public class GameManager : NetworkBehaviour
     public CardManager CardManager => cardManager;
     public GameObject SceneMonster => sceneMonster;
     public Animator SceneMonsterAnimator => sceneMonsterAnimator;
+    public SoundList SoundList => soundList;
+
     public byte PainterId => roleManager.PainterId;
     public bool IsPainter => roleManager.IsPainter;
 
@@ -64,6 +66,9 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private Material sceneMonsterMaterial;
     [SerializeField] private Texture hiddenMonsterTexture;
     private Animator sceneMonsterAnimator;
+
+    [Header("Sounds")]
+    [SerializeField] SoundList soundList;
 
     private IngredientManager ingredientManager;
     private RoundManager roundManager;

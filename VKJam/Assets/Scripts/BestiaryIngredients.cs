@@ -135,6 +135,7 @@ public class BestiaryIngredients : MonoBehaviour
             ingredientsTexts.Add(ingredientInfoUI.IngridientName);
         }
 
+        GameManager.Instance.SoundList.Play("Turning the page");
         lastShownIngridient = i;
     }
 
@@ -159,6 +160,8 @@ public class BestiaryIngredients : MonoBehaviour
 
         spawnedIngredientObjects.Add(spawnedIngredientObject);
         isSpawnedSelectedIngredient = true;
+
+        GameManager.Instance.SoundList.Play("Choose ingredient");
     }
 
     private void CheckButton()

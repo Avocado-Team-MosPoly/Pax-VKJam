@@ -19,6 +19,7 @@ public class CardInstance : MonoBehaviour
         {
             animator.Play("card-rotate");
             CardSpawner.DisableInteract(gameObject);
+            GameManager.Instance.SoundList.Play("Flip");
             isFirst = false;
         }
         else

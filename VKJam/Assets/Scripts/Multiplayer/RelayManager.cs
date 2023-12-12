@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Unity.Networking.Transport.Relay;
 using UnityEngine.Events;
 using System;
+using System.Collections;
 
 public class RelayManager : MonoBehaviour
 {
@@ -47,13 +48,10 @@ public class RelayManager : MonoBehaviour
     */
     private string connectionRegion = "europe-north1";
 
-    public void ChangeRegion(string region)
+    public IEnumerator Init()
     {
-        connectionRegion = region;
-    }
+        Logger.Instance.Log(this, "Initialization started");
 
-    private void Awake()
-    {
         if (Instance == null)
         {
             Instance = this;
@@ -62,18 +60,14 @@ public class RelayManager : MonoBehaviour
         else
         {
             Destroy(this);
-            return;
+            yield break;
         }
-    }
-
-    private void Start()
-    {
-        if (Instance != this)
-            return;
 
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
         NetworkManager.Singleton.OnClientStopped += OnClientStopped;
+
+        Logger.Instance.Log(this, "Initialization ended");
     }
 
     private bool PlatformNotSupportedException()
@@ -245,10 +239,6 @@ public class RelayManager : MonoBehaviour
         OnClientDisconnect?.Invoke(clientId);
 
         Logger.Instance.Log(this, $"Client {clientId} disconnected");
-
-        return;
-        if (IsServer)
-            LobbyManager.Instance.DisconnectPlayerAsync(clientId);
     }
 
     private void OnClientStopped(bool isHost)
@@ -343,6 +333,11 @@ public class RelayManager : MonoBehaviour
     }
 
     #endregion
+
+    public void ChangeRegion(string region)
+    {
+        connectionRegion = region;
+    }
 
     public void DisconnectPlayer(ulong clientId)
     {

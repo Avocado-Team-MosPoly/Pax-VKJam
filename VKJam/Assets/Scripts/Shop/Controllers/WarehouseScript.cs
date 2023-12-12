@@ -6,23 +6,21 @@ using TMPro;
 
 public class WarehouseScript : TaskExecutor<WarehouseScript>
 {
-	[SerializeField] private List<Product> ProductInstances = new();
+	private List<Product> productInstances = new();
 
     [SerializeField] private CurrencyCatcher Display;
-    [SerializeField]
-    private Product Template;
-    [SerializeField]
-    private Transform WhereInst;
-    [SerializeField]
-    private CustomController customController;
-    [SerializeField, Range(1, 10)]
-    private int defaultSection = 1;
+    [SerializeField] private Product Template;
+    [SerializeField] private Transform WhereInst;
+    [SerializeField] private CustomController customController;
+    [SerializeField, Range(1, 10)] private int defaultSection = 1;
 
     [SerializeField] private Button leftButton;
     [SerializeField] private Button rightButton;
 
     [SerializeField] private string buyText;
     [SerializeField] private string inOwnText;
+
+    [SerializeField] private SoundList soundList;
 
     private const int maxInstancesCount = 8;
 
@@ -31,8 +29,12 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
 
     private void Awake()
     {
-        customController = CustomController._executor;
         Denote();
+    }
+
+    private void Start()
+    {
+        customController = CustomController._executor;
 
         SpawnProducts();
         ChangeSection(defaultSection);
@@ -44,7 +46,7 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
     private void SpawnProducts()
     {
         for (int i = 0; i < maxInstancesCount; i++)
-            ProductInstances.Add(Instantiate(Template, WhereInst));
+            productInstances.Add(Instantiate(Template, WhereInst));
     }
 
     public void ChangeSection(int section)
@@ -77,6 +79,7 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
             rightButton.gameObject.SetActive(false);
 
         RefreshView();
+        soundList.Play("Turning the page");
     }
 
     public void PrevPage()
@@ -92,6 +95,7 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
         }
 
         RefreshView();
+        soundList.Play("Turning the page");
     }
     public void RefreshView()
     {
@@ -107,31 +111,37 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
         {
             if (productIndex >= customController.Categories[currentSection].products.Count)
             {
-                ProductInstances[instanceIndex].gameObject.SetActive(false);
+                Logger.Instance.Log(this, productIndex + " " + customController.Categories[currentSection].products.Count);
+                productInstances[instanceIndex].gameObject.SetActive(false);
                 continue;
             }
 
-            ProductInstances[instanceIndex].ChooseMode = false;
-            ProductInstances[instanceIndex].SetData(customController.Categories[currentSection].products[productIndex]);
-            if (ProductInstances[instanceIndex].Button)
-                ProductInstances[instanceIndex].Button.GetComponentInChildren<TextMeshProUGUI>().text = !ProductInstances[instanceIndex].Data.Data.InOwn || ProductInstances[instanceIndex].ChooseMode ? buyText : inOwnText;
-            ProductInstances[instanceIndex].gameObject.SetActive(true);
+            productInstances[instanceIndex].ChooseMode = false;
+            productInstances[instanceIndex].SetData(customController.Categories[currentSection].products[productIndex]);
+            if (productInstances[instanceIndex].Button)
+                productInstances[instanceIndex].Button.GetComponentInChildren<TextMeshProUGUI>().text = !productInstances[instanceIndex].Data.Data.InOwn || productInstances[instanceIndex].ChooseMode ? buyText : inOwnText;
+            productInstances[instanceIndex].gameObject.SetActive(true);
         }
     }
 
     public void RemoveProduct(Product productToRemove)
     {
-        productToRemove.gameObject.SetActive(false);
+        if (productToRemove.Button)
+        {
+            productToRemove.Button.interactable = false;
+            productToRemove.Button.GetComponentInChildren<TextMeshProUGUI>().text = inOwnText;
+        }
+        //productToRemove.gameObject.SetActive(false);
         //ProductInstances.Remove(productToRemove);
     }
 
     public void DestroyProductInstances()
     {
-        foreach (var current in ProductInstances)
+        foreach (var current in productInstances)
         {
             Destroy(current.gameObject);
         }
 
-        ProductInstances.Clear();
+        productInstances.Clear();
     }
 }

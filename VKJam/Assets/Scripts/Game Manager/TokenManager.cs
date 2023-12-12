@@ -111,6 +111,8 @@ public class TokenManager : NetworkBehaviour
                 tokensOnScene.Add(token);
             }
         }
+
+        GameManager.Instance.SoundList.Play("Falling token");
     }
 
     private void DeleteExcessTokens()

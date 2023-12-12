@@ -1,6 +1,7 @@
 using UnityEngine.Networking;
 using UnityEngine;
 using System.Collections;
+
 [System.Serializable] 
 public class Currency
 {
@@ -8,20 +9,25 @@ public class Currency
     public int DCurrency;
     public int CardPiece;
 }
+
 [System.Serializable]
 public class Php_Connect : TaskExecutor<Php_Connect>
 {
-    public static bool PHPisOnline = true;
-    
-    [SerializeField] private string Link;
     public RandomItemList RandomBase;
-    [SerializeField] private Sprite ConnectionError;
-    static public int Nickname;
-    private static string link;
+    public Currency current;
+
+    public static bool PHPisOnline = true;
+
+    public static int Nickname;
     public static Sprite connectionError;
     public static RandomItemList randomBase;
     public static Currency Current;
-    public Currency current;
+
+    [SerializeField] private string Link;
+    [SerializeField] private Sprite ConnectionError;
+
+    private static string link;
+
     [ContextMenu("Forced set static data by local data")]
     public void ForcedLinked()
     {
@@ -30,9 +36,11 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         randomBase = RandomBase;
     }
 
-    public void Init()
+    public IEnumerator Init()
     {
-        SceneLoader.EndLoad += OnGameEnded;
+        Logger.Instance.Log(this, "Initialization started");
+
+        //SceneLoader.EndLoad += OnGameEnded;
 
         if (Link.Contains("https"))
         {
@@ -43,25 +51,27 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             link = string.Empty;
             PHPisOnline = false;
             Logger.Instance.LogError(this, new System.FormatException($"Unsafe or incorrect {nameof(Link)}. {nameof(Link)} should start with \"https\". {nameof(Link)}: {Link}"));
-            return;
+            yield break;
         }
 
         randomBase = RandomBase;
         PHPisOnline = true;
         Nickname = 333;
-        Request_Auth(Nickname);
 
         if (PHPisOnline == false)
             Current = current;
 
+        Logger.Instance.Log(this, "Initialization ended");
+
         //Debug.Log(Php_Connect.Request_WhichCardInPackOwnering(0));
-        /*Debug.Log(Request_BuyTry(0));
-        StartCoroutine(Request_Auth(12));
-        StartCoroutine(Request_DataAboutDesign(1));
-        StartCoroutine(Request_CurrentCurrency("Renata"));
-        StartCoroutine(Request_BuyTry("Renata",1));
-        StartCoroutine(Request_CurrentCurrency("Renata"));*/
+        //Debug.Log(Request_BuyTry(0));
+        //StartCoroutine(Request_Auth(12));
+        //StartCoroutine(Request_DataAboutDesign(1));
+        //StartCoroutine(Request_CurrentCurrency("Renata"));
+        //StartCoroutine(Request_BuyTry("Renata",1));
+        //StartCoroutine(Request_CurrentCurrency("Renata"));
     }
+
     private static void ErrorProcessor(string error)
     {
         Debug.LogError("Server Error: " + error);
@@ -446,27 +456,30 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         }
 
     }
-    public static string Request_Auth(int external_Nickname)
+    public static IEnumerator Request_Auth(int external_Nickname)
     {
         WWWForm form = new WWWForm();
         Nickname = external_Nickname;
         form.AddField("Nickname", external_Nickname);
+        
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/Auth.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
             // «апрос выполн€етс€ дожида€сь его завершени€
-            www.SendWebRequest();
             float startTime = Time.time;
-            while (!www.isDone && Time.time - startTime < 2f) { }
+
+            yield return www.SendWebRequest();
+
             if (www.result != UnityWebRequest.Result.Success  && www.isDone)
             {
-                ErrorProcessor(www.error);
-                return www.error;
+                //ErrorProcessor(www.error);
+                Logger.Instance.LogError(_executor, "Unable to authenticate on server: " + www.error);
+                //return www.error;
             }
             else
             {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return www.downloadHandler.text;
+                Logger.Instance.Log(_executor, "Authenticated on server: " + www.downloadHandler.text);
+                //return www.downloadHandler.text;
             }
         }
     }

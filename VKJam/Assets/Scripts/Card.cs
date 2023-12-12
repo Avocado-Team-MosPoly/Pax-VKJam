@@ -43,6 +43,8 @@ public class Card : MonoBehaviour
             GameObject.Find(CameraBack_Buttons).GetComponent<CameraBack>().back();
             OnChoose.Invoke(this);
         }
+
+        GameManager.Instance.SoundList.Play("Flip");
     }
 
     public void SetCardSO(CardSO cardSO)

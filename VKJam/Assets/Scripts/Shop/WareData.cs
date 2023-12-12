@@ -63,9 +63,9 @@ public class WareData
     [ContextMenu("Set in Choosen Custom")]
     public void ChooseThis()
     {
-        Debug.Log(CustomController._executor);
-        Debug.Log(Data.Type);
-        Debug.Log(this);
+        //Debug.Log(CustomController._executor);
+        //Debug.Log(Data.Type);
+        //Debug.Log(this);
         CustomController._executor.Custom[(int)Data.Type] = this;
     }
 }
