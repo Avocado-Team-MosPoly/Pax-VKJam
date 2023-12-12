@@ -16553,13 +16553,37 @@ PrefabInstance:
       propertyPath: m_text
       value: "2 000 \u0416\u0435\u0442\u043E\u043D\u043E\u0432"
       objectReference: {fileID: 0}
+    - target: {fileID: 459844763942520221, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 698706359649249439, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_text
       value: "10 000 \u0416\u0435\u0442\u043E\u043D\u043E\u0432"
       objectReference: {fileID: 0}
+    - target: {fileID: 1300704512471187009, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 1300704512471187009, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 72.473
+      objectReference: {fileID: 0}
     - target: {fileID: 2619197258182514247, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_Name
       value: CoinsDonation 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3242216101689936739, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: adsText
+      value: 
+      objectReference: {fileID: 628843493}
+    - target: {fileID: 3242216101689936739, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: buyText
+      value: 
+      objectReference: {fileID: 628843494}
+    - target: {fileID: 3242216101689936739, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: buyTextString
+      value: "\u041F\u043E\u0441\u043C\u043E\u0442\u0440\u0435\u0442\u044C"
       objectReference: {fileID: 0}
     - target: {fileID: 3558457897105446113, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -16624,6 +16648,10 @@ PrefabInstance:
     - target: {fileID: 4221161982697765490, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_text
       value: "5 000 \u0416\u0435\u0442\u043E\u043D\u043E\u0432"
+      objectReference: {fileID: 0}
+    - target: {fileID: 6194442846836167187, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6876513437224672523, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_Enabled
@@ -16709,6 +16737,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8876167168696362897, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16719,6 +16751,28 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7302370871027135506, guid: a04f2fe9f62600841927d104302807be, type: 3}
   m_PrefabInstance: {fileID: 628843491}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &628843493 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6441579083516113404, guid: a04f2fe9f62600841927d104302807be, type: 3}
+  m_PrefabInstance: {fileID: 628843491}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &628843494 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5186252887030067835, guid: a04f2fe9f62600841927d104302807be, type: 3}
+  m_PrefabInstance: {fileID: 628843491}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &638003995
 GameObject:
   m_ObjectHideFlags: 0

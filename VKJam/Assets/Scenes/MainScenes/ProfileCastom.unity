@@ -11821,9 +11821,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: eab554c788c09994e809f072e4381542, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 856607087}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: eab554c788c09994e809f072e4381542, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 856607091}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: eab554c788c09994e809f072e4381542, type: 3}
       insertIndex: -1
@@ -11837,27 +11834,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: eab554c788c09994e809f072e4381542, type: 3}
   m_PrefabInstance: {fileID: 856607085}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &856607087
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 856607086}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c7c9ec25f1459b846b87cb88f208423e, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &856607088 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: eab554c788c09994e809f072e4381542, type: 3}
@@ -11909,11 +11885,24 @@ MonoBehaviour:
         m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 873228046}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &856607091
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12247,6 +12236,7 @@ GameObject:
   m_Component:
   - component: {fileID: 873228044}
   - component: {fileID: 873228045}
+  - component: {fileID: 873228046}
   m_Layer: 6
   m_Name: Watch
   m_TagString: Untagged
@@ -12286,6 +12276,27 @@ MonoBehaviour:
   SwitchTarget: {fileID: 856607089}
   Sync: {fileID: 919398085}
   NeedSavePosition: 0
+--- !u!95 &873228046
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 873228043}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0fec66ad818c93540a5b9abd0ebde763, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &878967943
 GameObject:
   m_ObjectHideFlags: 0
@@ -14051,6 +14062,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 1
 --- !u!65 &987325333
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14566,6 +14578,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 1
 --- !u!65 &994332307
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15879,6 +15892,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 1
 --- !u!65 &1075499910
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16384,11 +16398,24 @@ MonoBehaviour:
       m_Calls: []
   m_OnMouseEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1433741806}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: IngridientCards
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &1106146198
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17416,7 +17443,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1162957459}
-  - component: {fileID: 1162957460}
+  - component: {fileID: 1162957461}
   m_Layer: 6
   m_Name: ChooseCard
   m_TagString: Untagged
@@ -17440,22 +17467,24 @@ Transform:
   - {fileID: 1779166702}
   m_Father: {fileID: 1739958843}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1162957460
+--- !u!114 &1162957461
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1162957458}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96c660f8c71d84e46ab16e05855cd898, type: 3}
+  m_Script: {fileID: 11500000, guid: df712477342bda14b8222164c6b46bce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 8
   SwitchTarget: {fileID: 1779166706}
   Sync: {fileID: 0}
   NeedSavePosition: 0
+  SwitchTargetMaterial: {fileID: 2100000, guid: 6c8a65fd900efb248ab20c786aad12c4, type: 2}
+  FromPrefab: 1
 --- !u!1 &1174319866
 GameObject:
   m_ObjectHideFlags: 0
@@ -19726,6 +19755,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &1311664460
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -19764,7 +19794,7 @@ MonoBehaviour:
   Sync: {fileID: 0}
   NeedSavePosition: 0
   SwitchTargetMaterial: {fileID: 2100000, guid: 645c1bb16fd158b4990d7f337e0e46af, type: 2}
-  FromPrefab: 0
+  FromPrefab: 1
 --- !u!1 &1316882732
 GameObject:
   m_ObjectHideFlags: 0
@@ -21992,6 +22022,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 1
 --- !u!65 &1422172935
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22373,6 +22404,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1433741805}
+  - component: {fileID: 1433741806}
   m_Layer: 0
   m_Name: Hint Cards
   m_TagString: Untagged
@@ -22400,6 +22432,27 @@ Transform:
   - {fileID: 77703948}
   m_Father: {fileID: 1739958843}
   m_LocalEulerAnglesHint: {x: 0, y: -2.367, z: 0}
+--- !u!95 &1433741806
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433741804}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b8fc8fec2a37e0346af435e88308339f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1440248387
 GameObject:
   m_ObjectHideFlags: 0
@@ -22495,7 +22548,7 @@ MonoBehaviour:
   - {fileID: 1033973570}
   - {fileID: 1784370882}
   - {fileID: 1528876369}
-  - {fileID: 1162957460}
+  - {fileID: 1162957461}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -25560,11 +25613,24 @@ MonoBehaviour:
       m_Calls: []
   m_OnMouseEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1433741806}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: IngridientCards
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &1676514097
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26074,6 +26140,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 1
 --- !u!65 &1723213319
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26986,6 +27053,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1779166706}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1779166707}
   m_SourcePrefab: {fileID: 100100000, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
 --- !u!4 &1779166702 stripped
 Transform:
@@ -27009,18 +27079,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f13c20d4e5f169a4ca84a3779a35757b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetMaterialID: 0000000001000000020000000300000004000000
+  TargetMaterialID: 
   NewColor: {r: 0.7830189, g: 0.5819176, b: 0.22653373, a: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1440248392}
+        m_TargetAssemblyTypeName: ProfileCustom, Assembly-CSharp
+        m_MethodName: ChangeSection
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 8
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1779166707}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Cards
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &1779166705
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -27057,6 +27152,27 @@ MonoBehaviour:
   Data: {fileID: 1779166704}
   Object: {fileID: 1779166703}
   _Anim: {fileID: 0}
+--- !u!95 &1779166707
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1779166703}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1abafbd305bfaaa459ed0c243889d36f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1784370880
 GameObject:
   m_ObjectHideFlags: 0
@@ -27281,11 +27397,24 @@ MonoBehaviour:
       m_Calls: []
   m_OnMouseEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1433741806}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: IngridientCards
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &1788712366
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -29342,6 +29471,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 1
 --- !u!65 &1915845112
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33294,15 +33424,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e165dd6a8527ed4fabdeb065d29f8db, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e165dd6a8527ed4fabdeb065d29f8db, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e165dd6a8527ed4fabdeb065d29f8db, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e165dd6a8527ed4fabdeb065d29f8db, type: 3}
       propertyPath: m_LocalPosition.x
@@ -33447,6 +33577,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 1
 --- !u!65 &532379903407359123
 BoxCollider:
   m_ObjectHideFlags: 0

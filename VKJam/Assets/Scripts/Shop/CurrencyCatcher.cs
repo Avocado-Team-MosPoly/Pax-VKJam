@@ -29,10 +29,10 @@ public class CurrencyCatcher : TaskExecutor<CurrencyCatcher>
         if(Donat_General != null)
             Donat_General.text = "X" + Data.DCurrency.ToString();
         if (Donat_Card != null)
-            Donat_Card.text = Data.DCurrency.ToString();
+            Donat_Card.text = "X" + Data.DCurrency.ToString();
         if (IG != null)
             IG.text = "X" + Data.IGCurrency.ToString();
         if (CP != null)
-            CP.text = Data.CardPiece.ToString();
+            CP.text = "X" + Data.CardPiece.ToString();
     }
 }

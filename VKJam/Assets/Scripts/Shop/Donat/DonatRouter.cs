@@ -4,6 +4,9 @@ using UnityEngine;
 public class DonatRouter : MonoBehaviour
 {
     public TMPro.TMP_Text AdsCounterTest;
+    [SerializeField] private TMPro.TMP_Text buyText;
+    [SerializeField] private string buyTextString;
+
     private void Awake()
     {
         StartCoroutine(DelayRefresh());
@@ -22,6 +25,7 @@ public class DonatRouter : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         AdsCounterTest.text = "Реклама " + AdManager.GetAdsWatchedToday() + "/3";
+        buyText.text = buyTextString;
         CurrencyCatcher._executor.Refresh();
         
     }
