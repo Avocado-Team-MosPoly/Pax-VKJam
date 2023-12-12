@@ -13,6 +13,7 @@ public class Interactable : MonoBehaviour
     public UnityEvent m_OnMouseEnter;
     public UnityEvent m_OnMouseExit;
     public bool ActivityInteractable = true;
+    public bool EnableMaterialSwitch = true;
 
     private bool isMouseEntered;
 
@@ -40,6 +41,8 @@ public class Interactable : MonoBehaviour
             Logger.Instance.LogWarning(this, $"GameObject doesn't contain Renderer component");
             return;
         }
+        else if (!EnableMaterialSwitch)
+            return;
 
         TargetMaterialID = new int[Rend.materials.Length];
         for (int i = 0; i < Rend.materials.Length; i++)
@@ -57,8 +60,10 @@ public class Interactable : MonoBehaviour
 
         isMouseEntered = true;
         m_OnMouseEnter.Invoke();
-        foreach (int current in TargetMaterialID)
-            Rend.materials[current].color = NewColor;
+
+        if(EnableMaterialSwitch)
+            foreach (int current in TargetMaterialID)
+                Rend.materials[current].color = NewColor;
     }
     void OnMouseExit()
     {
@@ -67,8 +72,10 @@ public class Interactable : MonoBehaviour
 
         isMouseEntered = false;
         m_OnMouseExit.Invoke();
-        for (int i = 0; i < TargetMaterialID.Length; i++)
-            Rend.materials[TargetMaterialID[i]].color = TargetColorMaterial[i];
+
+        if (EnableMaterialSwitch)
+            for (int i = 0; i < TargetMaterialID.Length; i++)
+                Rend.materials[TargetMaterialID[i]].color = TargetColorMaterial[i];
     }
     void OnMouseDown()
     {
