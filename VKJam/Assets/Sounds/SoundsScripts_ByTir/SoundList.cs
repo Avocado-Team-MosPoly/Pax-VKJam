@@ -19,8 +19,6 @@ public class SoundList : MonoBehaviour
     [SerializeField] private Audio[] Everything;
     private AudioSource _source;
 
-
-
     private bool NowPlaying;
     private void Awake()
     {
@@ -42,6 +40,7 @@ public class SoundList : MonoBehaviour
             return;
         }
         _source.clip = Target.Sounds[Random.Range(0, Target.Sounds.Length)];
+        _source.pitch = Random.Range(0.9f, 1.1f);
         _source.Play();
         if (WaitingSoundEnd) StartCoroutine(WaitSoundEnd(Target));
     }
@@ -54,7 +53,7 @@ public class SoundList : MonoBehaviour
     }
     public void Play(int WhatID)
     {
-        if (WhatID > Everything.Length)
+        if (WhatID < 0 || WhatID > Everything.Length)
         {
             Debug.LogWarning("ID - " + WhatID + " - doesn`t exist");
             return;
@@ -73,6 +72,7 @@ public class SoundList : MonoBehaviour
             if (current.KeyName == What) // if we found - we start play this sound array
             {
                 PlayAudio(current);
+                Logger.Instance.LogWarning(this, What + " playing now");
                 return;
             }
         }

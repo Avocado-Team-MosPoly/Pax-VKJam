@@ -1,12 +1,13 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
+using System.Threading.Tasks;
+using Unity.Netcode;
+using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
-using Unity.Services.Authentication;
-using Unity.Netcode;
-using System.Threading.Tasks;
-using System;
+using UnityEngine;
+using UnityEngine.Events;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -35,8 +36,10 @@ public class LobbyManager : MonoBehaviour
     private float heartBeatTimer;
 
 
-    private void Awake()
+    public IEnumerator Init()
     {
+        Logger.Instance.Log(this, "Initialization started");
+
         if (Instance == null)
         {
             Instance = this;
@@ -45,24 +48,15 @@ public class LobbyManager : MonoBehaviour
         else
         {
             Destroy(this);
-            return;
+            yield break;
         }
 
-        Authentication.Authenticate();
-    }
+        //yield return Authentication.Authenticate();
 
-    private void Start()
-    {
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
             if (clientId != NetworkManager.Singleton.LocalClientId)
                 ListPlayers();
-        };
-
-        NetworkManager.Singleton.OnClientStopped += async (bool isHost) =>
-        {
-            //Logger.Instance.LogError(this, "Me");
-            await DisconnectAsync();
         };
 
         //NetworkManager.Singleton.OnClientDisconnectCallback += async (ulong clientId) =>
@@ -71,7 +65,15 @@ public class LobbyManager : MonoBehaviour
         //        await DisconnectAsync();
         //};
 
+        NetworkManager.Singleton.OnClientStopped += async (bool isHost) =>
+        {
+            //Logger.Instance.LogError(this, "Me");
+            await DisconnectAsync();
+        };
+
         IsTeamMode = "True";
+
+        Logger.Instance.Log(this, "Initialization ended");
     }
 
     private void Update()

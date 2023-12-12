@@ -94,18 +94,19 @@ public class PlayersDataManager : NetworkBehaviour
     {
         (byte, byte) result = (7, 0);
 
-        //if (CustomController._executor == null)
-        return result;
+        if (CustomController._executor == null)
+            return result;
 
         //Logger.Instance.LogError("");
         //Logger.Instance.Log(CustomController._executor.Custom[(int)ItemType.Avatars].Data.productName);
         //Logger.Instance.LogError("");
+
         for (int i = 0; i < avatarsAndFramesStorage.products.Count; i++)
         {
             if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.Avatars)
             {
                 //Logger.Instance.Log(avatarsAndFramesStorage.products[i].Data.productName);
-                if (CustomController._executor.Custom[(int)ItemType.Avatars].Model == avatarsAndFramesStorage.products[i].Model)
+                if (CustomController._executor.Custom[(int)ItemType.Avatars].icon == avatarsAndFramesStorage.products[i].icon)
                 {
                     result.Item1 = (byte)i;
                     break;
@@ -120,7 +121,7 @@ public class PlayersDataManager : NetworkBehaviour
             if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.AvatarFrame)
             {
                 //Logger.Instance.Log(avatarsAndFramesStorage.products[i].Data.productName);
-                if (CustomController._executor.Custom[(int)ItemType.AvatarFrame].Model == avatarsAndFramesStorage.products[i].Model)
+                if (CustomController._executor.Custom[(int)ItemType.AvatarFrame].icon == avatarsAndFramesStorage.products[i].icon)
                 {
                     result.Item1 = (byte)i;
                     break;

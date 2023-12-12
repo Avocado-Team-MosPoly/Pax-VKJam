@@ -1,5 +1,6 @@
-using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class CustomController : TaskExecutor<CustomController>
 {
@@ -8,10 +9,14 @@ public class CustomController : TaskExecutor<CustomController>
     public WareData[] Custom = new WareData[System.Enum.GetNames(typeof(ItemType)).Length];
     public WareData[] Standart = new WareData[System.Enum.GetNames(typeof(ItemType)).Length];
 
-    private System.Collections.IEnumerator Start()
+    public IEnumerator Init()
     {
+        Logger.Instance.Log(this, "Initialization started");
+
         Load();
+
         yield return new WaitForSeconds(0.1f);
+
         foreach (var section in Categories)
         {
             foreach (var ware in section.products)
@@ -20,7 +25,10 @@ public class CustomController : TaskExecutor<CustomController>
                 yield return StartCoroutine(Php_Connect.Request_CheckOwningDesign(ware.Data.productCode, ware.OnCheckOwningDesignComplete));
             }
         }
-        if (Php_Connect.PHPisOnline) FetchAllProductData();
+        if (Php_Connect.PHPisOnline)
+            FetchAllProductData();
+
+        Logger.Instance.Log(this, "Initialization ended");
     }
     [ContextMenu("Upload Data into DB")]
     private void Upload()

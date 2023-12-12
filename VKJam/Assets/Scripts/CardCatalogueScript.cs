@@ -21,6 +21,8 @@ public class CardCatalogueScript : MonoBehaviour
     //[SerializeField] private GameObject templateCanvas;
     [SerializeField] private PackCardSO packCardSO;
 
+    [SerializeField] private SoundList soundList;
+
     private Button[] imageHolderButtons = new Button[_cardInPage];
     
     private Color _transparentColor = new(1,1,1,0);
@@ -38,6 +40,7 @@ public class CardCatalogueScript : MonoBehaviour
         nextMonsterButton.onClick.AddListener(NextPage);
 
         Initialize();
+        soundList.Play("Turning the page");
     }
 
     public void SetBuffer(int cardDBIndex)
@@ -88,6 +91,7 @@ public class CardCatalogueScript : MonoBehaviour
 
         _currentPage--;
         UpdateUIPage();
+        soundList.Play("Turning the page");
     }
 
     private void NextPage()
@@ -103,6 +107,7 @@ public class CardCatalogueScript : MonoBehaviour
 
         _currentPage++;
         UpdateUIPage();
+        soundList.Play("Turning the page");
     }
 
     private void UpdateUIPage()

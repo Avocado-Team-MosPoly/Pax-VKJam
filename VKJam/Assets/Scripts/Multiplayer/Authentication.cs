@@ -1,7 +1,10 @@
+using System.Collections;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 public class Authentication : MonoBehaviour
 {
@@ -10,18 +13,21 @@ public class Authentication : MonoBehaviour
 
     public static bool IsLoggedInThroughVK { get; private set; }
 
-    public static async void Authenticate()
+    public static async IAsyncEnumerator<Task> Authenticate(string userId, string playerName)
     {
         Logger.Instance.Log(typeof(Authentication), "Authentication started");
+        
         if (UnityServices.State == ServicesInitializationState.Initialized)
         {
             Logger.Instance.Log(typeof(Authentication), "Unity Services alredy initialized");
         }
         else
         {
+            UserId = userId;
+            UserId = playerName;
             string number = Random.Range(100, 1000).ToString();
 
-            if (PlayerName == string.Empty || PlayerName == null)
+            if (string.IsNullOrEmpty(PlayerName))
             {
                 PlayerName = "Player" + number;
             }
@@ -39,7 +45,7 @@ public class Authentication : MonoBehaviour
         if (AuthenticationService.Instance.IsAuthorized)
         {
             Logger.Instance.Log(typeof(Authentication), "You alredy authorized");
-            return;
+            yield break;
         }
 
         AuthenticationService.Instance.SignedIn += () =>
@@ -50,22 +56,32 @@ public class Authentication : MonoBehaviour
         Logger.Instance.Log(typeof(Authentication), $"Signed in. Your id is {AuthenticationService.Instance.PlayerId}, player name is {PlayerName}");
     }
 
-    public static void ChangePlayerName(string playerName)
+    public static async Task ChangePlayerName(string playerName)
     {
         PlayerName = playerName;
+
+        if (AuthenticationService.Instance.IsAuthorized)
+            await AuthenticationService.Instance.UpdatePlayerNameAsync(PlayerName);
     }
 
-    public static void ChangeProfile(string userId)
-    {
-        UserId = userId;
+    //public static void ChangeProfile(string userId)
+    //{
+    //    UserId = userId;
 
-        if (!AuthenticationService.Instance.IsAuthorized)
-            AuthenticationService.Instance.SwitchProfile(userId);
-    }
+    //    if (!AuthenticationService.Instance.IsAuthorized)
+    //        AuthenticationService.Instance.SwitchProfile(userId);
+    //}
 
-    public static void LogInVK(string userId)
+    public static void SetVKProfile(string userId, string playerName)
     {
+        if (AuthenticationService.Instance.IsAuthorized)
+        {
+            Logger.Instance.LogWarning(typeof(Authentication), $"{nameof(AuthenticationService)} already authorized");
+            return;
+        }
+
         UserId = userId;
+        PlayerName = playerName;
 
         AuthenticationService.Instance.SwitchProfile(UserId);
 

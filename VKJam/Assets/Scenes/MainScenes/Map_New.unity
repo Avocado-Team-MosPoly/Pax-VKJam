@@ -241,6 +241,168 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &9523474
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9523477}
+  - component: {fileID: 9523476}
+  - component: {fileID: 9523475}
+  m_Layer: 0
+  m_Name: Sound List
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &9523475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9523474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ed171805eac1e34891466e7398766ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsMusic: 0
+  WaitingSoundEnd: 0
+  Everything:
+  - KeyName: Choose ingredient
+    Sounds:
+    - {fileID: 8300000, guid: f6f454c5b9383134fbb13c1256b918da, type: 3}
+  - KeyName: Falling token
+    Sounds:
+    - {fileID: 8300000, guid: ba2f0127cf375374bb9070289914a9f3, type: 3}
+    - {fileID: 8300000, guid: 9e107de07b985464587b650b09c9197d, type: 3}
+  - KeyName: Flip
+    Sounds:
+    - {fileID: 8300000, guid: 0a6e9ca6b2e368b4ba877922181a1eca, type: 3}
+  - KeyName: Randomize cards
+    Sounds:
+    - {fileID: 8300000, guid: d023e04f25beeb84f96191eaf6542865, type: 3}
+    - {fileID: 8300000, guid: 3f17966a29c49a148b892aab792504bf, type: 3}
+  - KeyName: Turning the page
+    Sounds:
+    - {fileID: 8300000, guid: 348d27076588f5e49acdf15d96eefcf3, type: 3}
+    - {fileID: 8300000, guid: 3050d4c166bf0c34184de8af0d3f69a0, type: 3}
+--- !u!82 &9523476
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9523474}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &9523477
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9523474}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &31479179
 GameObject:
   m_ObjectHideFlags: 0
@@ -3000,7 +3162,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 309458914}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df712477342bda14b8222164c6b46bce, type: 3}
   m_Name: 
@@ -3240,6 +3402,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 1
 --- !u!65 &320006155
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5543,7 +5706,6 @@ GameObject:
   - component: {fileID: 526505396}
   - component: {fileID: 526505395}
   - component: {fileID: 526505399}
-  - component: {fileID: 526505398}
   m_Layer: 5
   m_Name: GameUI
   m_TagString: Untagged
@@ -5623,22 +5785,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &526505398
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526505393}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02e5663152120244da294acd2f0d84af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CardManager: {fileID: 1895462717}
-  Button: {fileID: 772972740}
-  ButtonUI: {fileID: 2060414252}
-  Text: {fileID: 1245305768}
 --- !u!114 &526505399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9331,6 +9477,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
       insertIndex: -1
       addedObject: {fileID: 772972746}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 772972747}
   m_SourcePrefab: {fileID: 100100000, guid: 83a9469fb3711cb4eafaa0d531b79a13, type: 3}
 --- !u!1 &772972740 stripped
 GameObject:
@@ -9366,7 +9515,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 526505398}
+      - m_Target: {fileID: 772972747}
         m_TargetAssemblyTypeName: ChooseCardButton, Assembly-CSharp
         m_MethodName: UseChooseButton
         m_Mode: 1
@@ -9469,6 +9618,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 1
 --- !u!65 &772972742
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9516,6 +9666,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &772972747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 772972740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02e5663152120244da294acd2f0d84af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CardManager: {fileID: 1895462717}
+  Button: {fileID: 772972740}
+  ButtonUI: {fileID: 2060414252}
+  Text: {fileID: 1245305768}
 --- !u!1 &777919810
 GameObject:
   m_ObjectHideFlags: 0
@@ -17249,6 +17415,7 @@ MonoBehaviour:
   sceneMonster: {fileID: 707516069}
   sceneMonsterMaterial: {fileID: 2100000, guid: b72b645da8fabef40b672d31e4581140, type: 2}
   hiddenMonsterTexture: {fileID: 2800000, guid: 6d0ad448bb87a1b44be804e4ca2c46e7, type: 3}
+  soundList: {fileID: 9523475}
 --- !u!4 &1443419630
 Transform:
   m_ObjectHideFlags: 0
@@ -20672,6 +20839,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 1
 --- !u!65 &1711129836
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22166,7 +22334,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1817781496}
-  - component: {fileID: 1817781499}
   m_Layer: 5
   m_Name: Info
   m_TagString: Untagged
@@ -22195,29 +22362,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!223 &1817781499
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1817781495}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
 --- !u!1 &1828553526
 GameObject:
   m_ObjectHideFlags: 0
@@ -22775,6 +22919,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 1
 --- !u!65 &1847877629
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -23852,6 +23997,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 9523475}
+        m_TargetAssemblyTypeName: SoundList, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Randomize cards
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1896195692
 GameObject:
   m_ObjectHideFlags: 0
@@ -24515,7 +24672,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tokenPrefab: {fileID: 9147149003830520347, guid: d2fe9b47ebf7aa44cbc26f877784a8ec, type: 3}
   tokenSpawnTransform: {fileID: 928634473}
-  tokenSpawnRect: {x: 0.65, y: 0.5}
+  tokenSpawnRect: {x: 0.65, y: 0.4}
   tokensCount: {fileID: 1657236793}
   tokensWinned: {fileID: 971724636}
   tokensLoosed: {fileID: 1841599893}
@@ -27349,6 +27506,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 1
 --- !u!65 &2142335302
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -28961,6 +29119,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
+  EnableMaterialSwitch: 1
 --- !u!65 &7751093536772813506
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -29356,5 +29515,6 @@ SceneRoots:
   - {fileID: 1728177109}
   - {fileID: 1895462716}
   - {fileID: 1443419630}
-  - {fileID: 2122880549}
   - {fileID: 1588188771}
+  - {fileID: 9523477}
+  - {fileID: 2122880549}

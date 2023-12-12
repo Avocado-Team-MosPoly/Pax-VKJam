@@ -345,19 +345,23 @@ public class Paint : NetworkBehaviour
     
     private void DrawCircle(short rayX, short rayY)
     {
-        float r2 = Mathf.Pow(halfBrushSize - 0.5f, 2);
+        int circleRadius = brushMode == BrushMode.Draw ? halfBrushSize : halfBrushSize * brushSize;
+        circleRadius = Mathf.Min(circleRadius, 8);
         Color color = brushMode == BrushMode.Draw ? drawColor : baseColor;
+        float r2 = Mathf.Pow(circleRadius - 0.5f, 2);
 
-        for (int x = 0; x < brushSize; x++)
+        //Logger.Instance.Log(this, circleRadius);
+
+        for (int x = 0; x < circleRadius * 2; x++)
         {
-            for (int y = 0; y < brushSize; y++)
+            for (int y = 0; y < circleRadius * 2; y++)
             {
-                float x2 = Mathf.Pow(x - halfBrushSize, 2);
-                float y2 = Mathf.Pow(y - halfBrushSize, 2);
+                float x2 = Mathf.Pow(x - circleRadius, 2);
+                float y2 = Mathf.Pow(y - circleRadius, 2);
 
                 if (x2 + y2 < r2)
                 {
-                    texture.SetPixel(rayX + x - halfBrushSize, rayY + y - halfBrushSize, color);
+                    texture.SetPixel(rayX + x - circleRadius, rayY + y - circleRadius, color);
                 }
             }
         }
@@ -381,7 +385,8 @@ public class Paint : NetworkBehaviour
         Vector2Short prevPoint = new Vector2Short(pRayX, pRayY);
         Vector2Short newPoint = new Vector2Short(rayX, rayY);
         Vector2Short currentPoint = new Vector2Short();
-        float step = 1f / Vector2Short.Distance(prevPoint, newPoint) / halfBrushSize;
+        int circleRadius = brushMode == BrushMode.Draw ? halfBrushSize : halfBrushSize * brushSize;
+        float step = 1f / Vector2Short.Distance(prevPoint, newPoint) / circleRadius;
 
         for (float t = 0; t <= 1f; t += step)
         {

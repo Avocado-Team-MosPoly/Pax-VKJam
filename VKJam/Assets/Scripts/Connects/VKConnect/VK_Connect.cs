@@ -1,14 +1,13 @@
 using UnityEngine;
+using System.Collections;
 using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
 
 public class VK_Connect : TaskExecutor<VK_Connect>
 {
     public TMPro.TMP_Text DebugingText;
     public TMPro.TMP_Text NameText;
-    public URL_Image urlImage;
+    //public URL_Image urlImage;
 
-    [SerializeField] private Php_Connect PHPConnect;
     [SerializeField] private bool NeedDebuging;
 
     [DllImport("__Internal")] private static extern void UnityPluginRequestJs();
@@ -19,41 +18,50 @@ public class VK_Connect : TaskExecutor<VK_Connect>
     [DllImport("__Internal")] private static extern void UnityPluginRequestInviteOldPlayer();
     [DllImport("__Internal")] private static extern void UnityPluginRequestBuyTry(int id);
     private static VK_Connect instance;
-    private void Start()
+
+    public IEnumerator Init()
     {
+        Logger.Instance.Log(this, "Initialization started");
+
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(this.gameObject);
-            return;
+            Destroy(gameObject);
+            yield break;
         }
 
-        StartCoroutine(Init());
-        if(PHPConnect != null ) PHPConnect.Init();
-    }
-
-    private System.Collections.IEnumerator Init()
-    {
         yield return new WaitForSeconds(1);
         GameObject temp;
-        if (DebugingText == null && NeedDebuging)
+
+        if (NeedDebuging)
         {
-            temp = GameObject.FindGameObjectWithTag("Debug");
-            if (temp != null) DebugingText = temp.GetComponent<TMPro.TMP_Text>();
+            if (DebugingText == null)
+            {
+                temp = GameObject.FindGameObjectWithTag("Debug");
+                if (temp != null)
+                    DebugingText = temp.GetComponent<TMPro.TMP_Text>();
+            }
+            if (NameText == null)
+            {
+                temp = GameObject.FindGameObjectWithTag("Name");
+                if (temp != null)
+                    NameText = temp.GetComponent<TMPro.TMP_Text>();
+            }
+            //if (urlImage == null)
+            //{
+            //    temp = GameObject.FindGameObjectWithTag("Profile_Picture");
+            //    if (temp != null)
+            //        urlImage = temp.GetComponent<URL_Image>();
+            //}
         }
-        if (NameText == null && NeedDebuging) { 
-            temp = GameObject.FindGameObjectWithTag("Name");
-            if(temp != null) NameText = temp.GetComponent<TMPro.TMP_Text>();
-        }
-        if (urlImage == null && NeedDebuging) { 
-            temp = GameObject.FindGameObjectWithTag("Profile_Picture");
-            if (temp != null) urlImage = temp.GetComponent<URL_Image>();
-        }
+
         RequestUserData();
+
+        Logger.Instance.Log(this, "Initialization ended");
     }
 
     public void RequestJs() // вызываем из событий unity
@@ -117,13 +125,13 @@ public class VK_Connect : TaskExecutor<VK_Connect>
     public void UserData_Processing(string Input)
     {
         string[] text = Input.Split('|');
-        int User_ID = int.Parse(text[0]);
-        UserData.UserIMG_URL = text[1];
+        UserData.UserId = int.Parse(text[0]);
+        //string userIMG_URL = text[1];
         UserData.UserName = text[2];
-        if (NameText != null) NameText.text = UserData.UserName;
-        if (urlImage != null) urlImage.ChangeImage(UserData.UserIMG_URL);
-        if(Php_Connect.PHPisOnline) Php_Connect.Request_Auth(User_ID);
 
-        Authentication.LogInVK(User_ID.ToString());
+        if (NameText != null)
+            NameText.text = UserData.UserName;
+        //if (urlImage != null)
+        //  urlImage.ChangeImage(UserData.UserIMG_URL);
     }
 }

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using Unity.VisualScripting;
-using System;
+using Tiractor.Sound;
 
 public class Bestiary : MonoBehaviour
 {
@@ -170,6 +169,8 @@ public class Bestiary : MonoBehaviour
 
         descriptionHolder.text = Monsters[currentMonster].Description;
         ingredientsHolder.text = Monsters[currentMonster].GetIngredientsAsString();
+
+        GameManager.Instance.SoundList.Play("Turning the page");
     }
 
     private void GoToPage(int pageIndex)
@@ -179,7 +180,6 @@ public class Bestiary : MonoBehaviour
             catalougeCanvas.SetActive(false);
             templateCanvas.SetActive(true);
             currentMonster = pageIndex;
-            UpdateUIMonster();
         }
     }
 
