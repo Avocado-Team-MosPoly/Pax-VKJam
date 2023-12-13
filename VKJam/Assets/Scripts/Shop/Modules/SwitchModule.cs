@@ -21,8 +21,6 @@ public class SwitchModule : MonoBehaviour
             return;
 
         Transform instanceTransform = Instantiate(NewItem.Model, transform).transform;
-        if (NewItem.Data.Type == ItemType.Token)
-            instanceTransform.localScale = 3f * Vector3.one;
 
         if (Sync != null) 
         { 

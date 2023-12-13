@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 8064ef290bed40a439b073738978286f, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.5102955
+      value: 0.503432
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8064ef290bed40a439b073738978286f, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.5102955
+      value: 0.503432
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8064ef290bed40a439b073738978286f, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.5102955
+      value: 0.503432
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8064ef290bed40a439b073738978286f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -59,6 +59,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 8064ef290bed40a439b073738978286f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8064ef290bed40a439b073738978286f, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 8064ef290bed40a439b073738978286f, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -131,7 +135,8 @@ MonoBehaviour:
   m_OnMouseExit:
     m_PersistentCalls:
       m_Calls: []
-  ActivityInteractable: 0
+  ActivityInteractable: 1
+  EnableMaterialSwitch: 0
 --- !u!114 &-2362680578090962816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,3 +151,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Data: {fileID: 3303710172241615995}
   Object: {fileID: 1004909812012755606}
+  _Anim: {fileID: 0}

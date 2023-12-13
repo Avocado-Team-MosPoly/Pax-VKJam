@@ -10782,8 +10782,8 @@ Transform:
   m_GameObject: {fileID: 610182185}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.818, y: 0.2, z: -0.055}
-  m_LocalScale: {x: 0.35, y: 0.35, z: 0.35}
+  m_LocalPosition: {x: -0.8, y: 0.2, z: -0.055}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 532379903407359117}
@@ -14870,7 +14870,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &987325333
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15398,7 +15398,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &994332307
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17252,7 +17252,19 @@ MonoBehaviour:
   NewColor: {r: 0.8773585, g: 0.7164787, b: 0.3034887, a: 1}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1440248392}
+        m_TargetAssemblyTypeName: ProfileCustom, Assembly-CSharp
+        m_MethodName: ChangeSection
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 11
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:
       m_Calls:
@@ -22998,7 +23010,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &1422172935
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -23381,6 +23393,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1433741805}
   - component: {fileID: 1433741806}
+  - component: {fileID: 1433741807}
   m_Layer: 0
   m_Name: Hint Cards
   m_TagString: Untagged
@@ -23429,6 +23442,23 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1433741807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433741804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3884bab3cb82d9c4eb10aa420ecfbc11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 11
+  SwitchTarget: {fileID: 0}
+  Sync: {fileID: 0}
+  NeedSavePosition: 0
+  SwitchTargetUI: {fileID: 217396660}
 --- !u!1 &1440248387
 GameObject:
   m_ObjectHideFlags: 0
@@ -23527,7 +23557,7 @@ MonoBehaviour:
   - {fileID: 1162957461}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1433741807}
   - {fileID: 2078567891}
   - {fileID: 0}
   - {fileID: 0}
@@ -26951,7 +26981,19 @@ MonoBehaviour:
   NewColor: {r: 0.8773585, g: 0.7164787, b: 0.3034887, a: 1}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1440248392}
+        m_TargetAssemblyTypeName: ProfileCustom, Assembly-CSharp
+        m_MethodName: ChangeSection
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 11
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:
       m_Calls:
@@ -27493,7 +27535,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &1723213319
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -28844,7 +28886,19 @@ MonoBehaviour:
   NewColor: {r: 0.8773585, g: 0.7164787, b: 0.3034887, a: 1}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1440248392}
+        m_TargetAssemblyTypeName: ProfileCustom, Assembly-CSharp
+        m_MethodName: ChangeSection
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 11
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:
       m_Calls:
@@ -30875,7 +30929,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &1915845112
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -34984,15 +35038,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e165dd6a8527ed4fabdeb065d29f8db, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 0.33333334
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e165dd6a8527ed4fabdeb065d29f8db, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 0.33333334
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e165dd6a8527ed4fabdeb065d29f8db, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1
+      value: 0.33333334
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e165dd6a8527ed4fabdeb065d29f8db, type: 3}
       propertyPath: m_LocalPosition.x
@@ -35130,7 +35184,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Token
+          m_StringArgument: TokenFlip
           m_BoolArgument: 0
         m_CallState: 2
   m_OnMouseExit:
@@ -36168,6 +36222,10 @@ PrefabInstance:
     - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
       propertyPath: ActivityInteractable
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
+      propertyPath: EnableMaterialSwitch
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6206614011127979785, guid: dfa817044b5cb244dbcbe05d3e3d1a72, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
