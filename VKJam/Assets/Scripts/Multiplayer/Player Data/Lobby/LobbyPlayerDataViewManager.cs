@@ -177,6 +177,8 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
 
             try
             {
+                //Logger.Instance.LogError(this, clientId + " " + playerData[clientId].AvatarIndex + " " + avatarsAndFramesStorage.products[playerData[clientId].AvatarIndex].Data.productName);
+                //Logger.Instance.LogError(this, clientId + " " + playerData[clientId].AvatarFrameIndex + " " + avatarsAndFramesStorage.products[playerData[clientId].AvatarFrameIndex].Data.productName);
                 Sprite avatar = avatarsAndFramesStorage.products[playerData[clientId].AvatarIndex].icon;
                 Sprite frame = avatarsAndFramesStorage.products[playerData[clientId].AvatarFrameIndex].icon;
 

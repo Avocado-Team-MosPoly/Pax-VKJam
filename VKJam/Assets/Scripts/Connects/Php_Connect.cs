@@ -223,7 +223,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             else
             {
                 //Debug.Log("Server response: " + www.downloadHandler.text);
-                Debug.Log($"Loaded element with idDesign { idDesign}");
+                //Debug.Log($"Loaded element with idDesign { idDesign}");
                 onComplete?.Invoke(www.downloadHandler.text == "true");
             }
         }

@@ -13,7 +13,7 @@ public class Authentication : MonoBehaviour
 
     public static bool IsLoggedInThroughVK { get; private set; }
 
-    public static async IAsyncEnumerator<Task> Authenticate(string userId, string playerName)
+    public static async Task Authenticate(string userId, string playerName)
     {
         Logger.Instance.Log(typeof(Authentication), "Authentication started");
         
@@ -45,15 +45,16 @@ public class Authentication : MonoBehaviour
         if (AuthenticationService.Instance.IsAuthorized)
         {
             Logger.Instance.Log(typeof(Authentication), "You alredy authorized");
-            yield break;
+            return;
         }
 
         AuthenticationService.Instance.SignedIn += () =>
         {
+            Logger.Instance.Log(typeof(Authentication), $"Signed in. Your id is {AuthenticationService.Instance.PlayerId}, player name is {PlayerName}");
         };
+
         Logger.Instance.Log(typeof(Authentication), "Sign in in progress...");
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        Logger.Instance.Log(typeof(Authentication), $"Signed in. Your id is {AuthenticationService.Instance.PlayerId}, player name is {PlayerName}");
     }
 
     public static async Task ChangePlayerName(string playerName)

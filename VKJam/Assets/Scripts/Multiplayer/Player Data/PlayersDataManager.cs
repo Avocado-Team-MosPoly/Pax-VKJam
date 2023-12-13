@@ -89,7 +89,7 @@ public class PlayersDataManager : NetworkBehaviour
     }
 
     /// <summary> </summary>
-    /// <returns> First is Avatar index, second is Frame </returns>
+    /// <returns> First is Avatar index, second is Frame index </returns>
     private (byte, byte) GetAvatarAndFrameIndexes()
     {
         (byte, byte) result = (7, 0);
@@ -97,38 +97,29 @@ public class PlayersDataManager : NetworkBehaviour
         if (CustomController._executor == null)
             return result;
 
-        //Logger.Instance.LogError("");
-        //Logger.Instance.Log(CustomController._executor.Custom[(int)ItemType.Avatars].Data.productName);
-        //Logger.Instance.LogError("");
-
         for (int i = 0; i < avatarsAndFramesStorage.products.Count; i++)
         {
             if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.Avatars)
             {
-                //Logger.Instance.Log(avatarsAndFramesStorage.products[i].Data.productName);
-                if (CustomController._executor.Custom[(int)ItemType.Avatars].icon == avatarsAndFramesStorage.products[i].icon)
+                if (CustomController._executor.Custom[(int)ItemType.Avatars].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
                 {
                     result.Item1 = (byte)i;
                     break;
                 }
             }
         }
-        //Logger.Instance.LogError("");
-        //Logger.Instance.Log(CustomController._executor.Custom[(int)ItemType.AvatarFrame].Data.productName);
-        //Logger.Instance.LogError("");
+
         for (int i = 0; i < avatarsAndFramesStorage.products.Count; i++)
         {
             if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.AvatarFrame)
             {
-                //Logger.Instance.Log(avatarsAndFramesStorage.products[i].Data.productName);
-                if (CustomController._executor.Custom[(int)ItemType.AvatarFrame].icon == avatarsAndFramesStorage.products[i].icon)
+                if (CustomController._executor.Custom[(int)ItemType.AvatarFrame].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
                 {
-                    result.Item1 = (byte)i;
+                    result.Item2 = (byte)i;
                     break;
                 }
             }
         }
-        //Logger.Instance.LogWarning(result);
 
         return result;
     }

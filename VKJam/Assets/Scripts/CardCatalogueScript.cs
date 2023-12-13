@@ -68,7 +68,8 @@ public class CardCatalogueScript : MonoBehaviour
     {
         Debug.Log("Trying buy card by id : " + _bufferIdCard);
         string resp = Php_Connect.Request_CraftCardTry(_bufferIdCard, ForThePieces);
-        if (resp == "success") {
+        if (resp == "success")
+        {
             Debug.Log("Successfully purchased card by id : " + _bufferIdCard);
             CardSystem temp = packCardSO.SearchCardSystemById(_bufferIdCard);
             temp.CardIsInOwn = true;

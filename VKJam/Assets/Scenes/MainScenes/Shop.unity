@@ -745,7 +745,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &21775856
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16857,6 +16857,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 646804585275176261, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: Price
+      value: 
+      objectReference: {fileID: 628843497}
     - target: {fileID: 698706359649249439, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_text
       value: "10 000 \u0416\u0435\u0442\u043E\u043D\u043E\u0432"
@@ -16949,6 +16953,10 @@ PrefabInstance:
       propertyPath: m_text
       value: "5 000 \u0416\u0435\u0442\u043E\u043D\u043E\u0432"
       objectReference: {fileID: 0}
+    - target: {fileID: 5284481918960077731, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: Price
+      value: 
+      objectReference: {fileID: 628843495}
     - target: {fileID: 6194442846836167187, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -16957,6 +16965,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6969485316753957808, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: Price
+      value: 
+      objectReference: {fileID: 628843498}
     - target: {fileID: 7302370871027135506, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -17037,6 +17049,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7484512082327182491, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: Price
+      value: 
+      objectReference: {fileID: 628843496}
     - target: {fileID: 8876167168696362897, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_HorizontalAlignment
       value: 2
@@ -17065,6 +17081,50 @@ MonoBehaviour:
 --- !u!114 &628843494 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5186252887030067835, guid: a04f2fe9f62600841927d104302807be, type: 3}
+  m_PrefabInstance: {fileID: 628843491}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &628843495 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8876167168696362897, guid: a04f2fe9f62600841927d104302807be, type: 3}
+  m_PrefabInstance: {fileID: 628843491}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &628843496 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8015947065367187822, guid: a04f2fe9f62600841927d104302807be, type: 3}
+  m_PrefabInstance: {fileID: 628843491}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &628843497 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7319094292134043363, guid: a04f2fe9f62600841927d104302807be, type: 3}
+  m_PrefabInstance: {fileID: 628843491}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &628843498 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3767396495162168362, guid: a04f2fe9f62600841927d104302807be, type: 3}
   m_PrefabInstance: {fileID: 628843491}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -24158,7 +24218,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &999039358
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24284,12 +24344,12 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1955352068}
         m_TargetAssemblyTypeName: WarehouseScript, Assembly-CSharp
-        m_MethodName: ChangeSection
-        m_Mode: 3
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -24325,7 +24385,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &1005656940
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -27200,7 +27260,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &1094927519
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -32729,7 +32789,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &1303023295
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -50144,7 +50204,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1887226443}
         m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
-        m_MethodName: SetTrigger
+        m_MethodName: Play
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -50161,7 +50221,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!1 &2064406485
 GameObject:
   m_ObjectHideFlags: 0
@@ -50840,7 +50900,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 21775855}
         m_TargetAssemblyTypeName: Interactable, Assembly-CSharp
-        m_MethodName: SetInteractable
+        m_MethodName: 
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -50864,8 +50924,8 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1955352068}
         m_TargetAssemblyTypeName: WarehouseScript, Assembly-CSharp
-        m_MethodName: ChangeSection
-        m_Mode: 3
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -50893,7 +50953,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ActivityInteractable: 1
-  EnableMaterialSwitch: 1
+  EnableMaterialSwitch: 0
 --- !u!65 &2092581733
 BoxCollider:
   m_ObjectHideFlags: 0

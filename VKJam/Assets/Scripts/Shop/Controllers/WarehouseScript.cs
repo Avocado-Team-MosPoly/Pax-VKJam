@@ -111,7 +111,7 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
         {
             if (productIndex >= customController.Categories[currentSection].products.Count)
             {
-                Logger.Instance.Log(this, productIndex + " " + customController.Categories[currentSection].products.Count);
+                //Logger.Instance.Log(this, productIndex + " " + customController.Categories[currentSection].products.Count);
                 productInstances[instanceIndex].gameObject.SetActive(false);
                 continue;
             }
