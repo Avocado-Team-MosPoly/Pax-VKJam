@@ -6,7 +6,6 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     [SerializeField] private static RandomItem DroppedItem;
     [SerializeField] private Animator Hand;
     [SerializeField] private GameObject[] WinObjects;
-    [SerializeField] private GameObject Current;
     [Header("Display UI")]
     //[SerializeField] private GameObject UI;
     [SerializeField] private Displayer Token;
@@ -46,19 +45,11 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     }
     public void GenerateWin(DesignSelect Sel)
     {
-        if (Current != null) Destroy(Current);
         WareData temp = CustomController._executor.Search(Sel);
         Debug.Log(Sel.type + " " + (Sel.type >= 8));
-        if (Sel.type >= 8)
-        {
-            Debug.Log(Mathf.Clamp(WinObjects.Length, 0, 3));
-            ActiveWinObject(3);
-        }
-        else
-        {
-            Debug.Log("Try create " + temp.Model);
-            Current = Instantiate(temp.Model, WinObjects[4].transform);
-        }
+
+        ActiveWinObject(3);
+
         UIWin(temp);
     }
     public void UIWin(WareData data)
@@ -84,7 +75,6 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     }
     private void ActiveWinObject(int id)
     {
-        if (Current != null) Destroy(Current);
         for (int i = 0; i <= Mathf.Clamp(WinObjects.Length, 0, 3);++i)
         {
             if (id == i) WinObjects[i].SetActive(true);
