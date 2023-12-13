@@ -16873,6 +16873,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 72.473
       objectReference: {fileID: 0}
+    - target: {fileID: 2100652454720711539, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BuyTokens
+      objectReference: {fileID: 0}
+    - target: {fileID: 2100652454720711539, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2619197258182514247, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_Name
       value: CoinsDonation 1
@@ -16957,9 +16965,25 @@ PrefabInstance:
       propertyPath: Price
       value: 
       objectReference: {fileID: 628843495}
+    - target: {fileID: 5734748062951525526, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BuyTokens
+      objectReference: {fileID: 0}
     - target: {fileID: 6194442846836167187, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6721189462465861427, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BuyTokens
+      objectReference: {fileID: 0}
+    - target: {fileID: 6721189462465861427, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6728269037160789075, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6876513437224672523, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_Enabled
@@ -17053,6 +17077,10 @@ PrefabInstance:
       propertyPath: Price
       value: 
       objectReference: {fileID: 628843496}
+    - target: {fileID: 8282941001654366741, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8876167168696362897, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_HorizontalAlignment
       value: 2
@@ -45611,7 +45639,6 @@ MonoBehaviour:
   - {fileID: 1916811971}
   - {fileID: 1105208502}
   - {fileID: 2058341957}
-  Current: {fileID: 0}
   Token: {fileID: 754264451}
   Custom: {fileID: 754264449}
   Card: {fileID: 754264450}

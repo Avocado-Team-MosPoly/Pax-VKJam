@@ -111,7 +111,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         if (!PHPisOnline) return "";
         WWWForm form = new WWWForm();
         form.AddField("Nickname", Nickname);
-        form.AddField("Id", id);
+        form.AddField("id", id);
 
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/TokenBuy.php", form))
         {
