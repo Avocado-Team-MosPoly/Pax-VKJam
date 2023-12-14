@@ -45,8 +45,8 @@ public class BootManager : MonoBehaviour
         UpdateLoadingStatus(phpConnect_Authentication);
         if (UserData.UserId < 0)
         {
+            Logger.Instance.LogWarning(this, "Unable to authenticate through VK id");
             yield return StartCoroutine(Php_Connect.Request_Auth(333));
-            Logger.Instance.LogWarning(this, "");
         }
         else
         {

@@ -11,8 +11,7 @@ public class SwitchModule : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (CustomController._executor.Custom[(int)Type].Data.productName != "" &&
-            CustomController._executor.Custom[(int)Type].Data.productCode != 0)
+        if (CustomController._executor.Custom[(int)Type].Data.productName != "" && CustomController._executor.Custom[(int)Type].Data.productCode != 0)
             SwitchItem(CustomController._executor.Custom[(int)Type]);
     }
     public virtual void SwitchItem(WareData NewItem)

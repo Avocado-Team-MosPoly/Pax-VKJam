@@ -13,7 +13,6 @@ public class CardCatalogueScript : MonoBehaviour
 
     [SerializeField] private Button previousMonsterButton;
     [SerializeField] private Button nextMonsterButton;
-    [SerializeField] private GameObject BuyCanvas;
 
     [SerializeField] private string buyText;
     [SerializeField] private string inOwnText;
@@ -131,7 +130,6 @@ public class CardCatalogueScript : MonoBehaviour
                 imageHolderButtons[i].onClick.AddListener(() =>
                 {
                     SetBuffer(Monsters[index].CardDBIndex);
-                    BuyCanvas.SetActive(true);
                 });
 
                 imageHolder[i].color = _normalColor;
