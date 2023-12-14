@@ -3330,7 +3330,6 @@ GameObject:
   - component: {fileID: 320006156}
   - component: {fileID: 320006155}
   - component: {fileID: 320006154}
-  - component: {fileID: 320006158}
   - component: {fileID: 320006159}
   m_Layer: 6
   m_Name: book
@@ -3386,7 +3385,7 @@ MonoBehaviour:
   m_OnMouseEnter:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 320006158}
+      - m_Target: {fileID: 728232376}
         m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
         m_MethodName: Play
         m_Mode: 5
@@ -3474,27 +3473,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 320006151}
   m_Mesh: {fileID: 7637004816912865990, guid: d0e68b3495488f04d8aa5da78be2b9ad, type: 3}
---- !u!95 &320006158
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 320006151}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b0dd478a94b758441ac70ccb83937cf5, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &320006159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3725,6 +3703,7 @@ GameObject:
   m_Component:
   - component: {fileID: 330173088}
   - component: {fileID: 330173089}
+  - component: {fileID: 330173090}
   m_Layer: 6
   m_Name: Notebook
   m_TagString: Untagged
@@ -3764,6 +3743,27 @@ MonoBehaviour:
   SwitchTarget: {fileID: 0}
   Sync: {fileID: 0}
   NeedSavePosition: 0
+--- !u!95 &330173090
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330173087}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 01c7dc22790ef314da235f5afa008944, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &333628808
 GameObject:
   m_ObjectHideFlags: 0
@@ -8726,6 +8726,7 @@ GameObject:
   m_Component:
   - component: {fileID: 728232374}
   - component: {fileID: 728232375}
+  - component: {fileID: 728232376}
   m_Layer: 7
   m_Name: Bestiary
   m_TagString: Untagged
@@ -8765,6 +8766,27 @@ MonoBehaviour:
   SwitchTarget: {fileID: 0}
   Sync: {fileID: 0}
   NeedSavePosition: 0
+--- !u!95 &728232376
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728232373}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a27a9670f58b86048af12a38fa91ebbe, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &735389075
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19345,7 +19367,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -28924,7 +28946,6 @@ GameObject:
   - component: {fileID: 7751093536772813506}
   - component: {fileID: 7751093536772813505}
   - component: {fileID: 9019810579674565343}
-  - component: {fileID: 9019810579674565344}
   - component: {fileID: 9019810579674565345}
   m_Layer: 6
   m_Name: Notebook Model
@@ -29103,7 +29124,7 @@ MonoBehaviour:
   m_OnMouseEnter:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 9019810579674565344}
+      - m_Target: {fileID: 330173090}
         m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
         m_MethodName: Play
         m_Mode: 5
@@ -29454,27 +29475,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 4832641851117436131}
---- !u!95 &9019810579674565344
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7444453829734977428}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b0d0c660359fbd942926691e74dc5254, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &9019810579674565345
 MonoBehaviour:
   m_ObjectHideFlags: 0
