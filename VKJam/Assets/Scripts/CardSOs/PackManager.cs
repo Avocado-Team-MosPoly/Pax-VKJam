@@ -23,24 +23,36 @@ public class PackManager : MonoBehaviour
             Destroy(this);
             return;
         }
+
+        
     }
 
     private IEnumerator Start()
     {
         yield return new WaitForSeconds(1);
-        foreach (var current in All)
+
+        //send request whith card packs we have
+
+        //for each pack we own send request which card in pack ownering
+
+        //save prev logic
+
+        string[] resp = Php_Connect.Request_WhichCardInPackOwnering(Active.PackDBIndex).Split('\n');
+
+        foreach (var card in Active.CardInPack) 
         {
-            //current.PackDataOwnering();
+            foreach (var element in resp)
+            {
+                if(card.CardDBIndex.ToString() == element)
+                {
+                    card.CardIsInOwn = true;
+                    break;
+                }
+                else
+                {
+                    card.CardIsInOwn = false;
+                }
+            }
         }
     }
-    /*private void OnApplicationQuit()
-    {
-        foreach (var current in All)
-        {
-            current.ResetOwning();
-        }
-    }*/
-
-
-
 }

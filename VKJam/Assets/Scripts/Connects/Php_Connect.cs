@@ -136,7 +136,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         if (!PHPisOnline) return "";
         WWWForm form = new WWWForm();
         form.AddField("Nickname", Nickname);
-        form.AddField("ForThePieces", ForThePieces.ToString());
+        form.AddField("ForThePieces", ForThePieces ? "1" : "0");
         form.AddField("idCard", idCard.ToString());
 
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/CraftCardTry.php", form))
