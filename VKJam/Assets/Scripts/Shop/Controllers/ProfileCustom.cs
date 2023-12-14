@@ -1,19 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ProfileCustom : TaskExecutor<ProfileCustom>
 {
-    [SerializeField] private List<Product> Products = new();
     public SwitchModule[] Custom = new SwitchModule[System.Enum.GetNames(typeof(ItemType)).Length];
-    [SerializeField]
-    private GameObject Template;
-    [SerializeField]
-    private GameObject WhereInst;
+
+    [SerializeField] private List<Product> Products = new();
+    [SerializeField] private GameObject Template;
+    [SerializeField] private GameObject WhereInst;
     [SerializeField] private CustomController Data;
-    [SerializeField]
-    private GameObject WhatActiv;
+    [SerializeField] private GameObject WhatActiv;
+    [SerializeField] private ScrollRect customScrollRect;
 
     [SerializeField] private TMPro.TextMeshProUGUI TextType;
+
     private void Awake()
     {
         Data = CustomController._executor;
@@ -47,6 +48,7 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
     {
         Drop();
         WhatActiv.SetActive(true);
+        customScrollRect.verticalNormalizedPosition = 0f;
         TextType.text = Naming(ToWhat);
         foreach (var current in Data.Categories[(int)CustomController.Categorize(ToWhat)].products)
         {

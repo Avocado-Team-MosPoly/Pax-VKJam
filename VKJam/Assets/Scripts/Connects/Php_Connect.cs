@@ -38,10 +38,6 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
     public IEnumerator Init()
     {
-        Logger.Instance.Log(this, "Initialization started");
-
-        //SceneLoader.EndLoad += OnGameEnded;
-
         if (Link.Contains("https"))
         {
             link = Link;
@@ -61,7 +57,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         if (PHPisOnline == false)
             Current = current;
 
-        Logger.Instance.Log(this, "Initialization ended");
+        Logger.Instance.Log(this, "Initialized");
 
         //Debug.Log(Php_Connect.Request_WhichCardInPackOwnering(0));
         //Debug.Log(Request_BuyTry(0));
@@ -461,7 +457,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         WWWForm form = new WWWForm();
         Nickname = external_Nickname;
         form.AddField("Nickname", external_Nickname);
-        
+
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/Auth.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();

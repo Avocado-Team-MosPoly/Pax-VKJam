@@ -50,8 +50,6 @@ public class RelayManager : MonoBehaviour
 
     public IEnumerator Init()
     {
-        Logger.Instance.Log(this, "Initialization started");
-
         if (Instance == null)
         {
             Instance = this;
@@ -67,7 +65,7 @@ public class RelayManager : MonoBehaviour
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
         NetworkManager.Singleton.OnClientStopped += OnClientStopped;
 
-        Logger.Instance.Log(this, "Initialization ended");
+        Logger.Instance.Log(this, "Initialized");
     }
 
     private bool PlatformNotSupportedException()

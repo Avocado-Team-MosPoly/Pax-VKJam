@@ -15,8 +15,6 @@ public class Authentication : MonoBehaviour
 
     public static async Task Authenticate(string userId, string playerName)
     {
-        Logger.Instance.Log(typeof(Authentication), "Authentication started");
-        
         if (UnityServices.State == ServicesInitializationState.Initialized)
         {
             Logger.Instance.Log(typeof(Authentication), "Unity Services alredy initialized");

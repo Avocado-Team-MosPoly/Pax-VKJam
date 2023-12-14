@@ -21,8 +21,6 @@ public class VK_Connect : TaskExecutor<VK_Connect>
 
     public IEnumerator Init()
     {
-        Logger.Instance.Log(this, "Initialization started");
-
         if (instance == null)
         {
             instance = this;
@@ -61,7 +59,7 @@ public class VK_Connect : TaskExecutor<VK_Connect>
 
         RequestUserData();
 
-        Logger.Instance.Log(this, "Initialization ended");
+        Logger.Instance.Log(this, "Initialized");
     }
 
     public void RequestJs() // вызываем из событий unity
