@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
 public class PackManager : MonoBehaviour
 {
     /*public delegate void StartLoadEvent(string sceneName);
@@ -16,7 +17,7 @@ public class PackManager : MonoBehaviour
     {
         if (Instance == null)
         {
-            Instance = this;            
+            Instance = this;
         }
         else
         {
@@ -27,10 +28,8 @@ public class PackManager : MonoBehaviour
         
     }
 
-    private IEnumerator Start()
+    public IEnumerator Init()
     {
-        yield return new WaitForSeconds(1);
-
         //send request whith card packs we have
 
         //for each pack we own send request which card in pack ownering
@@ -39,7 +38,7 @@ public class PackManager : MonoBehaviour
 
         string[] resp = Php_Connect.Request_WhichCardInPackOwnering(Active.PackDBIndex).Split('\n');
 
-        foreach (var card in Active.CardInPack) 
+        foreach (var card in Active.CardInPack)
         {
             foreach (var element in resp)
             {
@@ -54,5 +53,8 @@ public class PackManager : MonoBehaviour
                 }
             }
         }
+
+        Logger.Instance.Log(this, "Initialized");
+        yield break;
     }
 }

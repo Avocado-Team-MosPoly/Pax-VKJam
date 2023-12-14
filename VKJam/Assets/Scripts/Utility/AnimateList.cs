@@ -6,7 +6,8 @@ public class AnimateList : MonoBehaviour
     [SerializeField] private Animator _animator;
     private void Awake()
     {
-        _animator.StopPlayback();
+        if (_animator != null)
+            _animator.StopPlayback();
     }
     public void Play(string WhichAnimation)
     {

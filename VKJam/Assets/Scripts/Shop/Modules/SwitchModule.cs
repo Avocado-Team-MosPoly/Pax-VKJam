@@ -19,7 +19,8 @@ public class SwitchModule : MonoBehaviour
         if (NewItem.Data.Type != Type) 
             return;
 
-        Transform instanceTransform = Instantiate(NewItem.Model, transform).transform;
+        //Transform instanceTransform = Instantiate(NewItem.Model, transform).transform;
+        Instantiate(NewItem.Model, transform);
 
         if (Sync != null) 
         { 

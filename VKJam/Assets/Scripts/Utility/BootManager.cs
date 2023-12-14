@@ -15,18 +15,22 @@ public class BootManager : MonoBehaviour
     [SerializeField] private RelayManager relayManager;
     [SerializeField] private LobbyManager lobbyManager;
 
+    [Header("Cards")]
+    [SerializeField] private PackManager packManager;
+
     [Header("Custom")]
     [SerializeField] private CustomController customController;
 
 
     [Header("Loading UI")]
     [SerializeField] private TextMeshProUGUI statusLabel;
-    [SerializeField] private Image loadingBar;
+    [SerializeField] private Slider loadingSlider;
 
     [Header("Loading Statuses")]
     [SerializeField] private string vkConnect_Initialization;
     [SerializeField] private string phpConnect_Initialization;
     [SerializeField] private string phpConnect_Authentication;
+    [SerializeField] private string packManager_Initialization;
     [SerializeField] private string customController_Initialization;
     [SerializeField] private string authentication_Authentication;
     [SerializeField] private string relayManager_Initialization;
@@ -35,7 +39,7 @@ public class BootManager : MonoBehaviour
 
     private IEnumerator Start()
     {
-        loadingBar.fillAmount = 0f;
+        loadingSlider.value = 0f;
         statusLabel.text = vkConnect_Initialization;
         yield return StartCoroutine(vkConnect.Init());
 
@@ -52,6 +56,9 @@ public class BootManager : MonoBehaviour
         {
             yield return StartCoroutine(Php_Connect.Request_Auth(UserData.UserId));
         }
+
+        UpdateLoadingStatus(packManager_Initialization);
+        yield return StartCoroutine(packManager.Init());
 
         UpdateLoadingStatus(customController_Initialization);
         yield return StartCoroutine(customController.Init());
@@ -71,7 +78,7 @@ public class BootManager : MonoBehaviour
 
     private void UpdateLoadingStatus(string status)
     {
-        loadingBar.fillAmount += 1f / 7;
+        loadingSlider.value += 1f / 9;
         statusLabel.text = status;
     }
 

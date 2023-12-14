@@ -11,8 +11,6 @@ public class CustomController : TaskExecutor<CustomController>
 
     public IEnumerator Init()
     {
-        Logger.Instance.Log(this, "Initialization started");
-
         Load();
 
         yield return new WaitForSeconds(0.1f);
@@ -25,10 +23,10 @@ public class CustomController : TaskExecutor<CustomController>
                 yield return StartCoroutine(Php_Connect.Request_CheckOwningDesign(ware.Data.productCode, ware.OnCheckOwningDesignComplete));
             }
         }
-        if (Php_Connect.PHPisOnline)
-            FetchAllProductData();
+        //if (Php_Connect.PHPisOnline)
+            //FetchAllProductData();
 
-        Logger.Instance.Log(this, "Initialization ended");
+        Logger.Instance.Log(this, "Initialized");
     }
     [ContextMenu("Upload Data into DB")]
     private void Upload()

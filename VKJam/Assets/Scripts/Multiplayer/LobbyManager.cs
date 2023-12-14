@@ -38,8 +38,6 @@ public class LobbyManager : MonoBehaviour
 
     public IEnumerator Init()
     {
-        Logger.Instance.Log(this, "Initialization started");
-
         if (Instance == null)
         {
             Instance = this;
@@ -73,7 +71,7 @@ public class LobbyManager : MonoBehaviour
 
         IsTeamMode = "True";
 
-        Logger.Instance.Log(this, "Initialization ended");
+        Logger.Instance.Log(this, "Initialized");
     }
 
     private void Update()
