@@ -18,14 +18,17 @@ public class Product : MonoBehaviour
 
     public void SetData(WareData NewData)
     {
-        if (Data.Data.Type == ItemType.AvatarFrame)
+        //if (Data.Data.Type == ItemType.AvatarFrame)
+        //{
+        //    if (NewData.Data.Type != ItemType.AvatarFrame)
+        //        Picture.transform.localScale *= 1.4f;
+        //    else
+        //        Picture.transform.localScale /= 1.4f;
+        //}
+        //else
+        if (NewData.Data.Type == ItemType.AvatarFrame)
         {
-            if (NewData.Data.Type != ItemType.AvatarFrame)
-                Picture.transform.localScale *= 1.4f;
-        }
-        else if (NewData.Data.Type == ItemType.AvatarFrame)
-        {
-            Picture.transform.localScale /= 1.4f;
+            Picture.transform.localScale *= 1.4f;
         }
 
         //Logger.Instance.LogWarning(this, "Type : " + NewData.Data.Type.ToString());
