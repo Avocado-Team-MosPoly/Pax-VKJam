@@ -22,7 +22,7 @@ public class CameraBack : MonoBehaviour
         {
             setActiveTrueOnBack[i].SetActive(true);
         }
-        book.GetComponent<Interactable>().SetInteractable(true);
+        book.GetComponentInChildren<Interactable>().SetInteractable(true);
         animationObject.GetComponent<AnimateList>().Play(animationName);
         mainCamera.GetComponent<MoveCamera>().SetActivity(true);
     }

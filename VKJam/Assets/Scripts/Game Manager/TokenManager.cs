@@ -27,7 +27,7 @@ public class TokenManager : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI tokensTotal;
 
     private Dictionary<ulong, int> playersTokens = new();
-    private static List<Token> tokensOnScene;
+    private static List<GameObject> tokensOnScene;
 
     private static TokenManager instance;
 
@@ -45,7 +45,7 @@ public class TokenManager : NetworkBehaviour
         else
             instance = this;
 
-        tokensOnScene = new List<Token>();
+        tokensOnScene = new List<GameObject>();
     }
 
     public override void OnNetworkSpawn()
@@ -98,7 +98,7 @@ public class TokenManager : NetworkBehaviour
         if (tokenPrefab && tokenSpawnTransform)
         {
             Vector2 halfTokenSpawn = tokenSpawnRect / 2;
-            Token token;
+            GameObject token;
             for (int i = 0; i < count; i++)
             {
                 Vector3 localPosition = new(
@@ -106,8 +106,13 @@ public class TokenManager : NetworkBehaviour
                     0f,
                     Random.Range(-halfTokenSpawn.y, halfTokenSpawn.y)
                     );
-                token = Instantiate(tokenPrefab, tokenSpawnTransform).GetComponent<Token>();
+                token = Instantiate(tokenPrefab, tokenSpawnTransform);
+
                 token.transform.localPosition = localPosition;
+                if(token.TryGetComponent<Rigidbody>(out Rigidbody rb)){
+                    rb.isKinematic = false;
+                }
+
                 tokensOnScene.Add(token);
             }
         }
@@ -121,8 +126,8 @@ public class TokenManager : NetworkBehaviour
         {
             if (TokensCount < 0)
             {
-                foreach (Token token in tokensOnScene)
-                    token.Destruct();
+                foreach (var token in tokensOnScene)
+                    Destroy(token);
 
                 tokensOnScene.Clear();
             }
@@ -130,7 +135,7 @@ public class TokenManager : NetworkBehaviour
             {
                 for (int i = tokensOnScene.Count - 1; i >= TokensCount; i--)
                 {
-                    tokensOnScene[i].Destruct();
+                    Destroy(tokensOnScene[i]);
                     tokensOnScene.RemoveAt(i);
                 }
             }
