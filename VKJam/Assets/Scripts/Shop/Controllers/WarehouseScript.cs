@@ -115,6 +115,12 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
                 productInstances[instanceIndex].gameObject.SetActive(false);
                 continue;
             }
+            if (customController.Categories[currentSection].products[productIndex].Data.productCode == 0)
+            {
+                Logger.Instance.Log(this, customController.Categories[currentSection].products[productIndex].Data.productName);
+                instanceIndex--;
+                continue;
+            }
 
             productInstances[instanceIndex].ChooseMode = false;
             productInstances[instanceIndex].SetData(customController.Categories[currentSection].products[productIndex]);

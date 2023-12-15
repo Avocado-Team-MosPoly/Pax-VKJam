@@ -457,6 +457,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         WWWForm form = new WWWForm();
         Nickname = external_Nickname;
         form.AddField("Nickname", external_Nickname);
+        form.AddField("mode", "no-cors");
 
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/Auth.php", form))
         {
@@ -470,12 +471,12 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             {
                 //ErrorProcessor(www.error);
                 Logger.Instance.LogError(_executor, "Unable to authenticate on server: " + www.error);
-                //return www.error;
+                //yield return www.error;
             }
             else
             {
                 Logger.Instance.Log(_executor, "Authenticated on server: " + www.downloadHandler.text);
-                //return www.downloadHandler.text;
+                //yield return www.downloadHandler.text;
             }
         }
     }

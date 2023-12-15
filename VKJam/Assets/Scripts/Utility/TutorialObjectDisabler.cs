@@ -1,7 +1,6 @@
 using UnityEngine;
-using System;
 
-public class TuturialObjectDisabler : MonoBehaviour
+public class TutorialObjectDisabler : MonoBehaviour
 {
     [SerializeField] private string uniqueId;
 

@@ -50,11 +50,11 @@ public class BootManager : MonoBehaviour
         if (UserData.UserId < 0)
         {
             Logger.Instance.LogWarning(this, "Unable to authenticate through VK id");
-            yield return StartCoroutine(Php_Connect.Request_Auth(333));
+            yield return StartCoroutine(Php_Connect.Request_Auth(333)); // stops here
         }
         else
         {
-            yield return StartCoroutine(Php_Connect.Request_Auth(UserData.UserId));
+            yield return StartCoroutine(Php_Connect.Request_Auth(UserData.UserId)); // and here
         }
 
         UpdateLoadingStatus(packManager_Initialization);
