@@ -28,7 +28,7 @@ public class PackManager : MonoBehaviour
         
     }
 
-    public IEnumerator Init()
+    public IEnumerator Init(string cards)
     {
         //send request whith card packs we have
 
@@ -36,13 +36,19 @@ public class PackManager : MonoBehaviour
 
         //save prev logic
 
-        string[] resp = Php_Connect.Request_WhichCardInPackOwnering(Active.PackDBIndex).Split('\n');
+        if (string.IsNullOrEmpty(cards))
+        {
+            Logger.Instance.LogError(this, new System.FormatException($"{nameof(cards)} is null or empty"));
+            yield break;
+        }
+
+        string[] resp = cards.Split('\n');
 
         foreach (var card in Active.CardInPack)
         {
             foreach (var element in resp)
             {
-                if(card.CardDBIndex.ToString() == element)
+                if (card.CardDBIndex.ToString() == element)
                 {
                     card.CardIsInOwn = true;
                     break;
