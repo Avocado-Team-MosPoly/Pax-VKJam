@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -30,6 +31,7 @@ public class BootManager : MonoBehaviour
     [SerializeField] private string vkConnect_Initialization;
     [SerializeField] private string phpConnect_Initialization;
     [SerializeField] private string phpConnect_Authentication;
+    [SerializeField] private string getBDCardPacksData;
     [SerializeField] private string packManager_Initialization;
     [SerializeField] private string customController_Initialization;
     [SerializeField] private string authentication_Authentication;
@@ -50,15 +52,18 @@ public class BootManager : MonoBehaviour
         if (UserData.UserId < 0)
         {
             Logger.Instance.LogWarning(this, "Unable to authenticate through VK id");
-            yield return StartCoroutine(Php_Connect.Request_Auth(333)); // stops here
+            yield return StartCoroutine(Php_Connect.Request_Auth(333));
         }
         else
         {
-            yield return StartCoroutine(Php_Connect.Request_Auth(UserData.UserId)); // and here
+            yield return StartCoroutine(Php_Connect.Request_Auth(UserData.UserId));
         }
 
+        UpdateLoadingStatus(getBDCardPacksData);
+        yield return StartCoroutine(Php_Connect.Request_WhichCardInPackOwnering(packManager.Active.PackDBIndex));
+
         UpdateLoadingStatus(packManager_Initialization);
-        yield return StartCoroutine(packManager.Init());
+        yield return StartCoroutine(packManager.Init(phpConnect.CardOwneringRequest));
 
         UpdateLoadingStatus(customController_Initialization);
         yield return StartCoroutine(customController.Init());
@@ -78,8 +83,9 @@ public class BootManager : MonoBehaviour
 
     private void UpdateLoadingStatus(string status)
     {
-        loadingSlider.value += 1f / 9;
+        loadingSlider.value += 1f / 10;
         statusLabel.text = status;
+        //Logger.Instance.Log(this, $"Changed status: value = {loadingSlider.value}, text = {status}");
     }
 
     private void LoadStartScene()

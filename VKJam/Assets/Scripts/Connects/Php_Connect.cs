@@ -22,6 +22,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
     public static Sprite connectionError;
     public static RandomItemList randomBase;
     public static Currency Current;
+    public string CardOwneringRequest;
 
     [SerializeField] private string Link;
     [SerializeField] private Sprite ConnectionError;
@@ -77,9 +78,14 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         }
     }
 
-    public static string Request_WhichCardInPackOwnering(int idPack) // Переписать под инт, по схеме
+    public static IEnumerator Request_WhichCardInPackOwnering(int idPack) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     {
-        if (!PHPisOnline) return "";
+        if (!PHPisOnline)
+        {
+            _executor.CardOwneringRequest = string.Empty;
+            yield break;
+        }
+
         WWWForm form = new WWWForm();
         form.AddField("Nickname", Nickname);
         form.AddField("PackId", idPack);
@@ -87,22 +93,24 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/WhichCardInPackOwnering.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
-            www.SendWebRequest();
-            while (!www.isDone) { }
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+            yield return www.SendWebRequest();
+
             if (www.result != UnityWebRequest.Result.Success)
             {
                 ErrorProcessor(www.error);
-                return www.error;
+                _executor.CardOwneringRequest = www.error;
+                yield break;
             }
             else
             {
                 Debug.Log("Server response: " + www.downloadHandler.text);
-                return www.downloadHandler.text;
+                _executor.CardOwneringRequest = www.downloadHandler.text;
+                yield break;
             }
         }
     }
-    public static string Request_TokenBuy(int id) // Переписать под инт, по схеме
+    public static string Request_TokenBuy(int id) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     {
         if (!PHPisOnline) return "";
         WWWForm form = new WWWForm();
@@ -112,7 +120,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/TokenBuy.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
@@ -138,7 +146,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/CraftCardTry.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
@@ -167,7 +175,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/UploadData.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
@@ -234,7 +242,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/CheckOwningDesign.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
@@ -262,7 +270,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/WhatPackOwnering.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
@@ -292,7 +300,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/TokenWin.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
@@ -317,7 +325,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/BuyTry.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
@@ -384,7 +392,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/CardWin.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
@@ -408,7 +416,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignWin.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
@@ -436,7 +444,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/Gift.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
@@ -462,7 +470,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/Auth.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             float startTime = Time.time;
 
             yield return www.SendWebRequest();
@@ -489,7 +497,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/CurrentCurrency.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
@@ -516,7 +524,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/WhatOwnering.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
@@ -540,7 +548,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignCount.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
@@ -564,7 +572,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignOutput_JSON.php", form))
         {
             www.certificateHandler = new AcceptAllCertificates();
-            // Запрос выполняется дожидаясь его завершения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             www.SendWebRequest();
             while (!www.isDone) { }
             if (www.result != UnityWebRequest.Result.Success)
