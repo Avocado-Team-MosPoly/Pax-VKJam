@@ -52,4 +52,9 @@ public class CardSO : ScriptableObject
         
         return ingredietList;
     }
+
+    public override string ToString()
+    {
+        return id;
+    }
 }

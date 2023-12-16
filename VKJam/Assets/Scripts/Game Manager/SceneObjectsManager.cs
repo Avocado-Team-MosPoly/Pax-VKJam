@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Netcode;
 using System;
 using CartoonFX;
+using TMPro;
 
 public class SceneObjectsManager : MonoBehaviour
 {
@@ -22,6 +23,10 @@ public class SceneObjectsManager : MonoBehaviour
     [SerializeField] private GameObject tokensSummary;
     [SerializeField] private GameObject gameSummary;
 
+    [SerializeField] private GameObject guesserPreRoundCanvas;
+    [SerializeField] private string chooseCardText;
+    private TextMeshProUGUI guesserPreRoundLabel;
+
     [Header("Fire")]
     [SerializeField] private CFXR_Effect fireParticle;
 
@@ -30,6 +35,7 @@ public class SceneObjectsManager : MonoBehaviour
     private void Awake()
     {
         chat = chatView.GetComponent<Chat>();
+        guesserPreRoundLabel = guesserPreRoundCanvas.GetComponentInChildren<TextMeshProUGUI>();
 
         GameManager.Instance.OnGuessMonsterStageActivatedOnClient.AddListener(OnGuessMonsterStageActivated);
         GameManager.Instance.OnGameEnded.AddListener(OnGameEnded);
@@ -37,6 +43,8 @@ public class SceneObjectsManager : MonoBehaviour
         GameManager.Instance.RoleManager.OnPainterSetted.AddListener(OnPainterSetted);
         GameManager.Instance.RoleManager.OnGuesserSetted.AddListener(OnGuesserSetted);
         GameManager.Instance.OnIngredientSwitchedOnClient.AddListener(OnIngredientSwitched);
+
+        GameManager.Instance.OnCardChoosedOnClient.AddListener(OnCardChoosed);
 
         if (!NetworkManager.Singleton.IsHost)
         {
@@ -92,11 +100,17 @@ public class SceneObjectsManager : MonoBehaviour
         chat.Enable();
         painterBook.SetInteractable(true);
         guesserPaint.gameObject.SetActive(true);
-        
+        guesserPreRoundCanvas.SetActive(true);
+        guesserPreRoundLabel.text = $"{PlayersDataManager.Instance.PlayerDatas[GameManager.Instance.PainterId].Name} {chooseCardText}";
         GameManager.Instance.Paint.SetActive(false);
         GameManager.Instance.CardManager.enabled = false;
 
         isFirstSetted = true;
+    }
+
+    private void OnCardChoosed(CardSO cardSO)
+    {
+        guesserPreRoundCanvas.SetActive(false);
     }
 
     private void OnIngredientSwitched(int ingredientIndex)

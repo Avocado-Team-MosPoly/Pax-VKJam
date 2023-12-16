@@ -10,6 +10,7 @@ public class GameManager : NetworkBehaviour
     public static GameManager Instance { get; private set; }
 
     [HideInInspector] public UnityEvent OnRoundStartedOnClient;
+    [HideInInspector] public UnityEvent<CardSO> OnCardChoosedOnClient;
     [HideInInspector] public UnityEvent<int> OnIngredientSwitchedOnClient;
     /// <summary> Sends true if local player is painter, false if not </summary>
     [HideInInspector] public UnityEvent<bool> OnGuessMonsterStageActivatedOnClient;
@@ -231,6 +232,8 @@ public class GameManager : NetworkBehaviour
         TokenManager.AccrueTokens();
 
         BackgroundMusic.Instance.Play("tokens_take-card");
+
+        answerCardSO = null;
     }
 
     private void OnRoundEnded()
@@ -308,6 +311,7 @@ public class GameManager : NetworkBehaviour
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
 
         sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
+        OnCardChoosedOnClient?.Invoke(answerCardSO);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -320,7 +324,7 @@ public class GameManager : NetworkBehaviour
 
         SetHintDataClientRpc((sbyte)ingredientManager.CurrentIngredientIndex);
 
-        Stage = Stage.IngredientGuess;
+        //Stage = Stage.IngredientGuess;
 
         Log("New answer CardSO: " + answerCardSO.Id);
     }
@@ -423,7 +427,8 @@ public class GameManager : NetworkBehaviour
 
     public void StartGame()
     {
-        if (answerCardSO == null || Stage == Stage.Waiting)
+        Logger.Instance.Log(this, Stage);
+        if (answerCardSO == null || Stage != Stage.Waiting)
             return;
 
         Stage = Stage.IngredientGuess;

@@ -1,3 +1,4 @@
+using System;
 using System.CodeDom.Compiler;
 using System.Collections;
 using TMPro;
@@ -43,9 +44,6 @@ public class BootManager : MonoBehaviour
 
     private IEnumerator Start()
     {
-        Logger.Instance.Log(this, true.ToString());
-        Logger.Instance.Log(this, false.ToString());
-
         loadingSlider.value = 0f;
         statusLabel.text = vkConnect_Initialization;
         yield return StartCoroutine(vkConnect.Init());
@@ -53,16 +51,17 @@ public class BootManager : MonoBehaviour
         UpdateLoadingStatus(phpConnect_Initialization);
         yield return StartCoroutine(phpConnect.Init());
 
+        bool loadTutorial = true;
+        Action<bool> successAuthentication = (bool isFirstTime) => loadTutorial = isFirstTime;
+
         UpdateLoadingStatus(phpConnect_Authentication);
         if (UserData.UserId < 0)
         {
             Logger.Instance.LogWarning(this, "Unable to authenticate through VK id");
-            yield return StartCoroutine(Php_Connect.Request_Auth(defaultNickname));
+            yield return StartCoroutine(Php_Connect.Request_Auth(defaultNickname, successAuthentication, null));
         }
         else
-        {
-            yield return StartCoroutine(Php_Connect.Request_Auth(UserData.UserId));
-        }
+            yield return StartCoroutine(Php_Connect.Request_Auth(UserData.UserId, successAuthentication, null));
 
         //send request whith card packs we have
 
@@ -93,7 +92,7 @@ public class BootManager : MonoBehaviour
         yield return StartCoroutine(lobbyManager.Init());
 
         UpdateLoadingStatus(sceneLoading);
-        LoadStartScene();
+        LoadStartScene(loadTutorial);
     }
 
     private void UpdateLoadingStatus(string status)
@@ -103,18 +102,11 @@ public class BootManager : MonoBehaviour
         //Logger.Instance.Log(this, $"Changed status: value = {loadingSlider.value}, text = {status}");
     }
 
-    private void LoadStartScene()
+    private void LoadStartScene(bool loadTutorial)
     {
-        int tutorialCompleted = PlayerPrefs.GetInt(nameof(tutorialCompleted), 0);
-
-        if (tutorialCompleted == 1)
-        {
-            SceneLoader.Load("Menu");
-        }
-        else
-        {
-            PlayerPrefs.SetInt(nameof(tutorialCompleted), 1);
+        if (loadTutorial)
             SceneLoader.Load("TutorialScene");
-        }
+        else
+            SceneLoader.Load("Menu");
     }
 }

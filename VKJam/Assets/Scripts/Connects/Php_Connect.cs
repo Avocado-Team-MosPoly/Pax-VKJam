@@ -99,7 +99,8 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         completed?.Invoke(null);
     }
 
-    public static IEnumerator Request_Auth(int external_Nickname)
+    /// <summary> successRequest - Sends true if the user has just registered, and false if not </summary>
+    public static IEnumerator Request_Auth(int external_Nickname, Action<bool> successRequest, Action unsuccessRequest)
     {
         WWWForm form = new();
         form.AddField("Nickname", external_Nickname);
@@ -110,12 +111,23 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             {
                 PHPisOnline = false;
                 Logger.Instance.LogError(Executor, "Unable to authenticate on server");
+                unsuccessRequest?.Invoke();
             }
             else
             {
                 PHPisOnline = true;
                 Nickname = external_Nickname;
-                Logger.Instance.Log(Executor, "Authenticated on server");
+
+                if (response == "registered")
+                {
+                    successRequest?.Invoke(true);
+                    Logger.Instance.Log(Executor, "Registered on server");
+                }
+                else if (response == "authenticated")
+                {
+                    successRequest?.Invoke(false);
+                    Logger.Instance.Log(Executor, "Authenticated on server");
+                }
             }
         };
 
