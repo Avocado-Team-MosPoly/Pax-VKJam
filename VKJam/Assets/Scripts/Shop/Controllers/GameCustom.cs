@@ -1,19 +1,16 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class GameCustom : TaskExecutor<GameCustom>
 {
     [SerializeField] private SwitchModule[] Custom = new SwitchModule[System.Enum.GetNames(typeof(ItemType)).Length];
-    [SerializeField]
-    private CustomController Data;
+    [SerializeField] private CustomController Data;
 
-
-    private void Awake()
+    private void Start()
     {
-        Data = CustomController._executor;
-        Denote();
+        Data = CustomController.Executor;
         Swap();
     }
+
     private void Swap()
     {
         foreach(var cur in Data.Custom)
@@ -22,6 +19,4 @@ public class GameCustom : TaskExecutor<GameCustom>
             Custom[(int)cur.Data.Type].SwitchItem(cur);
         }
     }
-   
-  
 }

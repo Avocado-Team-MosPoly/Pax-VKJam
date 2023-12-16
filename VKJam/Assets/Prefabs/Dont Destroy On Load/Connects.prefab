@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3890772637464068977}
   - component: {fileID: 3890772637464068978}
   - component: {fileID: 3890772637464068976}
-  - component: {fileID: 2913828899995353881}
   - component: {fileID: 9165275726675321496}
   - component: {fileID: 121830609623397873}
   m_Layer: 0
@@ -48,7 +47,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 719a5ba708511c341aeb705cedbcffcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Executor: {fileID: 3890772637464068978}
   DebugingText: {fileID: 0}
   NameText: {fileID: 0}
   NeedDebuging: 0
@@ -64,26 +62,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0894e912318c2f648a5991970e949abe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Executor: {fileID: 3890772637464068976}
-  RandomBase: {fileID: 11400000, guid: 4827f778d8432734fa93200000f77c88, type: 2}
-  current:
-    IGCurrency: 100
-    DCurrency: 100
-    CardPiece: 0
   Link: https://pax-churmenya.ru/User
-  ConnectionError: {fileID: 0}
---- !u!114 &2913828899995353881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3890772637464068979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd3816fe3a003d4459662cb4ba3f04c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  randomBase: {fileID: 11400000, guid: 4827f778d8432734fa93200000f77c88, type: 2}
 --- !u!114 &9165275726675321496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,7 +76,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 687f2e9eea6d39e4faacc75a74c43068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Executor: {fileID: 9165275726675321496}
   FreeIndex: 0
   Categories:
   - {fileID: 11400000, guid: 132d9bca54f509f4f800decf8eab2464, type: 2}

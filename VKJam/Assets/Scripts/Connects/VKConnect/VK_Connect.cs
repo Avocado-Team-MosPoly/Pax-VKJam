@@ -101,8 +101,8 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         int tokenCount = 50;
         Action successRequest = () =>
         {
-            Catcher_RandomItem._executor.UIWin(RandomType.Token, tokenCount);
-            CurrencyCatcher._executor.Refresh();
+            Catcher_RandomItem.Executor.UIWin(RandomType.Token, tokenCount);
+            CurrencyCatcher.Executor.Refresh();
         };
 
         StartCoroutine(Php_Connect.Request_TokenWin(tokenCount, successRequest, null));

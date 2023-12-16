@@ -1,9 +1,9 @@
-using UnityEngine.Networking;
-using UnityEngine;
-using System.Collections;
 using System;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.Networking;
 
-[System.Serializable] 
+[Serializable] 
 public class Currency
 {
     public int IGCurrency;
@@ -11,33 +11,31 @@ public class Currency
     public int CardPiece;
 }
 
-[System.Serializable]
 public class Php_Connect : TaskExecutor<Php_Connect>
 {
-    public RandomItemList RandomBase;
-    public Currency current;
-
-    public static bool PHPisOnline = true;
-
-    public static int Nickname;
-    public static Sprite connectionError;
-    public static RandomItemList randomBase;
-    public static Currency Current;
-    public string CardOwneringRequest;
+    public static bool PHPisOnline { get; private set; }
+    public static int Nickname {  get; private set; }
+    public static Currency Current { get; private set; } = new Currency()
+    {
+        IGCurrency = 100,
+        DCurrency = 100,
+        CardPiece = 100
+    };
+ 
+    public static RandomItemList RandomBase => Executor.randomBase;
 
     [SerializeField] private string Link;
-    [SerializeField] private Sprite ConnectionError;
+    [SerializeField] private RandomItemList randomBase;
 
     private static string link;
 
-    private static readonly string noResponse = "no response";
-
-    [ContextMenu("Forced set static data by local data")]
-    public void ForcedLinked()
+    private static void ErrorProcessor(string error)
     {
-        link = Link;
-        Nickname = 333;
-        randomBase = RandomBase;
+        Debug.LogError("Server Error: " + error);
+        if (error == "Cannot connect to destination host")
+        {
+            PHPisOnline = false;
+        }
     }
 
     public IEnumerator Init()
@@ -50,46 +48,14 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         {
             link = string.Empty;
             PHPisOnline = false;
-            Logger.Instance.LogError(this, new System.FormatException($"Unsafe or incorrect {nameof(Link)}. {nameof(Link)} should start with \"https\". {nameof(Link)}: {Link}"));
+            Logger.Instance.LogError(this, new FormatException($"Unsafe or incorrect {nameof(Link)}. {nameof(Link)} should start with \"https\". {nameof(Link)}: {Link}"));
             yield break;
         }
 
-        randomBase = RandomBase;
-        PHPisOnline = true;
-        Nickname = 333;
-
-        if (PHPisOnline == false)
-            Current = current;
-
         Logger.Instance.Log(this, "Initialized");
-
-        //Debug.Log(Php_Connect.Request_WhichCardInPackOwnering(0));
-        //Debug.Log(Request_BuyTry(0));
-        //StartCoroutine(Request_Auth(12));
-        //StartCoroutine(Request_DataAboutDesign(1));
-        //StartCoroutine(Request_CurrentCurrency("Renata"));
-        //StartCoroutine(Request_BuyTry("Renata",1));
-        //StartCoroutine(Request_CurrentCurrency("Renata"));
     }
 
-    private static void ErrorProcessor(string error)
-    {
-        Debug.LogError("Server Error: " + error);
-        if (error == "Cannot connect to destination host")
-        {
-            PHPisOnline = false;
-        }
-    }
-
-    private bool IsPHPOnline()
-    {
-        if (!PHPisOnline)
-        {
-            return false;
-        }
-
-        return true;
-    }
+    #region Requests
 
     private static IEnumerator Get(string userModule, Action<string> completed)
     {
@@ -135,20 +101,25 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
     public static IEnumerator Request_Auth(int external_Nickname)
     {
-        Nickname = external_Nickname;
-
-        WWWForm form = new WWWForm();
+        WWWForm form = new();
         form.AddField("Nickname", external_Nickname);
 
         Action<string> completed = (string response) =>
         {
             if (response == null)
-                Logger.Instance.LogError(_executor, "Unable to authenticate on server");
+            {
+                PHPisOnline = false;
+                Logger.Instance.LogError(Executor, "Unable to authenticate on server");
+            }
             else
-                Logger.Instance.Log(_executor, "Authenticated on server");
+            {
+                PHPisOnline = true;
+                Nickname = external_Nickname;
+                Logger.Instance.Log(Executor, "Authenticated on server");
+            }
         };
 
-        yield return _executor.StartCoroutine(Post("Auth.php", form, completed));
+        yield return Executor.StartCoroutine(Post("Auth.php", form, completed));
     }
 
     public static IEnumerator Request_WhichCardInPackOwnering(int idPack, Action<string> successRequest) // ���������� ��� ���, �� �����
@@ -168,7 +139,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             successRequest?.Invoke(response);
         };
 
-        yield return _executor.StartCoroutine(Post("WhichCardInPackOwnering.php", form, completed));
+        yield return Executor.StartCoroutine(Post("WhichCardInPackOwnering.php", form, completed));
     }
 
     public static IEnumerator Request_TokenBuy(int id, Action<string> successRequest, Action unsuccessRequest) // ���������� ��� ���, �� �����
@@ -194,7 +165,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             successRequest?.Invoke(response);
         };
 
-        yield return _executor.StartCoroutine(Post("TokenBuy.php", form, completed));
+        yield return Executor.StartCoroutine(Post("TokenBuy.php", form, completed));
     }
 
     public static IEnumerator Request_CraftCardTry(int idCard, bool ForThePieces, Action<string> successRequest, Action unsuccessRequest)
@@ -221,7 +192,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             successRequest?.Invoke(response);
         };
 
-        yield return _executor.StartCoroutine(Post("CraftCardTry.php", form, completed));
+        yield return Executor.StartCoroutine(Post("CraftCardTry.php", form, completed));
     }
 
     public static IEnumerator Request_UploadData(Design Upload, Action<string> successRequest, Action unsuccessRequest)
@@ -247,7 +218,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             successRequest?.Invoke(response);
         };
 
-        yield return _executor.StartCoroutine(Post("UploadData.php", form, completed));
+        yield return Executor.StartCoroutine(Post("UploadData.php", form, completed));
     }
 
     public static IEnumerator Request_CheckOwningDesign(int idDesign, Action<bool> onComplete)
@@ -264,7 +235,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             yield break;
         }
 
-        WWWForm form = new WWWForm();
+        WWWForm form = new();
         form.AddField("idDesign", idDesign);
         form.AddField("Nickname", Nickname);
 
@@ -276,7 +247,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 onComplete?.Invoke(response == "true");
         };
 
-        yield return _executor.StartCoroutine(Post("CheckOwningDesign.php", form, completed));
+        yield return Executor.StartCoroutine(Post("CheckOwningDesign.php", form, completed));
     }
 
     public static IEnumerator Request_WhatPackOwnering(Action<string> onComplete)
@@ -287,7 +258,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             yield break;
         }
 
-        WWWForm form = new WWWForm();
+        WWWForm form = new();
         form.AddField("Nickname", Nickname);
 
         Action<string> completed = (string response) =>
@@ -295,7 +266,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             onComplete?.Invoke(response ?? string.Empty);
         };
 
-        yield return _executor.StartCoroutine(Post("WhatPackOwnering.php", form, completed));
+        yield return Executor.StartCoroutine(Post("WhatPackOwnering.php", form, completed));
     }
 
     public static IEnumerator Request_TokenWin(int Count, Action successRequest, Action unsuccessRequest)
@@ -306,7 +277,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             yield break;
         }
 
-        WWWForm form = new WWWForm();
+        WWWForm form = new();
         form.AddField("Nickname", Nickname);
         form.AddField("Count", Count);
 
@@ -318,7 +289,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 successRequest?.Invoke();
         };
 
-        yield return _executor.StartCoroutine(Post("TokenWin.php", form, completed));
+        yield return Executor.StartCoroutine(Post("TokenWin.php", form, completed));
     }
 
     public static IEnumerator Request_BuyTry(int DesignID, Action successRequest, Action unsuccessRequest)
@@ -329,7 +300,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             yield break;
         }
 
-        WWWForm form = new WWWForm();
+        WWWForm form = new();
         form.AddField("Nickname", Nickname);
         form.AddField("DesignID", DesignID);
 
@@ -341,7 +312,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 successRequest?.Invoke();
         };
 
-        yield return _executor.StartCoroutine(Post("BuyTry.php", form, completed));
+        yield return Executor.StartCoroutine(Post("BuyTry.php", form, completed));
     }
 
     private static IEnumerator Request_CardWin(bool isShard, Action<string> successRequest, Action unsuccessRequest)
@@ -352,7 +323,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             yield break;
         }
 
-        WWWForm form = new WWWForm();
+        WWWForm form = new();
         form.AddField("Nickname", Nickname);
         form.AddField("IsShard", isShard.ToString());
 
@@ -364,7 +335,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 successRequest?.Invoke(response);
         };
 
-        yield return _executor.StartCoroutine(Post("CardWin.php", form, completed));
+        yield return Executor.StartCoroutine(Post("CardWin.php", form, completed));
     }
 
     private static IEnumerator Request_DesignWin(Action<string> successRequest, Action unsuccessRequest)
@@ -375,7 +346,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             yield break;
         }
 
-        WWWForm form = new WWWForm();
+        WWWForm form = new();
         form.AddField("Nickname", Nickname);
 
         Action<string> completed = (string response) =>
@@ -386,7 +357,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 successRequest?.Invoke(response);
         };
 
-        yield return _executor.StartCoroutine(Post("DesignWin.php", form, completed));
+        yield return Executor.StartCoroutine(Post("DesignWin.php", form, completed));
     }
 
     private static IEnumerator Response_Gift(int DesignID, int TargetNickname)
@@ -394,13 +365,13 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         if (!PHPisOnline)
             yield break;
 
-        WWWForm form = new WWWForm();
+        WWWForm form = new();
         form.AddField("TargetNickname", TargetNickname);
         form.AddField("DesignID", DesignID);
 
         //Action<string> completed = (string response) => { };
 
-        yield return _executor.StartCoroutine(Post("Gift.php", form, null));
+        yield return Executor.StartCoroutine(Post("Gift.php", form, null));
 
     }
 
@@ -412,7 +383,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             yield break;
         }
 
-        WWWForm form = new WWWForm();
+        WWWForm form = new();
         form.AddField("Nickname", Nickname);
 
         Action<string> completed = (string response) =>
@@ -425,7 +396,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             onComplete?.Invoke(Current);
         };
 
-        yield return _executor.StartCoroutine(Post("CurrentCurrency.php", form, completed));
+        yield return Executor.StartCoroutine(Post("CurrentCurrency.php", form, completed));
     }
 
     //public static string Request_WhatOwnering()
@@ -463,7 +434,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         }
 
         // switch to GET and check workability
-        WWWForm form = new WWWForm();
+        WWWForm form = new();
 
         Action<string> completed = (string response) =>
         {
@@ -473,7 +444,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 onComplete?.Invoke(int.Parse(response));
         };
 
-        yield return _executor.StartCoroutine(Post("DesignCount.php", form, completed));
+        yield return Executor.StartCoroutine(Post("DesignCount.php", form, completed));
     }
 
     public static IEnumerator Request_DataAboutDesign(int idDesign, Action<Design> onComplete)
@@ -484,7 +455,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             yield break;
         }
 
-        WWWForm form = new WWWForm();
+        WWWForm form = new();
         form.AddField("idDesign", idDesign);
         form.AddField("Nickname", Nickname);
 
@@ -496,7 +467,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 onComplete?.Invoke(JsonUtility.FromJson<Design>(response));
         };
 
-        yield return _executor.StartCoroutine(Post("DesignOutput_JSON.php", form, completed));
+        yield return Executor.StartCoroutine(Post("DesignOutput_JSON.php", form, completed));
     }
 
     public static IEnumerator Request_Gift(int DesignID, int TargetNickname)
@@ -507,20 +478,20 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         bool flag = true;
         Action successRequest = () => flag = false;
 
-        yield return _executor.StartCoroutine(Request_BuyTry(DesignID, successRequest, null));
+        yield return Executor.StartCoroutine(Request_BuyTry(DesignID, successRequest, null));
         if (flag)
             yield break;
 
         if (DesignID == 0)
         {
-            int ID = randomBase.Interact();
+            int ID = RandomBase.Interact();
 
             if (ID >= -5 && ID < 0)
             {
                 int tokenCount = RandomToken(ID);
-                successRequest = () => Catcher_RandomItem._executor.UIWin(RandomType.Token, tokenCount);
+                successRequest = () => Catcher_RandomItem.Executor.UIWin(RandomType.Token, tokenCount);
 
-                _executor.StartCoroutine(Request_TokenWin(tokenCount, successRequest, null));
+                Executor.StartCoroutine(Request_TokenWin(tokenCount, successRequest, null));
             }
             else
             {
@@ -532,33 +503,46 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                         stringSuccessRequest = (string response) =>
                         {
                             DesignSelect temp = JsonUtility.FromJson<DesignSelect>(response);
-                            Catcher_RandomItem._executor.GenerateWin(temp);
+                            Catcher_RandomItem.Executor.GenerateWin(temp);
                         };
 
-                        _executor.StartCoroutine(Request_DesignWin(stringSuccessRequest, null));
+                        Executor.StartCoroutine(Request_DesignWin(stringSuccessRequest, null));
                         break;
                     case -7:
                         stringSuccessRequest = (string response) =>
                         {
-                            Catcher_RandomItem._executor.UIWin(RandomType.Card, int.Parse(response));
+                            Catcher_RandomItem.Executor.UIWin(RandomType.Card, int.Parse(response));
                         };
 
-                        _executor.StartCoroutine(Request_CardWin(false, stringSuccessRequest, null));
+                        Executor.StartCoroutine(Request_CardWin(false, stringSuccessRequest, null));
                         break;
                     case -8:
                         stringSuccessRequest = (string response) =>
                         {
-                            Catcher_RandomItem._executor.UIWin(RandomType.Card, int.Parse(response));
+                            Catcher_RandomItem.Executor.UIWin(RandomType.Card, int.Parse(response));
                         };
 
-                        _executor.StartCoroutine(Request_CardWin(true, stringSuccessRequest, null));
+                        Executor.StartCoroutine(Request_CardWin(true, stringSuccessRequest, null));
                         break;
                 }
             }
         }
         else
         {
-            _executor.StartCoroutine(Response_Gift(DesignID, TargetNickname));
+            Executor.StartCoroutine(Response_Gift(DesignID, TargetNickname));
+        }
+    }
+
+    #endregion
+
+    private void OnGameEnded(string sceneName)
+    {
+        Current.IGCurrency += TokenManager.TokensCount;
+        if (PHPisOnline)
+        {
+            Action successRequest = () => Catcher_RandomItem.Executor.UIWin(RandomType.Token, TokenManager.TokensCount);
+
+            StartCoroutine(Request_TokenWin(TokenManager.TokensCount, successRequest, null));
         }
     }
 
@@ -578,17 +562,6 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 return UnityEngine.Random.Range(251, 500);
             default:
                 return 0;
-        }
-    }
-
-    private void OnGameEnded(string sceneName)
-    {
-        Current.IGCurrency += TokenManager.TokensCount;
-        if (PHPisOnline)
-        {
-            Action successRequest = () => Catcher_RandomItem._executor.UIWin(RandomType.Token, TokenManager.TokensCount);
-
-            StartCoroutine(Request_TokenWin(TokenManager.TokensCount, successRequest, null));
         }
     }
 

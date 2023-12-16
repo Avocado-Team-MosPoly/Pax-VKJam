@@ -79,13 +79,12 @@ public class PlayersDataManager : NetworkBehaviour
     private void OnClientDisconnect(ulong clientId)
     {
         // server
-        return;
 
-        for (int i = 0; i < playerDatasList.Count; i++)
-        {
-            if (playerDatasList[i].Id == clientId)
-                playerDatasList.RemoveAt(i);
-        }
+        //for (int i = 0; i < playerDatasList.Count; i++)
+        //{
+        //    if (playerDatasList[i].Id == clientId)
+        //        playerDatasList.RemoveAt(i);
+        //}
     }
 
     /// <summary> </summary>
@@ -94,14 +93,14 @@ public class PlayersDataManager : NetworkBehaviour
     {
         (byte, byte) result = (7, 0);
 
-        if (CustomController._executor == null)
+        if (CustomController.Executor == null)
             return result;
 
         for (int i = 0; i < avatarsAndFramesStorage.products.Count; i++)
         {
             if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.Avatars)
             {
-                if (CustomController._executor.Custom[(int)ItemType.Avatars].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
+                if (CustomController.Executor.Custom[(int)ItemType.Avatars].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
                 {
                     result.Item1 = (byte)i;
                     break;
@@ -113,7 +112,7 @@ public class PlayersDataManager : NetworkBehaviour
         {
             if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.AvatarFrame)
             {
-                if (CustomController._executor.Custom[(int)ItemType.AvatarFrame].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
+                if (CustomController.Executor.Custom[(int)ItemType.AvatarFrame].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
                 {
                     result.Item2 = (byte)i;
                     break;

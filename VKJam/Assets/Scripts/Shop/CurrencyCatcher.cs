@@ -9,11 +9,11 @@ public class CurrencyCatcher : TaskExecutor<CurrencyCatcher>
     [SerializeField] private TextMeshProUGUI IG;
     [SerializeField] private TextMeshProUGUI CP;
 
-    private void Awake()
+    private void Start()
     {
-        Denote();
         Refresh();
     }
+
     public void Refresh()
     {
         Action<Currency> onComplete = (Currency currency) =>
