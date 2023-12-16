@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class BootManager : MonoBehaviour
 {
+    [SerializeField] private int defaultNickname = 333; // defauld = 333
+
     [Header("VK")]
     [SerializeField] private VK_Connect vkConnect;
 
@@ -55,12 +57,18 @@ public class BootManager : MonoBehaviour
         if (UserData.UserId < 0)
         {
             Logger.Instance.LogWarning(this, "Unable to authenticate through VK id");
-            yield return StartCoroutine(Php_Connect.Request_Auth(333));
+            yield return StartCoroutine(Php_Connect.Request_Auth(defaultNickname));
         }
         else
         {
             yield return StartCoroutine(Php_Connect.Request_Auth(UserData.UserId));
         }
+
+        //send request whith card packs we have
+
+        //for each pack we own send request which card in pack ownering
+
+        //save prev logic
 
         string ownedCardsInPacks = null;
         UpdateLoadingStatus(getBDCardPacksData);

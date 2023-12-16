@@ -30,12 +30,6 @@ public class PackManager : MonoBehaviour
 
     public IEnumerator Init(string cards)
     {
-        //send request whith card packs we have
-
-        //for each pack we own send request which card in pack ownering
-
-        //save prev logic
-
         if (string.IsNullOrEmpty(cards))
         {
             Logger.Instance.LogError(this, new System.FormatException($"{nameof(cards)} is null or empty"));
