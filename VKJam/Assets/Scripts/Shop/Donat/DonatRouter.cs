@@ -14,12 +14,12 @@ public class DonatRouter : MonoBehaviour
     }
     public void BuyCross(int id)
     {
-        VK_Connect._executor.RequestBuyTry(id);
+        VK_Connect.Executor.RequestBuyTry(id);
         StartCoroutine(DelayRefresh());
     }
     public void Ads()
     {
-        VK_Connect._executor.RequestAds();
+        VK_Connect.Executor.RequestAds();
         StartCoroutine(DelayRefresh());
     }
     private IEnumerator DelayRefresh()
@@ -27,14 +27,14 @@ public class DonatRouter : MonoBehaviour
         yield return new WaitForSeconds(1);
         AdsCounterTest.text = "Реклама " + AdManager.GetAdsWatchedToday() + "/3";
         buyText.text = buyTextString;
-        CurrencyCatcher._executor.Refresh();
+        CurrencyCatcher.Executor.Refresh();
         
     }
     public void BuyTokens(int id)
     {
         Action<string> successRequest = (string response) =>
         {
-            CurrencyCatcher._executor.Refresh();
+            CurrencyCatcher.Executor.Refresh();
         };
         //Action unsuccessRequest = () => { };
 

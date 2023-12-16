@@ -27,14 +27,9 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
     private int currentSection = -1;
     private int currentPage = 0;
 
-    private void Awake()
-    {
-        Denote();
-    }
-
     private void Start()
     {
-        customController = CustomController._executor;
+        customController = CustomController.Executor;
 
         SpawnProducts();
         ChangeSection(defaultSection);

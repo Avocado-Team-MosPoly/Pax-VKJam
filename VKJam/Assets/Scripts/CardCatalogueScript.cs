@@ -77,7 +77,7 @@ public class CardCatalogueScript : MonoBehaviour
                 CardSystem temp = packCardSO.SearchCardSystemById(_bufferIdCard);
                 temp.CardIsInOwn = true;
 
-                CurrencyCatcher._executor.Refresh();
+                CurrencyCatcher.Executor.Refresh();
                 UpdateUIPage();
             }
         };

@@ -15,20 +15,15 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
 
     [SerializeField] private TMPro.TextMeshProUGUI TextType;
 
-    private void Awake()
+    private void Start()
     {
-        Data = CustomController._executor;
-        Denote();
+        Data = CustomController.Executor;
     }
     public static void ProductChoosen(Product Target)
     {
-        _executor._productChoosen(Target);
-    }
-    private void _productChoosen(Product Target)
-    {
         //Logger.Instance.LogError(this, "name : " + Target.Data.Data.productName + "; model : " + Target.Data.Model);
-        Custom[(int)Target.Data.Data.Type].SwitchItem(Target.Data);
-        CustomController._executor.Save(Target.Data);
+        Executor.Custom[(int)Target.Data.Data.Type].SwitchItem(Target.Data);
+        CustomController.Executor.Save(Target.Data);
     }
 
     public void Drop()

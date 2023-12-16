@@ -38,7 +38,7 @@ public class WareData
             icon = Base64ToSprite(Data.icon);
         };
 
-        Php_Connect._executor.StartCoroutine(Php_Connect.Request_DataAboutDesign(Data.productCode, completed));
+        Php_Connect.Executor.StartCoroutine(Php_Connect.Request_DataAboutDesign(Data.productCode, completed));
     }
 
     public void OnCheckOwningDesignComplete(bool result)
@@ -71,6 +71,6 @@ public class WareData
         //Debug.Log(CustomController._executor);
         //Debug.Log(Data.Type);
         //Debug.Log(this);
-        CustomController._executor.Custom[(int)Data.Type] = this;
+        CustomController.Executor.Custom[(int)Data.Type] = this;
     }
 }

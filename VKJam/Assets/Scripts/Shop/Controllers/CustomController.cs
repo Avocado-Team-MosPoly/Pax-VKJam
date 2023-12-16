@@ -214,7 +214,7 @@ public class CustomController : TaskExecutor<CustomController>
     [ContextMenu("Forced set static Executor by this")]
     protected void MenuDenote()
     {
-        _executor = this;
+        Executor = this;
         Debug.Log("Success Denote");
     }
 }
