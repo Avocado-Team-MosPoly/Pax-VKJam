@@ -1,8 +1,9 @@
-using UnityEngine.Networking;
-using UnityEngine;
+using System;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.Networking;
 
-[System.Serializable] 
+[Serializable] 
 public class Currency
 {
     public int IGCurrency;
@@ -10,31 +11,31 @@ public class Currency
     public int CardPiece;
 }
 
-[System.Serializable]
 public class Php_Connect : TaskExecutor<Php_Connect>
 {
-    public RandomItemList RandomBase;
-    public Currency current;
-
-    public static bool PHPisOnline = true;
-
-    public static int Nickname;
-    public static Sprite connectionError;
-    public static RandomItemList randomBase;
-    public static Currency Current;
-    public string CardOwneringRequest;
+    public static bool PHPisOnline { get; private set; }
+    public static int Nickname {  get; private set; }
+    public static Currency Current { get; private set; } = new Currency()
+    {
+        IGCurrency = 100,
+        DCurrency = 100,
+        CardPiece = 100
+    };
+ 
+    public static RandomItemList RandomBase => Executor.randomBase;
 
     [SerializeField] private string Link;
-    [SerializeField] private Sprite ConnectionError;
+    [SerializeField] private RandomItemList randomBase;
 
     private static string link;
 
-    [ContextMenu("Forced set static data by local data")]
-    public void ForcedLinked()
+    private static void ErrorProcessor(string error)
     {
-        link = Link;
-        Nickname = 333;
-        randomBase = RandomBase;
+        Debug.LogError("Server Error: " + error);
+        if (error == "Cannot connect to destination host")
+        {
+            PHPisOnline = false;
+        }
     }
 
     public IEnumerator Init()
@@ -47,324 +48,504 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         {
             link = string.Empty;
             PHPisOnline = false;
-            Logger.Instance.LogError(this, new System.FormatException($"Unsafe or incorrect {nameof(Link)}. {nameof(Link)} should start with \"https\". {nameof(Link)}: {Link}"));
+            Logger.Instance.LogError(this, new FormatException($"Unsafe or incorrect {nameof(Link)}. {nameof(Link)} should start with \"https\". {nameof(Link)}: {Link}"));
             yield break;
         }
-
-        randomBase = RandomBase;
-        PHPisOnline = true;
-        Nickname = 333;
-
-        if (PHPisOnline == false)
-            Current = current;
 
         Logger.Instance.Log(this, "Initialized");
-
-        //Debug.Log(Php_Connect.Request_WhichCardInPackOwnering(0));
-        //Debug.Log(Request_BuyTry(0));
-        //StartCoroutine(Request_Auth(12));
-        //StartCoroutine(Request_DataAboutDesign(1));
-        //StartCoroutine(Request_CurrentCurrency("Renata"));
-        //StartCoroutine(Request_BuyTry("Renata",1));
-        //StartCoroutine(Request_CurrentCurrency("Renata"));
     }
 
-    private static void ErrorProcessor(string error)
-    {
-        Debug.LogError("Server Error: " + error);
-        if (error == "Cannot connect to destination host")
-        {
-            PHPisOnline = false;
-        }
-    }
+    #region Requests
 
-    public static IEnumerator Request_WhichCardInPackOwnering(int idPack) // ���������� ��� ���, �� �����
+    private static IEnumerator Get(string userModule, Action<string> completed)
     {
-        if (!PHPisOnline)
+        using UnityWebRequest request = UnityWebRequest.Get(link + $"/{userModule}");
+        request.certificateHandler = new AcceptAllCertificates();
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
         {
-            _executor.CardOwneringRequest = string.Empty;
+            Logger.Instance.Log(typeof(Php_Connect), "Server success response: " + request.downloadHandler.text);
+            completed?.Invoke(request.downloadHandler.text);
             yield break;
         }
+        else if (request.result == UnityWebRequest.Result.InProgress)
+            Logger.Instance.LogError(typeof(Php_Connect), "Coroutine continue run before get response from server");
+        else
+            ErrorProcessor(request.error);
 
-        WWWForm form = new WWWForm();
+        completed?.Invoke(null);
+    }
+
+    private static IEnumerator Post(string userModule, WWWForm wwwForm, Action<string> completed)
+    {
+        using UnityWebRequest request = UnityWebRequest.Post(link + $"/{userModule}", wwwForm);
+        request.certificateHandler = new AcceptAllCertificates();
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Logger.Instance.Log(typeof(Php_Connect), "Server success response: " + request.downloadHandler.text);
+            completed?.Invoke(request.downloadHandler.text);
+            yield break;
+        }
+        else if (request.result == UnityWebRequest.Result.InProgress)
+            Logger.Instance.LogError(typeof(Php_Connect), "Coroutine continue run before get response from server");
+        else
+            ErrorProcessor(request.error);
+
+        completed?.Invoke(null);
+    }
+
+    public static IEnumerator Request_Auth(int external_Nickname)
+    {
+        WWWForm form = new();
+        form.AddField("Nickname", external_Nickname);
+
+        Action<string> completed = (string response) =>
+        {
+            if (response == null)
+            {
+                PHPisOnline = false;
+                Logger.Instance.LogError(Executor, "Unable to authenticate on server");
+            }
+            else
+            {
+                PHPisOnline = true;
+                Nickname = external_Nickname;
+                Logger.Instance.Log(Executor, "Authenticated on server");
+            }
+        };
+
+        yield return Executor.StartCoroutine(Post("Auth.php", form, completed));
+    }
+
+    public static IEnumerator Request_WhichCardInPackOwnering(int idPack, Action<string> successRequest) // ���������� ��� ���, �� �����
+    {
+        if (!PHPisOnline)
+            yield break;
+
+        WWWForm form = new();
         form.AddField("Nickname", Nickname);
         form.AddField("PackId", idPack);
 
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/WhichCardInPackOwnering.php", form))
+        Action<string> completed = (response) =>
         {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            yield return www.SendWebRequest();
+            if (response == null)
+                return;
 
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                ErrorProcessor(www.error);
-                _executor.CardOwneringRequest = www.error;
-                yield break;
-            }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                _executor.CardOwneringRequest = www.downloadHandler.text;
-                yield break;
-            }
-        }
+            successRequest?.Invoke(response);
+        };
+
+        yield return Executor.StartCoroutine(Post("WhichCardInPackOwnering.php", form, completed));
     }
-    public static string Request_TokenBuy(int id) // ���������� ��� ���, �� �����
+
+    public static IEnumerator Request_TokenBuy(int id, Action<string> successRequest, Action unsuccessRequest) // ���������� ��� ���, �� �����
     {
-        if (!PHPisOnline) return "";
-        WWWForm form = new WWWForm();
+        if (!PHPisOnline)
+        {
+            unsuccessRequest?.Invoke();
+            yield break;
+        }
+
+        WWWForm form = new();
         form.AddField("Nickname", Nickname);
         form.AddField("id", id);
 
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/TokenBuy.php", form))
+        Action<string> completed = (string response) =>
         {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
+            if (response == null)
             {
-                ErrorProcessor(www.error);
-                return www.error;
+                unsuccessRequest?.Invoke();
+                return;
             }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return www.downloadHandler.text;
-            }
-        }
+
+            successRequest?.Invoke(response);
+        };
+
+        yield return Executor.StartCoroutine(Post("TokenBuy.php", form, completed));
     }
-    public static string Request_CraftCardTry(int idCard, bool ForThePieces)
+
+    public static IEnumerator Request_CraftCardTry(int idCard, bool ForThePieces, Action<string> successRequest, Action unsuccessRequest)
     {
-        if (!PHPisOnline) return "";
-        WWWForm form = new WWWForm();
+        if (!PHPisOnline)
+        {
+            unsuccessRequest?.Invoke();
+            yield break;
+        }
+
+        WWWForm form = new();
         form.AddField("Nickname", Nickname);
         form.AddField("ForThePieces", ForThePieces ? "1" : "0");
         form.AddField("idCard", idCard.ToString());
 
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/CraftCardTry.php", form))
+        Action<string> completed = (string response) =>
         {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
+            if (response == null)
             {
-                ErrorProcessor(www.error);
-                return www.error;
+                unsuccessRequest?.Invoke();
+                return;
             }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return www.downloadHandler.text;
-            }
+
+            successRequest?.Invoke(response);
+        };
+
+        yield return Executor.StartCoroutine(Post("CraftCardTry.php", form, completed));
+    }
+
+    public static IEnumerator Request_UploadData(Design Upload, Action<string> successRequest, Action unsuccessRequest)
+    {
+        if (!PHPisOnline)
+        {
+            unsuccessRequest?.Invoke();
+            yield break;
         }
-    }
-    public static string Request_UploadData(WareData Upload)
-    {
-        return Request_UploadData(Upload.Data);
-    }
-    public static string Request_UploadData(Design Upload)
-    {
+
         string JSON = JsonUtility.ToJson(Upload);
-        if (!PHPisOnline) return "";
-        WWWForm form = new WWWForm();
+        WWWForm form = new();
         form.AddField("JSON", JSON);
 
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/UploadData.php", form))
+        Action<string> completed = (string response) =>
         {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
+            if (response == null)
             {
-                ErrorProcessor(www.error);
-                return www.error;
+                unsuccessRequest?.Invoke();
+                return;
             }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return www.downloadHandler.text;
-            }
-        }
 
+            successRequest?.Invoke(response);
+        };
+
+        yield return Executor.StartCoroutine(Post("UploadData.php", form, completed));
     }
-    public static IEnumerator Request_CheckOwningDesign(int idDesign, System.Action<bool> onComplete)
+
+    public static IEnumerator Request_CheckOwningDesign(int idDesign, Action<bool> onComplete)
     {
         if (idDesign == 0)
         {
             onComplete?.Invoke(true);
             yield break;
         }
+
         if (!PHPisOnline)
         {
             onComplete?.Invoke(false);
             yield break;
         }
 
-        WWWForm form = new WWWForm();
+        WWWForm form = new();
         form.AddField("idDesign", idDesign);
         form.AddField("Nickname", Nickname);
 
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/CheckOwningDesign.php", form))
+        Action<string> completed = (string response) =>
         {
-            www.certificateHandler = new AcceptAllCertificates();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogWarning($"Can not load element with idDesign {idDesign}");
-                ErrorProcessor(www.error);
+            if (response == null)
                 onComplete?.Invoke(false);
-            }
-            else if (www.downloadHandler.text == "error - 404")
-            {
-                ErrorProcessor("404");
-                onComplete?.Invoke(false);
-            }
             else
-            {
-                //Debug.Log("Server response: " + www.downloadHandler.text);
-                //Debug.Log($"Loaded element with idDesign { idDesign}");
-                onComplete?.Invoke(www.downloadHandler.text == "true");
-            }
-        }
-    }
-    public static bool Request_CheckOwningDesign(int idDesign)
-    {
-        if (idDesign == 0) return true;
-        if (!PHPisOnline) return false;
-        WWWForm form = new WWWForm();
-        form.AddField("idDesign", idDesign);
-        form.AddField("Nickname", Nickname);
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/CheckOwningDesign.php", form))
-        {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                ErrorProcessor(www.error);
-                return false;
-            }
-            else if (www.downloadHandler.text == "error - 404")
-            {
-                ErrorProcessor("404");
-                return false;
-            }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return www.downloadHandler.text == "true" ? true : false;
-            }
-        }
-    }
-    public static string Request_WhatPackOwnering() 
-    {
-        if (!PHPisOnline) return "";
-        WWWForm form = new WWWForm();
-        form.AddField("Nickname", Nickname);
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/WhatPackOwnering.php", form))
-        {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                ErrorProcessor(www.error);
-                return www.error;
-            }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return www.downloadHandler.text;
-            }
-        }
-    }
-    private void OnGameEnded(string sceneName)
-    {
+                onComplete?.Invoke(response == "true");
+        };
 
-        Current.IGCurrency += TokenManager.TokensCount;
-        if (PHPisOnline) Request_TokenWin(TokenManager.TokensCount);
+        yield return Executor.StartCoroutine(Post("CheckOwningDesign.php", form, completed));
     }
-    public static string Request_TokenWin(int Count)
+
+    public static IEnumerator Request_WhatPackOwnering(Action<string> onComplete)
     {
-        if (!PHPisOnline) return "";
-        WWWForm form = new WWWForm();
+        if (!PHPisOnline)
+        {
+            onComplete?.Invoke(string.Empty);
+            yield break;
+        }
+
+        WWWForm form = new();
+        form.AddField("Nickname", Nickname);
+
+        Action<string> completed = (string response) =>
+        {
+            onComplete?.Invoke(response ?? string.Empty);
+        };
+
+        yield return Executor.StartCoroutine(Post("WhatPackOwnering.php", form, completed));
+    }
+
+    public static IEnumerator Request_TokenWin(int Count, Action successRequest, Action unsuccessRequest)
+    {
+        if (!PHPisOnline)
+        {
+            unsuccessRequest?.Invoke();
+            yield break;
+        }
+
+        WWWForm form = new();
         form.AddField("Nickname", Nickname);
         form.AddField("Count", Count);
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/TokenWin.php", form))
+
+        Action<string> completed = (string response) =>
         {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                ErrorProcessor(www.error);
-                return www.error;
-            }
+            if (response == null)
+                unsuccessRequest?.Invoke();
             else
-            {
-                Catcher_RandomItem._executor.UIWin(RandomType.Token,Count);
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return www.downloadHandler.text;
-            }
-        }
+                successRequest?.Invoke();
+        };
+
+        yield return Executor.StartCoroutine(Post("TokenWin.php", form, completed));
     }
-    public static string Request_BuyTry(int DesignID)
+
+    public static IEnumerator Request_BuyTry(int DesignID, Action successRequest, Action unsuccessRequest)
     {
-        if (!PHPisOnline) return "";
-        WWWForm form = new WWWForm();
+        if (!PHPisOnline)
+        {
+            unsuccessRequest?.Invoke();
+            yield break;
+        }
+
+        WWWForm form = new();
         form.AddField("Nickname", Nickname);
         form.AddField("DesignID", DesignID);
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/BuyTry.php", form))
+
+        Action<string> completed = (string response) =>
         {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
+            if (response == null)
+                unsuccessRequest?.Invoke();
+            else
+                successRequest?.Invoke();
+        };
+
+        yield return Executor.StartCoroutine(Post("BuyTry.php", form, completed));
+    }
+
+    private static IEnumerator Request_CardWin(bool isShard, Action<string> successRequest, Action unsuccessRequest)
+    {
+        if (!PHPisOnline)
+        {
+            unsuccessRequest?.Invoke();
+            yield break;
+        }
+
+        WWWForm form = new();
+        form.AddField("Nickname", Nickname);
+        form.AddField("IsShard", isShard.ToString());
+
+        Action<string> completed = (string response) =>
+        {
+            if (response == null)
+                unsuccessRequest?.Invoke();
+            else
+                successRequest?.Invoke(response);
+        };
+
+        yield return Executor.StartCoroutine(Post("CardWin.php", form, completed));
+    }
+
+    private static IEnumerator Request_DesignWin(Action<string> successRequest, Action unsuccessRequest)
+    {
+        if (!PHPisOnline)
+        {
+            unsuccessRequest?.Invoke();
+            yield break;
+        }
+
+        WWWForm form = new();
+        form.AddField("Nickname", Nickname);
+
+        Action<string> completed = (string response) =>
+        {
+            if (response == null)
+                unsuccessRequest?.Invoke();
+            else
+                successRequest?.Invoke(response);
+        };
+
+        yield return Executor.StartCoroutine(Post("DesignWin.php", form, completed));
+    }
+
+    private static IEnumerator Response_Gift(int DesignID, int TargetNickname)
+    {
+        if (!PHPisOnline)
+            yield break;
+
+        WWWForm form = new();
+        form.AddField("TargetNickname", TargetNickname);
+        form.AddField("DesignID", DesignID);
+
+        //Action<string> completed = (string response) => { };
+
+        yield return Executor.StartCoroutine(Post("Gift.php", form, null));
+
+    }
+
+    public static IEnumerator Request_CurrentCurrency(Action<Currency> onComplete)
+    {
+        if (!PHPisOnline)
+        {
+            onComplete?.Invoke(Current);
+            yield break;
+        }
+
+        WWWForm form = new();
+        form.AddField("Nickname", Nickname);
+
+        Action<string> completed = (string response) =>
+        {
+            //string[] split = response.Split();
+
+            if (response != null)
+                Current = JsonUtility.FromJson<Currency>(response);
+
+            onComplete?.Invoke(Current);
+        };
+
+        yield return Executor.StartCoroutine(Post("CurrentCurrency.php", form, completed));
+    }
+
+    //public static string Request_WhatOwnering()
+    //{
+    //    if (!PHPisOnline) return "";
+    //    WWWForm form = new WWWForm();
+
+    //    form.AddField("Nickname", Nickname);
+
+    //    using (UnityWebRequest www = UnityWebRequest.Post(link + "/WhatOwnering.php", form))
+    //    {
+    //        www.certificateHandler = new AcceptAllCertificates();
+    //        // ������ ����������� ��������� ��� ����������
+    //        www.SendWebRequest();
+    //        while (!www.isDone) { }
+    //        if (www.result != UnityWebRequest.Result.Success)
+    //        {
+    //            ErrorProcessor(www.error);
+    //            return www.error;
+    //        }
+    //        else
+    //        {
+    //            Debug.Log("Server response: " + www.downloadHandler.text);
+    //            return www.downloadHandler.text;
+    //        }
+    //    }
+    //}
+
+    public static IEnumerator Request_DesignCount(Action<int> onComplete)
+    {
+        if (!PHPisOnline)
+        {
+            onComplete?.Invoke(-1);
+            yield break;
+        }
+
+        // switch to GET and check workability
+        WWWForm form = new();
+
+        Action<string> completed = (string response) =>
+        {
+            if (response == null)
+                onComplete?.Invoke(-1);
+            else
+                onComplete?.Invoke(int.Parse(response));
+        };
+
+        yield return Executor.StartCoroutine(Post("DesignCount.php", form, completed));
+    }
+
+    public static IEnumerator Request_DataAboutDesign(int idDesign, Action<Design> onComplete)
+    {
+        if (!PHPisOnline)
+        {
+            onComplete?.Invoke(new Design());
+            yield break;
+        }
+
+        WWWForm form = new();
+        form.AddField("idDesign", idDesign);
+        form.AddField("Nickname", Nickname);
+
+        Action<string> completed = (string response) =>
+        {
+            if (response == null)
+                onComplete?.Invoke(new Design());
+            else
+                onComplete?.Invoke(JsonUtility.FromJson<Design>(response));
+        };
+
+        yield return Executor.StartCoroutine(Post("DesignOutput_JSON.php", form, completed));
+    }
+
+    public static IEnumerator Request_Gift(int DesignID, int TargetNickname)
+    {
+        if (!PHPisOnline)
+            yield break;
+
+        bool flag = true;
+        Action successRequest = () => flag = false;
+
+        yield return Executor.StartCoroutine(Request_BuyTry(DesignID, successRequest, null));
+        if (flag)
+            yield break;
+
+        if (DesignID == 0)
+        {
+            int ID = RandomBase.Interact();
+
+            if (ID >= -5 && ID < 0)
             {
-                ErrorProcessor(www.error);
-                return www.error;
+                int tokenCount = RandomToken(ID);
+                successRequest = () => Catcher_RandomItem.Executor.UIWin(RandomType.Token, tokenCount);
+
+                Executor.StartCoroutine(Request_TokenWin(tokenCount, successRequest, null));
             }
             else
             {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return www.downloadHandler.text;
-            }
-        }
-    }
-    public static string Request_Gift(int DesignID, int TargetNickname)
-    {
-        if (!PHPisOnline) return "";
-        string result = Request_BuyTry(DesignID);
-        if (result != "success") return result;
-        int ID;
-        if (DesignID == 0)
-        {
-            ID = randomBase.Interact();
-            Debug.Log(ID);
-            if (ID >= -5 && ID < 0) return Request_TokenWin(RandomToken(ID));
-            else switch (ID)
+                Action<string> stringSuccessRequest;
+
+                switch (ID)
                 {
                     case -6:
-                        return Request_DesignWin();
+                        stringSuccessRequest = (string response) =>
+                        {
+                            DesignSelect temp = JsonUtility.FromJson<DesignSelect>(response);
+                            Catcher_RandomItem.Executor.GenerateWin(temp);
+                        };
+
+                        Executor.StartCoroutine(Request_DesignWin(stringSuccessRequest, null));
+                        break;
                     case -7:
-                        return Request_CardWin(false);
+                        stringSuccessRequest = (string response) =>
+                        {
+                            Catcher_RandomItem.Executor.UIWin(RandomType.Card, int.Parse(response));
+                        };
+
+                        Executor.StartCoroutine(Request_CardWin(false, stringSuccessRequest, null));
+                        break;
                     case -8:
-                        return Request_CardWin(true);
-                    default:
-                        return "";
+                        stringSuccessRequest = (string response) =>
+                        {
+                            Catcher_RandomItem.Executor.UIWin(RandomType.Card, int.Parse(response));
+                        };
+
+                        Executor.StartCoroutine(Request_CardWin(true, stringSuccessRequest, null));
+                        break;
                 }
+            }
         }
-        else return Response_Gift(DesignID, TargetNickname);
+        else
+        {
+            Executor.StartCoroutine(Response_Gift(DesignID, TargetNickname));
+        }
     }
+
+    #endregion
+
+    private void OnGameEnded(string sceneName)
+    {
+        Current.IGCurrency += TokenManager.TokensCount;
+        if (PHPisOnline)
+        {
+            Action successRequest = () => Catcher_RandomItem.Executor.UIWin(RandomType.Token, TokenManager.TokensCount);
+
+            StartCoroutine(Request_TokenWin(TokenManager.TokensCount, successRequest, null));
+        }
+    }
+
     private static int RandomToken(int id)
     {
         switch (id)
@@ -383,215 +564,6 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 return 0;
         }
     }
-    private static string Request_CardWin(bool isShard)
-    {
-        if (!PHPisOnline) return "";
-        WWWForm form = new WWWForm();
-        form.AddField("Nickname", Nickname);
-        form.AddField("IsShard", isShard.ToString());
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/CardWin.php", form))
-        {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                ErrorProcessor(www.error);
-                return www.error;
-            }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                Catcher_RandomItem._executor.UIWin(RandomType.Card, int.Parse(www.downloadHandler.text));
-                return www.downloadHandler.text;
-            }
-        }
-    }
-    private static string Request_DesignWin()
-    {
-        //if (!PHPisOnline) return "";
-        WWWForm form = new WWWForm();
-        form.AddField("Nickname", Nickname);
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignWin.php", form))
-        {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                ErrorProcessor(www.error);
-                return www.error;
-            }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-
-                DesignSelect temp = JsonUtility.FromJson<DesignSelect>(www.downloadHandler.text);
-                Catcher_RandomItem._executor.GenerateWin(temp);
-                return www.downloadHandler.text;
-            }
-        }
-    }
-    private static string Response_Gift(int DesignID, int TargetNickname)
-    {
-        if (!PHPisOnline) return "";
-        int ID = DesignID;
-        WWWForm form = new WWWForm();
-        form.AddField("TargetNickname", TargetNickname);
-        form.AddField("DesignID", ID);
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/Gift.php", form))
-        {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                ErrorProcessor(www.error);
-                return www.error;
-            }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return www.downloadHandler.text;
-            }
-        }
-
-    }
-    public static IEnumerator Request_Auth(int external_Nickname)
-    {
-        WWWForm form = new WWWForm();
-        Nickname = external_Nickname;
-        form.AddField("Nickname", external_Nickname);
-        form.AddField("mode", "no-cors");
-
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/Auth.php", form))
-        {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            float startTime = Time.time;
-
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success  && www.isDone)
-            {
-                //ErrorProcessor(www.error);
-                Logger.Instance.LogError(_executor, "Unable to authenticate on server: " + www.error);
-                //yield return www.error;
-            }
-            else
-            {
-                Logger.Instance.Log(_executor, "Authenticated on server: " + www.downloadHandler.text);
-                //yield return www.downloadHandler.text;
-            }
-        }
-    }
-    public static Currency Request_CurrentCurrency()
-    {
-        if (!PHPisOnline) return Current;
-        WWWForm form = new WWWForm();
-
-        form.AddField("Nickname", Nickname);
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/CurrentCurrency.php", form))
-        {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                ErrorProcessor(www.error);
-                return Current;
-            }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                string[] split = www.downloadHandler.text.Split();
-                Current = JsonUtility.FromJson<Currency>(www.downloadHandler.text);
-                return Current;
-            }
-        }
-    }
-
-    public static string Request_WhatOwnering()
-    {
-        if (!PHPisOnline) return "";
-        WWWForm form = new WWWForm();
-
-        form.AddField("Nickname", Nickname);
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/WhatOwnering.php", form))
-        {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                ErrorProcessor(www.error);
-                return www.error;
-            }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return www.downloadHandler.text;
-            }
-        }
-    }
-   
-    public static int Request_DesignCount()
-    {
-        if (!PHPisOnline) return -1;
-        WWWForm form = new WWWForm();
-
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignCount.php", form))
-        {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                ErrorProcessor(www.error);
-                return -1;
-            }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return int.Parse(www.downloadHandler.text);
-            }
-        }
-    }
-    public static Design Request_DataAboutDesign(int idDesign)
-    {
-        if (!PHPisOnline) return new Design();
-        WWWForm form = new WWWForm();
-        form.AddField("idDesign", idDesign);
-        form.AddField("Nickname", Nickname);
-        using (UnityWebRequest www = UnityWebRequest.Post(link + "/DesignOutput_JSON.php", form))
-        {
-            www.certificateHandler = new AcceptAllCertificates();
-            // ������ ����������� ��������� ��� ����������
-            www.SendWebRequest();
-            while (!www.isDone) { }
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                ErrorProcessor(www.error);
-                return new Design();
-            }
-            else if (www.downloadHandler.text == "error - 404")
-            {
-                ErrorProcessor("404");
-                return new Design();
-            }
-            else
-            {
-                Debug.Log("Server response: " + www.downloadHandler.text);
-                return JsonUtility.FromJson<Design>(www.downloadHandler.text);
-            }
-        }
-    }
 
     private static Sprite Base64ToSprite(string base64)
     {
@@ -603,5 +575,4 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         }
         return null;
     }
-
 }

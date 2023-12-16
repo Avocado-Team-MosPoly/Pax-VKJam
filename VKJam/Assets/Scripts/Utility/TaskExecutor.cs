@@ -2,18 +2,13 @@ using UnityEngine;
 
 public abstract class TaskExecutor<T> : MonoBehaviour where T : TaskExecutor<T>
 {
-    private static T _instance; // back-up
-    public static T _executor { get { return _instance; } protected set { _instance = value; } }
-    [SerializeField] protected T Executor;
+    public static T Executor { get; protected set; }
+
     private void Awake()
     {
-        if (_executor == null)
-        {
-            _executor = Executor;
-        }
-    }
-    protected void Denote()
-    {
-            _executor = (T)this;
+        if (Executor == null)
+            Executor = (T)this;
+        else
+            Logger.Instance.LogWarning(this, $"Two or more objects of type: {this.GetType().Name}");
     }
 }

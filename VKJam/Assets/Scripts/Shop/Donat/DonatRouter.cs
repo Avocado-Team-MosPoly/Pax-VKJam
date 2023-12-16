@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -13,12 +14,12 @@ public class DonatRouter : MonoBehaviour
     }
     public void BuyCross(int id)
     {
-        VK_Connect._executor.RequestBuyTry(id);
+        VK_Connect.Executor.RequestBuyTry(id);
         StartCoroutine(DelayRefresh());
     }
     public void Ads()
     {
-        VK_Connect._executor.RequestAds();
+        VK_Connect.Executor.RequestAds();
         StartCoroutine(DelayRefresh());
     }
     private IEnumerator DelayRefresh()
@@ -26,12 +27,17 @@ public class DonatRouter : MonoBehaviour
         yield return new WaitForSeconds(1);
         AdsCounterTest.text = "Реклама " + AdManager.GetAdsWatchedToday() + "/3";
         buyText.text = buyTextString;
-        CurrencyCatcher._executor.Refresh();
+        CurrencyCatcher.Executor.Refresh();
         
     }
     public void BuyTokens(int id)
     {
-        Php_Connect.Request_TokenBuy(id);
-        CurrencyCatcher._executor.Refresh();
+        Action<string> successRequest = (string response) =>
+        {
+            CurrencyCatcher.Executor.Refresh();
+        };
+        //Action unsuccessRequest = () => { };
+
+        StartCoroutine(Php_Connect.Request_TokenBuy(id, successRequest, null));
     }
 }

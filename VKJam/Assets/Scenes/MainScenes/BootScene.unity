@@ -247,7 +247,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: -0.122, y: 0.012, z: -3.851}
   m_AnchorMin: {x: 0.23816669, y: 0.93229634}
   m_AnchorMax: {x: 0.23816669, y: 0.93229634}
-  m_AnchoredPosition: {x: -3.6396484, y: 7.0255127}
+  m_AnchoredPosition: {x: -3.6395874, y: 7.0255127}
   m_SizeDelta: {x: 512, y: 512}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &251986501
@@ -472,6 +472,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8644a3acba89631418159ac6d3f0386f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultNickname: 333
   vkConnect: {fileID: 1638310269}
   phpConnect: {fileID: 1638310268}
   relayManager: {fileID: 1528425442}
@@ -3025,6 +3026,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 121830609623397873, guid: 842559543b53de14f8b19d0048850e29, type: 3}
+      propertyPath: All.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 121830609623397873, guid: 842559543b53de14f8b19d0048850e29, type: 3}
+      propertyPath: All.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 0884437ece407254ba420f9dc4341e3e, type: 2}
     - target: {fileID: 3890772637464068977, guid: 842559543b53de14f8b19d0048850e29, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

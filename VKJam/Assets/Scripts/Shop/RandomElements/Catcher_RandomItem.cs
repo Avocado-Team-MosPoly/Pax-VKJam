@@ -3,7 +3,7 @@ using UnityEngine;
 public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
 {
     [SerializeField] private CurrencyCatcher display;
-    [SerializeField] private static RandomItem DroppedItem;
+    private static RandomItem DroppedItem;
     [SerializeField] private Animator Hand;
     [SerializeField] private GameObject[] WinObjects;
     [Header("Display UI")]
@@ -14,38 +14,24 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     public static int Result;
     [SerializeField] private PackCardSO Pack;
 
-    private void Awake()
-    {
-        Denote();
-        /*if (NameOutput == null)
-        {
-            GameObject.FindGameObjectWithTag("Random_Frame").TryGetComponent<TMPro.TMP_Text>(out NameOutput);
-        }
-        if (Window == null)
-        {
-            Window = NameOutput.transform.parent.gameObject;
-        }
-        if (Window != null) Window.SetActive(false);*/
-    }
     public static void SetData(RandomItem Data)
     {
         DroppedItem = Data;
-        _executor.OnDroppingWhatever();
+        Executor.OnDroppingWhatever();
         Result = Data.DesignID;
     }
     public void Gifter()
     {
-        Debug.Log(0);
-        if (Php_Connect.PHPisOnline) Php_Connect.Request_Gift(0, Php_Connect.Nickname);
-        else Php_Connect
-                ._executor
-                .RandomBase
-                .Interact();
+        if (Php_Connect.PHPisOnline)
+            StartCoroutine(Php_Connect.Request_Gift(0, Php_Connect.Nickname));
+        else
+            Php_Connect.RandomBase.Interact();
+
         display.Refresh();
     }
     public void GenerateWin(DesignSelect Sel)
     {
-        WareData temp = CustomController._executor.Search(Sel);
+        WareData temp = CustomController.Executor.Search(Sel);
         Debug.Log(Sel.type + " " + (Sel.type >= 8));
 
         ActiveWinObject(3);

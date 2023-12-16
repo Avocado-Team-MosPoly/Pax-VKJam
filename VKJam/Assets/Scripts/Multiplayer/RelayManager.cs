@@ -78,7 +78,9 @@ public class RelayManager : MonoBehaviour
         return true;
 #endif
 #endif
+#pragma warning disable CS0162
         return false;
+#pragma warning restore CS0162
     }
 
     public async Task<string> CreateRelay()

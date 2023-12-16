@@ -1,8 +1,9 @@
-using UnityEngine;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 public class CardCatalogueScript : MonoBehaviour
 {
@@ -65,17 +66,26 @@ public class CardCatalogueScript : MonoBehaviour
     }
     public void BuyCard(bool ForThePieces)
     {
-        Debug.Log("Trying buy card by id : " + _bufferIdCard);
-        string resp = Php_Connect.Request_CraftCardTry(_bufferIdCard, ForThePieces);
-        if (resp == "success")
+        Logger.Instance.Log(this, "Trying buy card by id : " + _bufferIdCard);
+
+        Action<string> successRequest = (string response) =>
         {
-            Debug.Log("Successfully purchased card by id : " + _bufferIdCard);
-            CardSystem temp = packCardSO.SearchCardSystemById(_bufferIdCard);
-            temp.CardIsInOwn = true;
-            CurrencyCatcher._executor.Refresh();
-            UpdateUIPage();
-        }
+            if (response == "success")
+            {
+                Logger.Instance.Log(this, "Successfully purchased card by id : " + _bufferIdCard);
+
+                CardSystem temp = packCardSO.SearchCardSystemById(_bufferIdCard);
+                temp.CardIsInOwn = true;
+
+                CurrencyCatcher.Executor.Refresh();
+                UpdateUIPage();
+            }
+        };
+        //Action unsuccessRequest = () => { };
+
+        StartCoroutine(Php_Connect.Request_CraftCardTry(_bufferIdCard, ForThePieces, successRequest, null));
     }
+
     private void Initialize()
     {
         _currentPage = 0;

@@ -27,14 +27,9 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
     private int currentSection = -1;
     private int currentPage = 0;
 
-    private void Awake()
-    {
-        Denote();
-    }
-
     private void Start()
     {
-        customController = CustomController._executor;
+        customController = CustomController.Executor;
 
         SpawnProducts();
         ChangeSection(defaultSection);
@@ -117,7 +112,7 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
             }
             if (customController.Categories[currentSection].products[productIndex].Data.productCode == 0)
             {
-                Logger.Instance.Log(this, customController.Categories[currentSection].products[productIndex].Data.productName);
+                //Logger.Instance.Log(this, customController.Categories[currentSection].products[productIndex].Data.productName);
                 instanceIndex--;
                 continue;
             }
