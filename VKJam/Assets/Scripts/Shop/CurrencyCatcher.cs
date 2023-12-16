@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System;
 
 public class CurrencyCatcher : TaskExecutor<CurrencyCatcher>
 {
@@ -15,24 +16,18 @@ public class CurrencyCatcher : TaskExecutor<CurrencyCatcher>
     }
     public void Refresh()
     {
-        Currency Data;
-        if (Php_Connect.PHPisOnline)
-            Data = Php_Connect.Request_CurrentCurrency();
-        else
+        Action<Currency> onComplete = (Currency currency) =>
         {
-            if (Php_Connect.Current != null)
-                Data = Php_Connect.Current;
-            else
-                Data = Php_Connect._executor.current;
-        }
+            if (Donat_General != null)
+                Donat_General.text = "X" + currency.DCurrency.ToString();
+            if (Donat_Card != null)
+                Donat_Card.text = "X" + currency.DCurrency.ToString();
+            if (IG != null)
+                IG.text = "X" + currency.IGCurrency.ToString();
+            if (CP != null)
+                CP.text = "X" + currency.CardPiece.ToString();
+        };
 
-        if(Donat_General != null)
-            Donat_General.text = "X" + Data.DCurrency.ToString();
-        if (Donat_Card != null)
-            Donat_Card.text = "X" + Data.DCurrency.ToString();
-        if (IG != null)
-            IG.text = "X" + Data.IGCurrency.ToString();
-        if (CP != null)
-            CP.text = "X" + Data.CardPiece.ToString();
+        StartCoroutine(Php_Connect.Request_CurrentCurrency(onComplete));
     }
 }

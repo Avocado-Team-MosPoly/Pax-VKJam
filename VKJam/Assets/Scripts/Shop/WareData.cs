@@ -21,10 +21,9 @@ public struct DesignSelect
 [Serializable]
 public class WareData
 {
-    
     public Design Data;
     public bool IsNonBuyable;
-    public UnityEngine.Sprite icon;
+    public Sprite icon;
     public bool isPreloaded;
     public GameObject Model;
     
@@ -33,8 +32,13 @@ public class WareData
         if (isPreloaded)
             return;
 
-        Data = Php_Connect.Request_DataAboutDesign(Data.productCode);
-        icon = Base64ToSprite(Data.icon);
+        Action<Design> completed = (Design newData) =>
+        {
+            Data = newData;
+            icon = Base64ToSprite(Data.icon);
+        };
+
+        Php_Connect._executor.StartCoroutine(Php_Connect.Request_DataAboutDesign(Data.productCode, completed));
     }
 
     public void OnCheckOwningDesignComplete(bool result)
@@ -46,7 +50,7 @@ public class WareData
     {
         try
         {
-            byte[] bytes = System.Convert.FromBase64String(base64);
+            byte[] bytes = Convert.FromBase64String(base64);
             Texture2D texture = new Texture2D(2, 2);
             if (texture.LoadImage(bytes))
             {
@@ -54,12 +58,13 @@ public class WareData
             }
             return null;
         }
-        catch (System.FormatException e)
+        catch (FormatException e)
         {
             Debug.LogError("Base64 string is not valid: " + e.Message);
             return null;
         }
     }
+
     [ContextMenu("Set in Choosen Custom")]
     public void ChooseThis()
     {

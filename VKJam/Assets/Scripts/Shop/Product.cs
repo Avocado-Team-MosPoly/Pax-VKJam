@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
+
 public class Product : MonoBehaviour
 {
     public Button Button => BT;
@@ -66,13 +68,15 @@ public class Product : MonoBehaviour
         {
             if (Php_Connect.PHPisOnline)
             {
-                string res = Php_Connect.Request_BuyTry(Data.Data.productCode);
-                if (res == "success")
+                Action successRequest = () =>
                 {
                     Data.Data.InOwn = true;
                     RemoveFromWarehouse();
-                }
-                CurrencyCatcher._executor.Refresh();
+
+                    CurrencyCatcher._executor.Refresh();
+                };
+
+                StartCoroutine(Php_Connect.Request_BuyTry(Data.Data.productCode, successRequest, null));
             }
             else
             {

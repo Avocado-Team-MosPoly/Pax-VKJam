@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -31,7 +32,12 @@ public class DonatRouter : MonoBehaviour
     }
     public void BuyTokens(int id)
     {
-        Php_Connect.Request_TokenBuy(id);
-        CurrencyCatcher._executor.Refresh();
+        Action<string> successRequest = (string response) =>
+        {
+            CurrencyCatcher._executor.Refresh();
+        };
+        //Action unsuccessRequest = () => { };
+
+        StartCoroutine(Php_Connect.Request_TokenBuy(id, successRequest, null));
     }
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System;
 
 public class VK_Connect : TaskExecutor<VK_Connect>
 {
@@ -96,8 +97,15 @@ public class VK_Connect : TaskExecutor<VK_Connect>
     public void ResponseSuccessAds() // вызываем из событий unity
     {
         AdManager.OnAdWatched();
-        Php_Connect.Request_TokenWin(50);
-        CurrencyCatcher._executor.Refresh();
+
+        int tokenCount = 50;
+        Action successRequest = () =>
+        {
+            Catcher_RandomItem._executor.UIWin(RandomType.Token, tokenCount);
+            CurrencyCatcher._executor.Refresh();
+        };
+
+        StartCoroutine(Php_Connect.Request_TokenWin(tokenCount, successRequest, null));
     }
     public void RequestUserData() // вызываем из событий unity
     {

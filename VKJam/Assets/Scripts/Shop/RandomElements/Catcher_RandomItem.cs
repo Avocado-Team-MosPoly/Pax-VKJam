@@ -35,12 +35,11 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     }
     public void Gifter()
     {
-        Debug.Log(0);
-        if (Php_Connect.PHPisOnline) Php_Connect.Request_Gift(0, Php_Connect.Nickname);
-        else Php_Connect
-                ._executor
-                .RandomBase
-                .Interact();
+        if (Php_Connect.PHPisOnline)
+            StartCoroutine(Php_Connect.Request_Gift(0, Php_Connect.Nickname));
+        else
+            Php_Connect._executor.RandomBase.Interact();
+
         display.Refresh();
     }
     public void GenerateWin(DesignSelect Sel)

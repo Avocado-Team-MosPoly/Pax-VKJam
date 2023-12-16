@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,14 +30,19 @@ public class CustomController : TaskExecutor<CustomController>
         Logger.Instance.Log(this, "Initialized");
     }
     [ContextMenu("Upload Data into DB")]
-    private void Upload()
+    private IEnumerator Upload()
     {
         foreach (var section in Categories)
         {
             foreach (var ware in section.products)
             {
-                if (ware.Data.productCode == 0) continue;
-                Php_Connect.Request_UploadData(ware);
+                if (ware.Data.productCode == 0)
+                    continue;
+
+                //Action<string> successRequest = (string response) => { };
+                //Action unsuccessRequest = () => { };
+
+                yield return StartCoroutine(Php_Connect.Request_UploadData(ware.Data, null, null));
             }
         }
     }
@@ -139,16 +145,22 @@ public class CustomController : TaskExecutor<CustomController>
     }
     private void FetchAllProductData()
     {
-        int count = Php_Connect.Request_DesignCount();
-        int preload = CountPreloaded();
-        for (int i = preload; i < count; ++i)
+        Action<int> onComplete = (int designCount) =>
         {
-            WareData output = new();
-            output.Data.productCode = i;
-            output.Request();
-            Categories[(int)Categorize(output.Data.Type)].Add(output);
-        }
+            int preload = CountPreloaded();
+
+            for (int i = preload; i < designCount; ++i)
+            {
+                WareData output = new();
+                output.Data.productCode = i;
+                output.Request();
+                Categories[(int)Categorize(output.Data.Type)].Add(output);
+            }
+        };
+
+        StartCoroutine(Php_Connect.Request_DesignCount(onComplete));
     }
+
     public static ShopFilters Categorize(ItemType data)
     {
         switch (data)

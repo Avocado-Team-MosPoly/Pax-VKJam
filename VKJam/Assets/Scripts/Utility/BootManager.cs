@@ -41,6 +41,9 @@ public class BootManager : MonoBehaviour
 
     private IEnumerator Start()
     {
+        Logger.Instance.Log(this, true.ToString());
+        Logger.Instance.Log(this, false.ToString());
+
         loadingSlider.value = 0f;
         statusLabel.text = vkConnect_Initialization;
         yield return StartCoroutine(vkConnect.Init());
@@ -59,11 +62,15 @@ public class BootManager : MonoBehaviour
             yield return StartCoroutine(Php_Connect.Request_Auth(UserData.UserId));
         }
 
+        string ownedCardsInPacks = null;
         UpdateLoadingStatus(getBDCardPacksData);
-        yield return StartCoroutine(Php_Connect.Request_WhichCardInPackOwnering(packManager.Active.PackDBIndex));
+        yield return StartCoroutine(Php_Connect.Request_WhichCardInPackOwnering(packManager.Active.PackDBIndex, (string response) =>
+        {
+            ownedCardsInPacks = response;
+        }));
 
         UpdateLoadingStatus(packManager_Initialization);
-        yield return StartCoroutine(packManager.Init(phpConnect.CardOwneringRequest));
+        yield return StartCoroutine(packManager.Init(ownedCardsInPacks));
 
         UpdateLoadingStatus(customController_Initialization);
         yield return StartCoroutine(customController.Init());

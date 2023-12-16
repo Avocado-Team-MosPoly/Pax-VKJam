@@ -117,7 +117,7 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
             }
             if (customController.Categories[currentSection].products[productIndex].Data.productCode == 0)
             {
-                Logger.Instance.Log(this, customController.Categories[currentSection].products[productIndex].Data.productName);
+                //Logger.Instance.Log(this, customController.Categories[currentSection].products[productIndex].Data.productName);
                 instanceIndex--;
                 continue;
             }
