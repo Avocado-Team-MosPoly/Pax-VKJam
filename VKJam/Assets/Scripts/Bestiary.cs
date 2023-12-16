@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using Tiractor.Sound;
 
 public class Bestiary : MonoBehaviour
 {
@@ -31,8 +30,8 @@ public class Bestiary : MonoBehaviour
     [SerializeField] private GameObject catalougeCanvas;
     [SerializeField] private GameObject templateCanvas;
 
-    [SerializeField] private GameObject MonsterBookmark; 
-    [SerializeField] private GameObject IngridientsBookmark;
+    //[SerializeField] private GameObject MonsterBookmark; 
+    //[SerializeField] private GameObject IngridientsBookmark;
     [SerializeField] private GameObject MonstersCatalogue;
     [SerializeField] private GameObject IngridientsCatalouge;
 
@@ -87,15 +86,15 @@ public class Bestiary : MonoBehaviour
 
     private void IngredientGuess()
     {
-        MonsterBookmark.SetActive(false);
-        IngridientsBookmark.SetActive(true);
+        //MonsterBookmark.SetActive(false);
+        //IngridientsBookmark.SetActive(true);
         MonstersCatalogue.SetActive(false);
         IngridientsCatalouge.SetActive(true);
     }
     private void MonsterGuess(bool arg0)
     {
-        MonsterBookmark.SetActive(true);
-        IngridientsBookmark.SetActive(false);
+        //MonsterBookmark.SetActive(true);
+        //IngridientsBookmark.SetActive(false);
         MonstersCatalogue.SetActive(true);
         IngridientsCatalouge.SetActive(false);
     }
@@ -125,32 +124,39 @@ public class Bestiary : MonoBehaviour
 
     private void PreviousMoster()
     {
-        if (currentMonster <= 0)
-        {
-            catalougeCanvas.SetActive(true);
-            templateCanvas.SetActive(false);
-            return;
-        }
-
         currentMonster--;
         UpdateUIMonster();
     }
 
     private void NextMoster()
     {
-        if (currentMonster >= Monsters.Count - 1)
-        {
-            catalougeCanvas.SetActive(true);
-            templateCanvas.SetActive(false);
-            return;
-        }
-
         currentMonster++;
         UpdateUIMonster();
     }
 
     private void UpdateUIMonster()
     {
+        if (currentMonster < 0 || currentMonster >= Monsters.Count)
+        {
+            Logger.Instance.LogWarning(this, new System.ArgumentOutOfRangeException());
+            return;
+        }
+        else if (currentMonster == 0)
+        {
+            nextMonsterButton.gameObject.SetActive(true);
+            previousMonsterButton.gameObject.SetActive(false);
+        }
+        else if (currentMonster == Monsters.Count - 1)
+        {
+            previousMonsterButton.gameObject.SetActive(true);
+            nextMonsterButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            nextMonsterButton.gameObject.SetActive(true);
+            previousMonsterButton.gameObject.SetActive(true);
+        }
+
         imageHolder.sprite = Monsters[currentMonster].MonsterInBestiarySprite;
         typeHolder.sprite = (Monsters[currentMonster].Difficulty == CardDifficulty.Dangerous ? dangerousIcon : murderousIcon);
         nameHolder.text = Monsters[currentMonster].Id;
@@ -180,6 +186,7 @@ public class Bestiary : MonoBehaviour
             catalougeCanvas.SetActive(false);
             templateCanvas.SetActive(true);
             currentMonster = pageIndex;
+            UpdateUIMonster();
         }
     }
 

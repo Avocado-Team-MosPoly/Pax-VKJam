@@ -246,8 +246,9 @@ public class LobbyManagerUI : NetworkBehaviour
             catch (Exception e)
             {
                 exit.SetActive(true);
+                Logger.Instance.LogError(this, e);
             }
-            
+
         }
 
     }
@@ -265,8 +266,8 @@ public class LobbyManagerUI : NetworkBehaviour
         catch (Exception e)
         {
             exit.SetActive(true);
+            Logger.Instance.LogError(this, e);
         }
-            
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -284,8 +285,9 @@ public class LobbyManagerUI : NetworkBehaviour
         catch (Exception e)
         {
             exit.SetActive(true);
+            Logger.Instance.LogError(this, e);
         }
-       
+
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -305,8 +307,9 @@ public class LobbyManagerUI : NetworkBehaviour
             catch (Exception e)
             {
                 exit.SetActive(true);
+                Logger.Instance.LogError(this, e);
             }
-            
+
             yield return new WaitForSeconds(0.1f);
             for (int io = 0; io < PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]].Count; io++)
             {
@@ -317,8 +320,9 @@ public class LobbyManagerUI : NetworkBehaviour
                 catch (Exception e)
                 {
                     exit.SetActive(true);
+                    Logger.Instance.LogError(this, e);
                 }
-                
+
                 yield return new WaitForSeconds(0.1f);
             }
         }
@@ -341,7 +345,8 @@ public class LobbyManagerUI : NetworkBehaviour
         catch (Exception e)
         {
             exit.SetActive(true);
-        }        
+            Logger.Instance.LogError(this, e);
+        }
     }
 
     [ClientRpc]
@@ -378,6 +383,7 @@ public class LobbyManagerUI : NetworkBehaviour
         catch (Exception e)
         {
             exit.SetActive(true);
+            Logger.Instance.LogError(this, e);
         }
     }
 
@@ -401,6 +407,7 @@ public class LobbyManagerUI : NetworkBehaviour
         catch (Exception e)
         {
             exit.SetActive(true);
+            Logger.Instance.LogError(this, e);
         }
 
     }
