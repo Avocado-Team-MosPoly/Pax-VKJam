@@ -68,22 +68,30 @@ public class Product : MonoBehaviour
         {
             if (Php_Connect.PHPisOnline)
             {
-                Action successRequest = () =>
+                Action<string> successRequest = (string response) =>
                 {
-                    Data.Data.InOwn = true;
-                    RemoveFromWarehouse();
+                    if(response == "success")
+                    {
+                        Data.Data.InOwn = true;
+                        RemoveFromWarehouse();
+                        CurrencyCatcher.Executor.Refresh();
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Not enough money to buy item");
+                    }
 
-                    CurrencyCatcher.Executor.Refresh();
+                    
                 };
 
                 StartCoroutine(Php_Connect.Request_BuyTry(Data.Data.productCode, successRequest, null));
             }
             else
             {
-                if (Data.Data.IsDonateVault) Php_Connect.Current.DCurrency -= Data.Data.productPrice;
+                /*if (Data.Data.IsDonateVault) Php_Connect.Current.DCurrency -= Data.Data.productPrice;
                 else Php_Connect.Current.IGCurrency -= Data.Data.productPrice;
                 Data.Data.InOwn = true;
-                RemoveFromWarehouse();
+                RemoveFromWarehouse();*/
             }
         }
 

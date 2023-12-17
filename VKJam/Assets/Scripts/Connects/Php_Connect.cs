@@ -344,7 +344,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         yield return Executor.StartCoroutine(Post("TokenWin.php", form, completed));
     }
 
-    public static IEnumerator Request_BuyTry(int DesignID, Action successRequest, Action unsuccessRequest)
+    public static IEnumerator Request_BuyTry(int DesignID, Action<string> successRequest, Action unsuccessRequest)
     {
         if (!PHPisOnline)
         {
@@ -361,7 +361,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             if (response == null)
                 unsuccessRequest?.Invoke();
             else
-                successRequest?.Invoke();
+                successRequest?.Invoke(response);
         };
 
         yield return Executor.StartCoroutine(Post("BuyTry.php", form, completed));
@@ -527,9 +527,9 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             yield break;
 
         bool flag = true;
-        Action successRequest = () => flag = false;
+        Action<string> stringSuccessRequest = (string response) => flag = false;
 
-        yield return Executor.StartCoroutine(Request_BuyTry(DesignID, successRequest, null));
+        yield return Executor.StartCoroutine(Request_BuyTry(DesignID, stringSuccessRequest, null));
         if (flag)
             yield break;
 
@@ -540,13 +540,12 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             if (ID >= -5 && ID < 0)
             {
                 int tokenCount = RandomToken(ID);
-                successRequest = () => Catcher_RandomItem.Executor.UIWin(RandomType.Token, tokenCount);
+                Action successRequest = () => Catcher_RandomItem.Executor.UIWin(RandomType.Token, tokenCount);
 
                 Executor.StartCoroutine(Request_TokenWin(tokenCount, successRequest, null));
             }
             else
             {
-                Action<string> stringSuccessRequest;
 
                 switch (ID)
                 {
