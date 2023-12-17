@@ -1,5 +1,4 @@
 using System;
-using System.CodeDom.Compiler;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -7,7 +6,12 @@ using UnityEngine.UI;
 
 public class BootManager : MonoBehaviour
 {
-    [SerializeField] private int defaultNickname = 333; // defauld = 333
+    [Header("Server Connection Data")]
+    [SerializeField] private bool useDefaultNickname;
+    [SerializeField] private int defaultNickname = 333; // default = 333
+
+    [SerializeField, Tooltip("Time between connection attempts in seconds"), Min(0f)] private float connectionTimeout = 1f;
+    [SerializeField] private int maxConnectionAttempts = 10;
 
     [Header("VK")]
     [SerializeField] private VK_Connect vkConnect;
@@ -24,7 +28,6 @@ public class BootManager : MonoBehaviour
 
     [Header("Custom")]
     [SerializeField] private CustomController customController;
-
 
     [Header("Loading UI")]
     [SerializeField] private TextMeshProUGUI statusLabel;
@@ -52,21 +55,34 @@ public class BootManager : MonoBehaviour
         yield return StartCoroutine(phpConnect.Init());
 
         bool loadTutorial = true;
+        int connectionAttemptNumber = 0;
         Action<bool> successAuthentication = (bool isFirstTime) => loadTutorial = isFirstTime;
 
         UpdateLoadingStatus(phpConnect_Authentication);
-        if (UserData.UserId < 0)
+        for (connectionAttemptNumber = 0; connectionAttemptNumber < maxConnectionAttempts; connectionAttemptNumber++)
         {
-            Logger.Instance.LogWarning(this, "Unable to authenticate through VK id");
-            yield return StartCoroutine(Php_Connect.Request_Auth(defaultNickname, successAuthentication, null));
+            if (!useDefaultNickname && UserData.UserId < 0)
+            {
+                yield return new WaitForSeconds(connectionTimeout);
+                continue;
+            }
+
+            yield return StartCoroutine(Php_Connect.Request_Auth(useDefaultNickname ? defaultNickname : UserData.UserId, successAuthentication, null));
+
+            if (Php_Connect.PHPisOnline)
+                break;
+
+            yield return new WaitForSeconds(connectionTimeout);
         }
-        else
-            yield return StartCoroutine(Php_Connect.Request_Auth(UserData.UserId, successAuthentication, null));
+        if (connectionAttemptNumber >= maxConnectionAttempts - 1 && !Php_Connect.PHPisOnline)
+        {
+            string message = $"Unable to connect to dedicated server using {(useDefaultNickname ? "Default nickname" : "VK id")}";
+            Logger.Instance.LogError(this, message);
+            NotificationSystem.Instance.SendLocal(message);
+        }
 
         //send request whith card packs we have
-
         //for each pack we own send request which card in pack ownering
-
         //save prev logic
 
         string ownedCardsInPacks = null;

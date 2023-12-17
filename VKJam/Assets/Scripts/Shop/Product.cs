@@ -80,8 +80,6 @@ public class Product : MonoBehaviour
                     {
                         Debug.LogWarning("Not enough money to buy item");
                     }
-
-                    
                 };
 
                 StartCoroutine(Php_Connect.Request_BuyTry(Data.Data.productCode, successRequest, null));

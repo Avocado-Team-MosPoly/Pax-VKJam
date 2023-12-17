@@ -34,11 +34,14 @@ public class LobbyManagerUI : NetworkBehaviour
     [SerializeField] private NetworkList<bool> allPlayerReady = new();
 
     private TextMeshProUGUI readyButtonTextLabel;
-    [SerializeField] private TextMeshProUGUI loading;
+
+    [SerializeField] private TextMeshProUGUI waitingLabel;
+    [SerializeField] private string LoadingText;
+    //[SerializeField] private Slider loadingSlider;
+
     [SerializeField] private GameObject exit;
     [SerializeField] private GameObject refresh;
     [SerializeField] private GameObject ready;
-    [SerializeField] private string LoadingFraze;
 
     private void Start()
     {
@@ -175,7 +178,7 @@ public class LobbyManagerUI : NetworkBehaviour
             }
             
             if (allReady && howManyPlayerReady >= 2)
-            {                
+            {
                 SendPack();
             }
         }
@@ -186,23 +189,27 @@ public class LobbyManagerUI : NetworkBehaviour
         List<bool> bools = new List<bool>();
         for (int i = 0; i < packCardSO.CardInPack.Length; i++)
         {
-            bools.Add(packCardSO.CardInPack[i].CardIsInOwn);            
+            bools.Add(packCardSO.CardInPack[i].CardIsInOwn);
         }
-        PackManager.Instance.PlayersOwnedCard.Clear();       
+
+        PackManager.Instance.PlayersOwnedCard.Clear();
         PackManager.Instance.PlayersOwnedCard.Add(NetworkManager.LocalClientId, bools);
 
         playerSendAllDataId.Add(NetworkManager.LocalClientId);
         playerGetAllDataId.Add(NetworkManager.LocalClientId);
-        Debug.Log("SendPack");
+        //Debug.Log("SendPack");
         PrepareToSandDataClientRpc();
         SendToHostClientRpc();
     }
+
     [ClientRpc]
     private void PrepareToSandDataClientRpc()
     {
-        loading.text = LoadingFraze;
-        exit.SetActive(false) ;
-        refresh.SetActive(false) ;
+        waitingLabel.gameObject.SetActive(false);
+        //loadingSlider.gameObject.SetActive(true);
+        waitingLabel.text = LoadingText;
+        exit.SetActive(false);
+        refresh.SetActive(false);
         ready.SetActive(false);
     }
 
@@ -211,6 +218,7 @@ public class LobbyManagerUI : NetworkBehaviour
     {
         StartCoroutine(SendToHost());
     }
+
     private IEnumerator SendToHost()
     {
         if (!IsServer)
@@ -220,10 +228,11 @@ public class LobbyManagerUI : NetworkBehaviour
             {
                 bools.Add(packCardSO.CardInPack[i].CardIsInOwn);
             }
+
             PackManager.Instance.PlayersOwnedCard.Clear();
             PackManager.Instance.PlayersOwnedCard.Add(NetworkManager.LocalClientId, bools);
 
-            Debug.Log("SendToHostClientRpc");
+            //Debug.Log("SendToHostClientRpc");
 
             for (int i = 0; i < bools.Count; i++)
             {
@@ -262,6 +271,8 @@ public class LobbyManagerUI : NetworkBehaviour
                 PackManager.Instance.PlayersOwnedCard.Add(serverRpcParams.Receive.SenderClientId, new List<bool>());
             }
             PackManager.Instance.PlayersOwnedCard[serverRpcParams.Receive.SenderClientId].Add(SendBool);
+            //loadingSlider.value += 1f / PlayersId.Count * 35;
+            //Logger.Instance.Log(this, loadingSlider.value);
         }
         catch (Exception e)
         {
@@ -275,7 +286,7 @@ public class LobbyManagerUI : NetworkBehaviour
     {
         try
         {
-            Debug.Log("SendAll");
+            //Debug.Log("SendAll");
             playerSendAllDataId.Add(serverRpcParams.Receive.SenderClientId);
             if (playerSendAllDataId.Count == allPlayerReady.Count)
             {
@@ -290,14 +301,15 @@ public class LobbyManagerUI : NetworkBehaviour
 
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc]
     private void SendPackToPlayersServerRpc()
     {
         StartCoroutine(SendPackToPlayers());
     }
+
     private IEnumerator SendPackToPlayers()
     {
-        Debug.Log("SendPackToPlayersServerRpc");
+        //Debug.Log("SendPackToPlayersServerRpc");
         for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
         {
             try
@@ -311,11 +323,11 @@ public class LobbyManagerUI : NetworkBehaviour
             }
 
             yield return new WaitForSeconds(0.1f);
-            for (int io = 0; io < PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]].Count; io++)
+            for (int j = 0; j < PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]].Count; j++)
             {
                 try
                 {
-                    GetPackFromHostClientRpc(PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]][io]);
+                    GetPackFromHostClientRpc(PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]] [j]);
                 }
                 catch (Exception e)
                 {
@@ -354,8 +366,7 @@ public class LobbyManagerUI : NetworkBehaviour
     {
         try
         {
-
-            Debug.Log("GetPackFromHostClientRpc");
+            //Debug.Log("GetPackFromHostClientRpc");
             if (!IsServer)
             {
                 if (sendedPlayerId != NetworkManager.LocalClientId)
@@ -393,11 +404,13 @@ public class LobbyManagerUI : NetworkBehaviour
         try
         {
             Debug.Log("GetAllServerRpc");
-            for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
-            {
-                Debug.Log("PlayersOwnedCard[PlayersId[" + i + "]].Count =" + PackManager.Instance.PlayersOwnedCard[PlayersId[i]].Count);
-            }
+            //for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
+            //{
+            //    Debug.Log("PlayersOwnedCard[PlayersId[" + i + "]].Count =" + PackManager.Instance.PlayersOwnedCard[PlayersId[i]].Count);
+            //}
             playerGetAllDataId.Add(serverRpcParams.Receive.SenderClientId);
+            //loadingSlider.value = playerGetAllDataId.Count / allPlayerReady.Count;
+
             if (playerGetAllDataId.Count == allPlayerReady.Count)
             {
                 LobbyManager.Instance.StopHeartBeatPing();

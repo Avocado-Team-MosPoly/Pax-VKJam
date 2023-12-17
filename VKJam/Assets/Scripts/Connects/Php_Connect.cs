@@ -59,6 +59,12 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
     private static IEnumerator Get(string userModule, Action<string> completed)
     {
+        if (string.IsNullOrEmpty(link))
+        {
+            Logger.Instance.LogError(typeof(Php_Connect), new FormatException($"{nameof(link)} is null or empty"));
+            yield break;
+        }
+
         using UnityWebRequest request = UnityWebRequest.Get(link + $"/{userModule}");
         request.certificateHandler = new AcceptAllCertificates();
 
@@ -80,6 +86,12 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
     private static IEnumerator Post(string userModule, WWWForm wwwForm, Action<string> completed)
     {
+        if (string.IsNullOrEmpty(link))
+        {
+            Logger.Instance.LogError(typeof(Php_Connect), new FormatException($"{nameof(link)} is null or empty"));
+            yield break;
+        }
+
         using UnityWebRequest request = UnityWebRequest.Post(link + $"/{userModule}", wwwForm);
         request.certificateHandler = new AcceptAllCertificates();
 

@@ -2,44 +2,37 @@ using UnityEngine;
 
 public class GuesserPainting : MonoBehaviour
 {
-    [SerializeField] private Paint _paint;
-    [SerializeField] private Material _material;
+    [SerializeField] private Paint paint;
+    [SerializeField] private Material material;
 
-    private Texture2D _texture;
+    private Texture2D texture;
 
     private void OnValidate()
     {
-        if (_paint)
+        if (paint)
         {
-            _texture = _paint.GetTexture();
+            texture = paint.GetTexture();
 
-            if (_material)
-                _material.mainTexture = _texture;
+            if (material)
+                material.mainTexture = texture;
         }
     }
 
     private void Start()
     {
-        bool isDisable = false;
-
-        if (!_paint)
+        if (!paint)
         {
             Debug.LogWarning("Paint reference is not set");
-            isDisable = true;
+            return;
         }
-        if (!_material)
+        if (!material)
         {
             Debug.LogWarning("Material reference is not set");
-            isDisable = true;
+            return;
         }
 
-        if (isDisable)
-            return;
-
-        _texture = _paint.GetTexture();
-
-        if (_material)
-            _material.mainTexture = _texture;
+        texture = paint.GetTexture();
+        material.mainTexture = texture;
     }
 
     //private void Update()
