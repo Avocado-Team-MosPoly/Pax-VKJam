@@ -70,6 +70,7 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     }
     private void OnDroppingWhatever()
     {
+        Debug.LogWarning("Type = " + DroppedItem.Type);
         switch (DroppedItem.Type)
         {
             case RandomType.Nothing:
@@ -89,6 +90,7 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
                 Hand.Play("Wish");
                 break;
             case RandomType.Custom:
+                ActiveWinObject(2);
                 Hand.Play("Wish");
                 break;
             default:

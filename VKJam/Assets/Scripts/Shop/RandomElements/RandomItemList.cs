@@ -5,10 +5,8 @@ using UnityEngine;
 public class RandomItemList : RandomItem
 {
     [SerializeField] private List<RandomItem> Massiv;
-    [SerializeField]
-    private static int RandomStrike;
-    [SerializeField]
-    private float RandomStrikeMod;
+    [SerializeField] private int RandomStrike;
+    [SerializeField] private float RandomStrikeMod;
     protected override void Embedded() { IsEmbedded = true; }
     private void Awake()
     {
@@ -24,7 +22,7 @@ public class RandomItemList : RandomItem
             if (current.ResultLesserThan + RandomStrikeMod * RandomStrike > result)
             {
                 Debug.Log(current.SystemName);
-                    return current.Interact();
+                return current.Interact();
             }
         }
         return 0;

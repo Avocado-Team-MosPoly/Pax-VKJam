@@ -23,6 +23,7 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
     {
         //Logger.Instance.LogError(this, "name : " + Target.Data.Data.productName + "; model : " + Target.Data.Model);
         Executor.Custom[(int)Target.Data.Data.Type].SwitchItem(Target.Data);
+
         CustomController.Executor.Save(Target.Data);
     }
 

@@ -12,8 +12,6 @@ public class CustomController : TaskExecutor<CustomController>
 
     public IEnumerator Init()
     {
-        Load();
-
         yield return new WaitForSeconds(0.1f);
 
         foreach (var section in Categories)
@@ -24,8 +22,11 @@ public class CustomController : TaskExecutor<CustomController>
                 yield return StartCoroutine(Php_Connect.Request_CheckOwningDesign(ware.Data.productCode, ware.OnCheckOwningDesignComplete));
             }
         }
+
+        Load();
+
         //if (Php_Connect.PHPisOnline)
-            //FetchAllProductData();
+        //FetchAllProductData();
 
         Logger.Instance.Log(this, "Initialized");
     }
@@ -48,8 +49,26 @@ public class CustomController : TaskExecutor<CustomController>
     }
     private void Load()
     {
-        foreach (ItemType cur in System.Enum.GetValues(typeof(ItemType)))
+        /*foreach (ItemType cur in System.Enum.GetValues(typeof(ItemType)))
+        {
             Custom[(int)cur] = Search(PlayerPrefs.GetInt("Custom_" + cur), cur);
+        }*/
+
+        System.Action<string> successRequest = (string response) =>
+        {
+            string[] resp = response.Split('\n');
+            foreach(var element in resp)
+            {
+                if(element.Length > 0)
+                {
+                    string[] e = element.Split(' ');
+
+                    Custom[int.Parse(e[0])] = Search(int.Parse(e[1]), (ItemType)int.Parse(e[0]));
+                }
+            }
+        };
+
+        StartCoroutine(Php_Connect.Request_LoadCastom(successRequest));
     }
     public WareData Search(int id, ItemType Type)
     {
@@ -74,8 +93,17 @@ public class CustomController : TaskExecutor<CustomController>
     public void Save(WareData New)
     {
         Custom[(int)New.Data.Type] = New;
-        PlayerPrefs.SetInt("Custom_" + New.Data.Type, New.Data.productCode);
-        PlayerPrefs.Save();
+
+        //save choosen item to db
+        System.Action<string> successRequest = (string response) =>
+        {
+            Debug.Log($"Saved item {New.Data.productCode} with type {New.Data.Type} to DB");
+        };
+
+        StartCoroutine(Php_Connect.Request_SaveCastom(New.Data.Type, New.Data.productCode, successRequest));
+
+        //PlayerPrefs.SetInt("Custom_" + New.Data.Type, New.Data.productCode);
+        //PlayerPrefs.Save();
     }
     [ContextMenu("Denote Exist ItemType")]
     private void DenoteExist()

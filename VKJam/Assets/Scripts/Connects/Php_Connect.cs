@@ -180,6 +180,46 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         yield return Executor.StartCoroutine(Post("TokenBuy.php", form, completed));
     }
 
+    public static IEnumerator Request_SaveCastom(ItemType itemType, int idDesign, Action<string> successRequest)
+    {
+        if (!PHPisOnline)
+            yield break;
+
+        WWWForm form = new();
+        form.AddField("Nickname", Nickname);
+        form.AddField("ProductType", (int)itemType);
+        form.AddField("idDesign", idDesign);
+
+        Action<string> completed = (response) =>
+        {
+            if (response == null)
+                return;
+
+            successRequest?.Invoke(response);
+        };
+
+        yield return Executor.StartCoroutine(Post("SaveCastom.php", form, completed));
+    }
+
+    public static IEnumerator Request_LoadCastom(Action<string> successRequest)
+    {
+        if (!PHPisOnline)
+            yield break;
+
+        WWWForm form = new();
+        form.AddField("Nickname", Nickname);
+
+        Action<string> completed = (response) =>
+        {
+            if (response == null)
+                return;
+
+            successRequest?.Invoke(response);
+        };
+
+        yield return Executor.StartCoroutine(Post("LoadCastom.php", form, completed));
+    }
+
     public static IEnumerator Request_CraftCardTry(int idCard, bool ForThePieces, Action<string> successRequest, Action unsuccessRequest)
     {
         if (!PHPisOnline)
@@ -327,7 +367,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         yield return Executor.StartCoroutine(Post("BuyTry.php", form, completed));
     }
 
-    private static IEnumerator Request_CardWin(bool isShard, Action<string> successRequest, Action unsuccessRequest)
+    private static IEnumerator Request_CardWin(Action<string> successRequest, Action unsuccessRequest)
     {
         if (!PHPisOnline)
         {
@@ -337,7 +377,6 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
         WWWForm form = new();
         form.AddField("Nickname", Nickname);
-        form.AddField("IsShard", isShard.ToString());
 
         Action<string> completed = (string response) =>
         {
@@ -527,7 +566,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                                 Catcher_RandomItem.Executor.UIWin(RandomType.Card, cardId);
                         };
 
-                        Executor.StartCoroutine(Request_CardWin(false, stringSuccessRequest, null));
+                        Executor.StartCoroutine(Request_CardWin(stringSuccessRequest, null));
                         break;
                     case -8:
                         stringSuccessRequest = (string response) =>
@@ -536,7 +575,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                                 Catcher_RandomItem.Executor.UIWin(RandomType.Card, cardId);
                         };
 
-                        Executor.StartCoroutine(Request_CardWin(true, stringSuccessRequest, null));
+                        Executor.StartCoroutine(Request_CardWin(stringSuccessRequest, null));
                         break;
                 }
             }
