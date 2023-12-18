@@ -24,8 +24,6 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     {
         if (Php_Connect.PHPisOnline)
             StartCoroutine(Php_Connect.Request_Gift(0, Php_Connect.Nickname));
-        else
-            Php_Connect.RandomBase.Interact();
 
         display.Refresh();
     }
@@ -61,12 +59,13 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     }
     private void ActiveWinObject(int id)
     {
-        for (int i = 0; i <= Mathf.Clamp(WinObjects.Length, 0, 3);++i)
+        for (int i = 0; i < WinObjects.Length; i++)
         {
-            if (id == i) WinObjects[i].SetActive(true);
-            else WinObjects[i].SetActive(false);
+            if (id == i) 
+                WinObjects[i].SetActive(true);
+            else 
+                WinObjects[i].SetActive(false);
         }
-
     }
     private void OnDroppingWhatever()
     {
@@ -82,10 +81,6 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
                 break;
             case RandomType.Card:
                 ActiveWinObject(1);
-                Hand.Play("Wish");
-                break;
-            case RandomType.CardPiece:
-                ActiveWinObject(2);
                 Hand.Play("Wish");
                 break;
             case RandomType.Custom:
