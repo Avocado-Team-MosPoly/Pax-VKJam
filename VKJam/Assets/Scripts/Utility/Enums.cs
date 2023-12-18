@@ -98,6 +98,5 @@ public enum RandomType
     Nothing,
     Token,
     Card,
-    CardPiece,
     Custom
 }

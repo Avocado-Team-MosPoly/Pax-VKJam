@@ -579,15 +579,6 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
                         Executor.StartCoroutine(Request_CardWin(stringSuccessRequest, null));
                         break;
-                    case -8:
-                        stringSuccessRequest = (string response) =>
-                        {
-                            if (int.TryParse(response, out int cardId))
-                                Catcher_RandomItem.Executor.UIWin(RandomType.Card, cardId);
-                        };
-
-                        Executor.StartCoroutine(Request_CardWin(stringSuccessRequest, null));
-                        break;
                 }
             }
         }
