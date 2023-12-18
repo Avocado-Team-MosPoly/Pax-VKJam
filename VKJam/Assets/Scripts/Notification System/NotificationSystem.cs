@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class NotificationSystem : NetworkBehaviour
 {
@@ -56,17 +57,11 @@ public class NotificationSystem : NetworkBehaviour
         if (notificationQueue.Count <= 0)
             return;
 
-        SendLocal(notificationQueue[0]);
+        SendLocal(notificationQueue[0].Text, notificationQueue[0].ShowTime);
         notificationQueue.RemoveAt(0);
     }
 
     #region Send
-    private void SendLocal(NotificationQueueItem notification)
-    {
-        SendLocal(notification.Text, notification.ShowTime);
-    }
-
-    #region Network
 
     [ServerRpc(RequireOwnership = false)]
     private void SendGlobalServerRpc(string message, float showTime, ServerRpcParams serverRpcParams)
@@ -87,8 +82,6 @@ public class NotificationSystem : NetworkBehaviour
 
         SendLocal(message, showTime);
     }
-
-    #endregion
 
     public void SendGlobal(object message, float showTime = 3f)
     {

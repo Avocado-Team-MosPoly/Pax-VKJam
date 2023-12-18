@@ -45,8 +45,24 @@ public class BootManager : MonoBehaviour
     [SerializeField] private string lobbyManager_Initialization;
     [SerializeField] private string sceneLoading;
 
+    [Header("Disclamer")]
+    [SerializeField] private bool showDisclaimer = true;
+    [SerializeField] private GameObject disclaimer;
+    [SerializeField] private float disclaimerShowTime = 3.5f;
+
     private IEnumerator Start()
     {
+        // Disclaimer
+
+        if (showDisclaimer)
+        {
+            disclaimer.SetActive(true);
+            yield return new WaitForSeconds(disclaimerShowTime);
+            disclaimer.SetActive(false);
+        }
+        else
+            disclaimer.SetActive(false);
+
         // VK
 
         loadingSlider.value = 0f;
@@ -105,7 +121,9 @@ public class BootManager : MonoBehaviour
         // Unity Services
 
         UpdateLoadingStatus(authentication_Authentication);
-        yield return Authentication.Authenticate(UserData.UserId.ToString(), UserData.UserName);
+        string unityServicesId = (useDefaultNickname ? defaultNickname : UserData.UserId).ToString();
+        string unityServicesNickname = useDefaultNickname ? defaultNickname.ToString() : UserData.UserName;
+        yield return Authentication.Authenticate(unityServicesId, unityServicesNickname);
 
         UpdateLoadingStatus(relayManager_Initialization);
         yield return StartCoroutine(relayManager.Init());
