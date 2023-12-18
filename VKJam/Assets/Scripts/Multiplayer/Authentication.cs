@@ -1,10 +1,7 @@
-using System.Collections;
+using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
-using Unity.VisualScripting;
 using UnityEngine;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 public class Authentication : MonoBehaviour
 {

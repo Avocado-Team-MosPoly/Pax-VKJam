@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using System.Collections;
 using UnityEngine;
 
@@ -25,7 +25,7 @@ public class DonatRouter : MonoBehaviour
     private IEnumerator DelayRefresh()
     {
         yield return new WaitForSeconds(1);
-        AdsCounterTest.text = "–ÂÍÎ‡Ï‡ " + AdManager.GetAdsWatchedToday() + "/3";
+        AdsCounterTest.text = "–ü—Ä–æ—Å–º–æ—Ç—Ä–µ–Ω–æ " + AdManager.GetAdsWatchedToday() + "/3";
         buyText.text = buyTextString;
         CurrencyCatcher.Executor.Refresh();
         

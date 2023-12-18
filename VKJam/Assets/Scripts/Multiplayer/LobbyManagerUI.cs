@@ -2,9 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Collections;
 using Unity.Netcode;
-using Unity.Services.Lobbies;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -63,11 +61,23 @@ public class LobbyManagerUI : NetworkBehaviour
 
         if (NetworkManager.Singleton.IsServer)
         {
+            foreach (byte clientId in NetworkManager.ConnectedClientsIds) // implicit conversion ulong to byte
+                if (PlayersId.IndexOf(clientId) < 0)
+                    PlayerConnect(clientId);
+
             NetworkManager.Singleton.OnClientConnectedCallback += PlayerConnect;
             NetworkManager.Singleton.OnClientDisconnectCallback += PLayerLeave;
-
-            PlayerConnect(0);
         }
+        else
+            StartCoroutine(GetPlayerDataOnClient());
+    }
+
+    private IEnumerator GetPlayerDataOnClient()
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        foreach (byte clientId in PlayersId)
+            playerDataViewManager.AddPlayer(clientId);
     }
 
     public override void OnDestroy()
@@ -179,6 +189,7 @@ public class LobbyManagerUI : NetworkBehaviour
             
             if (allReady && howManyPlayerReady >= 2)
             {
+                playerDataViewManager.LockKick();
                 SendPack();
             }
         }

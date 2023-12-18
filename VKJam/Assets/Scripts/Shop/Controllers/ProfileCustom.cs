@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -67,45 +67,45 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
             case ItemType.PackCard:
                 return "";
             case ItemType.Watch:
-                return "Часы";
+                return "Р§Р°СЃС‹";
             case ItemType.Token:
-                return "Жетоны";
+                return "Р–РµС‚РѕРЅС‹";
             case ItemType.LeftItem:
-                return "Левый предмет";
+                return "Р›РµРІС‹Р№ РїСЂРµРґРјРµС‚";
             case ItemType.RightItem:
-                return "Правый предмет";
+                return "РџСЂР°РІС‹Р№ РїСЂРµРґРјРµС‚";
             case ItemType.Cauldron:
-                return "Котел";
+                return "РљРѕС‚РµР»";
             case ItemType.Notebook:
-                return "Блокнот";
+                return "Р‘Р»РѕРєРЅРѕС‚";
             case ItemType.Bestiary:
-                return "Бестиарий";
+                return "Р‘РµСЃС‚РёР°СЂРёР№";
             case ItemType.CardShirts:
-                return "Рубашки Карт";
+                return "Р СѓР±Р°С€РєР° РєР°СЂС‚";
             case ItemType.UI_Notebook:
-                return "Блокнот";
+                return "Р‘Р»РѕРєРЅРѕС‚";
             case ItemType.UI_Bestiary:
-                return "Бестиарий";
+                return "Р‘РµСЃС‚РёР°СЂРёР№";
             case ItemType.Arm:
-                return "Рука";
+                return "Р СѓРєР°";
             case ItemType.Mirror:
-                return "Зеркало";
+                return "Р—РµСЂРєР°Р»Рѕ";
             case ItemType.Eyes:
-                return "Глаза";
+                return "Р“Р»Р°Р·Р°";
             case ItemType.UI_Eraser:
-                return "Ластик";
+                return "Р›Р°СЃС‚РёРє";
             case ItemType.UI_Painter:
-                return "Мел";
+                return "РњРµР»";
             case ItemType.DrawingColors:
-                return "Цвет";
+                return "Р¦РІРµС‚";
             case ItemType.Avatars:
-                return "Аватар";
+                return "РђРІР°С‚Р°СЂ";
             case ItemType.AvatarFrame:
-                return "Рамка";
+                return "Р Р°РјРєР°";
             case ItemType.Currency:
-                return "Валюта";
+                return "Р’Р°Р»СЋС‚Р°";
             case ItemType.Table:
-                return "Стол";
+                return "РЎС‚РѕР»";
             default:
                 return "";
         }

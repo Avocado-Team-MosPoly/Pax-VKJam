@@ -21,7 +21,7 @@ public class GameManager : NetworkBehaviour
     public Stage Stage { get; private set; } = Stage.Waiting;
     public bool IsTeamMode { get; private set; }
 
-    public int IngredientsCount => answerCardSO.Ingredients.Length;
+    public int IngredientsCount => answerCardSO.IngredientsSO.Length;
     public bool IsDangerousCard => answerCardSO.Difficulty == CardDifficulty.Dangerous;
     public int CurrentRound => currentRound;
 
@@ -350,7 +350,7 @@ public class GameManager : NetworkBehaviour
         if (ingredientIndex < 0)
             hintManager.SetHintData(answerCardSO.Id);
         else
-            hintManager.SetHintData(answerCardSO.Ingredients[ingredientIndex]);
+            hintManager.SetHintData(answerCardSO.IngredientsSO[ingredientIndex].Name);
     }
 
     [ClientRpc]
@@ -444,7 +444,7 @@ public class GameManager : NetworkBehaviour
 
     public string GetCurrentIngredient()
     {
-        return answerCardSO.Ingredients[ingredientManager.CurrentIngredientIndex];
+        return answerCardSO.IngredientsSO[ingredientManager.CurrentIngredientIndex].Name;
     }
 
     public string GetCurrentMonster()

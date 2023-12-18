@@ -247,7 +247,7 @@ public class RelayManager : MonoBehaviour
 
         if (isHost)
         {
-            Logger.Instance.Log(this, "Host unsub");
+            //Logger.Instance.Log(this, "Host unsub");
             // server
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallbackServer;
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallbackServer;
@@ -257,7 +257,7 @@ public class RelayManager : MonoBehaviour
         }
         else
         {
-            Logger.Instance.Log(this, "Client unsub");
+            //Logger.Instance.Log(this, "Client unsub");
             // client
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallbackClient;
             NetworkManager.Singleton.OnClientStarted -= OnClientStartedClient;
@@ -300,7 +300,7 @@ public class RelayManager : MonoBehaviour
 
     private void OnClientStoppedServer(bool isHost)
     {
-        Logger.Instance.Log(this, "OnClientStoppedServer");
+        //Logger.Instance.Log(this, "OnClientStoppedServer");
 
         //if (PlayersDataManager.Instance != null && PlayersDataManager.Instance.NetworkObject != null)
         //    PlayersDataManager.Instance.NetworkObject.Despawn();

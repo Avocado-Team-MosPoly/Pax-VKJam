@@ -12,7 +12,6 @@ public class CardSO : ScriptableObject
     [SerializeField] private Sprite monsterInBestiarySprite;
 
     [SerializeField] private string description;
-    [SerializeField] private string[] ingredients;
 
     [SerializeField] private Ingredient[] ingredientsSO;
     public Ingredient[] IngredientsSO => ingredientsSO;
@@ -24,7 +23,6 @@ public class CardSO : ScriptableObject
     public Sprite MonsterInBestiarySprite => monsterInBestiarySprite;
 
     public string Description => description;
-    public string[] Ingredients => ingredients;
 
     /*private void OnValidate()
     {
@@ -45,12 +43,12 @@ public class CardSO : ScriptableObject
 
     public string GetIngredientsAsString()
     {
-        string ingredietList = string.Empty;
+        string ingredientList = string.Empty;
 
-        foreach (string ingrediet in ingredients)
-            ingredietList += ingrediet + "\n";
+        foreach (Ingredient ingredient in ingredientsSO)
+            ingredientList += ingredient.Name + "\n";
         
-        return ingredietList;
+        return ingredientList;
     }
 
     public override string ToString()

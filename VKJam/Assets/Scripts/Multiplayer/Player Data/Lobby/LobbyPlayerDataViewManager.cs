@@ -22,6 +22,7 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
 
     private LobbyPlayerDataView playerToKick;
     private RectTransform rectTransform;
+    private bool canKick = true;
 
     private IReadOnlyDictionary<ulong, PlayerData> playerData => PlayersDataManager.Instance.PlayerDatas;
     private storeSection avatarsAndFramesStorage => PlayersDataManager.Instance.AvatarsAndFramesStorage;
@@ -44,7 +45,7 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
         {
             playerData.PointerEntered.AddListener(Show);
             playerData.PointerExit.AddListener((LobbyPlayerDataView playerData) => Hide());
-            playerData.ClickedOnServer.AddListener(KickPlayer);
+            playerData.Clicked.AddListener(KickPlayer);
         }
 
         kickPlayerConfirmButton.onClick.AddListener(ConfirmKickPlayer);
@@ -54,6 +55,12 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
         gameObject.SetActive(false);
 
         foreach (byte playerId in lobbyManagerUI.PlayersId)
+        {
+            if (playerId != NetworkManager.Singleton.LocalClientId)
+                AddPlayer(playerId);
+        }
+
+        foreach (ulong playerId in PlayersDataManager.Instance.PlayerDatas.Keys)
         {
             if (playerId != NetworkManager.Singleton.LocalClientId)
                 AddPlayer(playerId);
@@ -100,6 +107,9 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
 
     private void KickPlayer(LobbyPlayerDataView playerData)
     {
+        if (!canKick || !NetworkManager.Singleton.IsServer || NetworkManager.Singleton.LocalClientId == playerData.ClientId)
+            return;
+
         playerToKick = playerData;
         kickPlayerConfirmationObject.SetActive(true);
     }
@@ -108,9 +118,8 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
     {
         textLabel.text = playerData.ClientName;
 
-        if (NetworkManager.Singleton.IsServer)
-            if (NetworkManager.Singleton.LocalClientId != playerData.ClientId)
-                textLabel.text += "\n------\n" + kickPlayerText;
+        if (canKick && NetworkManager.Singleton.IsServer && NetworkManager.Singleton.LocalClientId != playerData.ClientId)
+            textLabel.text += "\n------\n" + kickPlayerText;
 
         gameObject.SetActive(true);
     }
@@ -120,7 +129,7 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private LobbyPlayerDataView GetInactivePlayerDataView()
+    private LobbyPlayerDataView GetFirstInactivePlayerDataView()
     {
         foreach (LobbyPlayerDataView playerDataView in playerDatas)
         {
@@ -157,17 +166,19 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
             Logger.Instance.LogError(this, $"{nameof(playerDataViewIndex)} is not correct. Value = '{playerDataViewIndex}'");
             return;
         }
+        else if (playerDatas[playerDataViewIndex].gameObject.activeSelf)
+            return;
 
         LobbyPlayerDataView playerDataView = playerDatas[playerDataViewIndex];
 
-        if (playerDataView.gameObject.activeSelf)
-            playerDataView = GetInactivePlayerDataView();
-
         if (playerDataView == null)
         {
-            Logger.Instance.LogError(this, $"{nameof(playerDataView)}Is not enough {nameof(playerDatas)}");
+            Logger.Instance.LogError(this, $"{nameof(playerDataView)} is null. Index in {nameof(playerDatas)} is {playerDataViewIndex}");
             return;
         }
+
+        if (playerDataView.gameObject.activeSelf)
+            return;
 
         playerDataView.gameObject.SetActive(true);
 
@@ -213,4 +224,8 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
 
         playerDataView.gameObject.SetActive(false);
     }
+
+    public void LockKick() => canKick = false;
+    public void UnlockKick() => canKick = false;
+
 }

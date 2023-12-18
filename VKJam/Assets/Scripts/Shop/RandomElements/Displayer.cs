@@ -1,4 +1,4 @@
-using UnityEngine.UI;
+п»їusing UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
@@ -42,7 +42,7 @@ public class Displayer : MonoBehaviour
         {
             Picture.sprite = Sprite.Create(inputData.Card.CardTexture, new Rect(0.0f, 0.0f, inputData.Card.CardTexture.width, inputData.Card.CardTexture.height), new Vector2(0.5f, 0.5f), 100.0f);
             Name.text = inputData.Card.Id;
-            Data.text = inputData.CardIsInOwn ? "Повторная" : "Новая";
+            Data.text = inputData.CardIsInOwn ? "РџРѕРІС‚РѕСЂРєР°" : "РќРѕРІР°СЏ";
             inputData.CardIsInOwn = true;
         }
         else Debug.LogError("Uncorrect Type of Displayer - " + Type + " or incorrect input Data");

@@ -47,9 +47,13 @@ public class BootManager : MonoBehaviour
 
     private IEnumerator Start()
     {
+        // VK
+
         loadingSlider.value = 0f;
         statusLabel.text = vkConnect_Initialization;
         yield return StartCoroutine(vkConnect.Init());
+
+        // Dedicated Server
 
         UpdateLoadingStatus(phpConnect_Initialization);
         yield return StartCoroutine(phpConnect.Init());
@@ -97,6 +101,8 @@ public class BootManager : MonoBehaviour
 
         UpdateLoadingStatus(customController_Initialization);
         yield return StartCoroutine(customController.Init());
+
+        // Unity Services
 
         UpdateLoadingStatus(authentication_Authentication);
         yield return Authentication.Authenticate(UserData.UserId.ToString(), UserData.UserName);

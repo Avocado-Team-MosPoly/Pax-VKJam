@@ -9,7 +9,7 @@ public class LobbyPlayerDataView : MonoBehaviour,
 {
     [HideInInspector] public UnityEvent<LobbyPlayerDataView> PointerEntered;
     [HideInInspector] public UnityEvent<LobbyPlayerDataView> PointerExit;
-    [HideInInspector] public UnityEvent<LobbyPlayerDataView> ClickedOnServer;
+    [HideInInspector] public UnityEvent<LobbyPlayerDataView> Clicked;
 
     public ulong ClientId { get; private set; }
     public string ClientName { get; private set; }
@@ -64,12 +64,6 @@ public class LobbyPlayerDataView : MonoBehaviour,
         if (eventData.button != PointerEventData.InputButton.Left)
             return;
 
-        if (NetworkManager.Singleton.IsServer)
-            if (NetworkManager.Singleton.LocalClientId != ClientId)
-            {
-                Debug.LogError(ClientId);
-                ClickedOnServer?.Invoke(this);
-            }
-
+        Clicked?.Invoke(this);
     }
 }

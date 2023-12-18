@@ -24,8 +24,6 @@ public class PackManager : MonoBehaviour
             Destroy(this);
             return;
         }
-
-        
     }
 
     public IEnumerator Init(string cards)

@@ -12,8 +12,8 @@ public class Cards : MonoBehaviour
 
     [SerializeField] private List<GameObject> Spawn;
     private List<GameObject> cardOnScene = new List<GameObject>();
-    private GameObject activeCardPrefab;
-    static public List<string> activeIngridients;
+    //private GameObject activeCardPrefab;
+    //static public List<Ingredient> activeIngridients;
     static public string activeMonsterName;
     private bool searchForCard;
 
@@ -68,9 +68,9 @@ public class Cards : MonoBehaviour
                 {
                     if (cardOnScene.Contains(hit.collider.gameObject))
                     {
-                        activeIngridients = hit.collider.gameObject.GetComponent<Card>().CardSO.Ingredients.ToList();
+                        //activeIngridients = hit.collider.gameObject.GetComponent<Card>().CardSO.IngredientsSO.ToList();
                         Debug.Log("word on card = " + hit.collider.gameObject);
-                        activeCardPrefab = hit.collider.gameObject;
+                        //activeCardPrefab = hit.collider.gameObject;
                         searchForCard = false;
                         for (int i = 0; i < cardOnScene.Count; i++)
                         {
