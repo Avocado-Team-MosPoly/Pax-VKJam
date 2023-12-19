@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -8,7 +9,7 @@ public class PlayersStatusManager : NetworkBehaviour
     [SerializeField] private BestiaryIngredients bestiaryIngredients;
     [SerializeField] private PlayerStatus playerStatusPrefab;
 
-    [SerializeField] private string defaultPlayerStatus = "";
+    [SerializeField] private string defaultPlayerStatus = string.Empty;
     [SerializeField] private Texture defaultPlayerProfileTexture;
 
     [SerializeField] private RectTransform playerStatusesContainer;
@@ -126,7 +127,10 @@ public class PlayersStatusManager : NetworkBehaviour
             int ingredientIdIndex = bestiaryIngredients.GetIngredientIndexById(status);
 
             if (ingredientIdIndex < 0)
-                throw new System.ArgumentOutOfRangeException($"[{nameof(PlayersStatusManager)}] Ingredient doesn't exist");
+            {
+                Logger.Instance.LogError(this, "Ingredient doesn't exist");
+                return;
+            }
 
             if (IsServer)
                 SendStatusClientRpc(ingredientIdIndex, (byte)senderClientId);
@@ -152,5 +156,18 @@ public class PlayersStatusManager : NetworkBehaviour
     {
         foreach (PlayerStatus playerStatus in playerStatuses.Values)
             playerStatus.ResetStatus(defaultPlayerStatus);
+    }
+
+    public string GetPlayerStatus(byte clientId)
+    {
+        foreach (var playerStatus in playerStatuses)
+        {
+            if (playerStatus.Key == clientId)
+            {
+                return playerStatus.Value.GuessStatusText;
+            }
+        }
+
+        return null;
     }
 }

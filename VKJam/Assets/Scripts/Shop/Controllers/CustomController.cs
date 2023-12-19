@@ -6,9 +6,9 @@ using UnityEngine;
 public class CustomController : TaskExecutor<CustomController>
 {
     [SerializeField] private int FreeIndex;
-    public storeSection[] Categories = new storeSection[System.Enum.GetNames(typeof(ShopFilters)).Length];
-    public WareData[] Custom = new WareData[System.Enum.GetNames(typeof(ItemType)).Length];
-    public WareData[] Standart = new WareData[System.Enum.GetNames(typeof(ItemType)).Length];
+    public storeSection[] Categories = new storeSection[Enum.GetNames(typeof(ShopFilters)).Length];
+    public WareData[] Custom = new WareData[Enum.GetNames(typeof(ItemType)).Length];
+    public WareData[] Standart = new WareData[Enum.GetNames(typeof(ItemType)).Length];
 
     public IEnumerator Init()
     {
@@ -30,6 +30,13 @@ public class CustomController : TaskExecutor<CustomController>
 
         Logger.Instance.Log(this, "Initialized");
     }
+
+    private void SetDefaults()
+    {
+        for (int i = 0; i < Custom.Length; i++)
+            Custom[i] = Standart[i];
+    }
+
     [ContextMenu("Upload Data into DB")]
     private IEnumerator Upload()
     {
@@ -54,8 +61,15 @@ public class CustomController : TaskExecutor<CustomController>
             Custom[(int)cur] = Search(PlayerPrefs.GetInt("Custom_" + cur), cur);
         }*/
 
-        System.Action<string> successRequest = (string response) =>
+        Action<string> successRequest = (string response) =>
         {
+            if (response == "failed")
+            {
+                Logger.Instance.LogWarning(this, "Unable to find saved custom on server");
+                SetDefaults();
+                return;
+            }
+
             string[] resp = response.Split('\n');
             foreach(var element in resp)
             {
@@ -70,12 +84,14 @@ public class CustomController : TaskExecutor<CustomController>
 
         StartCoroutine(Php_Connect.Request_LoadCastom(successRequest));
     }
+
     public WareData Search(int id, ItemType Type)
     {
         foreach(var current in Categories[(int)Categorize(Type)].products)
         {
             if (current.Data.productCode == id && current.Data.InOwn) return current;
         }
+
         return Standart[(int)Type];
     }
     public WareData Search(DesignSelect Sel)

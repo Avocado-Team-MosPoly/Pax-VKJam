@@ -20,13 +20,16 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
         Executor.OnDroppingWhatever();
         Result = Data.DesignID;
     }
+
     public void Gifter()
     {
         if (Php_Connect.PHPisOnline)
+        {
             StartCoroutine(Php_Connect.Request_Gift(0, Php_Connect.Nickname));
-
-        display.Refresh();
+            display.Refresh();
+        }
     }
+
     public void GenerateWin(DesignSelect Sel)
     {
         WareData temp = CustomController.Executor.Search(Sel);
@@ -36,6 +39,7 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
 
         UIWin(temp);
     }
+
     public void UIWin(WareData data)
     {
         //UI.SetActive(true);
@@ -67,6 +71,7 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
                 WinObjects[i].SetActive(false);
         }
     }
+
     private void OnDroppingWhatever()
     {
         switch (DroppedItem.Type)

@@ -29,12 +29,14 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
     private static string link;
 
-    private static void ErrorProcessor(string error)
+    private static void ErrorProcessor(string error, string userModule)
     {
-        Debug.LogError("Server Error: " + error);
+        Logger.Instance.LogError(typeof(Php_Connect), $"Server error in request to user module {userModule}: {error}");
+
         if (error == "Cannot connect to destination host")
         {
             PHPisOnline = false;
+            Logger.Instance.LogWarning(typeof(Php_Connect), $"{nameof(Php_Connect)} is no longer online");
         }
     }
 
@@ -79,7 +81,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         else if (request.result == UnityWebRequest.Result.InProgress)
             Logger.Instance.LogError(typeof(Php_Connect), "Coroutine continue run before get response from server");
         else
-            ErrorProcessor(request.error);
+            ErrorProcessor(request.error, userModule);
 
         completed?.Invoke(null);
     }
@@ -99,14 +101,14 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-            Logger.Instance.Log(typeof(Php_Connect), "Server success response: " + request.downloadHandler.text);
+            Logger.Instance.Log(typeof(Php_Connect), $"Server success response to user module {userModule}: {request.downloadHandler.text}");
             completed?.Invoke(request.downloadHandler.text);
             yield break;
         }
         else if (request.result == UnityWebRequest.Result.InProgress)
-            Logger.Instance.LogError(typeof(Php_Connect), "Coroutine continue run before get response from server");
+            Logger.Instance.LogError(typeof(Php_Connect), $"Coroutine continue run before get response from server. User module: {userModule}");
         else
-            ErrorProcessor(request.error);
+            ErrorProcessor(request.error, userModule);
 
         completed?.Invoke(null);
     }
@@ -539,7 +541,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             yield break;
 
         bool flag = true;
-        Action<string> stringSuccessRequest = (string response) => flag = false;
+        Action<string> stringSuccessRequest = (string response) => flag = response != "success";
 
         yield return Executor.StartCoroutine(Request_BuyTry(DesignID, stringSuccessRequest, null));
         if (flag)

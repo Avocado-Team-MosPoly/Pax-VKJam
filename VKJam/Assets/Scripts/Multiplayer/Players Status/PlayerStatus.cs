@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class PlayerStatus : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public ulong OwnerClientId { get; private set; }
+    public string GuessStatusText { get; private set; }
 
     [Header("Player status visual")]
     [SerializeField] private Image avatarImage;
@@ -15,7 +16,6 @@ public class PlayerStatus : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     [SerializeField] private Sprite checkedSprite;
     [SerializeField] private Sprite uncheckedSprite;
 
-    private string guessStatusText;
     private PlayerStatusDescription statusDescription;
 
     public PlayerStatus Init(ulong ownerClientId, Sprite avatarImage, Sprite frameImage, string guessStatusText, PlayerStatusDescription statusDescription)
@@ -25,7 +25,7 @@ public class PlayerStatus : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         this.frameImage.sprite = frameImage;
 
         checkBoxImage.sprite = uncheckedSprite;
-        this.guessStatusText = guessStatusText;
+        this.GuessStatusText = guessStatusText;
         this.statusDescription = statusDescription;
 
         return this;
@@ -33,19 +33,19 @@ public class PlayerStatus : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void ResetStatus(string defaultStatus)
     {
-        guessStatusText = defaultStatus;
+        GuessStatusText = defaultStatus;
         checkBoxImage.sprite = uncheckedSprite;
     }
 
     public void SetStatus(string guessText)
     {
-        guessStatusText = guessText;
+        GuessStatusText = guessText;
         checkBoxImage.sprite = checkedSprite;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        statusDescription.Show(PlayersDataManager.Instance.PlayerDatas[OwnerClientId].Name, guessStatusText);
+        statusDescription.Show(PlayersDataManager.Instance.PlayerDatas[OwnerClientId].Name, GuessStatusText);
     }
 
     public void OnPointerExit(PointerEventData eventData)

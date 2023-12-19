@@ -8,7 +8,7 @@ public class Authentication : MonoBehaviour
     public static string PlayerName { get; private set; }
     public static string UserId { get; private set; }
 
-    public static bool IsLoggedInThroughVK { get; private set; }
+    //public static bool IsLoggedInThroughVK { get; private set; }
 
     public static async Task Authenticate(string userId, string playerName)
     {
@@ -19,17 +19,14 @@ public class Authentication : MonoBehaviour
         else
         {
             UserId = userId;
-            UserId = playerName;
+            PlayerName = playerName;
             string number = Random.Range(100, 1000).ToString();
 
             if (string.IsNullOrEmpty(PlayerName))
-            {
                 PlayerName = "Player" + number;
-            }
+
             if (string.IsNullOrEmpty(UserId))
-            {
                 UserId = number;
-            }
 
             InitializationOptions initializationOptions = new();
             initializationOptions.SetProfile(UserId);
@@ -68,25 +65,25 @@ public class Authentication : MonoBehaviour
     //        AuthenticationService.Instance.SwitchProfile(userId);
     //}
 
-    public static void SetVKProfile(string userId, string playerName)
-    {
-        if (AuthenticationService.Instance.IsAuthorized)
-        {
-            Logger.Instance.LogWarning(typeof(Authentication), $"{nameof(AuthenticationService)} already authorized");
-            return;
-        }
+    //public static void SetVKProfile(string userId, string playerName)
+    //{
+    //    if (AuthenticationService.Instance.IsAuthorized)
+    //    {
+    //        Logger.Instance.LogWarning(typeof(Authentication), $"{nameof(AuthenticationService)} already authorized");
+    //        return;
+    //    }
 
-        UserId = userId;
-        PlayerName = playerName;
+    //    UserId = userId;
+    //    PlayerName = playerName;
 
-        AuthenticationService.Instance.SwitchProfile(UserId);
+    //    AuthenticationService.Instance.SwitchProfile(UserId);
 
-        IsLoggedInThroughVK = true;
-    }
+    //    IsLoggedInThroughVK = true;
+    //}
 
     public static void SignOut()
     {
         AuthenticationService.Instance.SignOut(true);
-        IsLoggedInThroughVK = false;
+        //IsLoggedInThroughVK = false;
     }
 }
