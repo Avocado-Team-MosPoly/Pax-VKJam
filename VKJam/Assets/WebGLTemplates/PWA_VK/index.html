@@ -197,13 +197,8 @@
             vkBridge.send('VKWebAppGetFriends')
                 .then((data) => {
                     if (data) {
-                        var uids = [];
-                        for (var i = 0; i < data.users.length; i++) {
-                            uids[i] = data.users[i].id;
-                        }
-
-                        unityGameInstance.SendMessage('Connects', 'ResponseGetFriends', uids);
                         console.log(data.users);
+                        unityGameInstance.SendMessage('Connects', 'ResponseGetFriends', data.users[0].id);
                     }
                 })
                 .catch((error) => {

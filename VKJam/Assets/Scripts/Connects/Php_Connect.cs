@@ -545,7 +545,10 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
         yield return Executor.StartCoroutine(Request_BuyTry(DesignID, stringSuccessRequest, null));
         if (flag)
+        {
+            NotificationSystem.Instance.SendLocal("Не хватает жетонов");
             yield break;
+        }
 
         if (DesignID == 0)
         {
