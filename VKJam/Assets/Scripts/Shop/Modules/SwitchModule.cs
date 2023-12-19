@@ -14,13 +14,22 @@ public class SwitchModule : MonoBehaviour
         if (CustomController.Executor.Custom[(int)Type].Data.productName != "" && CustomController.Executor.Custom[(int)Type].Data.productCode != 0)
             SwitchItem(CustomController.Executor.Custom[(int)Type]);
     }
+
     public virtual void SwitchItem(WareData NewItem)
     {
         if (NewItem.Data.Type != Type) 
             return;
 
+
         //Transform instanceTransform = Instantiate(NewItem.Model, transform).transform;
-        Instantiate(NewItem.Model, transform);
+
+        if (Instantiate(NewItem.Model, transform).TryGetComponent<Rigidbody>(out Rigidbody rb))
+        {
+            if (SceneLoader.ActiveScene.name != "ProfileCastom")
+                return;
+
+            rb.isKinematic = true;
+        }
 
         if (Sync != null) 
         { 

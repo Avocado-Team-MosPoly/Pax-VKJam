@@ -47,6 +47,7 @@ public class AdManager
     private static void SetLastAdWatchedTime(DateTime time)
     {
         string timeString = time.ToString("o"); // "o" format specifies an ISO 8601 format
+        Logger.Instance.LogError(typeof(AdManager), "timeString = " + timeString);
         PlayerPrefs.SetString(AdLastWatchedTimeKey, timeString);
         PlayerPrefs.Save();
     }

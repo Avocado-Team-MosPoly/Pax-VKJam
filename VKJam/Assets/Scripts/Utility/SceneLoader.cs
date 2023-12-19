@@ -9,6 +9,8 @@ public class SceneLoader : MonoBehaviour
     public delegate void EndLoadEvent(string sceneName);
     public static event EndLoadEvent EndLoad;
 
+    public static Scene ActiveScene => SceneManager.GetActiveScene();
+
     public static void ServerLoad(string sceneName)
     {
         if (!NetworkManager.Singleton.IsServer)
