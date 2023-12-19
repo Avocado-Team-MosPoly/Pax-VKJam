@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 public class VK_Connect : TaskExecutor<VK_Connect>
 {
-    public UnityEvent<int> OnFriendsGot;
+    public UnityEvent<int[]> OnFriendsGot;
 
     public TMPro.TMP_Text DebugingText;
     public TMPro.TMP_Text NameText;
@@ -167,17 +167,17 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         CurrencyCatcher.Executor?.Refresh();
     }
 
-    public void ResponseGetFriends(int id)
+    public void ResponseGetFriends(string stringUids)
     {
-        //string[] splittedUid = uids.Split(' ');
-        //int[] uidsArray = new int[splittedUid.Length - 1];
+        string[] splittedUids = stringUids.Split(' ');
+        int[] uidsArray = new int[splittedUids.Length - 1];
 
-        //for (int i = 0; i < uidsArray.Length; i++)
-        //{
+        Logger.Instance.LogError(this, splittedUids[^1]);
 
-        //}
-        //if (int.TryParse(id, out int numberId))
-        OnFriendsGot?.Invoke(id);
+        for (int i = 0; i < uidsArray.Length; i++)
+            uidsArray[i] = int.Parse(splittedUids[i]);
+
+        OnFriendsGot?.Invoke(uidsArray);
     }
 
     public void UserData_Processing(string Input)

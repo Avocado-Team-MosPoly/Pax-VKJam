@@ -30,8 +30,9 @@ public class VKUtility : MonoBehaviour
         VK_Connect.Executor.RequestGetFriends();
     }
 
-    private void OnFriendsGot(int id)
+    private void OnFriendsGot(int[] uids)
     {
-        VK_Connect.Executor.RequestInvateOldPlayer(id, LobbyManager.Instance.CurrentLobby.LobbyCode);
+        foreach (var uid in uids)
+            VK_Connect.Executor.RequestInvateOldPlayer(uid, LobbyManager.Instance.CurrentLobby.LobbyCode);
     }
 }

@@ -194,11 +194,17 @@
                 });
         }
         function JSRequestGetFriends() {
-            vkBridge.send('VKWebAppGetFriends')
+            vkBridge.send('VKWebAppGetFriends', {
+                multi: true
+            })
                 .then((data) => {
                     if (data) {
                         console.log(data.users);
-                        unityGameInstance.SendMessage('Connects', 'ResponseGetFriends', data.users[0].id);
+                        var uids = "";
+                        for (var i = 0; i < data.users.length; i++)
+                            uids += data.users[i].id + " ";
+
+                        unityGameInstance.SendMessage('Connects', 'ResponseGetFriends', uids);
                     }
                 })
                 .catch((error) => {
