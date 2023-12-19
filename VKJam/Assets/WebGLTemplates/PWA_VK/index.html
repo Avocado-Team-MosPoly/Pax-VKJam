@@ -107,128 +107,128 @@
       };
       document.body.appendChild(script);
     </script>
-    <script>   // Пользовательский код
-      function JSRequestUserData()   // функция для тестов - вызывается из Unity
-      {
-        userData();
-      }
-      function JSRequestShowAds()   // функция для тестов - вызывается из Unity
-      {
-        showAds();
-      }
-      function JSRequestInviteNewPlayer()   // функция для тестов - вызывается из Unity
-      {
-        newPlayer();
-      }
-      function JSRequestInviteOldPlayer()   // функция для тестов - вызывается из Unity
-      {
-        oldPlayer();
-      }
-	function JSRequestBuyTry(id)   // функция для тестов - вызывается из Unity
-      {
-        var itemId = id.toString();
-        console.log('Попытка покупки с ID:', itemId);
-        vkBridge.send('VKWebAppShowOrderBox', {
-    type: 'item',
-    item: itemId
-  })
-  .then(data => {
-    // Обработка успешного случая. Данные в data могут содержать информацию о покупке
-    if (data.status) {
-      console.log('Покупка успешно совершена', data);
-      // Тут можно отправить данные на сервер для записи в базу
-    } else {
-      console.log('Пользователь отказался от покупки или произошла ошибка');
-    }
-  })
-  .catch(error => {
-    // Логгирование ошибки, если что-то пошло не так
-    console.error('Произошла ошибка при открытии окна заказа:', error.message); // log the message
-    console.error('Неудачный объект:', error); // full error object for inspection
-  });
-      }
+    <script>
+    // Пользовательский код
+        function JSRequestUserData()   // функция для тестов - вызывается из Unity
+        {
+            vkBridge.send('VKWebAppGetUserInfo', {})
+                .then((data) => {
+                    if (data.id) {
+                        console.log(data);
+                        unityGameInstance.SendMessage('Connects', 'UserData_Processing', data.id.toString() + '|' + data.photo_200 + '|' + data.first_name);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+        function JSRequestShowAds()   // функция для тестов - вызывается из Unity
+        {
+            console.log('Попытка рекламы');
+            vkBridge.send('VKWebAppShowNativeAds', {
+                ad_format: 'reward' /* Тип рекламы */
+            })
+                .then((data) => {
+                    console.log(data);
+                    if (data.result) {
+                        console.log('Показ завершён');
+                        unityGameInstance.SendMessage('Connects', 'ResponseSuccessAds');
+                    }
+                    else {
+                        console.log('Ошибка при показе');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Произошла ошибка при открытии окна рекламы:', error.message); // log the message
+                    console.error('Неудачный объект:', error);
+                });
+        }
+        function JSRequestInviteNewPlayer()   // функция для тестов - вызывается из Unity
+        {
+            vkBridge.send('VKWebAppShowInviteBox', {})
+                .then((data) => {
+                    if (data.success) {
+                        // Этим выбранным пользователям
+                        // не удалось отправить приглашения
+                        console.log('Приглашения не отправлены', data.notSentIds);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error); // Ошибка
+                });
+        }
+        function JSRequestInviteOldPlayer(id, lobby_key) {
+            vkBridge.send("VKWebAppShowRequestBox", {
+                uid: id,
+                message: "Заходи ко мне в игру! Ключ лобби: " + lobby_key
+                //requestKey: "key-12345" //  Ключ запроса
+            })
+                .then((data) => {
+                    if (data.success) {
+                        console.log('Приглашён пользователь: ', id);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+        function JSRequestBuyTry(id) {
+            var itemId = id.toString();
+            console.log('Попытка покупки с ID:', itemId);
+            vkBridge.send('VKWebAppShowOrderBox', {
+                type: 'item',
+                item: itemId
+            })
+                .then((data) => {
+                    if (data.success) {
+                        console.log('Покупка успешно совершена', data);
+                        unityGameInstance.SendMessage('Connects', 'ResponseSuccessBuyDonat');
+                    }
+                    else {
+                        console.log('Пользователь отказался от покупки или произошла ошибка');
+                    }
+                })
+                .catch(error => {
+                    console.error('Произошла ошибка при открытии окна заказа:', error.message); // log the message
+                    console.error('Неудачный объект:', error); // full error object for inspection
+                });
+        }
+        function JSRequestGetFriends() {
+            vkBridge.send('VKWebAppGetFriends')
+                .then((data) => {
+                    if (data) {
+                        var uids = [];
+                        for (var i = 0; i < data.users.length; i++) {
+                            uids[i] = data.users[i].id;
+                        }
 
-      function newPlayer()
-      {
-        vkBridge.send('VKWebAppShowInviteBox', {
-          })
-          .then( (data) => {
-            if (data.success) {
-              // Пользователь нажал «Пригласить» 
-              // ...
-          
-              // Этим выбранным пользователям 
-              // не удалось отправить приглашения 
-              console.log('Приглашения не отправлены', data.notSentIds);
-            }
-          })
-          .catch( (error) => {
-            console.log(error); // Ошибка 
-          });
-      }
-      function oldPlayer()
-      {
-        vkBridge.send("VKWebAppShowRequestBox", {
-              uid: 142918399, // Идентификатор пользователя — получателя сообщения
-              message:    "Мне нужна помощь! Пжл, вышли 20 талеров и алмазную кирку.", // Текст запроса 
-              requestKey: "key-12345" //  Ключ запроса
-              })
-              .then( (data) => {
-                if (data.success) {
-                  // Запрос отправлен.
-                  // ...
+                        unityGameInstance.SendMessage('Connects', 'ResponseGetFriends', uids);
+                        console.log(data.users);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+        function JSRequestJoinGroup() {
+            vkBridge.send('VKWebAppJoinGroup', {
+                group_id: 221378705
+            })
+                .then((data) => {
+                    if (data.result) {
+                        console.log('Пользователь подписался на сообщество');
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
 
-                  // Ключ
-                  console.log('Ключ переданного запроса: ', data.requestKey);
-                }
-              })  
-              .catch( (error) => { 
-                console.log(error); // Ошибка 
-              });
-      }
-      function showAds()
-      {
-        console.log('Попытка рекламы');
-        vkBridge.send('VKWebAppShowNativeAds', {
-          ad_format: 'reward' /* Тип рекламы */
-          })
-          .then( (data) => { 
-            console.log(data);
-            if (data.result) {
-              unityGameInstance.SendMessage('Connects', 'ResponseSuccessAds');
-            } else {
-              console.log('Ошибка при показе');
-            }
-          })
-          .catch((error) => { 
-            console.error('Произошла ошибка при открытии окна рекламы:', error.message); // log the message
-            console.error('Неудачный объект:', error);
-          });
-      }
+        jQuery(document).ready(function ($) // страница прогружена
+        {
+            vkBridge.send('VKWebAppInit'); // Инициализация ВК
+        });
 
-
-      function userData() // вызываем метод ВК
-      {
-          vkBridge.send('VKWebAppGetUserInfo', {})
-          .then((data) => 
-          { 
-            if (data.id)
-            {
-              console.log(data);
-              unityGameInstance.SendMessage('Connects', 'UserData_Processing', data.id.toString()+ '|' +data.photo_200 + '|' + data.first_name);
-            }
-          })
-          .catch((error) =>
-          {
-            console.log(error);
-          });
-      }
-  
-      jQuery(document).ready(function ($) // страница прогружена
-      {
-        vkBridge.send('VKWebAppInit'); // Инициализация ВК
-      });
-  
     </script>
   </body>
 </html>

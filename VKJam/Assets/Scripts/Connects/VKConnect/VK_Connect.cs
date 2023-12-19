@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 public class VK_Connect : TaskExecutor<VK_Connect>
 {
-    public UnityEvent<int[]> OnFriendsGot;
+    public Action<int[]> OnFriendsGot;
 
     public TMPro.TMP_Text DebugingText;
     public TMPro.TMP_Text NameText;
@@ -22,6 +22,7 @@ public class VK_Connect : TaskExecutor<VK_Connect>
     [DllImport("__Internal")] private static extern void UnityPluginRequestInviteOldPlayer(int id, string lobby_key);
     [DllImport("__Internal")] private static extern void UnityPluginRequestBuyTry(int id);
     [DllImport("__Internal")] private static extern void UnityPluginRequestGetFriends();
+    [DllImport("__Internal")] private static extern void UnityPluginRequestJoinGroup();
 
     public IEnumerator Init()
     {
@@ -125,6 +126,13 @@ public class VK_Connect : TaskExecutor<VK_Connect>
 #endif
     }
 
+    public void RequestJoinGroup()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        UnityPluginRequestJoinGroup();
+#endif
+    }
+
     #endregion
 
     #region Responses
@@ -177,5 +185,5 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         //  urlImage.ChangeImage(UserData.UserIMG_URL);
     }
 
-    #endregion
+#endregion
 }
