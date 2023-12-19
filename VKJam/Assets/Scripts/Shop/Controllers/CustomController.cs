@@ -54,6 +54,7 @@ public class CustomController : TaskExecutor<CustomController>
             }
         }
     }
+
     private void Load()
     {
         /*foreach (ItemType cur in System.Enum.GetValues(typeof(ItemType)))

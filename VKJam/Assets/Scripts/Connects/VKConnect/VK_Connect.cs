@@ -1,10 +1,13 @@
-using UnityEngine;
+using System;
 using System.Collections;
 using System.Runtime.InteropServices;
-using System;
+using UnityEngine;
+using UnityEngine.Events;
 
 public class VK_Connect : TaskExecutor<VK_Connect>
 {
+    public UnityEvent<int[]> OnFriendsGot;
+
     public TMPro.TMP_Text DebugingText;
     public TMPro.TMP_Text NameText;
     //public URL_Image urlImage;
@@ -16,20 +19,25 @@ public class VK_Connect : TaskExecutor<VK_Connect>
     [DllImport("__Internal")] private static extern void UnityPluginRequestAds();
     [DllImport("__Internal")] private static extern void UnityPluginRequestRepost();
     [DllImport("__Internal")] private static extern void UnityPluginRequestInviteNewPlayer();
-    [DllImport("__Internal")] private static extern void UnityPluginRequestInviteOldPlayer();
+    [DllImport("__Internal")] private static extern void UnityPluginRequestInviteOldPlayer(int id, string lobby_key);
     [DllImport("__Internal")] private static extern void UnityPluginRequestBuyTry(int id);
-    private static VK_Connect instance;
+    [DllImport("__Internal")] private static extern void UnityPluginRequestGetFriends();
 
     public IEnumerator Init()
     {
-        if (instance == null)
+        if (Executor == null)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            Executor = this;
+        }
+        
+        if (Executor == this)
+        {
+            DontDestroyOnLoad(Executor);
         }
         else
         {
-            Destroy(gameObject);
+            Logger.Instance.LogError(this, $"Two or more {nameof(VK_Connect)} on scene");
+            Destroy(this);
             yield break;
         }
 
@@ -63,6 +71,8 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         Logger.Instance.Log(this, "Initialized");
     }
 
+    #region Requests
+
     public void RequestJs() // вызываем из событий unity
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -88,25 +98,13 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         UnityPluginRequestInviteNewPlayer();
 #endif
     }
-    public void RequestInvateOldPlayer() // вызываем из событий unity
+    public void RequestInvateOldPlayer(int id, string lobby_key) // вызываем из событий unity
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
-        UnityPluginRequestInviteOldPlayer();
+        UnityPluginRequestInviteOldPlayer(id, lobby_key);
 #endif
     }
-    public void ResponseSuccessAds() // вызываем из событий unity
-    {
-        AdManager.OnAdWatched();
 
-        int tokenCount = 50;
-        Action successRequest = () =>
-        {
-            DonatRouter.Executor.StartCoroutine(DonatRouter.Executor.DelayRefresh());
-            CurrencyCatcher.Executor.Refresh();
-        };
-
-        StartCoroutine(Php_Connect.Request_TokenWin(tokenCount, successRequest, null));
-    }
     public void RequestUserData() // вызываем из событий unity
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -119,6 +117,18 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         UnityPluginRequestBuyTry(id);
 #endif
     }
+
+    public void RequestGetFriends()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        UnityPluginRequestGetFriends();
+#endif
+    }
+
+    #endregion
+
+    #region Responses
+
     public void ResponseOk(string message)
     {
         DebugingText.text = message;
@@ -126,6 +136,32 @@ public class VK_Connect : TaskExecutor<VK_Connect>
     public void ResponseError(string message)
     {
         DebugingText.text = message;
+    }
+
+    public void ResponseSuccessAds() // вызываем из событий unity
+    {
+        AdManager.OnAdWatched();
+
+        int tokenCount = 50;
+        Action successRequest = () =>
+        {
+            Logger.Instance.LogError(this, "DonatRouter.Executor = " + DonatRouter.Executor);
+            Logger.Instance.LogError(this, "CurrencyCatcher.Executor = " + CurrencyCatcher.Executor);
+            StartCoroutine(DonatRouter.Executor?.DelayRefresh());
+            CurrencyCatcher.Executor?.Refresh();
+        };
+
+        StartCoroutine(Php_Connect.Request_TokenWin(tokenCount, successRequest, null));
+    }
+
+    public void ResponseSuccessBuyDonat()
+    {
+        CurrencyCatcher.Executor?.Refresh();
+    }
+
+    public void ResponseGetFriends(int[] uids)
+    {
+        OnFriendsGot?.Invoke(uids);
     }
 
     public void UserData_Processing(string Input)
@@ -140,4 +176,6 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         //if (urlImage != null)
         //  urlImage.ChangeImage(UserData.UserIMG_URL);
     }
+
+    #endregion
 }

@@ -156,6 +156,7 @@ public class LobbyManagerUI : NetworkBehaviour
             playerReady[i].SetActive(allPlayerReady[i]);
         }
     }
+
     [ServerRpc(RequireOwnership = false)]
     private void SwitchPlayerReadyServerRpc(int clientIdIndex)
     {
@@ -272,6 +273,7 @@ public class LobbyManagerUI : NetworkBehaviour
         }
 
     }
+
     [ServerRpc(RequireOwnership = false)]
     private void GetPackFromPlayersServerRpc(bool SendBool, ServerRpcParams serverRpcParams)
     {
