@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class DonatRouter : MonoBehaviour
+public class DonatRouter : TaskExecutor<DonatRouter>
 {
     public TMPro.TMP_Text AdsCounterTest;
     [SerializeField] private TMPro.TMP_Text buyText;
@@ -20,9 +20,8 @@ public class DonatRouter : MonoBehaviour
     public void Ads()
     {
         VK_Connect.Executor.RequestAds();
-        StartCoroutine(DelayRefresh());
     }
-    private IEnumerator DelayRefresh()
+    public IEnumerator DelayRefresh()
     {
         yield return new WaitForSeconds(1);
         AdsCounterTest.text = "Просмотрено " + AdManager.GetAdsWatchedToday() + "/3";

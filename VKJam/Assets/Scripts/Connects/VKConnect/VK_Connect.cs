@@ -101,7 +101,7 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         int tokenCount = 50;
         Action successRequest = () =>
         {
-            Catcher_RandomItem.Executor.UIWin(RandomType.Token, tokenCount);
+            DonatRouter.Executor.StartCoroutine(DonatRouter.Executor.DelayRefresh());
             CurrencyCatcher.Executor.Refresh();
         };
 
