@@ -54,14 +54,7 @@ public class BootManager : MonoBehaviour
     {
         // Disclaimer
 
-        if (showDisclaimer)
-        {
-            disclaimer.SetActive(true);
-            yield return new WaitForSeconds(disclaimerShowTime);
-            disclaimer.SetActive(false);
-        }
-        else
-            disclaimer.SetActive(false);
+        StartCoroutine(ShowDisclaimer(showDisclaimer));
 
         // VK
 
@@ -148,5 +141,17 @@ public class BootManager : MonoBehaviour
             SceneLoader.Load("TutorialScene");
         else
             SceneLoader.Load("Menu");
+    }
+
+    private IEnumerator ShowDisclaimer(bool status)
+    {
+        if (status)
+        {
+            disclaimer.SetActive(true);
+            yield return new WaitForSeconds(disclaimerShowTime);
+            disclaimer.SetActive(false);
+        }
+        else
+            disclaimer.SetActive(false);
     }
 }
