@@ -19,9 +19,46 @@ public class CustomController : TaskExecutor<CustomController>
             foreach (var ware in section.products)
             {
                 //Logger.Instance.LogWarning(this, ware.Data.Type.ToString() + " " + ware.Data.productName + " : " + ware.Model);
-                yield return StartCoroutine(Php_Connect.Request_CheckOwningDesign(ware.Data.productCode, ware.OnCheckOwningDesignComplete));
+                //yield return StartCoroutine(Php_Connect.Request_CheckOwningDesign(ware.Data.productCode, ware.OnCheckOwningDesignComplete));
             }
         }
+
+        Action<string> OnCompleted = (string response) =>
+        {
+            if (response == null)
+            {
+                Debug.LogError("CheckOwningDesign error, response null");
+                return;
+            }
+
+            // parce
+
+            List<string> resp = new();
+            resp.AddRange(response.Split('\n'));
+
+            if(!int.TryParse(resp[0], out int i))
+            {
+                Debug.LogError("CheckOwningDesign error");
+                return;
+            }
+
+            foreach (var section in Categories)
+            {
+                foreach (var ware in section.products)
+                {
+                    if (ware.Data.productCode == 0 || resp.Contains(ware.Data.productCode.ToString()))
+                    {
+                        ware.OnCheckOwningDesignComplete(true);
+                    }
+                    else
+                    {
+                        ware.OnCheckOwningDesignComplete(false);
+                    }
+                }
+            }
+        };
+
+        yield return StartCoroutine(Php_Connect.Request_CheckOwningDesign(OnCompleted));
 
         Load();
 

@@ -287,30 +287,24 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         yield return Executor.StartCoroutine(Post("UploadData.php", form, completed));
     }
 
-    public static IEnumerator Request_CheckOwningDesign(int idDesign, Action<bool> onComplete)
+    public static IEnumerator Request_CheckOwningDesign(Action<string> onComplete)
     {
-        if (idDesign == 0)
-        {
-            onComplete?.Invoke(true);
-            yield break;
-        }
 
         if (!PHPisOnline)
         {
-            onComplete?.Invoke(false);
+            onComplete?.Invoke(null);
             yield break;
         }
 
         WWWForm form = new();
-        form.AddField("idDesign", idDesign);
         form.AddField("Nickname", Nickname);
 
         Action<string> completed = (string response) =>
         {
-            if (response == null)
-                onComplete?.Invoke(false);
+            if (response != null)
+                onComplete?.Invoke(response);
             else
-                onComplete?.Invoke(response == "true");
+                onComplete?.Invoke(null);
         };
 
         yield return Executor.StartCoroutine(Post("CheckOwningDesign.php", form, completed));
