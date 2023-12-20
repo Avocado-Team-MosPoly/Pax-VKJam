@@ -32,9 +32,8 @@ public class LobbyManager : MonoBehaviour
     public readonly string KEY_RECIPE_MODE = "RecipeMode";
 
     private bool isSendHeartBeatPing = false;
-    private float heartBeatTime = 15f;
+    private const float heartBeatTime = 15f;
     private float heartBeatTimer;
-
 
     public IEnumerator Init()
     {

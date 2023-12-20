@@ -150,7 +150,7 @@ public class VK_Connect : TaskExecutor<VK_Connect>
     {
         AdManager.OnAdWatched();
 
-        int tokenCount = 50;
+        int tokenCount = 30;
         Action successRequest = () =>
         {
             Logger.Instance.LogError(this, "DonatRouter.Executor = " + DonatRouter.Executor);
@@ -167,9 +167,17 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         CurrencyCatcher.Executor?.Refresh();
     }
 
-    public void ResponseGetFriends(int[] uids)
+    public void ResponseGetFriends(string Input)
     {
-        OnFriendsGot?.Invoke(uids);
+        string[] splittedUids = Input.Split(' ');
+        int[] uidsArray = new int[splittedUids.Length - 1];
+
+        Logger.Instance.LogError(this, splittedUids[^1]);
+
+        for (int i = 0; i < uidsArray.Length; i++)
+            uidsArray[i] = int.Parse(splittedUids[i]);
+
+        OnFriendsGot?.Invoke(uidsArray);
     }
 
     public void UserData_Processing(string Input)
