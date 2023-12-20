@@ -4,12 +4,14 @@ public class VKUtility : MonoBehaviour
 {
     private void OnEnable()
     {
-        VK_Connect.Executor.OnFriendsGot.AddListener(OnFriendsGot);
+        //VK_Connect.Executor.OnFriendsGot.AddListener(OnFriendsGot);
+        VK_Connect.Executor.OnFriendsGot += OnFriendsGot;
     }
 
     private void OnDisable()
     {
-        VK_Connect.Executor.OnFriendsGot.RemoveListener(OnFriendsGot);
+        //VK_Connect.Executor.OnFriendsGot.RemoveListener(OnFriendsGot);
+        VK_Connect.Executor.OnFriendsGot -= OnFriendsGot;
     }
 
     public void JoinGroup()

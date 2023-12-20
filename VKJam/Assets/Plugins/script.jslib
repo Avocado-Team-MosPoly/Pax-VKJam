@@ -4,6 +4,11 @@ mergeInto(LibraryManager.library, {
         FromUnityToJs();
     },
 
+    UnityPluginRequestRepost: function () 
+    {
+        JSRequestRepost();
+    },
+
     UnityPluginRequestUserData: function () 
     {
         JSRequestUserData();
@@ -24,11 +29,6 @@ mergeInto(LibraryManager.library, {
         JSRequestInviteOldPlayer(id, lobby_key);
     },
 
-    UnityPluginRequestRepost: function () 
-    {
-        JSRequestRepost();
-    },
-
     UnityPluginRequestBuyTry: function (id) 
     {
         JSRequestBuyTry(id);
@@ -42,5 +42,5 @@ mergeInto(LibraryManager.library, {
     UnityPluginRequestJoinGroup: function () 
     {
         JSRequestJoinGroup();
-    },
+    }
 });

@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 public class VK_Connect : TaskExecutor<VK_Connect>
 {
-    public UnityEvent<int[]> OnFriendsGot;
+    public Action<int[]> OnFriendsGot;
 
     public TMPro.TMP_Text DebugingText;
     public TMPro.TMP_Text NameText;
@@ -150,7 +150,7 @@ public class VK_Connect : TaskExecutor<VK_Connect>
     {
         AdManager.OnAdWatched();
 
-        int tokenCount = 50;
+        int tokenCount = 30;
         Action successRequest = () =>
         {
             Logger.Instance.LogError(this, "DonatRouter.Executor = " + DonatRouter.Executor);
@@ -167,9 +167,9 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         CurrencyCatcher.Executor?.Refresh();
     }
 
-    public void ResponseGetFriends(string stringUids)
+    public void ResponseGetFriends(string Input)
     {
-        string[] splittedUids = stringUids.Split(' ');
+        string[] splittedUids = Input.Split(' ');
         int[] uidsArray = new int[splittedUids.Length - 1];
 
         Logger.Instance.LogError(this, splittedUids[^1]);

@@ -24,7 +24,7 @@ public class DonatRouter : TaskExecutor<DonatRouter>
     public IEnumerator DelayRefresh()
     {
         yield return new WaitForSeconds(1);
-        AdsCounterTest.text = "Просмотрено " + AdManager.GetAdsWatchedToday() + "/3";
+        AdsCounterTest.text = "Реклама " + AdManager.GetAdsWatchedToday() + "/3";
         buyText.text = buyTextString;
         CurrencyCatcher.Executor.Refresh();
         
