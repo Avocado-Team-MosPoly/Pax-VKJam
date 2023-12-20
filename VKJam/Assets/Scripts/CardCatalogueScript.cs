@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -79,6 +79,10 @@ public class CardCatalogueScript : MonoBehaviour
 
                 CurrencyCatcher.Executor.Refresh();
                 UpdateUIPage();
+            }
+            else
+            {
+                NotificationSystem.Instance.SendLocal("Недостаточно валюты");
             }
         };
         //Action unsuccessRequest = () => { };

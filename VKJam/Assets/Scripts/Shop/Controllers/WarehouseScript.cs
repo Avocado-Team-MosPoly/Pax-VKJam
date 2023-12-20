@@ -11,7 +11,6 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
     [SerializeField] private CurrencyCatcher Display;
     [SerializeField] private Product Template;
     [SerializeField] private Transform WhereInst;
-    [SerializeField] private CustomController customController;
     [SerializeField, Range(1, 10)] private int defaultSection = 1;
 
     [SerializeField] private Button leftButton;
@@ -29,8 +28,6 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
 
     private void Start()
     {
-        customController = CustomController.Executor;
-
         SpawnProducts();
         ChangeSection(defaultSection);
 
@@ -51,7 +48,7 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
 
         currentSection = section;
         currentPage = 0;
-        int sectionPagesCount = (customController.Categories[currentSection].products.Count + maxInstancesCount - 1) / maxInstancesCount;
+        int sectionPagesCount = (CustomController.Executor.Categories[currentSection].products.Count + maxInstancesCount - 1) / maxInstancesCount;
 
         leftButton.gameObject.SetActive(false);
         rightButton.gameObject.SetActive(currentPage <= sectionPagesCount);
@@ -62,7 +59,7 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
     public void NextPage()
     {
         currentPage++;
-        int sectionPagesCount = (customController.Categories[currentSection].products.Count + maxInstancesCount - 1) / maxInstancesCount;
+        int sectionPagesCount = (CustomController.Executor.Categories[currentSection].products.Count + maxInstancesCount - 1) / maxInstancesCount;
         leftButton.gameObject.SetActive(true);
         rightButton.gameObject.SetActive(true);
 
@@ -96,29 +93,29 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
     {
         int startProductIndex = currentPage * maxInstancesCount;
 
-        if (startProductIndex >= customController.Categories[currentSection].products.Count)
+        if (startProductIndex >= CustomController.Executor.Categories[currentSection].products.Count)
         {
-            if (maxInstancesCount > customController.Categories[currentSection].products.Count)
+            if (maxInstancesCount > CustomController.Executor.Categories[currentSection].products.Count)
                 startProductIndex = 0;
         }
 
         for (int instanceIndex = 0, productIndex = startProductIndex; instanceIndex < maxInstancesCount; instanceIndex++, productIndex++)
         {
-            if (productIndex >= customController.Categories[currentSection].products.Count)
+            if (productIndex >= CustomController.Executor.Categories[currentSection].products.Count)
             {
-                //Logger.Instance.Log(this, productIndex + " " + customController.Categories[currentSection].products.Count);
+                //Logger.Instance.Log(this, productIndex + " " + CustomController.Executor.Categories[currentSection].products.Count);
                 productInstances[instanceIndex].gameObject.SetActive(false);
                 continue;
             }
-            if (customController.Categories[currentSection].products[productIndex].Data.productCode == 0)
+            if (CustomController.Executor.Categories[currentSection].products[productIndex].Data.productCode == 0)
             {
-                //Logger.Instance.Log(this, customController.Categories[currentSection].products[productIndex].Data.productName);
+                //Logger.Instance.Log(this, CustomController.Executor.Categories[currentSection].products[productIndex].Data.productName);
                 instanceIndex--;
                 continue;
             }
 
             productInstances[instanceIndex].ChooseMode = false;
-            productInstances[instanceIndex].SetData(customController.Categories[currentSection].products[productIndex]);
+            productInstances[instanceIndex].SetData(CustomController.Executor.Categories[currentSection].products[productIndex]);
             if (productInstances[instanceIndex].Button)
                 productInstances[instanceIndex].Button.GetComponentInChildren<TextMeshProUGUI>().text = !productInstances[instanceIndex].Data.Data.InOwn || productInstances[instanceIndex].ChooseMode ? buyText : inOwnText;
             productInstances[instanceIndex].gameObject.SetActive(true);

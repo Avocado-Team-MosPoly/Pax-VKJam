@@ -8,10 +8,18 @@ public class FindAllButtons : MonoBehaviour
     [SerializeField] private SoundList soundList;
     [SerializeField] private List<Button> buttons;
 
+    private void Start()
+    {
+        foreach (Button button in buttons)
+        {
+            button.onClick.AddListener(() => soundList.Play("button-click"));
+        }
+    }
+
     [ContextMenu("Find all buttons on scene")]
     private void FindAllButtonsOnScene()
     {
-        Scene activeScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        Scene activeScene = SceneManager.GetActiveScene();
 
         GameObject[] rootObjects = activeScene.GetRootGameObjects();
 
@@ -23,6 +31,8 @@ public class FindAllButtons : MonoBehaviour
         {
             objectsInScene.Add(rootObjects[i]);
         }
+
+        buttons.Clear();
 
         for (int i = 0; i < allObjects.Length; i++)
         {

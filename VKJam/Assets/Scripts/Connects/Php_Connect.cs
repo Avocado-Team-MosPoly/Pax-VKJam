@@ -541,7 +541,11 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             yield break;
 
         bool flag = true;
-        Action<string> stringSuccessRequest = (string response) => flag = response != "success";
+        Action<string> stringSuccessRequest = (string response) =>
+        {
+            CurrencyCatcher.Executor.Refresh();
+            flag = response != "success";
+        };
 
         yield return Executor.StartCoroutine(Request_BuyTry(DesignID, stringSuccessRequest, null));
         if (flag)

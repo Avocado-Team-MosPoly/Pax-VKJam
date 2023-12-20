@@ -23,7 +23,7 @@ public class VK_Connect : TaskExecutor<VK_Connect>
     [DllImport("__Internal")] private static extern void UnityPluginRequestBuyTry(int id);
     [DllImport("__Internal")] private static extern void UnityPluginRequestGetFriends();
     [DllImport("__Internal")] private static extern void UnityPluginRequestJoinGroup();
-
+        
     public IEnumerator Init()
     {
         if (Executor == null)

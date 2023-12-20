@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
@@ -78,6 +78,7 @@ public class Product : MonoBehaviour
                     }
                     else
                     {
+                        NotificationSystem.Instance.SendLocal("Недостаточно валюты");
                         Debug.LogWarning("Not enough money to buy item");
                     }
                 };
