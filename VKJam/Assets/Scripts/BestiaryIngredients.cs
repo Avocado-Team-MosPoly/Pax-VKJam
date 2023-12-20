@@ -9,7 +9,6 @@ public class BestiaryIngredients : MonoBehaviour
     //[HideInInspector] public List<string> IngredientName = new();
 
     [SerializeField] private CompareSystem compareSystem;
-    [SerializeField] private PackCardSO packCardSO;
     [SerializeField] private IngredientInfo ingredientInfoTemplate;
     [SerializeField] private RectTransform leftIngredientsPage;
     [SerializeField] private RectTransform rightIngredientsPage;
@@ -31,9 +30,12 @@ public class BestiaryIngredients : MonoBehaviour
     private int firstShownIngredient;
     private int spawnPositionIndex;
 
+    private int ingredientsCount;
+
     private void Awake()
     {
         lastShownIngridient = 0;
+        firstShownIngredient = 0;
 
         UpdateIngredientList(true);
 
@@ -71,7 +73,7 @@ public class BestiaryIngredients : MonoBehaviour
         {
             if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i] == true)
             {
-                foreach (Ingredient ingridient in packCardSO.CardInPack[i].Card.IngredientsSO)
+                foreach (Ingredient ingridient in PackManager.Instance.Active.CardInPack[i].Card.IngredientsSO)
                 {
                     if (IngredientList.Contains(ingridient) != true)
                     {
@@ -82,11 +84,7 @@ public class BestiaryIngredients : MonoBehaviour
         }
         IngredientList.Sort((x, y) => x.Name.CompareTo(y.Name));
     }
-    public void SetPack(PackCardSO _packCardSO)
-    {
-        packCardSO = _packCardSO;
-    }
-    public void UpdateIngredientList(bool up)
+    public void UpdateIngredientList(bool up) // rework
     {
         foreach (Transform child in leftIngredientsPage)
             Destroy(child.gameObject);
@@ -97,14 +95,13 @@ public class BestiaryIngredients : MonoBehaviour
 
         if (up)
         {
-            UpdateIngredientListUp(leftIngredientsPage);
-            UpdateIngredientListUp(rightIngredientsPage);
+            UpdateIngredientListUp(leftIngredientsPage, up, true);
+            UpdateIngredientListUp(rightIngredientsPage, up, false);
         }
         else
         {
-            lastShownIngridient = firstShownIngredient;
-            UpdateIngredientListUp(leftIngredientsPage);
-            UpdateIngredientListUp(rightIngredientsPage);
+            UpdateIngredientListUp(leftIngredientsPage, up, true);
+            UpdateIngredientListUp(rightIngredientsPage, up, false);
         }
 
         textHoverEffect.SetTexts(ingredientsTexts);
@@ -112,18 +109,23 @@ public class BestiaryIngredients : MonoBehaviour
         CheckButton();
     }
 
-    private void UpdateIngredientListUp(RectTransform ingredientListContainer)
+    private void UpdateIngredientListUp(RectTransform ingredientListContainer, bool up, bool left)
     {
+        if (left)
+        {
+            firstShownIngredient = Mathf.Clamp(lastShownIngridient - 20, 0, lastShownIngridient);
+        }
+        else if(!up && !left)
+        {
+            lastShownIngridient = firstShownIngredient;
+        }
+
         int i = lastShownIngridient;
+
         for (; i < 10 + lastShownIngridient; i++)
         {
             if (i >= IngredientList.Count)
             {
-                if (i != 0)
-                {
-                    i -= 1;
-                }
-
                 break;
             }
 
@@ -131,6 +133,8 @@ public class BestiaryIngredients : MonoBehaviour
             ingredientInfoUI.SetIngridient(IngredientList[i].Name, i, compareSystem, closeBestiaryButton);
             ingredientInfoUI.gameObject.SetActive(true);
             ingredientInfoUI.OnGuess.AddListener(OnIngredientSelected);
+
+            ingredientsCount++;
 
             ingredientsTexts.Add(ingredientInfoUI.IngridientName);
         }

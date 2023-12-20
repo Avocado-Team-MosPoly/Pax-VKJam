@@ -20,7 +20,6 @@ public class CardManager : MonoBehaviour
 
     [Header("Scriptable Objects")]
     private List<CardSO> cardSOArray=new();
-    [SerializeField] private PackCardSO packCardSO;
     private Dictionary<CardDifficulty, List<CardSO>> cardSODictionary = new();
     private List<CardSO> usedCardSO = new();
     private int cardSOCount;
@@ -64,7 +63,7 @@ public class CardManager : MonoBehaviour
         {
             if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i] == true)
             {
-                cardSOArray.Add(packCardSO.CardInPack[i].Card);
+                cardSOArray.Add(PackManager.Instance.Active.CardInPack[i].Card);
             }
         }
 
@@ -75,10 +74,6 @@ public class CardManager : MonoBehaviour
             cardSODictionary[cardSO.Difficulty].Add(cardSO);
 
         cardSOCount = cardSOArray.Count;
-    }
-    public void SetPack(PackCardSO _packCardSO)
-    {
-        packCardSO = _packCardSO;
     }
 
     private void OnEnable()

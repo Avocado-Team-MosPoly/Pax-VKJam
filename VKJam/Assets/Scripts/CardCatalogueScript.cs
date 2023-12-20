@@ -19,7 +19,6 @@ public class CardCatalogueScript : MonoBehaviour
     [SerializeField] private string inOwnText;
 
     //[SerializeField] private GameObject templateCanvas;
-    [SerializeField] private PackCardSO packCardSO;
 
     [SerializeField] private SoundList soundList;
 
@@ -52,17 +51,12 @@ public class CardCatalogueScript : MonoBehaviour
     {
         Monsters.Clear();
 
-        for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+        for (int i = 0; i < PackManager.Instance.Active.CardInPack.Length; i++)
         {
             //if (packCardSO.CardInPack[i].CardIsInOwn == true)
-            print(packCardSO.CardInPack[i].Card.Id);
-            Monsters.Add(packCardSO.CardInPack[i]);
+            print(PackManager.Instance.Active.CardInPack[i].Card.Id);
+            Monsters.Add(PackManager.Instance.Active.CardInPack[i]);
         }
-    }
-
-    public void SetPack(PackCardSO _packCardSO)
-    {
-        packCardSO = _packCardSO;
     }
     public void BuyCard(bool ForThePieces)
     {
@@ -74,7 +68,7 @@ public class CardCatalogueScript : MonoBehaviour
             {
                 Logger.Instance.Log(this, "Successfully purchased card by id : " + _bufferIdCard);
 
-                CardSystem temp = packCardSO.SearchCardSystemById(_bufferIdCard);
+                CardSystem temp = PackManager.Instance.Active.SearchCardSystemById(_bufferIdCard);
                 temp.CardIsInOwn = true;
 
                 CurrencyCatcher.Executor.Refresh();

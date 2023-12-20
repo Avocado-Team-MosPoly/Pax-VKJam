@@ -20,7 +20,6 @@ public class LobbyManagerUI : NetworkBehaviour
 
     [SerializeField] private string notReadyText;
     [SerializeField] private string readyText;
-    [SerializeField] private PackCardSO packCardSO;
 
     private List<ulong> playerSendAllDataId=new();
     private List<ulong> playerGetAllDataId = new();
@@ -199,9 +198,9 @@ public class LobbyManagerUI : NetworkBehaviour
     private void SendPack()
     {
         List<bool> bools = new List<bool>();
-        for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+        for (int i = 0; i < PackManager.Instance.Active.CardInPack.Length; i++)
         {
-            bools.Add(packCardSO.CardInPack[i].CardIsInOwn);
+            bools.Add(PackManager.Instance.Active.CardInPack[i].CardIsInOwn);
         }
 
         PackManager.Instance.PlayersOwnedCard.Clear();
@@ -236,9 +235,9 @@ public class LobbyManagerUI : NetworkBehaviour
         if (!IsServer)
         {
             List<bool> bools = new List<bool>();
-            for (int i = 0; i < packCardSO.CardInPack.Length; i++)
+            for (int i = 0; i < PackManager.Instance.Active.CardInPack.Length; i++)
             {
-                bools.Add(packCardSO.CardInPack[i].CardIsInOwn);
+                bools.Add(PackManager.Instance.Active.CardInPack[i].CardIsInOwn);
             }
 
             PackManager.Instance.PlayersOwnedCard.Clear();

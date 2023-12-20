@@ -12,7 +12,6 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     [SerializeField] private Displayer Custom;
     [SerializeField] private Displayer Card;
     public static int Result;
-    [SerializeField] private PackCardSO Pack;
 
     public static void SetData(RandomItem Data)
     {
@@ -58,7 +57,7 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
         else if (Type == RandomType.Card)
         {
             Card.gameObject.SetActive(true);
-            Card.SetData(Pack.SearchCardSystemById(data));
+            Card.SetData(PackManager.Instance.Active.SearchCardSystemById(data));
         }
     }
     private void ActiveWinObject(int id)

@@ -9,7 +9,7 @@ public class Bestiary : MonoBehaviour
     public UnityEvent OnBestiaryOpened;
     public UnityEvent OnBestiaryClosed;
 
-    [HideInInspector] public List<CardSO> Monsters = new();
+    public List<CardSO> Monsters = new();
 
     [SerializeField] private Button[] dangerousMonstersButtons;
     [SerializeField] private Button[] murderousMonstersButtons;
@@ -35,8 +35,6 @@ public class Bestiary : MonoBehaviour
     [SerializeField] private GameObject MonstersCatalogue;
     [SerializeField] private GameObject IngridientsCatalouge;
 
-    [SerializeField] private PackCardSO packCardSO;
-
     private int currentMonster;
 
     private void Start()
@@ -49,6 +47,7 @@ public class Bestiary : MonoBehaviour
 
         int dangerousMonstersCount = 0;
         int murderousMonstersCount = 0;
+
         TakePack();
         foreach (Button button in dangerousMonstersButtons)
         {
@@ -58,26 +57,27 @@ public class Bestiary : MonoBehaviour
         {
             button.gameObject.SetActive(false);
         }
-        foreach (CardSO monster in Monsters)
+
+        for(int i = 0; i < Monsters.Count; i++)
         {
-            int pageIndex = dangerousMonstersCount + murderousMonstersCount;
-            if (monster.Difficulty == CardDifficulty.Dangerous)
+            if (Monsters[i].Difficulty == CardDifficulty.Dangerous)
             {
                 dangerousMonstersButtons[dangerousMonstersCount].gameObject.SetActive(true);
-                dangerousMonstersButtons[dangerousMonstersCount].GetComponentInChildren<TextMeshProUGUI>().text = monster.Id;
-                dangerousMonstersButtons[dangerousMonstersCount].onClick.AddListener(() => GoToPage(pageIndex));
+                dangerousMonstersButtons[dangerousMonstersCount].GetComponentInChildren<TextMeshProUGUI>().text = Monsters[i].Id;
+                dangerousMonstersButtons[dangerousMonstersCount].onClick.AddListener(() => GoToPage(i));
 
                 dangerousMonstersCount++;
             }
             else
             {
                 murderousMonstersButtons[murderousMonstersCount].gameObject.SetActive(true);
-                murderousMonstersButtons[murderousMonstersCount].GetComponentInChildren<TextMeshProUGUI>().text = monster.Id;
-                murderousMonstersButtons[murderousMonstersCount].onClick.AddListener(() => GoToPage(pageIndex));
+                murderousMonstersButtons[murderousMonstersCount].GetComponentInChildren<TextMeshProUGUI>().text = Monsters[i].Id;
+                murderousMonstersButtons[murderousMonstersCount].onClick.AddListener(() => GoToPage(i));
 
                 murderousMonstersCount++;
             }
         }
+
 
         Debug.Log($"[Bestiary] Loaded {dangerousMonstersCount + murderousMonstersCount} monsters");
 
@@ -107,15 +107,11 @@ public class Bestiary : MonoBehaviour
         {
             if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i] == true)
             {
-                Monsters.Add(packCardSO.CardInPack[i].Card);
+                Monsters.Add(PackManager.Instance.Active.CardInPack[i].Card);
             }
         }
     }
 
-    public void SetPack(PackCardSO _packCardSO)
-    {
-        packCardSO = _packCardSO;
-    }
     private void Initialize()
     {
         currentMonster = 0;
@@ -181,6 +177,7 @@ public class Bestiary : MonoBehaviour
 
     private void GoToPage(int pageIndex)
     {
+        Debug.LogWarning(pageIndex);
         if (pageIndex >= 0 && pageIndex < Monsters.Count)
         {
             catalougeCanvas.SetActive(false);
