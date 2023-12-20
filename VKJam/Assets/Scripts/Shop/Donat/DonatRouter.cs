@@ -8,7 +8,7 @@ public class DonatRouter : TaskExecutor<DonatRouter>
     [SerializeField] private TMPro.TMP_Text buyText;
     [SerializeField] private string buyTextString;
 
-    private void Awake()
+    private void Start()
     {
         StartCoroutine(DelayRefresh());
     }
