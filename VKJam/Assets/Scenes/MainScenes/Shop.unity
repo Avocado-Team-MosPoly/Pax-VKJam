@@ -14541,7 +14541,7 @@ PrefabInstance:
     - target: {fileID: 8766486711212284829, guid: 24310b012bf1a164dbe4cbc68b316f94, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: b684926564324f845b919bd2c42ac434, type: 3}
+      objectReference: {fileID: 21300000, guid: 6f721f1d055b3d6479698f74d3e5cbe3, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16187,6 +16187,10 @@ PrefabInstance:
       propertyPath: Price
       value: 
       objectReference: {fileID: 628843497}
+    - target: {fileID: 646804585275176261, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: DonatCurrency
+      value: 
+      objectReference: {fileID: 21300000, guid: 6f721f1d055b3d6479698f74d3e5cbe3, type: 3}
     - target: {fileID: 698706359649249439, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_text
       value: "10 000 \u0416\u0435\u0442\u043E\u043D\u043E\u0432"
@@ -16291,6 +16295,10 @@ PrefabInstance:
       propertyPath: Price
       value: 
       objectReference: {fileID: 628843495}
+    - target: {fileID: 5284481918960077731, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: DonatCurrency
+      value: 
+      objectReference: {fileID: 21300000, guid: 6f721f1d055b3d6479698f74d3e5cbe3, type: 3}
     - target: {fileID: 5734748062951525526, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: BuyTokens
@@ -16319,6 +16327,10 @@ PrefabInstance:
       propertyPath: Price
       value: 
       objectReference: {fileID: 628843498}
+    - target: {fileID: 6969485316753957808, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: DonatCurrency
+      value: 
+      objectReference: {fileID: 21300000, guid: 6f721f1d055b3d6479698f74d3e5cbe3, type: 3}
     - target: {fileID: 7302370871027135506, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -16403,6 +16415,10 @@ PrefabInstance:
       propertyPath: Price
       value: 
       objectReference: {fileID: 628843496}
+    - target: {fileID: 7484512082327182491, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: DonatCurrency
+      value: 
+      objectReference: {fileID: 21300000, guid: 6f721f1d055b3d6479698f74d3e5cbe3, type: 3}
     - target: {fileID: 8282941001654366741, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 3
@@ -31234,8 +31250,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -60, y: 0}
-  m_SizeDelta: {x: 75, y: 75}
+  m_AnchoredPosition: {x: -47.8, y: 0}
+  m_SizeDelta: {x: 100, y: 75}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1277159121
 MonoBehaviour:
@@ -31301,7 +31317,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 35c994ca53bf9ad4d9e648196a2d9235, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 655fe4b8ea7690a4c9897afe2f9b45da, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -36040,14 +36056,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.57232696, g: 0.57232696, b: 0.57232696, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0611f155152542442bddf656f35cfa05, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6625d90a881a62441a87adb39a955d70, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -38180,7 +38196,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1564098895
 RectTransform:
   m_ObjectHideFlags: 0
@@ -41552,7 +41568,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 35, y: 0}
-  m_SizeDelta: {x: 75, y: 75}
+  m_SizeDelta: {x: 100, y: 75}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1779830592
 MonoBehaviour:
@@ -41618,7 +41634,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e0af617435be2c94d9b1989e9ec81a03, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9415bd5e163536e4f8e2dc0ca528e8e7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
