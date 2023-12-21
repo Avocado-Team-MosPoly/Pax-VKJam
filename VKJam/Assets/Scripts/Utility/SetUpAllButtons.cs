@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -81,7 +80,7 @@ public class SetUpAllButtons : MonoBehaviour
             }
         }
 
-        EditorSceneManager.SaveScene(activeScene);
+        UnityEditor.SceneManagement.EditorSceneManager.SaveScene(activeScene);
 #endif
     }
 }

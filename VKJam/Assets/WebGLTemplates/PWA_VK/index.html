@@ -160,7 +160,7 @@
         function JSRequestInviteOldPlayer(id, lobby_key) {
             vkBridge.send("VKWebAppShowRequestBox", {
                 uid: id,
-                message: "Заходи ко мне в игру! Ключ лобби: " + lobby_key
+                message: "Заходи ко мне в игру!" // Ключ лобби: " + lobby_key
                 //requestKey: "key-12345" //  Ключ запроса
             })
                 .then((data) => {
