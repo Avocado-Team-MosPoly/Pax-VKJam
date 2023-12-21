@@ -4752,6 +4752,7 @@ MonoBehaviour:
   leaveLobbyButton: {fileID: 1780831507}
   updatePlayerListButton: {fileID: 1640443493}
   readyButton: {fileID: 1493065764}
+  callFriendsToLobbyButton: {fileID: 0}
   playerGameObjectList:
   - {fileID: 251506184}
   - {fileID: 1958560448}
@@ -4765,7 +4766,6 @@ MonoBehaviour:
   playerDataViewManager: {fileID: 8419256763332442937}
   notReadyText: "\u041D\u0435 \u0433\u043E\u0442\u043E\u0432"
   readyText: "\u0413\u043E\u0442\u043E\u0432"
-  packCardSO: {fileID: 11400000, guid: 0884437ece407254ba420f9dc4341e3e, type: 2}
   waitingLabel: {fileID: 405359357}
   LoadingText: "\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430..."
   exit: {fileID: 1780831506}
@@ -4884,7 +4884,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.6573332}
   m_AnchorMax: {x: 1, y: 0.6573332}
-  m_AnchoredPosition: {x: -55.9, y: 76.3}
+  m_AnchoredPosition: {x: -55.899902, y: 76.29999}
   m_SizeDelta: {x: 160, y: 160}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1595220732
@@ -5547,6 +5547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff3acd8bcaeff2747aa1838a619c8a5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreNames: []
   buttons:
   - {fileID: 1231685501}
   - {fileID: 1231685500}
@@ -5801,7 +5802,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1815765458
 Transform:
   m_ObjectHideFlags: 0
