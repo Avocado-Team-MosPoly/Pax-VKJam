@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
 
 public class WarehouseScript : TaskExecutor<WarehouseScript>
 {
@@ -117,10 +118,20 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
                 continue;
             }
 
+            UnityAction onClick = () => BackgroundMusic.Instance.GetComponentInChildren<SoundList>().Play("button-click");
+
             productInstances[instanceIndex].ChooseMode = false;
             productInstances[instanceIndex].SetData(customController.Categories[currentSection].products[productIndex]);
             if (productInstances[instanceIndex].Button)
-                productInstances[instanceIndex].Button.GetComponentInChildren<TextMeshProUGUI>().text = !productInstances[instanceIndex].Data.Data.InOwn || productInstances[instanceIndex].ChooseMode ? buyText : inOwnText;
+            {
+                if (!productInstances[instanceIndex].Data.Data.InOwn || productInstances[instanceIndex].ChooseMode)
+                {
+                    productInstances[instanceIndex].Button.onClick.AddListener(onClick);
+                    productInstances[instanceIndex].Button.GetComponentInChildren<TextMeshProUGUI>().text = buyText;
+                }
+                else
+                    productInstances[instanceIndex].Button.GetComponentInChildren<TextMeshProUGUI>().text = inOwnText;
+            }
             productInstances[instanceIndex].gameObject.SetActive(true);
         }
     }

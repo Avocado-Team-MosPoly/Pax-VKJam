@@ -274,9 +274,6 @@ MonoBehaviour:
   IsMusic: 0
   WaitingSoundEnd: 0
   Everything:
-  - KeyName: button-click
-    Sounds:
-    - {fileID: 8300000, guid: ab87af80307b99d4fba259c109cec8f3, type: 3}
   - KeyName: Choose ingredient
     Sounds:
     - {fileID: 8300000, guid: f6f454c5b9383134fbb13c1256b918da, type: 3}
@@ -294,6 +291,12 @@ MonoBehaviour:
   - KeyName: Turning the page
     Sounds:
     - {fileID: 8300000, guid: 348d27076588f5e49acdf15d96eefcf3, type: 3}
+    - {fileID: 8300000, guid: 14cdfe513dcd9cf428cf35389263e91f, type: 3}
+    - {fileID: 8300000, guid: ae671d137c7bea24a8dd2326ff0c8222, type: 3}
+  - KeyName: burn
+    Sounds:
+    - {fileID: 8300000, guid: 94061231803d5434497b751a1445f8ff, type: 3}
+  useSettings: 1
 --- !u!82 &9523476
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3376,6 +3379,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Bestiary, Assembly-CSharp
         m_MethodName: Open
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1352428457}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -6484,9 +6499,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2720f8d0d06ee942bd2627525f9c641, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toggleBookKey: 9
+  toggleBookKey: 32
   painterBook: {fileID: 7751093536772813505}
-  painterBookCloseButton: {fileID: 343229284}
+  painterBookCloseButton: {fileID: 7184084107086120741}
   guesserBook: {fileID: 320006154}
   guesserBookCloseButton: {fileID: 1752994019}
 --- !u!1 &574184181
@@ -16736,7 +16751,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1352428458
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16752,10 +16767,10 @@ RectTransform:
   - {fileID: 1952892768}
   m_Father: {fileID: 526505397}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 118, y: 175}
-  m_SizeDelta: {x: 220, y: 220}
+  m_AnchorMin: {x: 0, y: 0.65400004}
+  m_AnchorMax: {x: 0, y: 0.65400004}
+  m_AnchoredPosition: {x: 118, y: 9.5}
+  m_SizeDelta: {x: 220, y: 221}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1352428459
 MonoBehaviour:
@@ -19096,6 +19111,7 @@ MonoBehaviour:
   bestiary: {fileID: 375007726}
   moveCamera: {fileID: 385979682}
   chatView: {fileID: 1588188772}
+  toggleBook: {fileID: 0}
   guessMonsterStageUI: {fileID: 2133229313}
   mainCards: {fileID: 772972740}
   paintUI: {fileID: 126402741}
@@ -22069,6 +22085,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1352428457}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &1752994020
 MonoBehaviour:
@@ -27034,63 +27062,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff3acd8bcaeff2747aa1838a619c8a5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soundList: {fileID: 9523475}
+  ignoreNames:
+  - monster
+  - bookmark
+  - arrow
   buttons:
   - {fileID: 1588188776}
   - {fileID: 1588188775}
   - {fileID: 1588188774}
-  - {fileID: 131870974}
-  - {fileID: 260631019}
-  - {fileID: 300653892}
-  - {fileID: 315087640}
-  - {fileID: 326577057}
-  - {fileID: 333628812}
   - {fileID: 343229284}
   - {fileID: 489164537}
-  - {fileID: 526572177}
-  - {fileID: 533447629}
-  - {fileID: 574184185}
-  - {fileID: 618485467}
-  - {fileID: 627309774}
   - {fileID: 682572300}
-  - {fileID: 725662203}
   - {fileID: 788196274}
-  - {fileID: 822938514}
-  - {fileID: 835294938}
-  - {fileID: 887219353}
-  - {fileID: 901969276}
-  - {fileID: 916550970}
-  - {fileID: 935042805}
-  - {fileID: 938046910}
-  - {fileID: 973036716}
-  - {fileID: 1037352581}
-  - {fileID: 1068189243}
-  - {fileID: 1082534975}
-  - {fileID: 1128034546}
-  - {fileID: 1193211058}
-  - {fileID: 1235446166}
-  - {fileID: 1260362414}
-  - {fileID: 1265031332}
   - {fileID: 1308791799}
-  - {fileID: 1382770115}
-  - {fileID: 1383167168}
-  - {fileID: 1407921607}
   - {fileID: 1474858902}
-  - {fileID: 1622748562}
-  - {fileID: 1694848961}
-  - {fileID: 1739739917}
   - {fileID: 1752994019}
-  - {fileID: 1795396639}
   - {fileID: 1828553528}
-  - {fileID: 1845786754}
   - {fileID: 1871025956}
-  - {fileID: 1871565478}
-  - {fileID: 1896195694}
-  - {fileID: 1900479819}
-  - {fileID: 1964623824}
-  - {fileID: 1983162143}
-  - {fileID: 2043017903}
-  - {fileID: 2050485756}
   - {fileID: 2060414256}
   - {fileID: 2102745529}
 --- !u!4 &2087741949
@@ -29199,6 +29187,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: NoteBookClose
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 7635113307534076866}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: NoteBookClose
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &7444453829734977428
@@ -29256,7 +29256,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &7681534945969297906
 GameObject:
   m_ObjectHideFlags: 0
@@ -29388,6 +29388,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7635113307534076866}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
   m_OnMouseEnter:
     m_PersistentCalls:

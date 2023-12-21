@@ -92,6 +92,7 @@ public class LobbyManager : MonoBehaviour
             try
             {
                 await LobbyService.Instance.SendHeartbeatPingAsync(CurrentLobby.Id);
+                Logger.Instance.Log(this, "Send HeartbeatPing");
             }
             catch (LobbyServiceException ex)
             {
@@ -104,11 +105,15 @@ public class LobbyManager : MonoBehaviour
     {
         isSendHeartBeatPing = true;
         heartBeatTimer = heartBeatTime;
+
+        Logger.Instance.Log(this, "Start HeartBeat Ping");
     }
 
     public void StopHeartBeatPing()
     {
         isSendHeartBeatPing = false;
+
+        Logger.Instance.Log(this, "Stop HeartBeat Ping");
     }
 
     #endregion

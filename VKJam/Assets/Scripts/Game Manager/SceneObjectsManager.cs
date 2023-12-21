@@ -16,6 +16,8 @@ public class SceneObjectsManager : MonoBehaviour
     [SerializeField] private ChatView chatView;
     private Chat chat;
 
+    [SerializeField] private ToggleBook toggleBook;
+
     [SerializeField] private GameObject guessMonsterStageUI;
     [SerializeField] private GameObject mainCards;
     [SerializeField] private GameObject paintUI;
@@ -58,8 +60,6 @@ public class SceneObjectsManager : MonoBehaviour
 
     private void OnRoleSetted()
     {
-        //Logger.Instance.Log($"[{nameof(SceneObjectsManager)}] On Role Setted");
-
         bestiary.gameObject.SetActive(false);
         tokensSummary.SetActive(false);
         moveCamera.SetActivity(true);
@@ -111,18 +111,22 @@ public class SceneObjectsManager : MonoBehaviour
     private void OnCardChoosed(CardSO cardSO)
     {
         guesserPreRoundCanvas.SetActive(false);
+        toggleBook.enabled = true;
     }
 
     private void OnIngredientSwitched(int ingredientIndex)
     {
         if (GameManager.Instance.Paint.gameObject.activeInHierarchy)
             fireParticle.gameObject.SetActive(true);
+
+        GameManager.Instance.SoundList.Play("burn");
     }
 
     private void OnGuessMonsterStageActivated(bool isPainter)
     {
         if (isPainter)
         {
+            toggleBook.enabled = false;
             guessMonsterStageUI.SetActive(true);
             painterBook.SetInteractable(false);
             paintUI.SetActive(false);
@@ -139,6 +143,8 @@ public class SceneObjectsManager : MonoBehaviour
 
     public void OnRoundEnded()
     {
+        toggleBook.enabled = false;
+
         guesserUI.SetActive(false);
         guessMonsterStageUI.SetActive(false);
 

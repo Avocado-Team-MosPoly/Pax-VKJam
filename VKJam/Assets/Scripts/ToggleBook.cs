@@ -7,7 +7,7 @@ public class ToggleBook : MonoBehaviour
 
     [Header("Painter")]
     [SerializeField] private Interactable painterBook;
-    [SerializeField] private Button painterBookCloseButton;
+    [SerializeField] private SpriteButton painterBookCloseButton;
     
     [Header("Guesser")]
     [SerializeField] private Interactable guesserBook;
@@ -23,13 +23,15 @@ public class ToggleBook : MonoBehaviour
     {
         if (GameManager.Instance.IsPainter)
         {
+            Logger.Instance.Log(this, painterBookCloseButton.gameObject.activeInHierarchy);
             if (painterBookCloseButton.gameObject.activeInHierarchy)
-                painterBookCloseButton.onClick?.Invoke();
+                painterBookCloseButton.OnClick?.Invoke();
             else
                 painterBook.m_OnClick?.Invoke();
         }
         else
         {
+            Logger.Instance.Log(this, "Is Painter: " + GameManager.Instance.IsPainter + " active: " + guesserBookCloseButton.gameObject.activeInHierarchy);
             if (guesserBookCloseButton.gameObject.activeInHierarchy)
                 guesserBookCloseButton.onClick?.Invoke();
             else

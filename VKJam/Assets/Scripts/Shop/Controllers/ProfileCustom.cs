@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ProfileCustom : TaskExecutor<ProfileCustom>
@@ -46,6 +47,9 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
         WhatActiv.SetActive(true);
         customScrollRect.verticalNormalizedPosition = 0f;
         TextType.text = Naming(ToWhat);
+
+        UnityAction onClick = () => BackgroundMusic.Instance.GetComponentInChildren<SoundList>().Play("button-click");
+
         foreach (var current in Data.Categories[(int)CustomController.Categorize(ToWhat)].products)
         {
             if (current.Data.Type != ToWhat || !current.Data.InOwn)
@@ -58,6 +62,9 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
             InWork.ChooseMode = true;
             Products.Add(InWork);
             InWork.SetData(current);
+            
+            if (InWork.Button.interactable)
+                InWork.Button.onClick.AddListener(onClick);
         }
     }
     public static string Naming(ItemType data)

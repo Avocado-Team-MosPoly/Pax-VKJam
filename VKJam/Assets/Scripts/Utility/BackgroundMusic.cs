@@ -7,6 +7,8 @@ public class BackgroundMusic : MonoBehaviour
 {
     public static BackgroundMusic Instance { get; private set; }
 
+    public const string KEY_VOLUME = "Music_Volume";
+
     public float Volume
     {
         get
@@ -46,7 +48,6 @@ public class BackgroundMusic : MonoBehaviour
     private float currentMusicVolume;
     private float masterVolume = 1f;
 
-    private readonly string KEY_VOLUME = "Volume";
     private readonly string splitter = ":";
 
     private void Awake()

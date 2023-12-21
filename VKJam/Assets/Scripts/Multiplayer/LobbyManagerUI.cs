@@ -14,6 +14,8 @@ public class LobbyManagerUI : NetworkBehaviour
     [SerializeField] private Button leaveLobbyButton;
     [SerializeField] private Button updatePlayerListButton;
     [SerializeField] private Button readyButton;
+    [SerializeField] private Button callFriendsToLobbyButton;
+
     [SerializeField] private List<GameObject> playerGameObjectList = new();
     [SerializeField] private List<GameObject> playerReady = new();
     [SerializeField] private LobbyPlayerDataViewManager playerDataViewManager;
@@ -209,14 +211,15 @@ public class LobbyManagerUI : NetworkBehaviour
         playerSendAllDataId.Add(NetworkManager.LocalClientId);
         playerGetAllDataId.Add(NetworkManager.LocalClientId);
         //Debug.Log("SendPack");
-        PrepareToSandDataClientRpc();
+        PrepareToSendDataClientRpc();
         SendToHostClientRpc();
     }
 
     [ClientRpc]
-    private void PrepareToSandDataClientRpc()
+    private void PrepareToSendDataClientRpc()
     {
-        waitingLabel.gameObject.SetActive(false);
+        callFriendsToLobbyButton.gameObject.SetActive(false);
+        //waitingLabel.gameObject.SetActive(false);
         //loadingSlider.gameObject.SetActive(true);
         waitingLabel.text = LoadingText;
         exit.SetActive(false);

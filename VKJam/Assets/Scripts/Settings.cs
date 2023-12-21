@@ -8,27 +8,42 @@ public class Settings : MonoBehaviour
     [SerializeField] private Button musicOffButton;
     [SerializeField] private Button musicOnButton;
 
-    //[SerializeField] private Slider mouseSensetivitySlider;
+    [Header("Audio")]
+    [SerializeField] private Slider audioVolumeSlider;
+
+    private readonly string KEY_AUDIO_VOLUME = "Audio_Volume";
 
     private void Start()
     {
         if (BackgroundMusic.Instance != null)
         {
             musicVolumeSlider.value = BackgroundMusic.Instance.Volume;
-            musicVolumeSlider.onValueChanged.AddListener(ChangeVolume);
+            musicVolumeSlider.onValueChanged.AddListener(ChangeMusicVolume);
 
             musicOffButton.onClick.AddListener(MuteMusic);
             musicOnButton.onClick.AddListener(UnmuteMusic);
         }
+
+        audioVolumeSlider.value = SoundList.VolumeObserver.Value;
+        audioVolumeSlider.onValueChanged.AddListener(ChangeAudioVolume);
     }
 
-    #region Music
+    private void OnDisable()
+    {
+        if (BackgroundMusic.Instance != null)
+            PlayerPrefs.SetFloat(BackgroundMusic.KEY_VOLUME, BackgroundMusic.Instance.Volume);
 
-    /// <summary> </summary>
-    /// <param name="value"> limit - [0, 1] </param>
-    private void ChangeVolume(float value)
+        PlayerPrefs.SetFloat(SoundList.KEY_VOLUME, SoundList.VolumeObserver.Value);
+    }
+
+    private void ChangeMusicVolume(float value)
     {
         BackgroundMusic.Instance.Volume = value;
+    }
+
+    private void ChangeAudioVolume(float value)
+    {
+        SoundList.VolumeObserver.Value = value;
     }
 
     private void MuteMusic()
@@ -36,6 +51,7 @@ public class Settings : MonoBehaviour
         musicOffButton.interactable = false;
         musicOnButton.interactable = true;
 
+        SoundList.MuteObserver.Value = true;
         BackgroundMusic.Instance.Mute = true;
     }
 
@@ -44,13 +60,7 @@ public class Settings : MonoBehaviour
         musicOffButton.interactable = true;
         musicOnButton.interactable = false;
 
+        SoundList.MuteObserver.Value = false;
         BackgroundMusic.Instance.Mute = false;
     }
-
-    #endregion
-
-    //private void ChangeMouseSensetivity(float value)
-    //{
-        
-    //}
 }

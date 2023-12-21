@@ -103,7 +103,7 @@ public class CustomController : TaskExecutor<CustomController>
         {
             if (response == "failed")
             {
-                Logger.Instance.LogWarning(this, "Unable to find saved custom on server");
+                Logger.Instance.LogWarning(this, "Unable to find saved custom on server. Setted defaults");
                 SetDefaults();
                 return;
             }

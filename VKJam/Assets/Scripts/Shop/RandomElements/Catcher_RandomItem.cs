@@ -1,17 +1,23 @@
+using Tiractor.Sound;
 using UnityEngine;
 
 public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
 {
+    public static int Result;
+
     [SerializeField] private CurrencyCatcher display;
-    private static RandomItem DroppedItem;
     [SerializeField] private Animator Hand;
     [SerializeField] private GameObject[] WinObjects;
+
     [Header("Display UI")]
     //[SerializeField] private GameObject UI;
     [SerializeField] private Displayer Token;
     [SerializeField] private Displayer Custom;
     [SerializeField] private Displayer Card;
-    public static int Result;
+
+    [SerializeField] private SoundList soundList;
+
+    private static RandomItem DroppedItem;
 
     public static void SetData(RandomItem Data)
     {
@@ -96,4 +102,8 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
         }
     }
 
+    public void PlaySound()
+    {
+        soundList.Play("water-splash");
+    }
 }
