@@ -262,6 +262,8 @@ public class GameManager : NetworkBehaviour
             if (paint.enabled)
                 paint.GetComponent<Animator>().Play("NoteBookClose");
 
+            Debug.LogWarning("Showing monster!");
+
             hintManager.SetHintData(answerCardSO.Id);
             hintManager.DisableHandHint();
         }

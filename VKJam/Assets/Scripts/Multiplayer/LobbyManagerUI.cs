@@ -144,10 +144,10 @@ public class LobbyManagerUI : NetworkBehaviour
     {
         int clientIdIndex = GetClientIdIndex(NetworkManager.Singleton.LocalClientId);
 
-        playerReady[clientIdIndex].SetActive(!allPlayerReady[clientIdIndex]);
-        readyButtonTextLabel.text = playerReady[clientIdIndex].activeSelf ? readyText : notReadyText;
-
         SwitchPlayerReadyServerRpc(clientIdIndex);
+
+        playerReady[clientIdIndex].SetActive(allPlayerReady[clientIdIndex]);
+        readyButtonTextLabel.text = allPlayerReady[clientIdIndex] ? readyText : notReadyText;
     }
 
     public void CheckReady()
@@ -180,6 +180,7 @@ public class LobbyManagerUI : NetworkBehaviour
                 {
                     if (playerGameObjectList[i].activeSelf)
                     {
+                        Debug.LogWarning("Not all players ready");
                         allReady = false;
                     }
                 }

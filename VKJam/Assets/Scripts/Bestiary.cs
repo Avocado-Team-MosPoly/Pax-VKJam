@@ -39,6 +39,8 @@ public class Bestiary : MonoBehaviour
 
     private int currentMonster;
 
+    private int choosenMonster;
+
     private void Start()
     {
         previousMonsterButton.onClick.AddListener(PreviousMoster);
@@ -171,8 +173,14 @@ public class Bestiary : MonoBehaviour
         {
             chooseMonster.SetActive(true);
             ChooseFromBook chooseFromBook = chooseMonster.GetComponent<ChooseFromBook>();
+
+            chooseFromBook.OnSelected += (int monsterID) => choosenMonster = monsterID;
+
             chooseFromBook.GuessedMonster = Monsters[currentMonster].Id;
             chooseFromBook.MonsterId = currentMonster;
+            chooseFromBook.Selected = currentMonster == choosenMonster;
+
+            chooseFromBook.Show(chooseFromBook.Selected);
         }
         else
         {

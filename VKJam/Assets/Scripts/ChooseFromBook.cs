@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
@@ -6,8 +7,11 @@ public class ChooseFromBook : MonoBehaviour
 {
     [HideInInspector] public string GuessedMonster;
     [HideInInspector] public int MonsterId;
+    [HideInInspector] public bool Selected;
+    [HideInInspector] public Action<int> OnSelected;
 
     [SerializeField] private CompareSystem compareSystem;
+    [SerializeField] private GameObject checkTic;
     
     public void Start()
     {
@@ -17,5 +21,20 @@ public class ChooseFromBook : MonoBehaviour
     public void Guess()
     {
         compareSystem.CompareAnswerServerRpc(MonsterId, new ServerRpcParams());
+        OnSelected?.Invoke(MonsterId);
+        Selected = true;
+        Show(Selected);
+    }
+
+    public void Show(bool status)
+    {
+        if (!Selected)
+        {
+            checkTic.SetActive(status);
+        }
+        else
+        {
+            checkTic.SetActive(true);
+        }
     }
 }
