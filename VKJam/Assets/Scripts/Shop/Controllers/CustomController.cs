@@ -36,7 +36,7 @@ public class CustomController : TaskExecutor<CustomController>
             List<string> resp = new();
             resp.AddRange(response.Split('\n'));
 
-            if(!int.TryParse(resp[0], out int i))
+            if(!int.TryParse(resp[0], out int i) && response != "empty")
             {
                 Debug.LogError("CheckOwningDesign error");
                 return;
@@ -46,7 +46,7 @@ public class CustomController : TaskExecutor<CustomController>
             {
                 foreach (var ware in section.products)
                 {
-                    if (ware.Data.productCode == 0 || resp.Contains(ware.Data.productCode.ToString()))
+                    if (ware.Data.productCode == 0 || resp.Contains(ware.Data.productCode.ToString())) //
                     {
                         ware.OnCheckOwningDesignComplete(true);
                     }

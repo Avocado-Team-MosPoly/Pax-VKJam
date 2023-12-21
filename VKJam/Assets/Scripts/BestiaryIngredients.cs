@@ -5,7 +5,7 @@ using TMPro;
 
 public class BestiaryIngredients : MonoBehaviour
 {
-    [HideInInspector] public List<Ingredient> IngredientList = new();
+    public List<Ingredient> IngredientList = new();
     //[HideInInspector] public List<string> IngredientName = new();
 
     [SerializeField] private CompareSystem compareSystem;
@@ -26,18 +26,16 @@ public class BestiaryIngredients : MonoBehaviour
     private List<GameObject> spawnedIngredientObjects = new();
     private bool isSpawnedSelectedIngredient;
 
+    private static int elementsPerPage = 10;
+
     private int lastShownIngridient;
     private int firstShownIngredient;
-    private int onThisPage;
     private int spawnPositionIndex;
-
-    private int ingredientsCount;
 
     private void Awake()
     {
         lastShownIngridient = 0;
         firstShownIngredient = 0;
-        onThisPage = 0;
 
         UpdateIngredientList(true);
 
@@ -97,13 +95,22 @@ public class BestiaryIngredients : MonoBehaviour
 
         if (up)
         {
-            UpdateIngredientListUp(leftIngredientsPage, up, true);
-            UpdateIngredientListUp(rightIngredientsPage, up, false);
+            firstShownIngredient = lastShownIngridient;
+            lastShownIngridient = lastShownIngridient + elementsPerPage;
+            UpdateIngredientList(leftIngredientsPage, firstShownIngredient, lastShownIngridient);
+            firstShownIngredient = lastShownIngridient;
+            lastShownIngridient = lastShownIngridient + elementsPerPage;
+            UpdateIngredientList(rightIngredientsPage, firstShownIngredient, lastShownIngridient);
         }
         else
         {
-            UpdateIngredientListUp(leftIngredientsPage, up, true);
-            UpdateIngredientListUp(rightIngredientsPage, up, false);
+            firstShownIngredient -= elementsPerPage*3;
+            lastShownIngridient = firstShownIngredient + elementsPerPage;
+            UpdateIngredientList(leftIngredientsPage, firstShownIngredient, lastShownIngridient);
+            firstShownIngredient = lastShownIngridient;
+            lastShownIngridient += elementsPerPage;
+            UpdateIngredientList(rightIngredientsPage, firstShownIngredient, lastShownIngridient);
+            
         }
 
         textHoverEffect.SetTexts(ingredientsTexts);
@@ -111,46 +118,30 @@ public class BestiaryIngredients : MonoBehaviour
         CheckButton();
     }
 
-    private void UpdateIngredientListUp(RectTransform ingredientListContainer, bool up, bool left)
+    private void UpdateIngredientList(RectTransform ingredientListContainer, int startIndex, int lastIndex)
     {
-
-         if(!up && !left)
+        if(startIndex >= lastIndex)
         {
-            lastShownIngridient = firstShownIngredient;
+            Debug.LogError("Start index > last index!");
+            return;
         }
 
-
-        int i = lastShownIngridient;
-
-        for (; i < 10 + lastShownIngridient; i++)
+        for (int i = startIndex; i < lastIndex; i++)
         {
-            if (i >= IngredientList.Count)
+            if(i >= IngredientList.Count)
             {
-                Debug.LogWarning("break");
                 break;
             }
-            onThisPage = i- lastShownIngridient;
 
             IngredientInfo ingredientInfoUI = Instantiate(ingredientInfoTemplate, ingredientListContainer);
             ingredientInfoUI.SetIngridient(IngredientList[i].Name, i, compareSystem, closeBestiaryButton);
             ingredientInfoUI.gameObject.SetActive(true);
             ingredientInfoUI.OnGuess.AddListener(OnIngredientSelected);
 
-            ingredientsCount++;
-
             ingredientsTexts.Add(ingredientInfoUI.IngridientName);
-        }
-        if (left)
-        {
-            firstShownIngredient = Mathf.Clamp(lastShownIngridient - 20 - onThisPage - 1, 0, lastShownIngridient);
-        }
-        else
-        {
-            firstShownIngredient -= onThisPage;
         }
 
         GameManager.Instance.SoundList.Play("Turning the page");
-        lastShownIngridient = i;
     }
 
     private void OnIngredientSelected(int ingredientIndex)

@@ -4752,6 +4752,7 @@ MonoBehaviour:
   leaveLobbyButton: {fileID: 1780831507}
   updatePlayerListButton: {fileID: 1640443493}
   readyButton: {fileID: 1493065764}
+  callFriendsToLobbyButton: {fileID: 1595220734}
   playerGameObjectList:
   - {fileID: 251506184}
   - {fileID: 1958560448}
@@ -4765,7 +4766,6 @@ MonoBehaviour:
   playerDataViewManager: {fileID: 8419256763332442937}
   notReadyText: "\u041D\u0435 \u0433\u043E\u0442\u043E\u0432"
   readyText: "\u0413\u043E\u0442\u043E\u0432"
-  packCardSO: {fileID: 11400000, guid: 0884437ece407254ba420f9dc4341e3e, type: 2}
   waitingLabel: {fileID: 405359357}
   LoadingText: "\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430..."
   exit: {fileID: 1780831506}
@@ -5547,6 +5547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff3acd8bcaeff2747aa1838a619c8a5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreNames: []
   buttons:
   - {fileID: 1231685501}
   - {fileID: 1231685500}

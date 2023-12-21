@@ -40,4 +40,12 @@ public class storeSection : ScriptableObject
             item.icon = item.Model.GetComponent<UnityEngine.UI.Image>().sprite;
         }
     }
+    [ContextMenu("Reset isOwn")]
+    public virtual void ResetIsOwn()
+    {
+        foreach (var product in products)
+        {
+            product.Data.InOwn = false;
+        }
+    }
 }
