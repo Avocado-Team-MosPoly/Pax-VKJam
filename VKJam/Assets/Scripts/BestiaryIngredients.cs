@@ -28,6 +28,7 @@ public class BestiaryIngredients : MonoBehaviour
 
     private int lastShownIngridient;
     private int firstShownIngredient;
+    private int onThisPage;
     private int spawnPositionIndex;
 
     private int ingredientsCount;
@@ -36,6 +37,7 @@ public class BestiaryIngredients : MonoBehaviour
     {
         lastShownIngridient = 0;
         firstShownIngredient = 0;
+        onThisPage = 0;
 
         UpdateIngredientList(true);
 
@@ -111,14 +113,12 @@ public class BestiaryIngredients : MonoBehaviour
 
     private void UpdateIngredientListUp(RectTransform ingredientListContainer, bool up, bool left)
     {
-        if (left)
-        {
-            firstShownIngredient = Mathf.Clamp(lastShownIngridient - 20, 0, lastShownIngridient);
-        }
-        else if(!up && !left)
+
+         if(!up && !left)
         {
             lastShownIngridient = firstShownIngredient;
         }
+
 
         int i = lastShownIngridient;
 
@@ -126,8 +126,10 @@ public class BestiaryIngredients : MonoBehaviour
         {
             if (i >= IngredientList.Count)
             {
+                Debug.LogWarning("break");
                 break;
             }
+            onThisPage = i- lastShownIngridient;
 
             IngredientInfo ingredientInfoUI = Instantiate(ingredientInfoTemplate, ingredientListContainer);
             ingredientInfoUI.SetIngridient(IngredientList[i].Name, i, compareSystem, closeBestiaryButton);
@@ -137,6 +139,14 @@ public class BestiaryIngredients : MonoBehaviour
             ingredientsCount++;
 
             ingredientsTexts.Add(ingredientInfoUI.IngridientName);
+        }
+        if (left)
+        {
+            firstShownIngredient = Mathf.Clamp(lastShownIngridient - 20 - onThisPage - 1, 0, lastShownIngridient);
+        }
+        else
+        {
+            firstShownIngredient -= onThisPage;
         }
 
         GameManager.Instance.SoundList.Play("Turning the page");
