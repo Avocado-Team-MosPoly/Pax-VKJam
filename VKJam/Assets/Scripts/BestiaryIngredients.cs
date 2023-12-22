@@ -158,7 +158,7 @@ public class BestiaryIngredients : MonoBehaviour
             return;
 
         Transform spawnPosition = spawnPositions[spawnPositionIndex];
-        GameObject spawnedIngredientObject = Instantiate(IngredientList[ingredientIndex].Model, spawnPosition.position, Quaternion.identity, spawnPosition);
+        GameObject spawnedIngredientObject = Instantiate(IngredientList[ingredientIndex].Model, spawnPosition);
 
         if (spawnedIngredientObject == null)
             throw new System.NullReferenceException($"Ingredient prefab is null ({IngredientList[ingredientIndex].Name} ingredient)");

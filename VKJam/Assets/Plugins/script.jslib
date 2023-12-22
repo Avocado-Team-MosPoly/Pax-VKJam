@@ -42,5 +42,10 @@ mergeInto(LibraryManager.library, {
     UnityPluginRequestJoinGroup: function () 
     {
         JSRequestJoinGroup();
+    },
+
+    UnityPluginIsMobilePlatform: function () 
+    {
+        JSIsMobilePlatform();
     }
 });

@@ -225,6 +225,15 @@
                 });
         }
 
+        function JSIsMobilePlatform() {
+            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         jQuery(document).ready(function ($) // страница прогружена
         {
             vkBridge.send('VKWebAppInit'); // Инициализация ВК

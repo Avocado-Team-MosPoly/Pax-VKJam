@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using Unity.Netcode;
 using System.Collections;
 using System;
+using Unity.VisualScripting;
 
 // needs rework
 public class TokenManager : NetworkBehaviour
@@ -47,9 +48,15 @@ public class TokenManager : NetworkBehaviour
             instance = this;
 
         tokensOnScene = new List<GameObject>();
+    }
 
-
-        SpawnTokens(10);
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            DeleteExcessTokens();
+            SpawnTokens(10);
+        }
     }
 
     public override void OnNetworkSpawn()
@@ -112,12 +119,13 @@ public class TokenManager : NetworkBehaviour
                     UnityEngine.Random.Range(-halfTokenSpawn.y, halfTokenSpawn.y)
                     );
                 token = Instantiate(tokenPrefab, tokenSpawnTransform);
-
                 token.transform.localPosition = localPosition;
-                //if(token.TryGetComponent<Rigidbody>(out Rigidbody rb))
-                //{
-                //    rb.isKinematic = false;
-                //}
+
+                if (token.TryGetComponent<Rigidbody>(out Rigidbody rb))
+                {
+                    rb.freezeRotation = true;
+                    //rb.isKinematic = false;
+                }
 
                 tokensOnScene.Add(token);
             }
