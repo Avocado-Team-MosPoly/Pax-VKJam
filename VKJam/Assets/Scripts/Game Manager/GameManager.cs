@@ -274,6 +274,7 @@ public class GameManager : NetworkBehaviour
             SceneMonsterAnimator.Play("Idle");
         }
 
+        playersStatusManager.ResetStatuses();
         BackgroundMusic.Instance.Play("monsterGuess");
         OnGuessMonsterStageActivatedOnClient?.Invoke(IsPainter);
     }
@@ -302,6 +303,11 @@ public class GameManager : NetworkBehaviour
     {
         SceneMonster.SetActive(true);
         SceneMonsterAnimator.Play("Loose");
+    }
+
+    public void AllPlayersGuessed()
+    {
+        timer.PrematureStop();
     }
 
     #endregion

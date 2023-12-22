@@ -12,6 +12,7 @@ public abstract class RoundManager
 
     /// <summary> Correct guessed in this round </summary>
     protected List<ulong> correctGuesserIds = new();
+    private List<ulong> guesserIds = new();
 
     protected bool isMonsterGuessed;
 
@@ -61,6 +62,7 @@ public abstract class RoundManager
 
         isMonsterGuessed = false;
         correctGuesserIds.Clear();
+        guesserIds.Clear();
 
         OnRoundEnded?.Invoke();
     }
@@ -75,25 +77,12 @@ public abstract class RoundManager
             OnCorrectMonsterGuess(guesserId);
         else
             OnWrongMonsterGuess(guesserId);
-    }
 
-    public void PainterPenalty(int count)
-    {
-        if (count <=3)
-        { TokenManager.RemoveTokensToClient(5, (byte)GameManager.Instance.PainterId); }
-        else if (count ==4)
-        { TokenManager.RemoveTokensToClient(3, (byte)GameManager.Instance.PainterId); }
-        else if (count >=5)
-        { TokenManager.RemoveTokensToClient(2, (byte)GameManager.Instance.PainterId); }
-    }
-    public void PainterReward(int count)
-    {
-        if (count <= 3)
-        { TokenManager.AddTokensToClient(5, (byte)GameManager.Instance.PainterId); }
-        else if (count == 4)
-        { TokenManager.AddTokensToClient(3, (byte)GameManager.Instance.PainterId); }
-        else if (count >= 5)
-        { TokenManager.AddTokensToClient(2, (byte)GameManager.Instance.PainterId); }
+        if (guesserIds.IndexOf(guesserId) == -1)
+            guesserIds.Add(guesserId);
+
+        if (guesserIds.Count >= playersCount - 1)
+            GameManager.Instance.AllPlayersGuessed();
     }
 
     private void Log(object message) => Logger.Instance.Log(this, message);

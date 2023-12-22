@@ -42,11 +42,10 @@ public class SceneObjectsManager : MonoBehaviour
 
         GameManager.Instance.OnGuessMonsterStageActivatedOnClient.AddListener(OnGuessMonsterStageActivated);
         GameManager.Instance.OnGameEnded.AddListener(OnGameEnded);
-
         GameManager.Instance.RoleManager.OnPainterSetted.AddListener(OnPainterSetted);
         GameManager.Instance.RoleManager.OnGuesserSetted.AddListener(OnGuesserSetted);
         GameManager.Instance.OnIngredientSwitchedOnClient.AddListener(OnIngredientSwitched);
-
+        GameManager.Instance.OnRoundStartedOnClient.AddListener(OnRoundStarted);
         GameManager.Instance.OnCardChoosedOnClient.AddListener(OnCardChoosed);
 
         if (!NetworkManager.Singleton.IsHost)
@@ -111,10 +110,10 @@ public class SceneObjectsManager : MonoBehaviour
 
     private void OnCardChoosed(CardSO cardSO)
     {
-        bookHint.SetActive(true);
-
         guesserPreRoundCanvas.SetActive(false);
+
         toggleBook.enabled = true;
+        bookHint.SetActive(true);
     }
 
     private void OnIngredientSwitched(int ingredientIndex)
@@ -130,6 +129,8 @@ public class SceneObjectsManager : MonoBehaviour
         if (isPainter)
         {
             toggleBook.enabled = false;
+            bookHint.SetActive(false);
+
             guessMonsterStageUI.SetActive(true);
             painterBook.SetInteractable(false);
             paintUI.SetActive(false);
@@ -147,6 +148,7 @@ public class SceneObjectsManager : MonoBehaviour
     public void OnRoundEnded()
     {
         toggleBook.enabled = false;
+        bookHint.SetActive(false);
 
         guesserUI.SetActive(false);
         guessMonsterStageUI.SetActive(false);
@@ -160,10 +162,15 @@ public class SceneObjectsManager : MonoBehaviour
 
         chatView.Close();
 
-        bookHint.SetActive(false);
         //GameManager.Instance.SceneMonster.SetActive(true);
 
         //moveCamera.SetActivity(false);
+    }
+
+    private void OnRoundStarted()
+    {
+        toggleBook.enabled = false;
+        bookHint.SetActive(false);
     }
 
     private void OnGameEnded()

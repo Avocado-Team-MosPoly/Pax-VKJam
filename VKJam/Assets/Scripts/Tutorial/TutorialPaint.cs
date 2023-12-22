@@ -9,8 +9,8 @@ public class TutorialPaint : MonoBehaviour
     [Serializable]
     private struct TextureSettings
     {
-        [Range(2, 1024)] public int sizeX;
-        [Range(2, 1024)] public int sizeY;
+        [Range(2, 2048)] public int sizeX;
+        [Range(2, 2048)] public int sizeY;
         public TextureWrapMode wrapMode;
         public FilterMode filterMode;
     }

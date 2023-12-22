@@ -47,6 +47,9 @@ public class TokenManager : NetworkBehaviour
             instance = this;
 
         tokensOnScene = new List<GameObject>();
+
+
+        SpawnTokens(10);
     }
 
     public override void OnNetworkSpawn()
@@ -94,6 +97,7 @@ public class TokenManager : NetworkBehaviour
         if (count < 0)
         {
             DeleteExcessTokens();
+            return;
         }
 
         if (tokenPrefab && tokenSpawnTransform)
@@ -110,9 +114,10 @@ public class TokenManager : NetworkBehaviour
                 token = Instantiate(tokenPrefab, tokenSpawnTransform);
 
                 token.transform.localPosition = localPosition;
-                if(token.TryGetComponent<Rigidbody>(out Rigidbody rb)){
-                    rb.isKinematic = false;
-                }
+                //if(token.TryGetComponent<Rigidbody>(out Rigidbody rb))
+                //{
+                //    rb.isKinematic = false;
+                //}
 
                 tokensOnScene.Add(token);
             }

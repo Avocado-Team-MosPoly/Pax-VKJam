@@ -107,6 +107,17 @@ public class Timer : NetworkBehaviour
             Logger.Instance.Log(this, "Stop");
         }
     }
+
+    public void PrematureStop()
+    {
+        if (serverClockCoroutine == null)
+            return;
+
+        StopTimer();
+        OnExpired?.Invoke();
+        ResetToDefault();
+    }
+
     public void SetIngredientGuessTime()
     {
         roundTime = ingredientGuessTime;
