@@ -17,6 +17,8 @@ public class TokenManager : NetworkBehaviour
     public static UnityEvent OnAddTokens;
     public static UnityEvent OnRemoveTokens;
 
+    [SerializeField] private GameObject table;
+
     [Header("Spawn Tokens")]
     [SerializeField] private GameObject tokenPrefab;
     [SerializeField] private Transform tokenSpawnTransform;
@@ -48,16 +50,17 @@ public class TokenManager : NetworkBehaviour
             instance = this;
 
         tokensOnScene = new List<GameObject>();
+
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            DeleteExcessTokens();
-            SpawnTokens(10);
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.R))
+    //    {
+    //        DeleteExcessTokens();
+    //        SpawnTokens(10);
+    //    }
+    //}
 
     public override void OnNetworkSpawn()
     {
@@ -110,7 +113,8 @@ public class TokenManager : NetworkBehaviour
         if (tokenPrefab && tokenSpawnTransform)
         {
             Vector2 halfTokenSpawn = tokenSpawnRect / 2;
-            GameObject token;
+            GameObject tokenGameObject;
+
             for (int i = 0; i < count; i++)
             {
                 Vector3 localPosition = new(
@@ -118,16 +122,11 @@ public class TokenManager : NetworkBehaviour
                     0f,
                     UnityEngine.Random.Range(-halfTokenSpawn.y, halfTokenSpawn.y)
                     );
-                token = Instantiate(tokenPrefab, tokenSpawnTransform);
-                token.transform.localPosition = localPosition;
 
-                if (token.TryGetComponent<Rigidbody>(out Rigidbody rb))
-                {
-                    rb.freezeRotation = true;
-                    //rb.isKinematic = false;
-                }
+                tokenGameObject = Instantiate(tokenPrefab, tokenSpawnTransform);
+                tokenGameObject.transform.localPosition = localPosition;
 
-                tokensOnScene.Add(token);
+                tokensOnScene.Add(tokenGameObject);
             }
         }
 
@@ -319,23 +318,23 @@ public class TokenManager : NetworkBehaviour
     //    Vector3 tokenSpawnBox = new Vector3(tokenSpawnRect.x, 0f, tokenSpawnRect.y);
     //    Gizmos.DrawWireCube(tokenSpawnTransform.position, tokenSpawnBox);
 
-    //    //Vector3 prev = tokenSpawnTransform.position;
-    //    //Vector3 current = tokenSpawnTransform.position + new Vector3(tokenSpawnRect.x, 0f, 0f);
-    //    //current = tokenSpawnTransform.right * current.magnitude;
-    //    //Gizmos.DrawLine(prev, current);
+    ////    Vector3 prev = tokenSpawnTransform.position;
+    ////    Vector3 current = tokenSpawnTransform.position + new Vector3(tokenSpawnRect.x, 0f, 0f);
+    ////    current = tokenSpawnTransform.right * current.magnitude;
+    ////    Gizmos.DrawLine(prev, current);
 
-    //    //prev = current;
-    //    //current.z += tokenSpawnRect.y;
-    //    //current = tokenSpawnTransform.forward * current.magnitude;
-    //    //Gizmos.DrawLine(prev, current);
+    ////    prev = current;
+    ////    current.z += tokenSpawnRect.y;
+    ////    current = tokenSpawnTransform.forward * current.magnitude;
+    ////    Gizmos.DrawLine(prev, current);
 
-    //    //prev = current;
-    //    //current.x = tokenSpawnTransform.position.x;
-    //    //current = -tokenSpawnTransform.right * current.magnitude;
-    //    //Gizmos.DrawLine(prev, current);
+    ////    prev = current;
+    ////    current.x = tokenSpawnTransform.position.x;
+    ////    current = -tokenSpawnTransform.right * current.magnitude;
+    ////    Gizmos.DrawLine(prev, current);
 
-    //    //prev = current;
-    //    //current = tokenSpawnTransform.position;
-    //    //Gizmos.DrawLine(prev, current);
+    ////    prev = current;
+    ////    current = tokenSpawnTransform.position;
+    ////    Gizmos.DrawLine(prev, current);
     //}
 }
