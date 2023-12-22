@@ -153,8 +153,6 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         int tokenCount = 30;
         Action successRequest = () =>
         {
-            Logger.Instance.LogError(this, "DonatRouter.Executor = " + DonatRouter.Executor);
-            Logger.Instance.LogError(this, "CurrencyCatcher.Executor = " + CurrencyCatcher.Executor);
             StartCoroutine(DonatRouter.Executor?.DelayRefresh());
             CurrencyCatcher.Executor?.Refresh();
         };

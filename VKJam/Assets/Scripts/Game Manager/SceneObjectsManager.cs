@@ -24,6 +24,7 @@ public class SceneObjectsManager : MonoBehaviour
     [SerializeField] private GameObject guesserUI;
     [SerializeField] private GameObject tokensSummary;
     [SerializeField] private GameObject gameSummary;
+    [SerializeField] private GameObject bookHint;
 
     [SerializeField] private GameObject guesserPreRoundCanvas;
     [SerializeField] private string chooseCardText;
@@ -110,6 +111,8 @@ public class SceneObjectsManager : MonoBehaviour
 
     private void OnCardChoosed(CardSO cardSO)
     {
+        bookHint.SetActive(true);
+
         guesserPreRoundCanvas.SetActive(false);
         toggleBook.enabled = true;
     }
@@ -156,6 +159,8 @@ public class SceneObjectsManager : MonoBehaviour
         bestiary.Close();
 
         chatView.Close();
+
+        bookHint.SetActive(false);
         //GameManager.Instance.SceneMonster.SetActive(true);
 
         //moveCamera.SetActivity(false);

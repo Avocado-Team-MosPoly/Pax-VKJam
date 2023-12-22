@@ -11,7 +11,7 @@ public abstract class IngredientManager
     public UnityEvent OnCorrectIngredient = new();
     public UnityEvent OnWrongIngredient = new();
 
-    public int CurrentIngredientIndex { get; private set; }
+    public int CurrentIngredientIndex { get; private set; } = 0;
 
     public IReadOnlyList<ulong> CorrectGuesserAllIds
     {
@@ -78,7 +78,7 @@ public abstract class IngredientManager
         isIngredientGuessed = true;
     }
 
-    protected virtual void OnWrongIngredientGuess(ulong clientId)
+    protected virtual void OnWrongIngredientGuess(ulong clientId) //?
     {
 
     }

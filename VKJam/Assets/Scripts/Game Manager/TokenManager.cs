@@ -3,7 +3,8 @@ using TMPro;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using Unity.Netcode;
-using static System.Collections.Generic.Dictionary<ulong, int>;
+using System.Collections;
+using System;
 
 // needs rework
 public class TokenManager : NetworkBehaviour
@@ -102,9 +103,9 @@ public class TokenManager : NetworkBehaviour
             for (int i = 0; i < count; i++)
             {
                 Vector3 localPosition = new(
-                    Random.Range(-halfTokenSpawn.x, halfTokenSpawn.x),
+                    UnityEngine.Random.Range(-halfTokenSpawn.x, halfTokenSpawn.x),
                     0f,
-                    Random.Range(-halfTokenSpawn.y, halfTokenSpawn.y)
+                    UnityEngine.Random.Range(-halfTokenSpawn.y, halfTokenSpawn.y)
                     );
                 token = Instantiate(tokenPrefab, tokenSpawnTransform);
 
@@ -273,6 +274,16 @@ public class TokenManager : NetworkBehaviour
         }
 
         AddTokensToClient(tokens[0], (byte)clientIds[0]);
+    }
+
+    public static IEnumerator OnGameEnded()
+    {
+        Action OnCompleted = () =>
+        {
+            Debug.Log("Coins saved to DB");
+        };
+
+        yield return instance.StartCoroutine(Php_Connect.Request_TokenWin(TokensCount, OnCompleted, null));
     }
 
     #region Log

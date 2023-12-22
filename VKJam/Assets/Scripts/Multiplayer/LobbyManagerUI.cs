@@ -144,10 +144,12 @@ public class LobbyManagerUI : NetworkBehaviour
     {
         int clientIdIndex = GetClientIdIndex(NetworkManager.Singleton.LocalClientId);
 
-        SwitchPlayerReadyServerRpc(clientIdIndex);
+        Debug.LogWarning(allPlayerReady[clientIdIndex]);
 
-        playerReady[clientIdIndex].SetActive(allPlayerReady[clientIdIndex]);
-        readyButtonTextLabel.text = allPlayerReady[clientIdIndex] ? readyText : notReadyText;
+        playerReady[clientIdIndex].SetActive(!allPlayerReady[clientIdIndex]);
+        readyButtonTextLabel.text = !allPlayerReady[clientIdIndex] ? readyText : notReadyText;
+        
+        SwitchPlayerReadyServerRpc(clientIdIndex);  
     }
 
     public void CheckReady()
@@ -163,6 +165,7 @@ public class LobbyManagerUI : NetworkBehaviour
     {
         //Debug.LogError("Server");
         allPlayerReady[clientIdIndex] = !allPlayerReady[clientIdIndex];
+        Debug.LogWarning(allPlayerReady[clientIdIndex]);
     }
 
     private void AllPlayerReady_OnListChanged(NetworkListEvent<bool> changeEvent)

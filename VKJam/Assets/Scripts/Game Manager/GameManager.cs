@@ -169,7 +169,7 @@ public class GameManager : NetworkBehaviour
     }
     private IEnumerator TakePack()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
         bestiary.TakePack();
         bestiaryIngredients.TakePack();
     }
@@ -217,6 +217,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void OnRoundStartedClientRpc()
     {
+        StartCoroutine(TakePack());
         playersStatusManager.ResetStatuses();
         OnRoundStartedOnClient?.Invoke();
     }
@@ -241,12 +242,11 @@ public class GameManager : NetworkBehaviour
         timer.StopTimer();
         currentRound++;
 
+        Stage = Stage.Waiting;
+        OnRoundEndedClientRpc();
+
         if (currentRound > roundAmount)
             EndGame();
-
-        Stage = Stage.Waiting;
-
-        OnRoundEndedClientRpc();
     }
 
     #region GuessMonsterStage
@@ -392,6 +392,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void EndGameClientRpc()
     {
+        StartCoroutine(TokenManager.OnGameEnded());
         OnGameEnded?.Invoke();
     }
 
