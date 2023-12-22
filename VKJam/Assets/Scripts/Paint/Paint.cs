@@ -345,7 +345,7 @@ public class Paint : NetworkBehaviour
     
     private void DrawCircle(short rayX, short rayY)
     {
-        int circleRadius = brushMode == BrushMode.Draw ? halfBrushSize : halfBrushSize * brushSize;
+        int circleRadius = halfBrushSize; //brushMode == BrushMode.Draw ? halfBrushSize : halfBrushSize * brushSize;
         circleRadius = Mathf.Min(circleRadius, 8);
         Color color = brushMode == BrushMode.Draw ? drawColor : baseColor;
         float r2 = Mathf.Pow(circleRadius - 0.5f, 2);
@@ -385,7 +385,7 @@ public class Paint : NetworkBehaviour
         Vector2Short prevPoint = new Vector2Short(pRayX, pRayY);
         Vector2Short newPoint = new Vector2Short(rayX, rayY);
         Vector2Short currentPoint = new Vector2Short();
-        int circleRadius = brushMode == BrushMode.Draw ? halfBrushSize : halfBrushSize * brushSize;
+        int circleRadius = halfBrushSize; //brushMode == BrushMode.Draw ? halfBrushSize : halfBrushSize * brushSize;
         float step = 1f / Vector2Short.Distance(prevPoint, newPoint) / circleRadius;
 
         for (float t = 0; t <= 1f; t += step)
