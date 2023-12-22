@@ -12,9 +12,17 @@ public class CustomNetworkManager : NetworkManager
                 Destroy(gameObject);
             }
             else
+            {
+                OnTransportFailure += CustomNetworkManager_OnTransportFailure;
                 Logger.Instance.Log(this, "I'm NM Singleton");
+            }
         }
         else
             Logger.Instance.Log(this, "Singleton is null and me is not Singleton");
+    }
+
+    private void CustomNetworkManager_OnTransportFailure()
+    {
+        
     }
 }

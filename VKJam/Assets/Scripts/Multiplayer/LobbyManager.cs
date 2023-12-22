@@ -123,7 +123,7 @@ public class LobbyManager : MonoBehaviour
         if (CurrentLobby == null)
             return true;
 
-        NotificationSystem.Instance.SendLocal("You already in lobby " + CurrentLobby.Name);
+        NotificationSystem.Instance.SendLocal("Вы уже в лобби: " + CurrentLobby.Name);
         return false;
     }
 
@@ -262,10 +262,9 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Lobby servers");
+            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Lobby");
         }
     }
-
 
     public async Task JoinLobbyByCodeAsync(string joinCode)
     {
@@ -295,7 +294,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Lobby servers");
+            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Lobby");
         }
     }
 
@@ -327,7 +326,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Lobby servers");
+            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Lobby");
         }
     }
 
@@ -373,7 +372,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Lobby servers.");
+            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Lobby");
         }
     }
 
@@ -394,7 +393,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.Log(this, ex);
-            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Lobby servers.");
+            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Lobby");
         }
     }
     public async void ListLobbiesWithFilter()
@@ -434,7 +433,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Lobby servers.");
+            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Lobby");
         }
     }
 

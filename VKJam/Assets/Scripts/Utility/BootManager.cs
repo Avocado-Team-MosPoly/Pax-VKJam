@@ -89,9 +89,8 @@ public class BootManager : MonoBehaviour
         }
         if (connectionAttemptNumber >= maxConnectionAttempts - 1 && !Php_Connect.PHPisOnline)
         {
-            string message = $"Unable to connect to dedicated server using {(useDefaultNickname ? "Default nickname" : "VK id")}";
-            Logger.Instance.LogError(this, message);
-            NotificationSystem.Instance.SendLocal(message);
+            Logger.Instance.LogError(this, $"Unable to connect to dedicated server using {(useDefaultNickname ? "Default nickname" : "VK uid")}");
+            NotificationSystem.Instance.SendLocal($"Не получилось подключиться к серверам используя {(useDefaultNickname ? "стандартный логин" : "ВК uid")}");
         }
 
         //send request whith card packs we have

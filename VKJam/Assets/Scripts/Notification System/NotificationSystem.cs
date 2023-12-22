@@ -106,6 +106,7 @@ public class NotificationSystem : NetworkBehaviour
     {
         if (message == null)
             Logger.Instance.LogError(this, new NullReferenceException($"{nameof(message)} is null"));
+
         if (notificationInstance == null)
         {
             SpawnNotificationPrefab();

@@ -55,7 +55,7 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
         int sectionPagesCount = (customController.Categories[currentSection].products.Count + maxInstancesCount - 1) / maxInstancesCount;
 
         leftButton.gameObject.SetActive(false);
-        rightButton.gameObject.SetActive(currentPage <= sectionPagesCount);
+        rightButton.gameObject.SetActive(currentPage < sectionPagesCount - 1);
 
         RefreshView();
     }

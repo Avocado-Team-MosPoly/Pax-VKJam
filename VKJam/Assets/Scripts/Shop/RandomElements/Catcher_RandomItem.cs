@@ -59,6 +59,7 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
         {
             Token.gameObject.SetActive(true);
             Token.SetData(data);
+            CurrencyCatcher.Executor.Refresh();
         }
         else if (Type == RandomType.Card)
         {

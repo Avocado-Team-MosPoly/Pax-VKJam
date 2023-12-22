@@ -147,7 +147,7 @@ public class RelayManager : MonoBehaviour
         catch (RelayServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Relay servers.");
+            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Relay");
 
             //await LobbyManager.Instance.DisconnectAsync();
 
@@ -218,7 +218,7 @@ public class RelayManager : MonoBehaviour
         catch (RelayServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Connection error: Unable to connect to Unity Relay servers.");
+            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Relay");
 
             return false;
         }
