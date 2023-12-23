@@ -8,7 +8,12 @@ public class Displayer : MonoBehaviour
     [SerializeField] private TextMeshProUGUI Name;
     [SerializeField] private TextMeshProUGUI Data;
     [SerializeField] private RandomType Type;
-    
+
+    private void OnEnable()
+    {
+        CurrencyCatcher.Executor.Refresh();
+    }
+
     public void SetData(Sprite Pic,string Naming, string inputData)
     {
         if (Type == RandomType.Token)

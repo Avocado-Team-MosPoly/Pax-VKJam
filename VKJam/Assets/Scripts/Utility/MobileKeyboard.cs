@@ -7,11 +7,10 @@ public class MobileKeyboard : MonoBehaviour
 
     public void Open()
     {
-#if UNITY_EDITOR
-        return;
-#elif UNITY_WEBGL
-        if (UnityPluginIsMobilePlatform())
-            TouchScreenKeyboard.Open(string.Empty, TouchScreenKeyboardType.Default;
+#if UNITY_WEBGL && !UNITY_EDITOR
+        if (UnityPluginIsMobilePlatform() || Application.isMobilePlatform)
+            TouchScreenKeyboard.Open(string.Empty, TouchScreenKeyboardType.Default);
 #endif
+        return;
     }
 }

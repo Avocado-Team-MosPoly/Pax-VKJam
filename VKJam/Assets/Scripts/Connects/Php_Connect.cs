@@ -343,7 +343,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
         Action<string> completed = (string response) =>
         {
-            if (response == null)
+            if (response != "success")
                 unsuccessRequest?.Invoke();
             else
                 successRequest?.Invoke();

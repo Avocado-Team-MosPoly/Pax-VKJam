@@ -31,7 +31,6 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
         if (Php_Connect.PHPisOnline)
         {
             StartCoroutine(Php_Connect.Request_Gift(0, Php_Connect.Nickname));
-            display.Refresh();
         }
     }
 
@@ -40,7 +39,7 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
         WareData temp = CustomController.Executor.Search(Sel);
         Debug.Log(Sel.type + " " + (Sel.type >= 8));
 
-        ActiveWinObject(3);
+        ActiveWinObject(2);
 
         UIWin(temp);
     }
@@ -59,7 +58,6 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
         {
             Token.gameObject.SetActive(true);
             Token.SetData(data);
-            CurrencyCatcher.Executor.Refresh();
         }
         else if (Type == RandomType.Card)
         {
