@@ -328,9 +328,11 @@ public class GameManager : NetworkBehaviour
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
         sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
 
+        ingredientManager.SetIngredients(answerCardSO.IngredientsSO.Length);
+
         SetCardSOClientRpc(cardSOIndex);
 
-        SetHintDataClientRpc((sbyte)ingredientManager.CurrentIngredientIndex);
+        SetHintDataClientRpc((sbyte)ingredientManager.GetCurrentIngredientIndex);
 
         //Stage = Stage.IngredientGuess;
 
@@ -453,7 +455,7 @@ public class GameManager : NetworkBehaviour
 
     public string GetCurrentIngredient()
     {
-        return answerCardSO.IngredientsSO[ingredientManager.CurrentIngredientIndex].Name;
+        return answerCardSO.IngredientsSO[ingredientManager.GetCurrentIngredientIndex].Name;
     }
 
     public string GetCurrentMonster()
