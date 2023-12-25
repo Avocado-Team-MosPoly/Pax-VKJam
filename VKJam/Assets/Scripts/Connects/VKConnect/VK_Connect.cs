@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Text;
 using System.Collections;
 using System.Runtime.InteropServices;
 using UnityEngine;
@@ -209,5 +210,14 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         //  urlImage.ChangeImage(UserData.UserIMG_URL);
     }
 
-#endregion
+    #endregion
+
+    static public string EncodeTo64(string toEncode)
+    {
+        byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(toEncode);
+
+        string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
+
+        return returnValue;
+    }
 }

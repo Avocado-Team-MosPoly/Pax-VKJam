@@ -18,8 +18,8 @@ public class Authentication : MonoBehaviour
         }
         else
         {
-            UserId = userId.Replace('¸', 'å');
-            PlayerName = playerName;
+            UserId = userId;
+            PlayerName = playerName.Replace('¸', 'å');
             string number = Random.Range(100, 1000).ToString();
 
             if (string.IsNullOrEmpty(PlayerName))

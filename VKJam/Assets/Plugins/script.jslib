@@ -31,7 +31,8 @@ mergeInto(LibraryManager.library, {
 
     UnityPluginRequestInviteOldPlayer: function (id, lobby_key) 
     {
-        JSRequestInviteOldPlayer(id, lobby_key);
+        var temp = UTF8ToString(lobby_key);
+        JSRequestInviteOldPlayer(id, temp);
     },
 
     UnityPluginRequestBuyTry: function (id) 
