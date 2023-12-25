@@ -197,6 +197,7 @@ public class GameManager : NetworkBehaviour
 
     private void SetNRBLobby()
     {
+        nextRoundButton.SetActive(true);
         nextRoundButton.onClick.RemoveAllListeners();
 
         nextRoundButton.onClick.AddListener(ReturnToLobby);
@@ -402,6 +403,7 @@ public class GameManager : NetworkBehaviour
 
         if (Authentication.IsLoggedInThroughVK)
         {
+            nextRoundButton.SetActive(false);
             VK_Connect.Executor.OnInterstitialAdTryWatched += SetNRBLobbyWithInterstitialAd;
             VK_Connect.Executor.RequestShowInterstitialAd();
             ShowInterstitialAdOnGameEndedClientRpc();
@@ -416,7 +418,7 @@ public class GameManager : NetworkBehaviour
         if (IsServer)
             return;
 
-        VK_Connect.Executor.RequestShowInterstitialAd();
+        StartCoroutine(VK_Connect.Executor.RequestShowInterstitialAd());
     }
 
     [ClientRpc]
