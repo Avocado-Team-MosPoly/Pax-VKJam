@@ -10,6 +10,8 @@ public abstract class RoundManager
     [HideInInspector] public UnityEvent OnMonsterGuessed = new();
     [HideInInspector] public UnityEvent OnMonsterNotGuessed = new();
 
+    public IReadOnlyList<ulong> CorrectGuesserIds => correctGuesserIds;
+
     /// <summary> Correct guessed in this round </summary>
     protected List<ulong> correctGuesserIds = new();
     private List<ulong> guesserIds = new();

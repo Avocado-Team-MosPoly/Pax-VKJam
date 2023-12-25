@@ -14,7 +14,8 @@ public class SetUpAllButtons : MonoBehaviour
 
     private void Start()
     {
-        UnityAction onClick = () => BackgroundMusic.Instance.GetComponentInChildren<SoundList>().Play("button-click");
+        SoundList buttonSoundList = BackgroundMusic.Instance.GetComponentInChildren<SoundList>();
+        UnityAction onClick = () => buttonSoundList.Play("button-click");
 
         foreach (Button button in buttons)
         {

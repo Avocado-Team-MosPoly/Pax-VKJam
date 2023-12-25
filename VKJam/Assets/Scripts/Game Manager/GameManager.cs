@@ -208,11 +208,21 @@ public class GameManager : NetworkBehaviour
     {
         if (Stage == Stage.MonsterGuess)
         {
+            foreach (byte clientId in roundManager.CorrectGuesserIds)
+                ShowMonsterGuessedClientRpc(clientId);
+
             timer.SetIngredientGuessTime();
             roundManager.OnTimeExpired();
         }
         else
             ingredientManager.OnTimeExpired();
+    }
+
+    [ClientRpc]
+    private void ShowMonsterGuessedClientRpc(byte clientId)
+    {
+        if (clientId == NetworkManager.LocalClientId)
+            NotificationSystem.Instance.SendLocal("Вы угадали монстра!");
     }
 
     [ServerRpc(RequireOwnership = false)]
