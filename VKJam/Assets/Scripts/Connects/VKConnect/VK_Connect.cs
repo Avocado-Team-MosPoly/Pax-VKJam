@@ -32,7 +32,7 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         {
             Executor = this;
         }
-        
+
         if (Executor == this)
         {
             DontDestroyOnLoad(Executor);

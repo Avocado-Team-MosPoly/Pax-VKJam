@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Runtime.InteropServices;
 using TMPro;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class VirtualKeyboard : MonoBehaviour
     [SerializeField] private TextMeshProUGUI inputTextView;
 
     private TMP_InputField targetText;
+	private Coroutine deletionCoroutine;
 
     [DllImport("__Internal")] private static extern bool UnityPluginIsMobilePlatform();
 
@@ -26,21 +28,76 @@ public class VirtualKeyboard : MonoBehaviour
 		HideVirtualKeyboard();
     }
 
-	public void KeyPress(string k)
+    public void KeyPress(string k)
 	{
 		targetText.text += k;
         inputTextView.text = targetText.text;
     }
 
-    public void Del()
+	private IEnumerator StartDeleteCoroutine()
+	{
+		int deletionCountToClear = 15;
+        float timeBtwDeletionsInSeconds = 0.2f;
+        float timeBtwDeletionsInSecondsDecreaser = 0.02f;
+
+        for (int i = 0; i < deletionCountToClear; i++)
+		{
+			if (Del())
+			{
+                yield return new WaitForSeconds(timeBtwDeletionsInSeconds);
+				timeBtwDeletionsInSeconds -= timeBtwDeletionsInSecondsDecreaser;
+			}
+			else
+				yield break;
+
+			if (i == deletionCountToClear - 1)
+				Clear();
+		}
+	}
+
+	public void Clear()
+	{
+        targetText.text = string.Empty;
+        inputTextView.text = string.Empty;
+    }
+
+    public bool Del()
 	{
 		if (targetText.text.Length <= 0)
-			return;
+			return false;
 
 		targetText.text = targetText.text.Remove(targetText.text.Length - 1, 1);
 		inputTextView.text = targetText.text;
+
+		return true;
     }
-	
+
+	public void StartDelete()
+	{
+        if (deletionCoroutine != null || targetText.text.Length <= 0)
+            return;
+
+		deletionCoroutine = StartCoroutine(StartDeleteCoroutine());
+    }
+
+	public void StopDelete()
+	{
+		if (deletionCoroutine != null)
+		{
+			StopCoroutine(deletionCoroutine);
+			deletionCoroutine = null;
+		}
+	}
+
+	public void PasteFromClipboard()
+	{
+		if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+		{
+			targetText.text = GUIUtility.systemCopyBuffer;
+			inputTextView.text = targetText.text;
+        }
+    }
+
 	public bool ShowVirtualKeyboard(TMP_InputField targetText)
 	{
 		if (targetText == null)
@@ -56,7 +113,7 @@ public class VirtualKeyboard : MonoBehaviour
         }
 #endif
 
-		return false;
+        return false;
 	}
 	
 	public void HideVirtualKeyboard()
