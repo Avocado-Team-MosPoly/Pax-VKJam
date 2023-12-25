@@ -197,7 +197,7 @@ public class GameManager : NetworkBehaviour
 
     private void SetNRBLobby()
     {
-        nextRoundButton.SetActive(true);
+        nextRoundButton.gameObject.SetActive(true);
         nextRoundButton.onClick.RemoveAllListeners();
 
         nextRoundButton.onClick.AddListener(ReturnToLobby);
@@ -403,7 +403,7 @@ public class GameManager : NetworkBehaviour
 
         if (Authentication.IsLoggedInThroughVK)
         {
-            nextRoundButton.SetActive(false);
+            nextRoundButton.gameObject.SetActive(false);
             VK_Connect.Executor.OnInterstitialAdTryWatched += SetNRBLobbyWithInterstitialAd;
             VK_Connect.Executor.RequestShowInterstitialAd();
             ShowInterstitialAdOnGameEndedClientRpc();
@@ -425,6 +425,16 @@ public class GameManager : NetworkBehaviour
     private void EndGameClientRpc()
     {
         StartCoroutine(TokenManager.OnGameEnded());
+
+        if (!IsTeamMode)
+        {
+            ulong winnerClientId;
+            int winnerClientTokens;
+            (winnerClientId, winnerClientTokens) = TokenManager.GetClientIdWithMaxTokens();
+
+            NotificationSystem.Instance.SendLocal("Выиграл " + PlayersDataManager.Instance.PlayerDatas[winnerClientId].Name + "со счетом " + winnerClientTokens);
+        }
+
         OnGameEnded?.Invoke();
     }
 

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
-using UnityEngine.Events;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
-using TMPro;
 
 public class Chat : NetworkBehaviour
 {

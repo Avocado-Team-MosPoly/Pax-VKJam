@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using Unity.Netcode;
-using Unity.Services.Lobbies.Models;
-using Unity.Services.Authentication;
 
 [RequireComponent(typeof(Chat))]
 public class ChatView : MonoBehaviour
@@ -22,6 +19,9 @@ public class ChatView : MonoBehaviour
 
     [Header("Prefabs")]
     [SerializeField] private GameObject messagePrefab;
+
+    [Header("Roles")]
+    [SerializeField] private GameObject painterText;
 
     private List<TextMeshProUGUI> messageTexts = new();
 
@@ -145,5 +145,15 @@ public class ChatView : MonoBehaviour
 
         inactiveChatObject.SetActive(true);
         activeChatObject.SetActive(false);
+    }
+
+    public void ShowPainterObjects()
+    {
+        painterText.SetActive(true);
+    }
+
+    public void HidePainterObjects()
+    {
+        painterText.SetActive(false);
     }
 }
