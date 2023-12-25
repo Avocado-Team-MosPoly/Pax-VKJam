@@ -83,8 +83,9 @@ public class VK_Connect : TaskExecutor<VK_Connect>
 #endif
     }
 
-    public void RequestShowInterstitialAd() // вызываем из событий unity
+    public IEnumerator RequestShowInterstitialAd() // вызываем из событий unity
     {
+        yield return new WaitForSeconds(1);
 #if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequest_ShowInterstitialAd();
 #endif

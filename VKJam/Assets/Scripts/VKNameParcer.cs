@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 
-[RequireComponent(typeof(TextMeshPro))]
 public class VKNameParcer : MonoBehaviour
 {
     private TMP_Text nameText;
@@ -10,6 +9,7 @@ public class VKNameParcer : MonoBehaviour
     {
         nameText = GetComponent<TMP_Text>();
 
-        nameText.text = Authentication.PlayerName;
+        if(nameText != null)
+            nameText.text = Authentication.PlayerName;
     }
 }

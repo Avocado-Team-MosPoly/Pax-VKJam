@@ -18,7 +18,7 @@ public class Authentication : MonoBehaviour
         }
         else
         {
-            UserId = userId;
+            UserId = userId.Replace('¸', 'å');
             PlayerName = playerName;
             string number = Random.Range(100, 1000).ToString();
 

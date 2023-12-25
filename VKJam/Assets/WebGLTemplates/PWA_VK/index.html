@@ -216,7 +216,6 @@
         }
         function JSRequestGetFriends() {
             vkBridge.send('VKWebAppGetFriends', {
-                multi: true
             })
                 .then((data) => {
                     if (data) {

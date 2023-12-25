@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1156,6 +1156,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2834920499966030109, guid: a76a1f445153fed4a9fb3133d90e2ec3, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 4261787784887655891, guid: a76a1f445153fed4a9fb3133d90e2ec3, type: 3}
       propertyPath: m_Name
       value: VirtualKeyboard
@@ -1200,10 +1204,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4261787785631890488, guid: a76a1f445153fed4a9fb3133d90e2ec3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4261787785631890492, guid: a76a1f445153fed4a9fb3133d90e2ec3, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 7988938048912912768, guid: a76a1f445153fed4a9fb3133d90e2ec3, type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: 0838a128476d7c64092dc5b08a93febe, type: 3}
     m_RemovedComponents:
     - {fileID: 8372188150758553028, guid: a76a1f445153fed4a9fb3133d90e2ec3, type: 3}
     - {fileID: 7489257455115264454, guid: a76a1f445153fed4a9fb3133d90e2ec3, type: 3}
@@ -4402,12 +4414,28 @@ PrefabInstance:
       value: 0.935
       objectReference: {fileID: 0}
     - target: {fileID: 1282838002301193347, guid: 0a2bb1c970b27ed4881bb2414e2d5a3c, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282838002301193347, guid: 0a2bb1c970b27ed4881bb2414e2d5a3c, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282838002301193347, guid: 0a2bb1c970b27ed4881bb2414e2d5a3c, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282838002301193347, guid: 0a2bb1c970b27ed4881bb2414e2d5a3c, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282838002301193347, guid: 0a2bb1c970b27ed4881bb2414e2d5a3c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -730
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 1282838002301193347, guid: 0a2bb1c970b27ed4881bb2414e2d5a3c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 196
+      value: -350
       objectReference: {fileID: 0}
     - target: {fileID: 1868545608155243106, guid: 0a2bb1c970b27ed4881bb2414e2d5a3c, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
