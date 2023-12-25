@@ -5,7 +5,7 @@ public class AdManager
 {
     private const string AdsWatchedKey = "AdsWatched";
     private const string AdLastWatchedTimeKey = "AdLastWatchedTime";
-    private const int MaxAdsPerDay = 3;
+    private const int MaxAdsPerDay = 5;
 
     public static bool CanShowAd()
     {

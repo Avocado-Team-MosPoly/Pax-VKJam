@@ -14,6 +14,11 @@ mergeInto(LibraryManager.library, {
         JSRequestUserData();
     },
 
+    UnityPluginRequest_ShowInterstitialAd: function ()
+    {
+        JSRequest_ShowInterstitialAd();
+    },
+
     UnityPluginRequestAds: function () 
     {
         JSRequestShowAds();

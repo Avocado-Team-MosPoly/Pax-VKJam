@@ -8,7 +8,7 @@ public class Authentication : MonoBehaviour
     public static string PlayerName { get; private set; }
     public static string UserId { get; private set; }
 
-    //public static bool IsLoggedInThroughVK { get; private set; }
+    public static bool IsLoggedInThroughVK;// { get; private set; }
 
     public static async Task Authenticate(string userId, string playerName)
     {

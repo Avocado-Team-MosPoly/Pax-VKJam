@@ -189,6 +189,12 @@ public class GameManager : NetworkBehaviour
         nextRoundButton.GetComponentInChildren<TextMeshProUGUI>().text = nextRoundButtonText;
     }
 
+    private void SetNRBLobbyWithInterstitialAd(bool isWatched)
+    {
+        SetNRBLobby();
+        VK_Connect.Executor.OnInterstitialAdTryWatched -= SetNRBLobbyWithInterstitialAd;
+    }
+
     private void SetNRBLobby()
     {
         nextRoundButton.onClick.RemoveAllListeners();
@@ -394,7 +400,23 @@ public class GameManager : NetworkBehaviour
 
         EndGameClientRpc();
 
-        SetNRBLobby();
+        if (Authentication.IsLoggedInThroughVK)
+        {
+            VK_Connect.Executor.OnInterstitialAdTryWatched += SetNRBLobbyWithInterstitialAd;
+            VK_Connect.Executor.RequestShowInterstitialAd();
+            ShowInterstitialAdOnGameEndedClientRpc();
+        }
+        else
+            SetNRBLobby();
+    }
+
+    [ClientRpc]
+    private void ShowInterstitialAdOnGameEndedClientRpc()
+    {
+        if (IsServer)
+            return;
+
+        VK_Connect.Executor.RequestShowInterstitialAd();
     }
 
     [ClientRpc]

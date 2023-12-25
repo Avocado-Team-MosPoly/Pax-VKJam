@@ -19,7 +19,7 @@ public class DonatRouter : TaskExecutor<DonatRouter>
     }
     public void Ads()
     {
-        VK_Connect.Executor.RequestAds();
+        VK_Connect.Executor.RequestShowRewardAd();
     }
     public IEnumerator DelayRefresh()
     {

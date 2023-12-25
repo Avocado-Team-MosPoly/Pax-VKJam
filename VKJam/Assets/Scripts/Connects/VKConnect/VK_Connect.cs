@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 public class VK_Connect : TaskExecutor<VK_Connect>
 {
+    public Action<bool> OnInterstitialAdTryWatched;
     public Action<int[]> OnFriendsGot;
 
     public TMPro.TMP_Text DebugingText;
@@ -17,13 +18,14 @@ public class VK_Connect : TaskExecutor<VK_Connect>
     [DllImport("__Internal")] private static extern void UnityPluginRequestJs();
     [DllImport("__Internal")] private static extern void UnityPluginRequestUserData();
     [DllImport("__Internal")] private static extern void UnityPluginRequestAds();
+    [DllImport("__Internal")] private static extern void UnityPluginRequest_ShowInterstitialAd();
     [DllImport("__Internal")] private static extern void UnityPluginRequestRepost();
     [DllImport("__Internal")] private static extern void UnityPluginRequestInviteNewPlayer();
     [DllImport("__Internal")] private static extern void UnityPluginRequestInviteOldPlayer(int id, string lobby_key);
     [DllImport("__Internal")] private static extern void UnityPluginRequestBuyTry(int id);
     [DllImport("__Internal")] private static extern void UnityPluginRequestGetFriends();
     [DllImport("__Internal")] private static extern void UnityPluginRequestJoinGroup();
-        
+
     public IEnumerator Init()
     {
         if (Executor == null)
@@ -80,7 +82,15 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         UnityPluginRequestJs();
 #endif
     }
-    public void RequestAds() // вызываем из событий unity
+
+    public void RequestShowInterstitialAd() // вызываем из событий unity
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        UnityPluginRequest_ShowInterstitialAd();
+#endif
+    }
+
+    public void RequestShowRewardAd() // вызываем из событий unity
     {
         if (!AdManager.CanShowAd()) return;
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -146,7 +156,7 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         DebugingText.text = message;
     }
 
-    public void ResponseSuccessAds() // вызываем из событий unity
+    public void ResponseSuccessAds()
     {
         AdManager.OnAdWatched();
 
@@ -158,6 +168,13 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         };
 
         StartCoroutine(Php_Connect.Request_TokenWin(tokenCount, successRequest, null));
+    }
+
+    public void Response_ShowInterstitialAd(bool isWatched)
+    {
+        Logger.Instance.Log(this, "Interstitial ad " + (isWatched ? "watched" : "not watched"));
+
+        OnInterstitialAdTryWatched?.Invoke(isWatched);
     }
 
     public void ResponseSuccessBuyDonat()

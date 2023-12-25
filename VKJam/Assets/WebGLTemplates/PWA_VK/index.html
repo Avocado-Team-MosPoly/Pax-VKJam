@@ -122,11 +122,34 @@
                     console.log(error);
                 });
         }
-        function JSRequestShowAds()   // функция для тестов - вызывается из Unity
+        function JSRequest_ShowInterstitialAd()
         {
             console.log('Попытка рекламы');
             vkBridge.send('VKWebAppShowNativeAds', {
-                ad_format: 'reward' /* Тип рекламы */
+                ad_format: 'interstitial'
+            })
+                .then((data) => {
+                    console.log(data);
+                    if (data.result) {
+                        console.log('Показ завершён');
+                        unityGameInstance.SendMessage('Connects', 'Response_ShowInterstitialAd', true);
+                    }
+                    else {
+                        console.log('Ошибка при показе');
+                        unityGameInstance.SendMessage('Connects', 'Response_ShowInterstitialAd', false);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Произошла ошибка при открытии окна рекламы:', error.message);
+                    console.error('Неудачный объект:', error);
+                    unityGameInstance.SendMessage('Connects', 'Response_ShowInterstitialAd', false);
+                });
+        }
+        function JSRequestShowAds()
+        {
+            console.log('Попытка рекламы');
+            vkBridge.send('VKWebAppShowNativeAds', {
+                ad_format: 'reward'
             })
                 .then((data) => {
                     console.log(data);
@@ -139,29 +162,27 @@
                     }
                 })
                 .catch((error) => {
-                    console.error('Произошла ошибка при открытии окна рекламы:', error.message); // log the message
+                    console.error('Произошла ошибка при открытии окна рекламы:', error.message);
                     console.error('Неудачный объект:', error);
                 });
         }
-        function JSRequestInviteNewPlayer()   // функция для тестов - вызывается из Unity
+        function JSRequestInviteNewPlayer()
         {
             vkBridge.send('VKWebAppShowInviteBox', {})
                 .then((data) => {
                     if (data.success) {
-                        // Этим выбранным пользователям
-                        // не удалось отправить приглашения
                         console.log('Приглашения не отправлены', data.notSentIds);
                     }
                 })
                 .catch((error) => {
-                    console.log(error); // Ошибка
+                    console.log(error);
                 });
         }
         function JSRequestInviteOldPlayer(id, lobby_key) {
             vkBridge.send("VKWebAppShowRequestBox", {
                 uid: id,
                 message: "Заходи ко мне в игру!" // Ключ лобби: " + lobby_key
-                //requestKey: "key-12345" //  Ключ запроса
+                //requestKey: "key-12345"
             })
                 .then((data) => {
                     if (data.success) {
@@ -189,8 +210,8 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Произошла ошибка при открытии окна заказа:', error.message); // log the message
-                    console.error('Неудачный объект:', error); // full error object for inspection
+                    console.error('Произошла ошибка при открытии окна заказа:', error.message);
+                    console.error('Неудачный объект:', error);
                 });
         }
         function JSRequestGetFriends() {
@@ -234,9 +255,9 @@
             return false;
         }
 
-        jQuery(document).ready(function ($) // страница прогружена
+        jQuery(document).ready(function ($)
         {
-            vkBridge.send('VKWebAppInit'); // Инициализация ВК
+            vkBridge.send('VKWebAppInit');
         });
 
     </script>
