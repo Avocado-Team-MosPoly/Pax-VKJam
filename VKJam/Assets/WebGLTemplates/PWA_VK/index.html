@@ -135,17 +135,17 @@
                     console.log(data);
                     if (data.result) {
                         console.log('Показ завершён');
-                        unityGameInstance.SendMessage('Connects', 'Response_ShowInterstitialAd', true);
+                        unityGameInstance.SendMessage('Connects', 'Response_ShowInterstitialAd', 1);
                     }
                     else {
                         console.log('Ошибка при показе');
-                        unityGameInstance.SendMessage('Connects', 'Response_ShowInterstitialAd', false);
+                        unityGameInstance.SendMessage('Connects', 'Response_ShowInterstitialAd', 0);
                     }
                 })
                 .catch((error) => {
                     console.error('Произошла ошибка при открытии окна рекламы:', error.message);
                     console.error('Неудачный объект:', error);
-                    unityGameInstance.SendMessage('Connects', 'Response_ShowInterstitialAd', false);
+                    unityGameInstance.SendMessage('Connects', 'Response_ShowInterstitialAd', 0);
                 });
         }
         function JSRequestShowAds()

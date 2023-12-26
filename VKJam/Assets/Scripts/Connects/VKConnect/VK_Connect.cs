@@ -94,7 +94,9 @@ public class VK_Connect : TaskExecutor<VK_Connect>
 
     public void RequestShowRewardAd() // вызываем из событий unity
     {
-        if (!AdManager.CanShowAd()) return;
+        if (!AdManager.CanShowAd())
+            return;
+
 #if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestAds();
 #endif
@@ -172,8 +174,9 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         StartCoroutine(Php_Connect.Request_TokenWin(tokenCount, successRequest, null));
     }
 
-    public void Response_ShowInterstitialAd(bool isWatched)
+    public void Response_ShowInterstitialAd(int watchedAdsCount)
     {
+        bool isWatched = watchedAdsCount > 0;
         Logger.Instance.Log(this, "Interstitial ad " + (isWatched ? "watched" : "not watched"));
 
         OnInterstitialAdTryWatched?.Invoke(isWatched);

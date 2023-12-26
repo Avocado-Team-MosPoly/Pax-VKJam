@@ -417,7 +417,7 @@ public class GameManager : NetworkBehaviour
         {
             nextRoundButton.gameObject.SetActive(false);
             VK_Connect.Executor.OnInterstitialAdTryWatched += SetNRBLobbyWithInterstitialAd;
-            VK_Connect.Executor.RequestShowInterstitialAd();
+            StartCoroutine(VK_Connect.Executor.RequestShowInterstitialAd());
             ShowInterstitialAdOnGameEndedClientRpc();
         }
         else
