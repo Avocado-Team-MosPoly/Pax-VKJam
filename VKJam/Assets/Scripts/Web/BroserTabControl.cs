@@ -2,11 +2,6 @@ using UnityEngine;
 
 public class BroserTabControl : MonoBehaviour
 {
-    private void Start()
-    {
-        OnTabFocus();
-    }
-
     public void OnTabFocus()
     {
         SoundList.MuteObserver.Value = false;

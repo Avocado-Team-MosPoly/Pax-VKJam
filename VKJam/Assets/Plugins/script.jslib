@@ -53,5 +53,11 @@ mergeInto(LibraryManager.library, {
     UnityPluginIsMobilePlatform: function () 
     {
         JSIsMobilePlatform();
+    },
+
+    UnityPluginCopyTextToClipboard: function (text) 
+    {
+        var temp = UTF8ToString(text);
+        JSCopyTextToClipboard(temp);
     }
 });

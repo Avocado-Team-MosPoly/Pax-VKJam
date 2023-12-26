@@ -301,6 +301,8 @@ public class GameManager : NetworkBehaviour
         Stage = Stage.MonsterGuess;
         paint.ClearCanvas();
 
+        bestiaryIngredients.gameObject.SetActive(false);
+
         ActivateGuessMonsterStageClientRpc();
 
         timer.SetMonsterGuessTime();
