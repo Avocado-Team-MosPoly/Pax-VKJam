@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class ToggleBook : MonoBehaviour
 {
-    [SerializeField] private Chat chat;
     [SerializeField] private KeyCode toggleBookKey = KeyCode.Tab;
 
     [Header("Painter")]
@@ -22,9 +21,6 @@ public class ToggleBook : MonoBehaviour
 
     private void Toggle()
     {
-        if (chat != null && chat.IsEnabled)
-            return;
-
         if (GameManager.Instance.IsPainter)
         {
             Logger.Instance.Log(this, painterBookCloseButton.gameObject.activeInHierarchy);

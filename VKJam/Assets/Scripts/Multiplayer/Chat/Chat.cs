@@ -9,8 +9,6 @@ using UnityEngine.UI;
 
 public class Chat : NetworkBehaviour
 {
-    public bool IsEnabled { get; private set; } = false;
-
     public IReadOnlyList<Message> History => history;
 
     [HideInInspector] public UnityEvent OnMessageSended = new();
@@ -110,14 +108,12 @@ public class Chat : NetworkBehaviour
 
     public void Disable()
     {
-        IsEnabled = false;
         messageInputField.interactable = false;
         sendMessageButton.interactable = false;
     }
 
     public void Enable()
     {
-        IsEnabled = true;
         messageInputField.interactable = true;
         sendMessageButton.interactable = true;
     }
