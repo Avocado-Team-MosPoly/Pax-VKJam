@@ -88,7 +88,11 @@
         meta.name = 'viewport';
         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
         document.getElementsByTagName('head')[0].appendChild(meta);
-      }
+        }
+
+      if (navigator.userAgent.indexOf("Safari") != -1) {
+          alert("Внимание: приложение работает некорректно в Safari браузере.");
+        }
 
       loadingBar.style.display = "block";
 
@@ -108,8 +112,7 @@
       document.body.appendChild(script);
     </script>
     <script>
-    // Пользовательский код
-        function JSRequestUserData()   // функция для тестов - вызывается из Unity
+        function JSRequestUserData()
         {
             vkBridge.send('VKWebAppGetUserInfo', {})
                 .then((data) => {
@@ -181,7 +184,7 @@
         function JSRequestInviteOldPlayer(id, lobby_key) {
             vkBridge.send("VKWebAppShowRequestBox", {
                 uid: id,
-                message: "Заходи ко мне в игру!" // Ключ лобби: " + lobby_key
+                message: "Заходи ко мне в игру! Код лобби: " + lobby_key
                 //requestKey: "key-12345"
             })
                 .then((data) => {
@@ -244,7 +247,6 @@
                     console.log(error);
                 });
         }
-
         function JSIsMobilePlatform() {
             if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
             {
@@ -253,6 +255,15 @@
 
             return false;
         }
+        function onTabFocus() {
+            unityGameInstance.SendMessage('Connects', 'OnTabFocus');
+        }
+        function onTabBlur() {
+            unityGameInstance.SendMessage('Connects', 'OnTabBlur');
+        }
+
+        window.addEventListener('focus', onTabFocus);
+        window.addEventListener('blur', onTabBlur);
 
         jQuery(document).ready(function ($)
         {
