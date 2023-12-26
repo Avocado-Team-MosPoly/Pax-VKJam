@@ -298,6 +298,16 @@ public class TokenManager : NetworkBehaviour
         yield return instance.StartCoroutine(Php_Connect.Request_TokenWin(TokensCount, OnCompleted, null));
     }
 
+    /// <summary> Dont use in Update </summary>
+    public static (ulong, int) GetClientIdWithMaxTokens()
+    {
+        IReadOnlyList<ulong> clientIds;
+        IReadOnlyList<int> tokens;
+        (clientIds, tokens) = instance.SortPlayersTokensDictionary();
+
+        return (clientIds[0], tokens[0]);
+    }
+
     #region Log
 
     private void LogAdd(int value)

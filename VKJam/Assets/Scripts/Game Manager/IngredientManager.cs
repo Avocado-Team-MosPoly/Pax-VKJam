@@ -11,7 +11,9 @@ public abstract class IngredientManager
     public UnityEvent OnCorrectIngredient = new();
     public UnityEvent OnWrongIngredient = new();
 
-    public int CurrentIngredientIndex { get; private set; } = 0;
+    private int currentIngredientIndex = 0;
+    private List<int> ingredientIndexes = new();
+    public int GetCurrentIngredientIndex => ingredientIndexes[currentIngredientIndex];
 
     public IReadOnlyList<ulong> CorrectGuesserAllIds
     {
@@ -61,16 +63,16 @@ public abstract class IngredientManager
 
     private void NextIngredient()
     {
-        CurrentIngredientIndex++;
+        currentIngredientIndex++;
 
-        if (CurrentIngredientIndex >= GameManager.Instance.IngredientsCount)
+        if (currentIngredientIndex >= GameManager.Instance.IngredientsCount)
         {
             OnIngredientsEnded?.Invoke();
-            CurrentIngredientIndex = 0;
+            currentIngredientIndex = 0;
             return;
         }
 
-        OnIngredientSwitched?.Invoke((sbyte)CurrentIngredientIndex);
+        OnIngredientSwitched?.Invoke((sbyte)ingredientIndexes[currentIngredientIndex]);
     }
 
     protected virtual void OnCorrectIngredientGuess(ulong clientId)
@@ -116,6 +118,36 @@ public abstract class IngredientManager
             OnCorrectIngredientGuess(guesserId);
         else
             OnWrongIngredientGuess(guesserId);
+    }
+
+    public void SetIngredients(int count)
+    {
+        ingredientIndexes.Clear();
+
+        List<int> temp;
+
+        if (count > 4.5)
+        {
+            temp = new List<int> { 0, 1, 2, 3, 4 };
+        }
+        else
+        {
+            temp = new List<int> { 0, 1, 2, 3 };
+        }
+        
+
+        for(int i = 0; i < count; i++)
+        {
+            var random = Random.Range(0, temp.Count);
+            var randomValue = temp[random];
+            temp.RemoveAt(random);
+            ingredientIndexes.Add(randomValue);
+        }
+
+        foreach(var index in ingredientIndexes)
+        {
+            Debug.LogWarning(index);
+        }
     }
 
     protected void Log(object message) => Debug.Log($"[{nameof(IngredientManager)}] " + message);

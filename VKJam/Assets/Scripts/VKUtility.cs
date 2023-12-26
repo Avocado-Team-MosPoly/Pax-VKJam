@@ -14,6 +14,11 @@ public class VKUtility : MonoBehaviour
         VK_Connect.Executor.OnFriendsGot -= OnFriendsGot;
     }
 
+    public void ShowInterstitialAd()
+    {
+        VK_Connect.Executor.RequestShowInterstitialAd();
+    }
+
     public void JoinGroup()
     {
         VK_Connect.Executor.RequestJoinGroup();

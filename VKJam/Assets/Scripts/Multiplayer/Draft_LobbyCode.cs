@@ -7,4 +7,10 @@ public class Draft_LobbyCode : MonoBehaviour
     {
         GetComponent<TextMeshProUGUI>().text += LobbyManager.Instance.CurrentLobby.LobbyCode;
     }
+
+    public void CopyToClipboard()
+    {
+        GUIUtility.systemCopyBuffer = LobbyManager.Instance.CurrentLobby.LobbyCode;
+        NotificationSystem.Instance.SendLocal("Скопировано");
+    }
 }

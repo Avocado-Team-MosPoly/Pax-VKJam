@@ -8,7 +8,7 @@ public class Authentication : MonoBehaviour
     public static string PlayerName { get; private set; }
     public static string UserId { get; private set; }
 
-    //public static bool IsLoggedInThroughVK { get; private set; }
+    public static bool IsLoggedInThroughVK;// { get; private set; }
 
     public static async Task Authenticate(string userId, string playerName)
     {
@@ -19,7 +19,7 @@ public class Authentication : MonoBehaviour
         else
         {
             UserId = userId;
-            PlayerName = playerName;
+            PlayerName = playerName.Replace('¸', 'å');
             string number = Random.Range(100, 1000).ToString();
 
             if (string.IsNullOrEmpty(PlayerName))

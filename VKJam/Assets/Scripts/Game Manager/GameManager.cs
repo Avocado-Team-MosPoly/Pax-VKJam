@@ -189,8 +189,15 @@ public class GameManager : NetworkBehaviour
         nextRoundButton.GetComponentInChildren<TextMeshProUGUI>().text = nextRoundButtonText;
     }
 
+    private void SetNRBLobbyWithInterstitialAd(bool isWatched)
+    {
+        SetNRBLobby();
+        VK_Connect.Executor.OnInterstitialAdTryWatched -= SetNRBLobbyWithInterstitialAd;
+    }
+
     private void SetNRBLobby()
     {
+        nextRoundButton.gameObject.SetActive(true);
         nextRoundButton.onClick.RemoveAllListeners();
 
         nextRoundButton.onClick.AddListener(ReturnToLobby);
@@ -201,11 +208,21 @@ public class GameManager : NetworkBehaviour
     {
         if (Stage == Stage.MonsterGuess)
         {
+            foreach (byte clientId in roundManager.CorrectGuesserIds)
+                ShowMonsterGuessedClientRpc(clientId);
+
             timer.SetIngredientGuessTime();
             roundManager.OnTimeExpired();
         }
         else
             ingredientManager.OnTimeExpired();
+    }
+
+    [ClientRpc]
+    private void ShowMonsterGuessedClientRpc(byte clientId)
+    {
+        if (clientId == NetworkManager.LocalClientId)
+            NotificationSystem.Instance.SendLocal("Вы угадали монстра!");
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -328,9 +345,11 @@ public class GameManager : NetworkBehaviour
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
         sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
 
+        ingredientManager.SetIngredients(answerCardSO.IngredientsSO.Length);
+
         SetCardSOClientRpc(cardSOIndex);
 
-        SetHintDataClientRpc((sbyte)ingredientManager.CurrentIngredientIndex);
+        SetHintDataClientRpc((sbyte)ingredientManager.GetCurrentIngredientIndex);
 
         //Stage = Stage.IngredientGuess;
 
@@ -392,13 +411,40 @@ public class GameManager : NetworkBehaviour
 
         EndGameClientRpc();
 
-        SetNRBLobby();
+        if (Authentication.IsLoggedInThroughVK)
+        {
+            nextRoundButton.gameObject.SetActive(false);
+            VK_Connect.Executor.OnInterstitialAdTryWatched += SetNRBLobbyWithInterstitialAd;
+            VK_Connect.Executor.RequestShowInterstitialAd();
+            ShowInterstitialAdOnGameEndedClientRpc();
+        }
+        else
+            SetNRBLobby();
+    }
+
+    [ClientRpc]
+    private void ShowInterstitialAdOnGameEndedClientRpc()
+    {
+        if (IsServer)
+            return;
+
+        StartCoroutine(VK_Connect.Executor.RequestShowInterstitialAd());
     }
 
     [ClientRpc]
     private void EndGameClientRpc()
     {
         StartCoroutine(TokenManager.OnGameEnded());
+
+        if (!IsTeamMode)
+        {
+            ulong winnerClientId;
+            int winnerClientTokens;
+            (winnerClientId, winnerClientTokens) = TokenManager.GetClientIdWithMaxTokens();
+
+            NotificationSystem.Instance.SendLocal("Выиграл " + PlayersDataManager.Instance.PlayerDatas[winnerClientId].Name + "со счетом " + winnerClientTokens);
+        }
+
         OnGameEnded?.Invoke();
     }
 
@@ -453,7 +499,7 @@ public class GameManager : NetworkBehaviour
 
     public string GetCurrentIngredient()
     {
-        return answerCardSO.IngredientsSO[ingredientManager.CurrentIngredientIndex].Name;
+        return answerCardSO.IngredientsSO[ingredientManager.GetCurrentIngredientIndex].Name;
     }
 
     public string GetCurrentMonster()

@@ -69,7 +69,11 @@ public class BootManager : MonoBehaviour
 
         bool loadTutorial = true;
         int connectionAttemptNumber = 0;
-        Action<bool> successAuthentication = (bool isFirstTime) => loadTutorial = isFirstTime;
+        Action<bool> successAuthentication = (bool isFirstTime) =>
+        {
+            Authentication.IsLoggedInThroughVK = !useDefaultNickname;
+            loadTutorial = isFirstTime;
+        };
 
         UpdateLoadingStatus(phpConnect_Authentication);
         for (connectionAttemptNumber = 0; connectionAttemptNumber < maxConnectionAttempts; connectionAttemptNumber++)

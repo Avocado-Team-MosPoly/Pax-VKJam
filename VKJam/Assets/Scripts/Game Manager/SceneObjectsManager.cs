@@ -79,6 +79,7 @@ public class SceneObjectsManager : MonoBehaviour
 
         mainCards.SetActive(true);
 
+        chatView.ShowPainterObjects();
         chat.Disable();
         GameManager.Instance.Paint.ClearCanvas();
         GameManager.Instance.Paint.SetActive(true);
@@ -97,6 +98,7 @@ public class SceneObjectsManager : MonoBehaviour
         foreach (GameObject obj in guesserGameObjects)
             obj.SetActive(true);
 
+        chatView.HidePainterObjects();
         chat.Enable();
         painterBook.SetInteractable(true);
         guesserPaint.gameObject.SetActive(true);

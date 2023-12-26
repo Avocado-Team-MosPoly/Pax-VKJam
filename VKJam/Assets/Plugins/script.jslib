@@ -14,6 +14,11 @@ mergeInto(LibraryManager.library, {
         JSRequestUserData();
     },
 
+    UnityPluginRequest_ShowInterstitialAd: function ()
+    {
+        JSRequest_ShowInterstitialAd();
+    },
+
     UnityPluginRequestAds: function () 
     {
         JSRequestShowAds();
@@ -26,7 +31,8 @@ mergeInto(LibraryManager.library, {
 
     UnityPluginRequestInviteOldPlayer: function (id, lobby_key) 
     {
-        JSRequestInviteOldPlayer(id, lobby_key);
+        var temp = UTF8ToString(lobby_key);
+        JSRequestInviteOldPlayer(id, temp);
     },
 
     UnityPluginRequestBuyTry: function (id) 
