@@ -76,6 +76,7 @@ public class GameManager : NetworkBehaviour
 
     private int currentRound = 1;
     private int roundAmount = 4;
+    private bool isGameEnded;
 
     private CardSO answerCardSO;
 
@@ -143,21 +144,8 @@ public class GameManager : NetworkBehaviour
 
             roundAmount = NetworkManager.Singleton.ConnectedClientsIds.Count;
 
-            RelayManager.Instance.OnClientConnected.AddListener((ulong clientId) =>
-            {
-                roundAmount++;
-            });
-            RelayManager.Instance.OnClientDisconnect.AddListener((ulong clientId) =>
-            {
-                roundAmount--;
-
-                if (PainterId == clientId)
-                    nextRoundButton.onClick?.Invoke();
-
-                LogWarning(NetworkManager.ConnectedClientsIds.Count);
-                if (NetworkManager.ConnectedClientsIds.Count <= 2)
-                    OnRoundEnded();
-            });
+            RelayManager.Instance.OnClientConnected.AddListener(OnClientConnected);
+            RelayManager.Instance.OnClientDisconnect.AddListener(OnClientDisconnect);
 
             SetNRBRoles();
             nextRoundButton.gameObject.SetActive(true);
@@ -167,6 +155,30 @@ public class GameManager : NetworkBehaviour
             nextRoundButton.gameObject.SetActive(false);
         }
     }
+
+    private void OnClientConnected(ulong clientId)
+    {
+        if (isGameEnded)
+            return;
+
+        roundAmount++;
+    }
+
+    private void OnClientDisconnect(ulong clientId)
+    {
+        if (isGameEnded)
+            return;
+
+        roundAmount--;
+
+        if (PainterId == clientId)
+            nextRoundButton.onClick?.Invoke();
+
+        LogWarning(NetworkManager.ConnectedClientsIds.Count);
+        if (NetworkManager.ConnectedClientsIds.Count <= 2)
+            OnRoundEnded();
+    }
+
     private IEnumerator TakePack()
     {
         yield return new WaitForSeconds(0.1f);
@@ -408,6 +420,8 @@ public class GameManager : NetworkBehaviour
 
     private void EndGame()
     {
+        isGameEnded = true;
+
         if (!IsTeamMode)
             TokenManager.OnCompetitiveGameEnd();
 
@@ -434,8 +448,10 @@ public class GameManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void EndGameClientRpc()
+    private void EndGameClientRpc()    
     {
+        isGameEnded = true;
+        
         StartCoroutine(TokenManager.OnGameEnded());
 
         if (!IsTeamMode)
