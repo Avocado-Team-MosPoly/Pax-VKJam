@@ -90,8 +90,8 @@
         document.getElementsByTagName('head')[0].appendChild(meta);
         }
 
-      if (navigator.userAgent.indexOf("Safari") != -1) {
-          alert("Внимание: приложение работает некорректно в Safari браузере.");
+        if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+            alert("Внимание: приложение работает некорректно на некоторых устройствах Apple или в Safari браузере.");
         }
 
       loadingBar.style.display = "block";
@@ -127,46 +127,46 @@
         }
         function JSRequest_ShowInterstitialAd()
         {
-            console.log('Попытка рекламы');
+            console.log('[JS] Попытка рекламы');
             vkBridge.send('VKWebAppShowNativeAds', {
                 ad_format: 'interstitial'
             })
                 .then((data) => {
                     console.log(data);
                     if (data.result) {
-                        console.log('Показ завершён');
+                        console.log('[JS] Показ завершён');
                         unityGameInstance.SendMessage('Connects', 'Response_ShowInterstitialAd', 1);
                     }
                     else {
-                        console.log('Ошибка при показе');
+                        console.log('[JS] Ошибка при показе');
                         unityGameInstance.SendMessage('Connects', 'Response_ShowInterstitialAd', 0);
                     }
                 })
                 .catch((error) => {
-                    console.error('Произошла ошибка при открытии окна рекламы:', error.message);
-                    console.error('Неудачный объект:', error);
+                    console.error('[JS] Произошла ошибка при открытии окна рекламы:', error.message);
+                    console.error('[JS] Неудачный объект:', error);
                     unityGameInstance.SendMessage('Connects', 'Response_ShowInterstitialAd', 0);
                 });
         }
         function JSRequestShowAds()
         {
-            console.log('Попытка рекламы');
+            console.log('[JS] Попытка рекламы');
             vkBridge.send('VKWebAppShowNativeAds', {
                 ad_format: 'reward'
             })
                 .then((data) => {
                     console.log(data);
                     if (data.result) {
-                        console.log('Показ завершён');
+                        console.log('[JS] Показ завершён');
                         unityGameInstance.SendMessage('Connects', 'ResponseSuccessAds');
                     }
                     else {
-                        console.log('Ошибка при показе');
+                        console.log('[JS] Ошибка при показе');
                     }
                 })
                 .catch((error) => {
-                    console.error('Произошла ошибка при открытии окна рекламы:', error.message);
-                    console.error('Неудачный объект:', error);
+                    console.error('[JS] Произошла ошибка при открытии окна рекламы:', error.message);
+                    console.error('[JS] Неудачный объект:', error);
                 });
         }
         function JSRequestInviteNewPlayer()
@@ -174,7 +174,7 @@
             vkBridge.send('VKWebAppShowInviteBox', {})
                 .then((data) => {
                     if (data.success) {
-                        console.log('Приглашения не отправлены', data.notSentIds);
+                        console.log('[JS] Приглашения не отправлены', data.notSentIds);
                     }
                 })
                 .catch((error) => {
@@ -189,7 +189,7 @@
             })
                 .then((data) => {
                     if (data.success) {
-                        console.log('Приглашён пользователь: ', id);
+                        console.log('[JS] Приглашён пользователь: ', id);
                     }
                 })
                 .catch((error) => {
@@ -198,23 +198,23 @@
         }
         function JSRequestBuyTry(id) {
             var itemId = id.toString();
-            console.log('Попытка покупки с ID:', itemId);
+            console.log('[JS] Попытка покупки с ID:', itemId);
             vkBridge.send('VKWebAppShowOrderBox', {
                 type: 'item',
                 item: itemId
             })
                 .then((data) => {
                     if (data.success) {
-                        console.log('Покупка успешно совершена', data);
+                        console.log('[JS] Покупка успешно совершена', data);
                         unityGameInstance.SendMessage('Connects', 'ResponseSuccessBuyDonat');
                     }
                     else {
-                        console.log('Пользователь отказался от покупки или произошла ошибка');
+                        console.log('[JS] Пользователь отказался от покупки или произошла ошибка');
                     }
                 })
                 .catch(error => {
-                    console.error('Произошла ошибка при открытии окна заказа:', error.message);
-                    console.error('Неудачный объект:', error);
+                    console.error('[JS] Произошла ошибка при открытии окна заказа:', error.message);
+                    console.error('[JS] Неудачный объект:', error);
                 });
         }
         function JSRequestGetFriends() {
@@ -240,7 +240,7 @@
             })
                 .then((data) => {
                     if (data.result) {
-                        console.log('Пользователь подписался на сообщество');
+                        console.log('[JS] Пользователь подписался на сообщество');
                     }
                 })
                 .catch((error) => {
@@ -248,21 +248,10 @@
                 });
         }
         function JSIsMobilePlatform() {
-            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
-            {
-                return true;
-            }
-
-            return false;
-        }
-        function onTabFocus() {
-            unityGameInstance.SendMessage('Connects', 'OnTabFocus');
-        }
-        function onTabBlur() {
-            unityGameInstance.SendMessage('Connects', 'OnTabBlur');
+            return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         }
         function JSCopyTextToClipboard(text) {
-            console.log('Скопирован текст:', text);
+            console.log('[JS] Скопирован текст:', text);
 
             var textArea = document.createElement("textarea");
             textArea.value = text;
@@ -274,6 +263,29 @@
 
         window.addEventListener('focus', onTabFocus);
         window.addEventListener('blur', onTabBlur);
+        function onTabFocus() {
+            unityGameInstance.SendMessage('Connects', 'OnTabFocus');
+        }
+        function onTabBlur() {
+            unityGameInstance.SendMessage('Connects', 'OnTabBlur');
+        }
+
+        document.addEventListener('paste', onTextPaste);
+        function onTextPaste() {
+            var hiddenInput = document.createElement('input');
+            hiddenInput.style.position = 'absolute';
+            hiddenInput.style.left = '-10000px';
+            document.body.appendChild(hiddenInput);
+
+            hiddenInput.focus();
+            document.execCommand('paste');
+            var pastedText = hiddenInput.value;
+            document.body.removeChild(hiddenInput);
+
+            console.log('[JS] Вставлен текст из буфера обмена:', pastedText);
+
+            unityGameInstance.SendMessage('Connects', 'Paste', pastedText);
+        }
 
         jQuery(document).ready(function ($)
         {
