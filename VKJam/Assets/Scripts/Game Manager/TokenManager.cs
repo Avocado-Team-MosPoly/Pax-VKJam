@@ -308,6 +308,16 @@ public class TokenManager : NetworkBehaviour
         return (clientIds[0], tokens[0]);
     }
 
+    public static void ResetData()
+    {
+        TokensCount = 0;
+        TokensCountWinnedCurrentRound = 0;
+        TokensCountLosedCurrentRound = 0;
+
+        if (tokensOnScene != null)
+            tokensOnScene.Clear();
+    }
+
     #region Log
 
     private void LogAdd(int value)

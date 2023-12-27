@@ -448,7 +448,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void EndGameClientRpc()    
+    private void EndGameClientRpc()
     {
         isGameEnded = true;
         
@@ -463,6 +463,7 @@ public class GameManager : NetworkBehaviour
             NotificationSystem.Instance.SendLocal("Выиграл " + PlayersDataManager.Instance.PlayerDatas[winnerClientId].Name + "со счетом " + winnerClientTokens);
         }
 
+        TokenManager.ResetData();
         OnGameEnded?.Invoke();
     }
 
