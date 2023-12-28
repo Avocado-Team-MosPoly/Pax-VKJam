@@ -272,18 +272,13 @@
 
         document.addEventListener('paste', onTextPaste);
         function onTextPaste() {
-            var hiddenInput = document.createElement('input');
-            hiddenInput.style.position = 'absolute';
-            hiddenInput.style.left = '-10000px';
-            document.body.appendChild(hiddenInput);
+            if (unityGameInstance == null)
+                return;
 
-            hiddenInput.focus();
-            document.execCommand('paste');
-            var pastedText = hiddenInput.value;
-            document.body.removeChild(hiddenInput);
+            var clipboardData = event.clipboardData || window.clipboardData;
+            var pastedText = clipboardData.getData('text');
 
             console.log('[JS] Вставлен текст из буфера обмена:', pastedText);
-
             unityGameInstance.SendMessage('Connects', 'Paste', pastedText);
         }
 
