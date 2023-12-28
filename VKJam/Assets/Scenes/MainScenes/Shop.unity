@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0009952654, g: 0.0009390238, b: 0.00092831475, a: 1}
+  m_IndirectSpecularColor: {r: 0.000999221, g: 0.00093978294, b: 0.000932836, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -39168,7 +39168,7 @@ GameObject:
   - component: {fileID: 1602312431}
   - component: {fileID: 1602312430}
   m_Layer: 0
-  m_Name: Set Up Buttons
+  m_Name: Set Up Buttons Utility
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39188,6 +39188,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ignoreNames:
   - arrow
+  - left button
+  - right button
   buttons:
   - {fileID: 1830780098}
   - {fileID: 1830780097}
@@ -39223,7 +39225,6 @@ MonoBehaviour:
   - {fileID: 1091218690}
   - {fileID: 1106184981}
   - {fileID: 1213688607}
-  - {fileID: 1277159121}
   - {fileID: 1305069379}
   - {fileID: 1461015934}
   - {fileID: 1552227860}
@@ -39231,7 +39232,6 @@ MonoBehaviour:
   - {fileID: 1567957319}
   - {fileID: 1666779243}
   - {fileID: 1707703944}
-  - {fileID: 1779830592}
   - {fileID: 1856371815}
   - {fileID: 1907497995}
   - {fileID: 2007133657}
@@ -46545,7 +46545,6 @@ MonoBehaviour:
   Display: {fileID: 555686842}
   Template: {fileID: 4509819218117826577, guid: 54e24b8ddf0b6c74f97749d482b33519, type: 3}
   WhereInst: {fileID: 6932484986074425086}
-  customController: {fileID: 0}
   defaultSection: 1
   leftButton: {fileID: 1779830592}
   rightButton: {fileID: 1277159121}
