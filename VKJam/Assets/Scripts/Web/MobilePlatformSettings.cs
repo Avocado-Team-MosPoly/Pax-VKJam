@@ -10,9 +10,10 @@ public class MobilePlatformSettings : MonoBehaviour
 #if UNITY_WEBGL && !UNITY_EDITOR
         if (UnityPluginIsMobilePlatform() || Application.isMobilePlatform)
         {
-            QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = 60;
-            QualitySettings.particleRaycastBudget = 265;
+            QualitySettings.vSyncCount = 0;
+            QualitySettings.realtimeGICPUUsage = 75;
+            QualitySettings.particleRaycastBudget = 512;
         }
 #endif
     }
