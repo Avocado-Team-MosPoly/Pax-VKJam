@@ -16,8 +16,19 @@ public class LobbyManager : MonoBehaviour
     [HideInInspector] public UnityEvent<List<Lobby>> OnLobbyListed = new();
     [HideInInspector] public UnityEvent<List<Player>> OnPlayerListed = new();
 
-    [HideInInspector] public string IsTeamMode = "True";
-    [HideInInspector] public int PlayerNumber = 4;
+    [HideInInspector] public bool IsTeamModeFilter
+    {
+        get
+        {
+            return isTeamModeFilter;
+        }
+        set
+        {
+            isTeamModeFilter = value;
+            ListLobbiesWithFilter();
+        }
+    }
+    private bool isTeamModeFilter = true;
 
     public Lobby CurrentLobby { get; private set; }
 
@@ -67,8 +78,6 @@ public class LobbyManager : MonoBehaviour
             //Logger.Instance.LogError(this, "Me");
             await DisconnectAsync();
         };
-
-        IsTeamMode = "True";
 
         Logger.Instance.Log(this, "Initialized");
     }
@@ -414,7 +423,7 @@ public class LobbyManager : MonoBehaviour
                 (
                     field: QueryFilter.FieldOptions.S1,
                     op: QueryFilter.OpOptions.EQ,
-                    value: IsTeamMode
+                    value: isTeamModeFilter.ToString()
                 )
             };
 

@@ -1,25 +1,25 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LobbyCreationManagerUi : MonoBehaviour
+public class LobbyListAndCreate : MonoBehaviour
 {
+    [SerializeField] private Button createLobbyButton;
+
+    [SerializeField] private TMP_Dropdown filterRegim;
+    [SerializeField] private Button[] listLobbiesButtons;
+
+    [Header("Lobbies list")]
     [SerializeField] private RectTransform lobbyListContainer;
     [SerializeField] private GameObject lobbyInfoTemplate;
-    [SerializeField] private Button[] listLobbiesButtons;
-    [SerializeField] private Button createLobbyButton;
-    [SerializeField] private TMP_Dropdown filterRegim;
-    [SerializeField] private TMP_Dropdown filterMaxPlayer;
 
     private void Start()
     {
         LobbyManager.Instance.OnLobbyListed.AddListener(UpdateLobbyList);
-        createLobbyButton?.onClick.AddListener(LobbyManager.Instance.CreateLobby);
-        filterRegim?.onValueChanged.AddListener(UpdateRgimFiltr);
-        filterMaxPlayer?.onValueChanged.AddListener(UpdatePlayerNumber);
+        createLobbyButton.onClick.AddListener(LobbyManager.Instance.CreateLobby);
+        filterRegim.onValueChanged.AddListener(UpdateModeFilter);
 
         foreach (var button in listLobbiesButtons)
             button.onClick.AddListener(LobbyManager.Instance.ListLobbiesWithFilter);
@@ -40,19 +40,8 @@ public class LobbyCreationManagerUi : MonoBehaviour
         }
     }
 
-    private void UpdateRgimFiltr(int value)
+    private void UpdateModeFilter(int value)
     {
-        if (value == 0)
-        {
-            LobbyManager.Instance.IsTeamMode = "True";
-        } 
-        else if (value == 1)
-        {
-            LobbyManager.Instance.IsTeamMode = "False";
-        }
-    }
-    private void UpdatePlayerNumber(int value)
-    {
-        LobbyManager.Instance.PlayerNumber = value;
+        LobbyManager.Instance.IsTeamModeFilter = value == 0;
     }
 }

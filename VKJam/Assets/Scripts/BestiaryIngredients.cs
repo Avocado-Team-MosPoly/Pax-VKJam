@@ -157,14 +157,15 @@ public class BestiaryIngredients : MonoBehaviour
         if (spawnedIngredientObjects.Count >= spawnPositions.Length)
             return;
 
-        Transform spawnPosition = spawnPositions[spawnPositionIndex];
-        GameObject spawnedIngredientObject = Instantiate(IngredientList[ingredientIndex].Model, spawnPosition);
-
-        if (spawnedIngredientObject == null)
-            throw new System.NullReferenceException($"Ingredient prefab is null ({IngredientList[ingredientIndex].Name} ingredient)");
-
-        spawnedIngredientObjects.Add(spawnedIngredientObject);
-        isSpawnedSelectedIngredient = true;
+        if (IngredientList[ingredientIndex].Model == null)
+            Logger.Instance.LogError(this, new System.NullReferenceException($"Ingredient prefab is null ({IngredientList[ingredientIndex].Name} ingredient)"));
+        else
+        {
+            Transform spawnTransform = spawnPositions[spawnPositionIndex];
+            GameObject spawnedIngredientObject = Instantiate(IngredientList[ingredientIndex].Model, spawnTransform);
+            spawnedIngredientObjects.Add(spawnedIngredientObject);
+            isSpawnedSelectedIngredient = true;
+        }
 
         GameManager.Instance.SoundList.Play("Choose ingredient");
     }

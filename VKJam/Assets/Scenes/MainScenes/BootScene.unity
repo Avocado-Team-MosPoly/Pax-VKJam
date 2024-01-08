@@ -226,8 +226,6 @@ MonoBehaviour:
   OnPlayerListed:
     m_PersistentCalls:
       m_Calls: []
-  IsTeamMode: True
-  PlayerNumber: 4
 --- !u!4 &246585186
 Transform:
   m_ObjectHideFlags: 0
@@ -1481,6 +1479,14 @@ PrefabInstance:
     - target: {fileID: 1756424359070521163, guid: b5f77f888577d5743b5c9c5e974c8282, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7480747394765920423, guid: b5f77f888577d5743b5c9c5e974c8282, type: 3}
+      propertyPath: NetworkConfig.TickRate
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 8583388982727562474, guid: b5f77f888577d5743b5c9c5e974c8282, type: 3}
+      propertyPath: m_MaxPacketQueueSize
+      value: 512
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3290,6 +3296,10 @@ PrefabInstance:
     - target: {fileID: 3890772637464068979, guid: 842559543b53de14f8b19d0048850e29, type: 3}
       propertyPath: m_Name
       value: Connects
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974340982858108235, guid: 842559543b53de14f8b19d0048850e29, type: 3}
+      propertyPath: isMobile
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

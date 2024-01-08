@@ -86,6 +86,7 @@ public class CardCatalogueScript : MonoBehaviour
 
     private void Initialize()
     {
+        previousMonsterButton.gameObject.SetActive(false);
         _currentPage = 0;
         UpdateUIPage();
     }
@@ -94,10 +95,17 @@ public class CardCatalogueScript : MonoBehaviour
     {
         if (_currentPage <= 0)
         {
+            _currentPage = 0;
+            previousMonsterButton.gameObject.SetActive(false);
             return;
         }
 
+        nextMonsterButton.gameObject.SetActive(true);
+
         _currentPage--;
+        if (_currentPage <= 0)
+            previousMonsterButton.gameObject.SetActive(false);
+
         UpdateUIPage();
         soundList.Play("Turning the page");
     }
@@ -105,21 +113,26 @@ public class CardCatalogueScript : MonoBehaviour
     private void NextPage()
     {
         int totalPages = Mathf.CeilToInt((float)Monsters.Count / _cardInPage);
-
         if (_currentPage >= totalPages - 1)
         {
-            _currentPage = 0;
-            UpdateUIPage();
+            _currentPage = totalPages - 1;
             return;
         }
 
+        previousMonsterButton.gameObject.SetActive(true);
+
         _currentPage++;
+        if (_currentPage >= totalPages - 1)
+            nextMonsterButton.gameObject.SetActive(false);
+
         UpdateUIPage();
         soundList.Play("Turning the page");
     }
 
     private void UpdateUIPage()
     {
+        
+
         int startIndex = _currentPage * _cardInPage;
 
         for (int i = 0; i < _cardInPage; i++)
