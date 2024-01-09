@@ -10,16 +10,9 @@ public class CompetitiveIngredientManager : IngredientManager
         // add tokens
         foreach (byte clientId in correctGuesserIds)
         {
-            if (GameManager.Instance.PainterId != clientId)
-            {
-                int tokensToAdd = config.BonusForIngredient_CM_G.GetValue(playersCount);
-                TokenManager.AddTokensToClient(tokensToAdd, clientId);
-            }
-            else
-            {
-                int tokensToAdd = config.BonusForIngredient_CM_P.GetValue(playersCount);
-                TokenManager.AddTokensToClient(tokensToAdd, clientId);
-            }
+            int tokensToAdd = GameManager.Instance.PainterId != clientId ? config.BonusForIngredient_CM_G.GetValue(playersCount) : config.BonusForIngredient_CM_P.GetValue(playersCount);
+
+            TokenManager.AddTokensToClient(tokensToAdd, clientId);
         }
 
         // calculate player without mistakes

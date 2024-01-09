@@ -48,49 +48,62 @@ public class CompetitiveRoundManager : RoundManager
 
         IReadOnlyList<ulong> correctGuesserAllIds = ingredientManager.CorrectGuesserAllIds;
 
-        int baseTokensIfMonsterGuessed_G = GameManager.Instance.IsDangerousCard ?
-            config.BonusIfMonsterGuessed_CM_DM_G.GetValue(playersCount) : config.BonusIfMonsterGuessed_CM_MM_G.GetValue(playersCount);
-        int baseTokensIfMonsterGuessed_P = GameManager.Instance.IsDangerousCard ?
-            config.BonusIfMonsterGuessed_CM_DM_P.GetValue(playersCount) : config.BonusIfMonsterGuessed_CM_MM_P.GetValue(playersCount);
-        // guesser params
-        int tokensIfAllIngredientsGuessed = GameManager.Instance.IsDangerousCard ?
-            config.BonusIfAllIngredientsGuessed_TM_DM.GetValue(playersCount) : config.BonusIfAllIngredientsGuessed_TM_MM.GetValue(playersCount);
-        // painter params
-        int tokensIfMoreThanOnePlayerGuessedMonster_P = config.BonusIfMonsterGuessedMoreThanOnePlayer_CM_P.GetValue(playersCount) * correctGuesserAllIds.Count;
+        int baseTokensIfMonsterGuessed_G;
+        int baseTokensIfMonsterGuessed_P;
+        int tokensIfAllIngredientsGuessed_G;
+        int tokensIfAllIngredientsGuessed_P; // use this value
+        int tokensIfMoreThanOnePlayerGuessedMonster_P = correctGuesserIds.Count > 1 ? config.BonusIfMonsterGuessedMoreThanOnePlayer_CM_P.GetValue(correctGuesserIds.Count) : 0; // check condition
+
+        if (GameManager.Instance.IsDangerousCard)
+        {
+            baseTokensIfMonsterGuessed_G = config.BonusIfMonsterGuessed_CM_DM_G.GetValue(playersCount);
+            baseTokensIfMonsterGuessed_P = config.BonusIfMonsterGuessed_CM_DM_P.GetValue(playersCount);
+            tokensIfAllIngredientsGuessed_G = config.BonusIfAllIngredientsGuessed_CM_DM_G.GetValue(playersCount);
+            tokensIfAllIngredientsGuessed_P = config.BonusIfAllIngredientsGuessed_CM_DM_P.GetValue(playersCount);
+        }
+        else
+        {
+            baseTokensIfMonsterGuessed_G = config.BonusIfMonsterGuessed_CM_MM_G.GetValue(playersCount);
+            baseTokensIfMonsterGuessed_P = config.BonusIfMonsterGuessed_CM_MM_P.GetValue(playersCount);
+            tokensIfAllIngredientsGuessed_G = config.BonusIfAllIngredientsGuessed_CM_MM_G.GetValue(playersCount);
+            tokensIfAllIngredientsGuessed_P = config.BonusIfAllIngredientsGuessed_CM_MM_P.GetValue(playersCount);
+        }
 
         //if (correctGuesserIds.Count > 2)
         //    tokensIfMoreThanOnePlayerGuessedMonster += (playersCount - 1) * (correctGuesserIds.Count - 2);
 
-        foreach (byte clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        foreach (byte clientId in NetworkManager.Singleton.ConnectedClientsIds) // logic for host ??
         {
-            if (correctGuesserIds.Contains(clientId))
+            int tokesToAdd = 0;
+
+            if (correctGuesserIds.Contains(clientId)) // guessed monster
             {
-                if (clientId != GameManager.Instance.PainterId) // if client is not painter
+                if (clientId != GameManager.Instance.PainterId) // guesser
                 {
-                    int tokensToAdd_G = baseTokensIfMonsterGuessed_G;
-
-                    if (correctGuesserAllIds.Contains(clientId))
-                        tokensToAdd_G += tokensIfAllIngredientsGuessed;
-
-                    TokenManager.AddTokensToClient(tokensToAdd_G, clientId);
+                    tokesToAdd += baseTokensIfMonsterGuessed_G;
+                    //tokesToAdd += correctGuesserAllIds.Contains(clientId) ? tokensIfAllIngredientsGuessed_G : 0; // add logic for all ingredients guessed
                 }
-                else  // if client is painter
+                else // painter
                 {
-                    int tokensToAdd_P = baseTokensIfMonsterGuessed_P + tokensIfMoreThanOnePlayerGuessedMonster_P;
-
-                    TokenManager.AddTokensToClient(tokensToAdd_P, clientId);
+                    tokesToAdd += (baseTokensIfMonsterGuessed_P + tokensIfMoreThanOnePlayerGuessedMonster_P);
+                    tokesToAdd += (UnityEngine.Mathf.Max(0, correctGuesserIds.Count - 1) * tokensIfAllIngredientsGuessed_P);
                 }
             }
-            else
+            else // missed monster
             {
-                if (clientId != GameManager.Instance.PainterId)
+                if (clientId != GameManager.Instance.PainterId) // guesser
+                {
+                    //tokesToAdd += correctGuesserAllIds.Contains(clientId) ? tokensIfAllIngredientsGuessed_G : 0; // add logic for all ingredients guessed
                     TokenManager.RemoveTokensToClient(config.PenaltyIfMonsterIsNotGuessed_CM_G.GetValue(playersCount), clientId);
+                }
             }
+
+            TokenManager.AddTokensToClient(tokesToAdd, clientId);
         }
 
-        int tokensToRemove = CalculatePenalty(correctGuesserIds.Count);
+        int tokensToRemovePainter = CalculatePenalty(correctGuesserIds.Count);
 
-        TokenManager.RemoveTokensToClient(tokensToRemove, GameManager.Instance.PainterId);
+        TokenManager.RemoveTokensToClient(tokensToRemovePainter, GameManager.Instance.PainterId);
 
         correctGuesserIds.Clear();
     }
