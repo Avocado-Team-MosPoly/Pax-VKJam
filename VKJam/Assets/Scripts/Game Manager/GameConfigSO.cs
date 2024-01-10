@@ -85,7 +85,7 @@ public class GameConfigSO : ScriptableObject
                     return Players_4;
             }
 
-            throw new ArgumentOutOfRangeException("Players count should be less than 2 and more than 4.");
+            throw new ArgumentOutOfRangeException("PlayersCount count be less than 2 and more than 4.");
         }
     }
 }

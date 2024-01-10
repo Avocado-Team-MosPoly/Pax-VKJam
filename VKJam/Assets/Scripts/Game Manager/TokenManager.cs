@@ -160,7 +160,7 @@ public class TokenManager : NetworkBehaviour
         tokensWinned.text = TokensCountWinnedCurrentRound.ToString();
         tokensLoosed.text = TokensCountLosedCurrentRound.ToString();
 
-        TokensCount += TokensCountWinnedCurrentRound - TokensCountLosedCurrentRound;
+        TokensCount += (TokensCountWinnedCurrentRound - TokensCountLosedCurrentRound);
         TokensCount = Mathf.Max(0, TokensCount);
 
         tokensTotal.text = "X" + TokensCount.ToString();

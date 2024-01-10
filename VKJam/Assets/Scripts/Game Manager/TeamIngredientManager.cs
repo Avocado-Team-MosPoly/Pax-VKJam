@@ -9,15 +9,21 @@ public class TeamIngredientManager : IngredientManager
 
         isIngredientGuessed = false;
 
-        int tokensToAdd = config.BonusIngredientGuessed_TM.GetValue(playersCount);
+        int tokensToAdd = config.BonusIngredientGuessed_TM.GetValue(playersCount) * playersCount;
         TokenManager.AddTokensToAll(tokensToAdd);
 
+        correctGuesserIds.Clear();
+        isIngredientGuessed = false;
         OnCorrectIngredient?.Invoke();
     }
 
     protected override void OnCorrectIngredientGuess(ulong clientId)
     {
         base.OnCorrectIngredientGuess(clientId);
+
+        correctGuesserIds.Add(clientId);
+        if (!correctGuesserIds.Contains(GameManager.Instance.PainterId))
+            correctGuesserIds.Add(GameManager.Instance.PainterId);
     }
 
     protected override void OnWrongIngredientGuess(ulong clientId)
