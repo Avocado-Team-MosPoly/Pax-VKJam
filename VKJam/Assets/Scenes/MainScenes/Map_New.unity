@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731715, g: 0.13414735, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -8743,6 +8743,17 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &732137471 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1618911780650721266, guid: a76a1f445153fed4a9fb3133d90e2ec3, type: 3}
+  m_PrefabInstance: {fileID: 1868896642}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &735389075
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27798,48 +27809,49 @@ MonoBehaviour:
   - {fileID: 1868896643}
   - {fileID: 1868896644}
   - {fileID: 1868896645}
+  - {fileID: 732137471}
   - {fileID: 1868896646}
+  - {fileID: 1868896647}
   - {fileID: 1868896648}
   - {fileID: 1868896649}
   - {fileID: 1868896650}
+  - {fileID: 1868896651}
+  - {fileID: 1868896652}
   - {fileID: 1868896653}
   - {fileID: 1868896654}
   - {fileID: 1868896655}
+  - {fileID: 1868896656}
   - {fileID: 1868896657}
   - {fileID: 1868896658}
   - {fileID: 1868896659}
+  - {fileID: 1868896660}
+  - {fileID: 1868896661}
   - {fileID: 1868896662}
   - {fileID: 1868896663}
   - {fileID: 1868896664}
+  - {fileID: 1868896665}
   - {fileID: 1868896666}
   - {fileID: 1868896667}
   - {fileID: 1868896668}
   - {fileID: 1868896669}
+  - {fileID: 1868896670}
   - {fileID: 1868896671}
   - {fileID: 1868896672}
   - {fileID: 1868896673}
+  - {fileID: 1868896674}
+  - {fileID: 1868896675}
+  - {fileID: 1868896676}
   - {fileID: 1868896677}
+  - {fileID: 1868896678}
+  - {fileID: 1868896679}
+  - {fileID: 1868896680}
   - {fileID: 1868896681}
   - {fileID: 1868896682}
+  - {fileID: 1868896683}
   - {fileID: 1868896684}
   - {fileID: 1868896685}
   - {fileID: 1868896686}
   - {fileID: 1868896687}
-  - {fileID: 1868896647}
-  - {fileID: 1868896651}
-  - {fileID: 1868896652}
-  - {fileID: 1868896656}
-  - {fileID: 1868896660}
-  - {fileID: 1868896661}
-  - {fileID: 1868896665}
-  - {fileID: 1868896670}
-  - {fileID: 1868896674}
-  - {fileID: 1868896675}
-  - {fileID: 1868896676}
-  - {fileID: 1868896678}
-  - {fileID: 1868896679}
-  - {fileID: 1868896680}
-  - {fileID: 1868896683}
   - {fileID: 1868896688}
   - {fileID: 1588188776}
   - {fileID: 1588188775}
@@ -29006,6 +29018,7 @@ GameObject:
   - component: {fileID: 3605451227080877493}
   - component: {fileID: 3156186508713207407}
   - component: {fileID: 340886339}
+  - component: {fileID: 5952537248108583332}
   m_Layer: 0
   m_Name: Table Mesh
   m_TagString: Untagged
@@ -29954,6 +29967,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 543450652038744293}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5952537248108583332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 709947646958750301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e6e3da8f36252e4f9b36a1c0b7d8728, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 20
+  SwitchTarget: {fileID: 0}
+  Sync: {fileID: 0}
+  NeedSavePosition: 0
 --- !u!114 &6442736019272615768
 MonoBehaviour:
   m_ObjectHideFlags: 0
