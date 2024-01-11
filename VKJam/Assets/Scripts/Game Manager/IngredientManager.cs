@@ -33,6 +33,7 @@ public abstract class IngredientManager
 
     /// <summary> Players guessed without mistakes </summary>
     protected Dictionary<ulong, bool> correctGuesserAllIds = new();
+    protected Dictionary<ulong, int> failedGuesses = new();
 
     protected bool isIngredientGuessed;
 
@@ -78,11 +79,39 @@ public abstract class IngredientManager
     protected virtual void OnCorrectIngredientGuess(ulong clientId)
     {
         isIngredientGuessed = true;
+
+        if(failedGuesses.ContainsKey(clientId) && failedGuesses[clientId] == currentIngredientIndex)
+        {
+            Logger.Instance.LogWarning(this, "Removed wrong ingredient");
+            failedGuesses.Remove(clientId);
+            correctGuesserAllIds[clientId] = true;
+
+            if(CorrectGuesserAllIds.Count > 0 && correctGuesserAllIds[GameManager.Instance.PainterId] == false)
+            {
+                correctGuesserAllIds[GameManager.Instance.PainterId] = true;
+            }
+        }
     }
 
-    protected virtual void OnWrongIngredientGuess(ulong clientId) //?
+    protected virtual void OnWrongIngredientGuess(ulong clientId)
     {
+        if(!failedGuesses.ContainsKey(clientId))
+        {
+            Logger.Instance.LogWarning(this, "Added new wrong ingredient");
+            failedGuesses.Add(clientId, currentIngredientIndex);
+        }
+        else
+        {
+            Logger.Instance.LogWarning(this, "Changed wrong ingredient");
+            failedGuesses[clientId] = currentIngredientIndex;
+        }
 
+        correctGuesserAllIds[clientId] = false;
+
+        if(CorrectGuesserAllIds.Count == 1 && CorrectGuesserAllIds[0] == GameManager.Instance.PainterId)
+        {
+            correctGuesserAllIds[GameManager.Instance.PainterId] = false;
+        }
     }
 
     protected abstract void CorrectIngredient();
@@ -93,7 +122,13 @@ public abstract class IngredientManager
 
         isIngredientGuessed = false;
 
-        //TokenManager.RemoveTokens(1);
+        foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (!correctGuesserIds.Contains(clientId))
+            {
+                OnWrongIngredientGuess(clientId);
+            }
+        }
 
         OnWrongIngredient?.Invoke();
     }
@@ -105,6 +140,7 @@ public abstract class IngredientManager
         else
             WrongIngredient();
 
+        correctGuesserIds.Clear();
         NextIngredient();
     }
 

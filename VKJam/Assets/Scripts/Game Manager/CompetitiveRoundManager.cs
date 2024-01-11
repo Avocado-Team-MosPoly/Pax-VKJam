@@ -47,6 +47,7 @@ public class CompetitiveRoundManager : RoundManager
         //PainterReward(correctGuesserIds.Count);
 
         IReadOnlyList<ulong> correctGuesserAllIds = ingredientManager.CorrectGuesserAllIds;
+        Logger.Instance.LogWarning(this, $"{correctGuesserAllIds.Count} player guessed all ingredients");
 
         int baseTokensIfMonsterGuessed_G;
         int baseTokensIfMonsterGuessed_P;
@@ -81,7 +82,7 @@ public class CompetitiveRoundManager : RoundManager
                 if (clientId != GameManager.Instance.PainterId) // guesser
                 {
                     tokesToAdd += baseTokensIfMonsterGuessed_G;
-                    //tokesToAdd += correctGuesserAllIds.Contains(clientId) ? tokensIfAllIngredientsGuessed_G : 0; // add logic for all ingredients guessed
+                    tokesToAdd += correctGuesserAllIds.Contains(clientId) ? tokensIfAllIngredientsGuessed_G : 0; // add logic for all ingredients guessed
                 }
                 else // painter
                 {
@@ -93,7 +94,7 @@ public class CompetitiveRoundManager : RoundManager
             {
                 if (clientId != GameManager.Instance.PainterId) // guesser
                 {
-                    //tokesToAdd += correctGuesserAllIds.Contains(clientId) ? tokensIfAllIngredientsGuessed_G : 0; // add logic for all ingredients guessed
+                    tokesToAdd += correctGuesserAllIds.Contains(clientId) ? tokensIfAllIngredientsGuessed_G : 0; // add logic for all ingredients guessed
                     TokenManager.RemoveTokensToClient(config.PenaltyIfMonsterIsNotGuessed_CM_G.GetValue(playersCount), clientId);
                 }
             }

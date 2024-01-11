@@ -49,11 +49,12 @@ public class TeamRoundManager : RoundManager
 
         // add logic for all ingredients guessed
 
-        /*if (correctGuesserAllIds.Count > 1) // if more than 1 player guessed all
+        if (correctGuesserAllIds.Count > 1) // if more than 1 player guessed all
         {
+            Logger.Instance.LogWarning(this, $"{correctGuesserAllIds.Count} player guessed all ingredients");
             int tokensToAdd = GameManager.Instance.IsDangerousCard ? config.BonusIfAllIngredientsGuessed_TM_DM.GetValue(playersCount) * playersCount : config.BonusIfAllIngredientsGuessed_TM_MM.GetValue(playersCount) * playersCount;
             TokenManager.AddTokensToAll(tokensToAdd);
-        }*/
+        }
 
         base.OnTimeExpired();
     }

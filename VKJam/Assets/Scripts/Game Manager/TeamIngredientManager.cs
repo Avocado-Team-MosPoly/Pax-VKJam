@@ -12,7 +12,6 @@ public class TeamIngredientManager : IngredientManager
         int tokensToAdd = config.BonusIngredientGuessed_TM.GetValue(playersCount) * playersCount;
         TokenManager.AddTokensToAll(tokensToAdd);
 
-        correctGuesserIds.Clear();
         isIngredientGuessed = false;
         OnCorrectIngredient?.Invoke();
     }
@@ -21,13 +20,17 @@ public class TeamIngredientManager : IngredientManager
     {
         base.OnCorrectIngredientGuess(clientId);
 
-        correctGuesserIds.Add(clientId);
+        if (!correctGuesserIds.Contains(clientId))
+        {
+            correctGuesserIds.Add(clientId);
+        }
+        
         if (!correctGuesserIds.Contains(GameManager.Instance.PainterId))
             correctGuesserIds.Add(GameManager.Instance.PainterId);
     }
 
     protected override void OnWrongIngredientGuess(ulong clientId)
     {
-        // Empty
+        base.OnWrongIngredientGuess(clientId);
     }
 }

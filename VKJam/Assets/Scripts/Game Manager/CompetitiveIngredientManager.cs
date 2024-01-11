@@ -15,14 +15,6 @@ public class CompetitiveIngredientManager : IngredientManager
             TokenManager.AddTokensToClient(tokensToAdd, clientId);
         }
 
-        // calculate player without mistakes
-        foreach (ulong clientId in correctGuesserAllIds.Keys)
-        {
-            if (!correctGuesserIds.Contains(clientId))
-                correctGuesserAllIds[clientId] = false;
-        }
-
-        correctGuesserIds.Clear();
         isIngredientGuessed = false;
         OnCorrectIngredient?.Invoke();
     }
@@ -31,13 +23,19 @@ public class CompetitiveIngredientManager : IngredientManager
     {
         base.OnCorrectIngredientGuess(clientId);
 
-        correctGuesserIds.Add(clientId);
+        if (!correctGuesserIds.Contains(clientId))
+        {
+            correctGuesserIds.Add(clientId);
+        }
+
         if (!correctGuesserIds.Contains(GameManager.Instance.PainterId))
             correctGuesserIds.Add(GameManager.Instance.PainterId);
     }
 
     protected override void OnWrongIngredientGuess(ulong clientId)
     {
+        base.OnWrongIngredientGuess(clientId);
+
         if (correctGuesserIds.Contains(clientId))
         {
             correctGuesserIds.Remove(clientId);
