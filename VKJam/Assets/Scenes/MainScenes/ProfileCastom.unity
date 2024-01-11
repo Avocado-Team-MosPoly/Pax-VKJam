@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731715, g: 0.13414735, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7377,6 +7377,7 @@ GameObject:
   - component: {fileID: 1311664456}
   - component: {fileID: 1311664460}
   - component: {fileID: 1311664461}
+  - component: {fileID: 1311664462}
   m_Layer: 0
   m_Name: Table Mesh
   m_TagString: Untagged
@@ -7499,7 +7500,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1311664454}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df712477342bda14b8222164c6b46bce, type: 3}
   m_Name: 
@@ -7510,6 +7511,22 @@ MonoBehaviour:
   NeedSavePosition: 0
   SwitchTargetMaterial: {fileID: 2100000, guid: 645c1bb16fd158b4990d7f337e0e46af, type: 2}
   FromPrefab: 1
+--- !u!114 &1311664462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311664454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e6e3da8f36252e4f9b36a1c0b7d8728, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 20
+  SwitchTarget: {fileID: 0}
+  Sync: {fileID: 0}
+  NeedSavePosition: 0
 --- !u!1 &1329592223
 GameObject:
   m_ObjectHideFlags: 0
@@ -8754,7 +8771,7 @@ MonoBehaviour:
   - {fileID: 1487908553175793356}
   - {fileID: 1089153296}
   - {fileID: 0}
-  - {fileID: 1311664461}
+  - {fileID: 1311664462}
   Products: []
   Template: {fileID: 8121843311091204510, guid: 54e24b8ddf0b6c74f97749d482b33519, type: 3}
   WhereInst: {fileID: 1108904089}

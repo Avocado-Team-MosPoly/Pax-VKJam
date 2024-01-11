@@ -30,16 +30,13 @@ public class SetUpAllButtons : MonoBehaviour
         Scene activeScene = SceneManager.GetActiveScene();
 
         GameObject[] rootObjects = activeScene.GetRootGameObjects();
-
         GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
-
-        List<GameObject> objectsInScene = new List<GameObject>();
+        List<GameObject> objectsInScene = new();
 
         for (int i = 0; i < rootObjects.Length; i++)
             objectsInScene.Add(rootObjects[i]);
 
-        buttons ??= new List<Button>();
-        buttons.Clear();
+        buttons = buttons == null ? new() : new(buttons.Count);
 
         for (int i = 0; i < ignoreNames.Count; i++)
         {
