@@ -121,7 +121,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
         Action<string> completed = (string response) =>
         {
-            if (response == null)
+            if (response == null || (response != "registered" && response != "authenticated"))
             {
                 PHPisOnline = false;
                 Logger.Instance.LogError(Executor, "Unable to authenticate on server");
@@ -589,6 +589,32 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         {
             Executor.StartCoroutine(Response_Gift(DesignID, TargetNickname));
         }
+    }
+
+    public void Exit()
+    {
+        StartCoroutine(Request_Exit());
+    }
+
+    public static IEnumerator Request_Exit()
+    {
+        if (!PHPisOnline)
+        {
+            yield break;
+        }
+
+        WWWForm form = new();
+        form.AddField("Nickname", Nickname);
+
+        Action<string> completed = (string response) =>
+        {
+            if(response == "completed")
+            {
+                Debug.Log("Exit from DB completed");
+            }
+        };
+
+        yield return Executor.StartCoroutine(Post("Exit.php", form, completed));
     }
 
     #endregion
