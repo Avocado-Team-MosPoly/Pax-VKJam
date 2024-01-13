@@ -47,10 +47,21 @@ public class BootManager : MonoBehaviour
 
     [Header("Disclamer")]
     [SerializeField] private bool showDisclaimer = true;
-    [SerializeField] private GameObject disclaimer;
+    [SerializeField] private GameObject disclaimerPanel;
     [SerializeField] private float disclaimerShowTime = 3.5f;
 
-    private IEnumerator Start()
+    [Header("Exception")]
+    [SerializeField] private GameObject exceptionPanel;
+    [SerializeField] private TextMeshProUGUI exceptionLabel;
+
+    private Coroutine loadingCoroutine;
+
+    private void Start()
+    {
+        StartLoading();
+    }
+
+    private IEnumerator Loading()
     {
         // Disclaimer
 
@@ -68,11 +79,31 @@ public class BootManager : MonoBehaviour
         yield return StartCoroutine(phpConnect.Init());
 
         bool loadTutorial = true;
+
+        #region Authentication on server
+
         int connectionAttemptNumber = 0;
         Action<bool> successAuthentication = (bool isFirstTime) =>
         {
             Authentication.IsLoggedInThroughVK = !useDefaultNickname;
             loadTutorial = isFirstTime;
+        };
+        Action<string> unsuccesAuthentication = (string exception) =>
+        {
+            exceptionPanel.SetActive(true);
+
+            if (exception == "LogIn through several devices exception")
+            {
+                exceptionLabel.text = "Вы уже запустили игру с этого аккаунта";
+            }
+            else
+            {
+                exceptionLabel.text = "Неожиданная ошибка";
+            }
+
+            StopLoading();
+            DestroyManagers();
+            Destroy(this);
         };
 
         UpdateLoadingStatus(phpConnect_Authentication);
@@ -84,7 +115,9 @@ public class BootManager : MonoBehaviour
                 continue;
             }
 
-            yield return StartCoroutine(Php_Connect.Request_Auth(useDefaultNickname ? defaultNickname : UserData.UserId, successAuthentication, null));
+            yield return StartCoroutine(Php_Connect.Request_Auth(
+                useDefaultNickname ? defaultNickname : UserData.UserId,
+                successAuthentication, unsuccesAuthentication));
 
             if (Php_Connect.PHPisOnline)
                 break;
@@ -94,8 +127,10 @@ public class BootManager : MonoBehaviour
         if (connectionAttemptNumber >= maxConnectionAttempts - 1 && !Php_Connect.PHPisOnline)
         {
             Logger.Instance.LogError(this, $"Unable to connect to dedicated server using {(useDefaultNickname ? "Default nickname" : "VK uid")}");
-            NotificationSystem.Instance.SendLocal($"Не получилось подключиться к серверам используя {(useDefaultNickname ? "стандартный логин" : "ВК uid")}");
+            NotificationSystem.Instance.SendLocal($"Не удалось подключиться к серверам используя {(useDefaultNickname ? "стандартный логин" : "ВК uid")}");
         }
+
+        #endregion
 
         //send request whith card packs we have
         //for each pack we own send request which card in pack ownering
@@ -131,6 +166,33 @@ public class BootManager : MonoBehaviour
         LoadStartScene(loadTutorial);
     }
 
+    private void DestroyManagers()
+    {
+        Destroy(vkConnect);
+        Destroy(phpConnect);
+        Destroy(relayManager);
+        Destroy(lobbyManager);
+        Destroy(packManager);
+        Destroy(customController);
+    }
+
+    private void StartLoading()
+    {
+        if (loadingCoroutine != null)
+            return;
+
+        loadingCoroutine = StartCoroutine(Loading());
+    }
+
+    private void StopLoading()
+    {
+        if (loadingCoroutine == null)
+            return;
+
+        StopCoroutine(loadingCoroutine);
+        loadingCoroutine = null;
+    }
+
     private void UpdateLoadingStatus(string status)
     {
         loadingSlider.value += 1f / 10;
@@ -150,11 +212,11 @@ public class BootManager : MonoBehaviour
     {
         if (status)
         {
-            disclaimer.SetActive(true);
+            disclaimerPanel.SetActive(true);
             yield return new WaitForSeconds(disclaimerShowTime);
-            disclaimer.SetActive(false);
+            disclaimerPanel.SetActive(false);
         }
         else
-            disclaimer.SetActive(false);
+            disclaimerPanel.SetActive(false);
     }
 }

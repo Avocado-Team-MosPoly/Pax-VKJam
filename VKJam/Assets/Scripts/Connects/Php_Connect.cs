@@ -53,6 +53,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             Logger.Instance.LogError(this, new FormatException($"Unsafe or incorrect {nameof(Link)}. {nameof(Link)} should start with \"https\". {nameof(Link)}: {Link}"));
             yield break;
         }
+        UnityEditor.EditorApplication.quitting += Executor.OnApplicationQuit;
 
         Logger.Instance.Log(this, "Initialized");
     }
@@ -114,34 +115,54 @@ public class Php_Connect : TaskExecutor<Php_Connect>
     }
 
     /// <summary> successRequest - Sends true if the user has just registered, and false if not </summary>
-    public static IEnumerator Request_Auth(int external_Nickname, Action<bool> successRequest, Action unsuccessRequest)
+    public static IEnumerator Request_Auth(int external_Nickname, Action<bool> successRequest, Action<string> unsuccessRequest)
     {
         WWWForm form = new();
         form.AddField("Nickname", external_Nickname);
 
         Action<string> completed = (string response) =>
         {
-            if (response == null || (response != "registered" && response != "authenticated"))
+            if (response == null)
             {
                 PHPisOnline = false;
                 Logger.Instance.LogError(Executor, "Unable to authenticate on server");
-                unsuccessRequest?.Invoke();
+                unsuccessRequest?.Invoke("Unable to authenticate on server exception");
+            }
+            else if (response == "can not log into one account from several devices")
+            {
+                PHPisOnline = false;
+                Logger.Instance.LogError(Executor, "Unable to authenticate on server");
+                unsuccessRequest?.Invoke("LogIn through several devices exception");
+            }
+            else if (response == "registered")
+            {
+                PHPisOnline = true;
+
+                Logger.Instance.Log(Executor, "Registered on server");
+                successRequest?.Invoke(true);
+            }
+            else if (response == "authenticated")
+            {
+                PHPisOnline = true;
+
+                Logger.Instance.Log(Executor, "Authenticated on server");
+                successRequest?.Invoke(false);
             }
             else
             {
-                PHPisOnline = true;
+                PHPisOnline = false;
+
+                Logger.Instance.LogError(Executor, "Unable to authenticate on server");
+                unsuccessRequest?.Invoke("Unexpected exception");
+            }
+
+            if (PHPisOnline)
+            {
                 Nickname = external_Nickname;
 
-                if (response == "registered")
-                {
-                    successRequest?.Invoke(true);
-                    Logger.Instance.Log(Executor, "Registered on server");
-                }
-                else if (response == "authenticated")
-                {
-                    successRequest?.Invoke(false);
-                    Logger.Instance.Log(Executor, "Authenticated on server");
-                }
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.quitting += Executor.OnApplicationQuit;
+#endif
             }
         };
 
@@ -599,16 +620,14 @@ public class Php_Connect : TaskExecutor<Php_Connect>
     public static IEnumerator Request_Exit()
     {
         if (!PHPisOnline)
-        {
             yield break;
-        }
 
         WWWForm form = new();
         form.AddField("Nickname", Nickname);
 
         Action<string> completed = (string response) =>
         {
-            if(response == "completed")
+            if (response == "completed")
             {
                 Debug.Log("Exit from DB completed");
             }
@@ -649,14 +668,8 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         }
     }
 
-    private static Sprite Base64ToSprite(string base64)
+    private void OnApplicationQuit()
     {
-        byte[] bytes = System.Convert.FromBase64String(base64);
-        Texture2D texture = new Texture2D(2, 2);
-        if (texture.LoadImage(bytes))
-        {
-            return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-        }
-        return null;
+        Exit();
     }
 }
