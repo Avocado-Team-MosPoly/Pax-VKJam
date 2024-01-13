@@ -53,7 +53,6 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             Logger.Instance.LogError(this, new FormatException($"Unsafe or incorrect {nameof(Link)}. {nameof(Link)} should start with \"https\". {nameof(Link)}: {Link}"));
             yield break;
         }
-        UnityEditor.EditorApplication.quitting += Executor.OnApplicationQuit;
 
         Logger.Instance.Log(this, "Initialized");
     }
@@ -159,10 +158,6 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             if (PHPisOnline)
             {
                 Nickname = external_Nickname;
-
-#if UNITY_EDITOR
-                UnityEditor.EditorApplication.quitting += Executor.OnApplicationQuit;
-#endif
             }
         };
 
