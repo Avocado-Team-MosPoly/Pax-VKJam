@@ -29,6 +29,18 @@ public class LobbyManager : MonoBehaviour
         }
     }
     private bool isTeamModeFilter = true;
+    [HideInInspector] public bool isTeamFilter
+    {
+        get
+        {
+            return isTeamFilter;
+        }
+        set
+        {
+            isTeamFilter = value;
+            ListLobbiesWithFilter();
+        }
+    }
 
     public Lobby CurrentLobby { get; private set; }
 
@@ -410,23 +422,38 @@ public class LobbyManager : MonoBehaviour
         try
         {
             QueryLobbiesOptions options = new QueryLobbiesOptions();
-
-            options.Filters = new List<QueryFilter>()
+            if(isTeamFilter)
             {
-                new QueryFilter
-                (
-                    field: QueryFilter.FieldOptions.AvailableSlots,
-                    op: QueryFilter.OpOptions.GT,
-                    value: "0"
-                ),
-                new QueryFilter
-                (
-                    field: QueryFilter.FieldOptions.S1,
-                    op: QueryFilter.OpOptions.EQ,
-                    value: isTeamModeFilter.ToString()
-                )
-            };
+                options.Filters = new List<QueryFilter>()
+                {
+                    new QueryFilter
+                    (
+                        field: QueryFilter.FieldOptions.AvailableSlots,
+                        op: QueryFilter.OpOptions.GT,
+                        value: "0"
+                    ),
 
+                    new QueryFilter
+                    (
+                        field: QueryFilter.FieldOptions.S1,
+                        op: QueryFilter.OpOptions.EQ,
+                        value: isTeamModeFilter.ToString()
+                    )
+                };
+            }
+            else
+            {
+                options.Filters = new List<QueryFilter>()
+                {
+                    new QueryFilter
+                    (
+                        field: QueryFilter.FieldOptions.AvailableSlots,
+                        op: QueryFilter.OpOptions.GT,
+                        value: "0"
+                    )                   
+                };
+            }
+            
             options.Order = new List<QueryOrder>()
             {
                 new QueryOrder

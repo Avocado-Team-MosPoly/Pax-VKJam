@@ -42,6 +42,16 @@ public class LobbyListAndCreate : MonoBehaviour
 
     private void UpdateModeFilter(int value)
     {
-        LobbyManager.Instance.IsTeamModeFilter = value == 0;
+        if (value!=2)
+        {
+            LobbyManager.Instance.isTeamFilter = false;
+            LobbyManager.Instance.IsTeamModeFilter = value == 0;
+        }
+        else
+        {
+            LobbyManager.Instance.isTeamFilter = true;
+            LobbyManager.Instance.IsTeamModeFilter = value-1 == 0;
+        }
+        
     }
 }
