@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using CardSOs;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,6 +26,7 @@ public class BootManager : MonoBehaviour
 
     [Header("Cards")]
     [SerializeField] private PackManager packManager;
+    [SerializeField] private CardSOSetter cardSoSetter;
 
     [Header("Custom")]
     [SerializeField] private CustomController customController;
@@ -94,11 +96,11 @@ public class BootManager : MonoBehaviour
 
             if (exception == "LogIn through several devices exception")
             {
-                exceptionLabel.text = "Вы уже запустили игру с этого аккаунта";
+                exceptionLabel.text = "пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
             }
             else
             {
-                exceptionLabel.text = "Неожиданная ошибка";
+                exceptionLabel.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ";
             }
 
             StopLoading();
@@ -127,7 +129,7 @@ public class BootManager : MonoBehaviour
         if (connectionAttemptNumber >= maxConnectionAttempts - 1 && !Php_Connect.PHPisOnline)
         {
             Logger.Instance.LogError(this, $"Unable to connect to dedicated server using {(useDefaultNickname ? "Default nickname" : "VK uid")}");
-            NotificationSystem.Instance.SendLocal($"Не удалось подключиться к серверам используя {(useDefaultNickname ? "стандартный логин" : "ВК uid")}");
+            NotificationSystem.Instance.SendLocal($"пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ {(useDefaultNickname ? "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ" : "пїЅпїЅ uid")}");
         }
 
         #endregion
@@ -145,6 +147,8 @@ public class BootManager : MonoBehaviour
 
         UpdateLoadingStatus(packManager_Initialization);
         yield return StartCoroutine(packManager.Init(ownedCardsInPacks));
+
+        yield return StartCoroutine(cardSoSetter.LoadAllCards());
 
         UpdateLoadingStatus(customController_Initialization);
         yield return StartCoroutine(customController.Init());

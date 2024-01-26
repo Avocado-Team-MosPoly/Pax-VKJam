@@ -27,7 +27,7 @@ public class Card : MonoBehaviour
         gameObject.name = CardSO.Id + " (Instance)";
 
         if (meshRenderer != null || TryGetComponent(out meshRenderer))
-            meshRenderer.materials[frontMaterialIndex].mainTexture = CardSO.CardTexture;
+            meshRenderer.materials[frontMaterialIndex].mainTexture = CardSO.cardTexture;
     }
 
     public void Choose()
