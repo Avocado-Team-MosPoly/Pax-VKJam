@@ -659,12 +659,12 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
         /* Monster texture paths on server
          * 0 - Monster Card Texture (Resources/Monsters/CardTexture/)
-         * 1 - Monster Texture (Resources/Monsters/MonsterInBestiaryTexture/)
-         * 2 - Monster In Bestiary Texture (Resources/Monsters/MonsterTexture/)
+         * 1 - Monster In Bestiary Texture (Resources/Monsters/MonsterTexture/)
+         * 2 - Monster Texture (Resources/Monsters/MonsterInBestiaryTexture/)
          */
         yield return Executor.StartCoroutine(GetTexture($"Monsters/CardTexture/{monsterTextureNames[0]}", completed));
-        yield return Executor.StartCoroutine(GetTexture($"Monsters/MonsterInBestiaryTexture/{monsterTextureNames[1]}", completed));
-        yield return Executor.StartCoroutine(GetTexture($"Monsters/MonsterTexture/{monsterTextureNames[2]}", completed));
+        yield return Executor.StartCoroutine(GetTexture($"Monsters/MonsterTexture/{monsterTextureNames[1]}", completed));
+        yield return Executor.StartCoroutine(GetTexture($"Monsters/MonsterInBestiaryTexture/{monsterTextureNames[2]}", completed));
 
         onComplete?.Invoke(textures);
     }
