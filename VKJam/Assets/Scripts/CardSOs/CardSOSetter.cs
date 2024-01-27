@@ -39,7 +39,10 @@ namespace CardSOs
             var allCardsPack = PackManager.Instance.All;
             
             List<Texture2D> textures = null;
-            Action<List<Texture2D>> onCompleteLoad = (response) => { textures = response;};
+            Action<List<Texture2D>> onCompleteLoad = (response) =>
+            {
+                textures = response;
+            };
             
             // foreach pack
             foreach (var pack in allCardsPack)
@@ -52,8 +55,8 @@ namespace CardSOs
                     var card = cardSystem.Card;
                     
                     // load all textures
-                    yield return StartCoroutine(Php_Connect.Request_MonsterTextures(resourceLoadSO.GetURLsByCardID(card.Id),
-                        onCompleteLoad)); 
+                    yield return StartCoroutine( Php_Connect.Request_MonsterTextures(resourceLoadSO.GetURLsByCardID(card.Id),
+                        onCompleteLoad));
                     
                     // set textures
                     SetTextures(card, textures);
