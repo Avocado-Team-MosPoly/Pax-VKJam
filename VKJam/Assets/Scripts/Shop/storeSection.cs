@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 [System.Serializable]
-[CreateAssetMenu()]
+[CreateAssetMenu(menuName = "Store/New Store Section")]
 public class storeSection : ScriptableObject
 {
     public List<WareData> products;
@@ -31,14 +32,6 @@ public class storeSection : ScriptableObject
         }
 
         products = uniqueProducts;
-    }
-    [ContextMenu("Set image from prefab to Icon")]
-    public void ImageTrief()
-    {
-        foreach (var item in products)
-        {
-            item.icon = item.Model.GetComponent<UnityEngine.UI.Image>().sprite;
-        }
     }
     [ContextMenu("Reset isOwn")]
     public virtual void ResetIsOwn()

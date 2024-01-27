@@ -14,14 +14,24 @@ public class CustomController : TaskExecutor<CustomController>
     {
         yield return new WaitForSeconds(0.1f);
 
-        foreach (var section in Categories)
+        /*foreach (var section in Categories)
         {
-            foreach (var ware in section.products)
+            // run throw all categories
+            // run throw all products
+            // load as in template
+        }*/
+
+        // template for Avatars
+        foreach (var ware in Categories[10].products) 
+        {
+            Action<Texture2D> onComplete = (Texture2D texture) =>
             {
-                //Logger.Instance.LogWarning(this, ware.Data.Type.ToString() + " " + ware.Data.productName + " : " + ware.Model);
-                //yield return StartCoroutine(Php_Connect.Request_CheckOwningDesign(ware.Data.productCode, ware.OnCheckOwningDesignComplete));
-            }
+                ware.SetSpriteFromURL(texture);
+            };
+
+            yield return StartCoroutine(Php_Connect.Request_CastomTextures(ware.iconURL, onComplete));
         }
+        // end template
 
         Action<string> OnCompleted = (string response) =>
         {
@@ -231,11 +241,11 @@ public class CustomController : TaskExecutor<CustomController>
         {
             int preload = CountPreloaded();
 
-            for (int i = preload; i < designCount; ++i)
+            for (int i = 0; i < designCount; ++i)
             {
                 WareData output = new();
                 output.Data.productCode = i;
-                output.Request();
+                //output.Request();
                 Categories[(int)Categorize(output.Data.Type)].Add(output);
             }
         };

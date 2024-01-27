@@ -23,22 +23,13 @@ public class WareData
 {
     public Design Data;
     public bool IsNonBuyable;
-    public Sprite icon;
-    public bool isPreloaded;
+    public string iconURL;
+    public Sprite icon; //{ get; private set; }
     public GameObject Model;
-    
-    public void Request()
+
+    public void SetSpriteFromURL(Texture2D texture)
     {
-        if (isPreloaded)
-            return;
-
-        Action<Design> completed = (Design newData) =>
-        {
-            Data = newData;
-            icon = Base64ToSprite(Data.icon);
-        };
-
-        Php_Connect.Executor.StartCoroutine(Php_Connect.Request_DataAboutDesign(Data.productCode, completed));
+        icon = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
     }
 
     public void OnCheckOwningDesignComplete(bool result)

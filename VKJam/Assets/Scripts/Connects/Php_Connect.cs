@@ -1,11 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
 
 [Serializable]
 public class Currency
@@ -667,6 +664,31 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         yield return Executor.StartCoroutine(GetTexture($"Monsters/MonsterInBestiaryTexture/{monsterTextureNames[2]}", completed));
 
         onComplete?.Invoke(textures);
+    }
+
+    public static IEnumerator Request_CastomTextures(string castomIconTextureURL, Action<Texture2D> onComplete)
+    {
+        if (!PHPisOnline)
+            yield break;
+
+        if (castomIconTextureURL == null)
+        {
+            Logger.Instance.LogError(Executor, new NullReferenceException($"{nameof(castomIconTextureURL)} is null"));
+            yield break;
+        }
+
+        Texture2D texture = new(256, 256);
+        Action<Texture2D> completed = (Texture2D response) =>
+        {
+            if (response == null)
+                Logger.Instance.LogWarning(Executor, "Texture is null");
+
+            texture = response;
+        };
+
+        yield return Executor.StartCoroutine(GetTexture(castomIconTextureURL, completed));
+
+        onComplete?.Invoke(texture);
     }
 
     #endregion
