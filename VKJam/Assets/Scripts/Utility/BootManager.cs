@@ -58,9 +58,17 @@ public class BootManager : MonoBehaviour
 
     private Coroutine loadingCoroutine;
 
+    private double timer;
+
     private void Start()
     {
+        timer = 0f;
         StartLoading();
+    }
+
+    private void Update()
+    {
+        timer += Time.deltaTime;
     }
 
     private IEnumerator Loading()
@@ -165,6 +173,10 @@ public class BootManager : MonoBehaviour
 
         UpdateLoadingStatus(lobbyManager_Initialization);
         yield return StartCoroutine(lobbyManager.Init());
+
+        TimeSpan time = TimeSpan.FromSeconds(timer);
+
+        Debug.LogWarning(string.Format("{0:00}:{1:00}", time.Minutes, time.Seconds));
 
         UpdateLoadingStatus(sceneLoading);
         LoadStartScene(loadTutorial);

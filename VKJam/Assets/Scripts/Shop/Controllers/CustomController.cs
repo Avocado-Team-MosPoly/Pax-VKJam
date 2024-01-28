@@ -14,24 +14,21 @@ public class CustomController : TaskExecutor<CustomController>
     {
         yield return new WaitForSeconds(0.1f);
 
-        /*foreach (var section in Categories)
+        foreach (var section in Categories)
         {
             // run throw all categories
-            // run throw all products
-            // load as in template
-        }*/
-
-        // template for Avatars
-        foreach (var ware in Categories[10].products) 
-        {
-            Action<Texture2D> onComplete = (Texture2D texture) =>
+            foreach (var ware in section.products)
             {
-                ware.SetSpriteFromURL(texture);
-            };
+                // run throw all products
+                Action<Texture2D> onComplete = (Texture2D texture) =>
+                {
+                    ware.SetSpriteFromURL(texture);
+                };
 
-            yield return StartCoroutine(Php_Connect.Request_CastomTextures(ware.iconURL, onComplete));
+                if (ware.iconURL != null && ware.icon == null)
+                    yield return StartCoroutine(Php_Connect.Request_CastomTextures(ware.iconURL, onComplete));
+            }
         }
-        // end template
 
         Action<string> OnCompleted = (string response) =>
         {
