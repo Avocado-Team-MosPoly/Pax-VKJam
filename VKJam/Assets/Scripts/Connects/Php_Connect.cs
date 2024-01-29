@@ -126,6 +126,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         }
 
         using UnityWebRequest request = UnityWebRequestTexture.GetTexture(resourcesLink + pathFromResources);
+        request.certificateHandler = new AcceptAllCertificates();
 
         yield return request.SendWebRequest();
         if (request.result == UnityWebRequest.Result.Success)
