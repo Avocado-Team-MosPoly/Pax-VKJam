@@ -16,7 +16,7 @@ public class LobbyManager : MonoBehaviour
     [HideInInspector] public UnityEvent<List<Lobby>> OnLobbyListed = new();
     [HideInInspector] public UnityEvent<List<Player>> OnPlayerListed = new();
 
-    [HideInInspector] public bool IsTeamModeFilter
+    [HideInInspector] public int IsTeamModeFilter
     {
         get
         {
@@ -28,7 +28,7 @@ public class LobbyManager : MonoBehaviour
             ListLobbiesWithFilter();
         }
     }
-    private bool isTeamModeFilter = true;
+    private int isTeamModeFilter = 0;
 
     public Lobby CurrentLobby { get; private set; }
 
@@ -411,21 +411,64 @@ public class LobbyManager : MonoBehaviour
         {
             QueryLobbiesOptions options = new QueryLobbiesOptions();
 
-            options.Filters = new List<QueryFilter>()
+            if(IsTeamModeFilter==0)
             {
-                new QueryFilter
-                (
-                    field: QueryFilter.FieldOptions.AvailableSlots,
-                    op: QueryFilter.OpOptions.GT,
-                    value: "0"
-                ),
-                new QueryFilter
-                (
-                    field: QueryFilter.FieldOptions.S1,
-                    op: QueryFilter.OpOptions.EQ,
-                    value: isTeamModeFilter.ToString()
-                )
-            };
+                QueryLobbiesOptions options0 = new QueryLobbiesOptions();
+
+                options0.Filters = new List<QueryFilter>()
+                {
+                    new QueryFilter
+                    (
+                        field: QueryFilter.FieldOptions.AvailableSlots,
+                        op: QueryFilter.OpOptions.GT,
+                        value: "0"
+                    )
+                };
+                options = options0;
+            }
+            if (IsTeamModeFilter == 1)
+            {
+                QueryLobbiesOptions options1 = new QueryLobbiesOptions();
+
+                options1.Filters = new List<QueryFilter>()
+                {
+                    new QueryFilter
+                    (
+                        field: QueryFilter.FieldOptions.AvailableSlots,
+                        op: QueryFilter.OpOptions.GT,
+                        value: "0"
+                    ),
+                    new QueryFilter
+                    (
+                        field: QueryFilter.FieldOptions.S1,
+                        op: QueryFilter.OpOptions.EQ,
+                        value: "true"
+                    )
+                };
+                options = options1;
+            }
+            if (IsTeamModeFilter == 2)
+            {
+                QueryLobbiesOptions options2 = new QueryLobbiesOptions();
+
+                options2.Filters = new List<QueryFilter>()
+                {
+                    new QueryFilter
+                    (
+                        field: QueryFilter.FieldOptions.AvailableSlots,
+                        op: QueryFilter.OpOptions.GT,
+                        value: "0"
+                    ),
+                    new QueryFilter
+                    (
+                        field: QueryFilter.FieldOptions.S1,
+                        op: QueryFilter.OpOptions.EQ,
+                        value: "false"
+                    )
+                };
+                options = options2;
+            }
+
 
             options.Order = new List<QueryOrder>()
             {
