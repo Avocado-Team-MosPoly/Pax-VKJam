@@ -426,7 +426,7 @@ public class LobbyManager : MonoBehaviour
                 };
                 options = options0;
             }
-            if (IsTeamModeFilter == 1)
+            else
             {
                 QueryLobbiesOptions options1 = new QueryLobbiesOptions();
 
@@ -442,31 +442,10 @@ public class LobbyManager : MonoBehaviour
                     (
                         field: QueryFilter.FieldOptions.S1,
                         op: QueryFilter.OpOptions.EQ,
-                        value: "True"
+                        value: (IsTeamModeFilter == 1).ToString()
                     )
                 };
                 options = options1;
-            }
-            if (IsTeamModeFilter == 2)
-            {
-                QueryLobbiesOptions options2 = new QueryLobbiesOptions();
-
-                options2.Filters = new List<QueryFilter>()
-                {
-                    new QueryFilter
-                    (
-                        field: QueryFilter.FieldOptions.AvailableSlots,
-                        op: QueryFilter.OpOptions.GT,
-                        value: "0"
-                    ),
-                    new QueryFilter
-                    (
-                        field: QueryFilter.FieldOptions.S1,
-                        op: QueryFilter.OpOptions.EQ,
-                        value: "False"
-                    )
-                };
-                options = options2;
             }
 
 
