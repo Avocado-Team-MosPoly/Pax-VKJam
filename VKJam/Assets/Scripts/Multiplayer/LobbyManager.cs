@@ -442,7 +442,7 @@ public class LobbyManager : MonoBehaviour
                     (
                         field: QueryFilter.FieldOptions.S1,
                         op: QueryFilter.OpOptions.EQ,
-                        value: "true"
+                        value: "True"
                     )
                 };
                 options = options1;
@@ -463,7 +463,7 @@ public class LobbyManager : MonoBehaviour
                     (
                         field: QueryFilter.FieldOptions.S1,
                         op: QueryFilter.OpOptions.EQ,
-                        value: "false"
+                        value: "False"
                     )
                 };
                 options = options2;
