@@ -264,42 +264,6 @@
             document.body.removeChild(textArea);
         }
 
-        window.addEventListener('focus', onTabFocus);
-        window.addEventListener('blur', onTabBlur);
-        function onTabFocus() {
-            if (unityGameInstance == null)
-                return;
-
-            unityGameInstance.SendMessage('Connects', 'OnTabFocus');
-        }
-        function onTabBlur() {
-            if (unityGameInstance == null)
-                return;
-
-            unityGameInstance.SendMessage('Connects', 'OnTabBlur');
-        }
-        window.onbeforeunload = () => {
-            const xhr = new XMLHttpRequest();
-            const url = 'https://pax-churmenya.ru/User/Exit.php';
-            const data = 'Nickname=' + playerId;
-
-            xhr.open('POST', url, true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        console.log('Success:', xhr.responseText); // String response
-                    } else {
-                        console.error('Error:', xhr.status);
-                    }
-                }
-            };
-
-            xhr.send(data);
-            //unityGameInstance.SendMessage('Connects', 'Exit');
-        }
-
         document.addEventListener('paste', onTextPaste);
         function onTextPaste() {
             if (unityGameInstance == null)
@@ -311,6 +275,39 @@
             console.log('[JS] Вставлен текст из буфера обмена:', pastedText);
             unityGameInstance.SendMessage('Connects', 'Paste', pastedText);
         }
+
+        document.addEventListener("visibilitychange", () => {
+            if (unityGameInstance == null)
+                return;
+
+            if (document.visibilityState === "visible") {
+                unityGameInstance.SendMessage('Connects', 'OnTabFocus');
+            } else {
+                unityGameInstance.SendMessage('Connects', 'OnTabBlur');
+            }
+        });
+        document.onvisibilitychange = () => {
+            if (document.visibilityState === "hidden") {
+                const xhr = new XMLHttpRequest();
+                const url = 'https://pax-churmenya.ru/User/Exit.php';
+                const data = 'Nickname=' + playerId;
+
+                xhr.open('POST', url, true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            console.log('Success:', xhr.responseText); // String response
+                        } else {
+                            console.error('Error:', xhr.status);
+                        }
+                    }
+                };
+
+                xhr.send(data);
+            }
+        };
 
         jQuery(document).ready(function ($)
         {
