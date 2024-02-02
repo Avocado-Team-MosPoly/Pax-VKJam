@@ -17,7 +17,7 @@ public class Paint : NetworkBehaviour
         public TextureWrapMode wrapMode;
         public FilterMode filterMode;
     }
-    private struct Vector2Short : INetworkSerializable
+    public struct Vector2Short : INetworkSerializable
     {
         public short x;
         public short y;
@@ -49,6 +49,16 @@ public class Paint : NetworkBehaviour
                 y = (short)(b.y - a.y)
             };
         }
+
+        public static explicit operator Vector2Short(Vector3 vector3)
+        {
+            return new Vector2Short((short)vector3.x, (short)vector3.y);
+        }
+        public static implicit operator Vector3(Vector2Short vector2Short)
+        {
+            return new Vector3(vector2Short.x, vector2Short.y, 0f);
+        }
+
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             serializer.SerializeValue(ref x);

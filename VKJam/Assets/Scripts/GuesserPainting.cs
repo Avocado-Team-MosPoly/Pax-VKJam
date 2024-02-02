@@ -2,16 +2,15 @@ using UnityEngine;
 
 public class GuesserPainting : MonoBehaviour
 {
-    [SerializeField] private Paint paint;
     [SerializeField] private Material material;
 
     private Texture2D texture;
 
     private void OnValidate()
     {
-        if (paint)
+        if (GameManager.Instance.Paint)
         {
-            texture = paint.GetTexture();
+            //texture = GameManager.Instance.Paint.GetTexture();
 
             if (material)
                 material.mainTexture = texture;
@@ -20,7 +19,7 @@ public class GuesserPainting : MonoBehaviour
 
     private void Start()
     {
-        if (!paint)
+        if (!GameManager.Instance.Paint)
         {
             Debug.LogWarning("Paint reference is not set");
             return;
@@ -31,18 +30,7 @@ public class GuesserPainting : MonoBehaviour
             return;
         }
 
-        texture = paint.GetTexture();
+        //texture = GameManager.Instance.Paint.GetTexture();
         material.mainTexture = texture;
     }
-
-    //private void Update()
-    //{
-    //    if (_paint)
-    //    {
-    //        _texture = _paint.GetTexture();
-
-    //        if (_material)
-    //            _material.mainTexture = _texture;
-    //    }
-    //}
 }

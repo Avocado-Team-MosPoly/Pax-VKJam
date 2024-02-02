@@ -1,6 +1,5 @@
 using UnityEngine;
 using Unity.Netcode;
-using System;
 using CartoonFX;
 using TMPro;
 
@@ -81,8 +80,8 @@ public class SceneObjectsManager : MonoBehaviour
 
         chatView.ShowPainterObjects();
         chat.Disable();
-        GameManager.Instance.Paint.ClearCanvas();
-        GameManager.Instance.Paint.SetActive(true);
+        //GameManager.Instance.Paint.ClearCanvas();
+        GameManager.Instance.Paint.Enable(true);
     }
 
     private void OnGuesserSetted()
@@ -101,10 +100,10 @@ public class SceneObjectsManager : MonoBehaviour
         chatView.HidePainterObjects();
         chat.Enable();
         painterBook.SetInteractable(true);
-        guesserPaint.gameObject.SetActive(true);
+        // guesserPaint.gameObject.SetActive(true);
         guesserPreRoundCanvas.SetActive(true);
         guesserPreRoundLabel.text = $"{PlayersDataManager.Instance.PlayerDatas[GameManager.Instance.PainterId].Name} {chooseCardText}";
-        GameManager.Instance.Paint.SetActive(false);
+        GameManager.Instance.Paint.Disable();
         GameManager.Instance.CardManager.enabled = false;
 
         isFirstSetted = true;
@@ -140,7 +139,7 @@ public class SceneObjectsManager : MonoBehaviour
         }
         else
         {
-            guesserPaint.gameObject.SetActive(false);
+            // guesserPaint.gameObject.SetActive(false);
 
             //bestiary.gameObject.SetActive(true);
             //guesserUI.SetActive(false);
