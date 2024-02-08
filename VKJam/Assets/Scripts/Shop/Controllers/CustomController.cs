@@ -16,10 +16,17 @@ public class CustomController : TaskExecutor<CustomController>
 
         foreach (var section in Categories)
         {
+            // run throw all categories
             foreach (var ware in section.products)
             {
-                //Logger.Instance.LogWarning(this, ware.Data.Type.ToString() + " " + ware.Data.productName + " : " + ware.Model);
-                //yield return StartCoroutine(Php_Connect.Request_CheckOwningDesign(ware.Data.productCode, ware.OnCheckOwningDesignComplete));
+                // run throw all products
+                Action<Texture2D> onComplete = (Texture2D texture) =>
+                {
+                    ware.SetSpriteFromURL(texture);
+                };
+
+                if (ware.iconURL != null && ware.icon == null)
+                    yield return StartCoroutine(Php_Connect.Request_CastomTextures(ware.iconURL, onComplete));
             }
         }
 
@@ -231,11 +238,11 @@ public class CustomController : TaskExecutor<CustomController>
         {
             int preload = CountPreloaded();
 
-            for (int i = preload; i < designCount; ++i)
+            for (int i = 0; i < designCount; ++i)
             {
                 WareData output = new();
                 output.Data.productCode = i;
-                output.Request();
+                //output.Request();
                 Categories[(int)Categorize(output.Data.Type)].Add(output);
             }
         };

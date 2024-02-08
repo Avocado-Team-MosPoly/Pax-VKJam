@@ -234,7 +234,7 @@ public class GameManager : NetworkBehaviour
     private void ShowMonsterGuessedClientRpc(byte clientId)
     {
         if (clientId == NetworkManager.LocalClientId)
-            NotificationSystem.Instance.SendLocal("Вы угадали монстра!");
+            NotificationSystem.Instance.SendLocal("Р’С‹ СѓРіР°РґР°Р»Рё РјРѕРЅСЃС‚СЂР°!");
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -256,7 +256,7 @@ public class GameManager : NetworkBehaviour
     {
         Stage = Stage.Waiting;
 
-        sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
+        sceneMonsterMaterial.mainTexture = answerCardSO.monsterTexture;
         sceneObjectsManager.OnRoundEnded();
         hintManager.DisableHandHint();
         TokenManager.AccrueTokens();
@@ -349,7 +349,7 @@ public class GameManager : NetworkBehaviour
     {
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
 
-        sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
+        sceneMonsterMaterial.mainTexture = answerCardSO.monsterTexture;
         OnCardChoosedOnClient?.Invoke(answerCardSO);
     }
 
@@ -357,7 +357,7 @@ public class GameManager : NetworkBehaviour
     private void SetCardSOServerRpc(byte cardSOIndex)
     {
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
-        sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
+        sceneMonsterMaterial.mainTexture = answerCardSO.monsterTexture;
 
         ingredientManager.SetIngredients(answerCardSO.IngredientsSO.Length);
 
@@ -374,7 +374,7 @@ public class GameManager : NetworkBehaviour
     {
         answerCardSO = cardManager.GetCardSOByIndex(cardSOIndex);
 
-        sceneMonsterMaterial.mainTexture = answerCardSO.MonsterTexture;
+        sceneMonsterMaterial.mainTexture = answerCardSO.monsterTexture;
         SceneMonster.SetActive(true);
         SceneMonsterAnimator.Play("Idle");
 
@@ -460,7 +460,7 @@ public class GameManager : NetworkBehaviour
             int winnerClientTokens;
             (winnerClientId, winnerClientTokens) = TokenManager.GetClientIdWithMaxTokens();
 
-            NotificationSystem.Instance.SendLocal("Выиграл " + PlayersDataManager.Instance.PlayerDatas[winnerClientId].Name + "со счетом " + winnerClientTokens);
+            NotificationSystem.Instance.SendLocal("Р’С‹РёРіСЂР°Р» " + PlayersDataManager.Instance.PlayerDatas[winnerClientId].Name + "СЃРѕ СЃС‡РµС‚РѕРј " + winnerClientTokens);
         }
 
         TokenManager.ResetData();

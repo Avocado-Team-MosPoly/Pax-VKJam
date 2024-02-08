@@ -45,7 +45,7 @@ public class Displayer : MonoBehaviour
     {
         if (Type == RandomType.Card)
         {
-            Picture.sprite = Sprite.Create(inputData.Card.CardTexture, new Rect(0.0f, 0.0f, inputData.Card.CardTexture.width, inputData.Card.CardTexture.height), new Vector2(0.5f, 0.5f), 100.0f);
+            Picture.sprite = Sprite.Create(inputData.Card.cardTexture, new Rect(0.0f, 0.0f, inputData.Card.cardTexture.width, inputData.Card.cardTexture.height), new Vector2(0.5f, 0.5f), 100.0f);
             Name.text = inputData.Card.Id;
             Data.text = inputData.CardIsInOwn ? "Повторка" : "Новая";
             inputData.CardIsInOwn = true;

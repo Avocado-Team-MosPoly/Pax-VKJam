@@ -154,8 +154,8 @@ public class CardCatalogueScript : MonoBehaviour
                 });
 
                 imageHolder[i].color = _normalColor;
-                imageHolder[i].sprite = Sprite.Create(Monsters[index].Card.CardTexture,
-                    new Rect(0.0f, 0.0f, Monsters[index].Card.CardTexture.width, Monsters[index].Card.CardTexture.height),
+                imageHolder[i].sprite = Sprite.Create(Monsters[index].Card.cardTexture,
+                    new Rect(0.0f, 0.0f, Monsters[index].Card.cardTexture.width, Monsters[index].Card.cardTexture.height),
                     new Vector2(0.5f, 0.5f), 100.0f);
                 nameHolder[i].text = Monsters[index].Card.Id;
             }

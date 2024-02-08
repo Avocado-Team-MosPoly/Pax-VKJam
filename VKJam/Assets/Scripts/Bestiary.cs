@@ -165,7 +165,7 @@ public class Bestiary : MonoBehaviour
             previousMonsterButton.gameObject.SetActive(true);
         }
 
-        imageHolder.sprite = Monsters[currentMonster].MonsterInBestiarySprite;
+        imageHolder.sprite = Monsters[currentMonster].monsterInBestiarySprite;
         typeHolder.sprite = (Monsters[currentMonster].Difficulty == CardDifficulty.Dangerous ? dangerousIcon : murderousIcon);
         nameHolder.text = Monsters[currentMonster].Id;
 
