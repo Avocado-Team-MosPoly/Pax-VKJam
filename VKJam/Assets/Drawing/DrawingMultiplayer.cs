@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -86,17 +85,18 @@ public class DrawingMultiplayer : NetworkBehaviour
     {
         get
         {
-            return brush.transform.localScale.z;
+            return brushTransform.localScale.z;
         }
         set
         {
-            brush.transform.localScale = value * Vector3.one;
+            brushTransform.localScale = value * Vector3.one;
         }
     }
 
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Camera drawingCamera;
     //[SerializeField] private FPSManager fpsManager;
+    [SerializeField] private float raycastMaxDistance = 10f;
 
     [Header("Canvas Settings")]
     [SerializeField] private Collider drawingCollider;
@@ -106,6 +106,7 @@ public class DrawingMultiplayer : NetworkBehaviour
 
     [Header("Brush Settings")]
     [SerializeField] private GameObject brush;
+    private Transform brushTransform;
     private MeshRenderer brushRenderer;
     [SerializeField] private float stopDistance = 0.02f;
     //[SerializeField, Range(0.1f, 10f)] private float lerpRate = 5f;
@@ -128,6 +129,8 @@ public class DrawingMultiplayer : NetworkBehaviour
 
     private bool isEnabled;
 
+    private bool IsPainter => GameManager.Instance.IsPainter;
+
     public override void OnNetworkSpawn()
     {
         painterMousePosition.OnValueChanged += OnMousePositionValueChanged;
@@ -139,25 +142,21 @@ public class DrawingMultiplayer : NetworkBehaviour
 
     private void OnMousePositionValueChanged(Vector3 previousValue, Vector3 newValue)
     {
-        if (GameManager.Instance.IsPainter)
+        if (IsPainter)
             return;
 
-        if (!isDrawing)
-        {
-            brush.transform.localPosition = newValue;
-        }
-
         lastPosition = newValue;
-        isDrawing = true;
-        brush.SetActive(true);
+        //MoveBrush(newValue);
     }
 
     private void Init()
     {
+        brushTransform = brush.transform;
+
         brush.SetActive(false);
         brushRenderer = brush.GetComponent<MeshRenderer>();
         BrushSize = 0.5f;
-        lastPosition = brush.transform.localPosition;
+        lastPosition = brushTransform.localPosition;
         brushMaterial.SetColor("_Color", brushColor);
 
         canvasFill.SetActive(false);
@@ -174,43 +173,91 @@ public class DrawingMultiplayer : NetworkBehaviour
     private void Awake()
     {
         Init();
-        StartCoroutine(ClearCanvasCoroutine());
+        GameManager.Instance.StartCoroutine(ClearCanvasCoroutine());
     }
 
     private void Update()
     {
-        if (isDrawing)
-            Draw();
-
         if (!isEnabled)
-            return;
+        {
+            if (isDrawing)
+            {
+                MoveBrush(lastPosition);
+            }
 
+            return;
+        }
         if (Input.GetKeyDown(KeyCode.Mouse0))
             StartDrawing();
-        else if (isDrawing && Input.GetKeyUp(KeyCode.Mouse0))
+        else if (Input.GetKeyUp(KeyCode.Mouse0))
             StopDrawing();
 
-        // Draw();
+        Draw();
     }
+
+    #region Start/Stop Drawing
+
+    [ClientRpc] private void StartDrawingClientRpc(Vector3 startPos)
+    {
+        if (IsPainter)
+            return;
+
+        lastPosition = startPos + drawingCamera.transform.position + drawingCamera.transform.forward;
+        brushTransform.position = lastPosition;
+        brush.SetActive(true);
+        isDrawing = true;
+    }
+
+    [ClientRpc] private void StopDrawingClientRpc()
+    {
+        if (IsPainter)
+            return;
+
+        brush.SetActive(false);
+        isDrawing = false;
+    }
+
+    [ServerRpc(RequireOwnership = false)] private void StartDrawingServerRpc(Vector3 startPos) => StartDrawingClientRpc(startPos);
+    [ServerRpc(RequireOwnership = false)] private void StopDrawingServerRpc() => StopDrawingClientRpc();
 
     private void StartDrawing()
     {
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        if (!drawingCollider.Raycast(ray, out RaycastHit hitInfo, 100f))
+        if (isDrawing)
             return;
 
-        brush.transform.position = hitInfo.point + drawingCamera.transform.forward;
-        brush.SetActive(true);
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        if (!drawingCollider.Raycast(ray, out RaycastHit hitInfo, raycastMaxDistance))
+            return;
 
+        lastPosition = hitInfo.point + drawingCamera.transform.forward;
+        brushTransform.position = lastPosition;
+
+        brush.SetActive(true);
         isDrawing = true;
+
+        if (IsServer)
+            StartDrawingClientRpc(hitInfo.point - drawingCamera.transform.position);
+        else
+            StartDrawingServerRpc(hitInfo.point - drawingCamera.transform.position);
     }
 
     private void StopDrawing()
     {
-        brush.SetActive(false);
+        if (!isDrawing)
+            return;
 
+        brush.SetActive(false);
         isDrawing = false;
+
+        if (IsServer)
+            StopDrawingClientRpc();
+        else
+            StopDrawingServerRpc();
     }
+
+    #endregion
+
+    #region Send Painter Mouse Position
 
     [ServerRpc(RequireOwnership = false)]
     private void SendPainterMousePositionServerRpc(Vector3 position)
@@ -218,15 +265,17 @@ public class DrawingMultiplayer : NetworkBehaviour
         painterMousePosition.Value = position;
     }
 
+    #endregion
+
     private void Draw()
     {
         if (!isDrawing)
             return;
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        if (drawingCollider.Raycast(ray, out RaycastHit hitInfo, mainCamera.farClipPlane))
+        if (drawingCollider.Raycast(ray, out RaycastHit hitInfo, raycastMaxDistance))
         {
-            Vector3 newPosition = hitInfo.point + drawingCamera.transform.forward - drawingCamera.transform.position;
+            Vector3 newPosition = hitInfo.point - drawingCamera.transform.position; // + drawingCamera.transform.forward
 
             if (!(Vector3.Distance(lastPosition, newPosition) <= stopDistance))
             {
@@ -244,28 +293,25 @@ public class DrawingMultiplayer : NetworkBehaviour
 
     private void MoveBrush(Vector3 targetPosition)
     {
-        targetPosition += drawingCamera.transform.position;
-        float distance = Vector3.Distance(brush.transform.position, targetPosition);
+        //Debug.Log(targetPosition);
+        targetPosition += drawingCamera.transform.position + drawingCamera.transform.forward;
+        float distance = Vector3.Distance(brushTransform.position, targetPosition);
         if (distance < stopDistance)
-        {
-            if (!GameManager.Instance.IsPainter)
-                StopDrawing();
-
             return;
-        }
+
         float brushTranslation = BrushSize / brushSizeCoefficient;
 
-        Vector3 direction = (targetPosition - brush.transform.position).normalized;
-        Vector3 newPosition = brush.transform.position + brushTranslation * direction;
+        Vector3 direction = (targetPosition - brushTransform.position).normalized;
+        Vector3 newPosition = brushTransform.position + brushTranslation * direction;
         
         float distance1 = Vector3.Distance(newPosition, targetPosition);
 
         if (brushTranslation > distance1)
             newPosition = targetPosition;
 
-        brush.transform.position = newPosition;
+        brushTransform.position = newPosition;
 
-        // brush.transform.position = Vector3.Lerp(brush.transform.position, targetPosition,
+        // brushTransform.position = Vector3.Lerp(brushTransform.position, targetPosition,
         //                                         (Time.deltaTime * lerpRate) *
         //                                         (fpsManager.CurrentFPS / idealFPS) *
         //                                         (distanceCoefficient / distance) *
@@ -278,6 +324,8 @@ public class DrawingMultiplayer : NetworkBehaviour
     {
         isEnabled = true;
 
+        Debug.LogError("Painter");
+
         if (clearCanvas)
             ClearCanvas();
     }
@@ -285,6 +333,8 @@ public class DrawingMultiplayer : NetworkBehaviour
     public void Disable()
     {
         isEnabled = false;
+
+        Debug.LogError("Guesser");
     }
 
     #endregion
@@ -355,7 +405,7 @@ public class DrawingMultiplayer : NetworkBehaviour
     [ClientRpc]
     private void ClearCanvasClientRpc()
     {
-        StartCoroutine(ClearCanvasCoroutine());
+        GameManager.Instance.StartCoroutine(ClearCanvasCoroutine());
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -381,7 +431,7 @@ public class DrawingMultiplayer : NetworkBehaviour
     private void FillCanvasClientRpc(Color color)
     {
         SetBackgroundColor(color);
-        StartCoroutine(ClearCanvasCoroutine());
+        GameManager.Instance.StartCoroutine(ClearCanvasCoroutine());
     }
 
     [ServerRpc(RequireOwnership = false)]
