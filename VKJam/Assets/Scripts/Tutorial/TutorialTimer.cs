@@ -22,7 +22,7 @@ public class TutorialTimer : MonoBehaviour
             ingredientTimerCoroutine = StartCoroutine(IngridientTimer(30));
     }
 
-    IEnumerator IngridientTimer(int sec)
+    private IEnumerator IngridientTimer(int sec)
     {
         _timer = sec;
 

@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class DrawingTutorial : MonoBehaviour
@@ -8,17 +7,18 @@ public class DrawingTutorial : MonoBehaviour
     {
         get
         {
-            return brush.transform.localScale.z;
+            return brushSize;
         }
         set
         {
-            brush.transform.localScale = value * Vector3.one;
+            brushSize = value;
+            brushLine.startWidth = brushLine.endWidth = brushSize;
         }
     }
+    private float brushSize;
 
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Camera drawingCamera;
-    //[SerializeField] private FPSManager fpsManager;
 
     [Header("Canvas Settings")]
     [SerializeField] private Collider drawingCollider;
@@ -27,11 +27,13 @@ public class DrawingTutorial : MonoBehaviour
     [SerializeField] private Color backgroundColor = Color.white;
 
     [Header("Brush Settings")]
-    [SerializeField] private GameObject brush;
+    [SerializeField] private LineRenderer brushLine;
+    [SerializeField] private float initialBrushSize = 0.05f;
     [SerializeField] private float stopDistance = 0.02f;
-    //[SerializeField, Range(0.1f, 10f)] private float lerpRate = 5f;
 
-    private List<GameObject> brushClones = new();
+    private GameObject brushObject;
+    private Transform brushTransform;
+
 
     [Header("Brush Material Settings")]
     [SerializeField] private Material brushMaterial;
@@ -43,26 +45,8 @@ public class DrawingTutorial : MonoBehaviour
 
     private bool isDrawing;
     private Vector3 lastPosition;
-    // private Vector3 offset = Vector3.forward;
-
-    // private const float idealFPS = 60f;
-    // private const float distanceCoefficient = 0.33f;
-    private const float brushSizeCoefficient = 50f;
 
     private bool isEnabled;
-
-    private void Init()
-    {
-        brush.SetActive(false);
-        BrushSize = 0.5f;
-        lastPosition = brush.transform.position;
-        brushMaterial.SetColor("_Color", brushColor);
-
-        canvasFill.SetActive(false);
-        canvasFillMaterial.SetColor("_Color", backgroundColor);
-
-        canvasMaterial.SetTexture("_BaseMap", renderTexture);
-    }
 
     private void Awake()
     {
@@ -83,21 +67,39 @@ public class DrawingTutorial : MonoBehaviour
         Draw();
     }
 
+    private void Init()
+    {
+        brushObject = brushLine.gameObject;
+        brushTransform = brushLine.transform;
+
+        brushObject.SetActive(false);
+
+        BrushSize = initialBrushSize;
+        brushMaterial.SetColor("_Color", brushColor);
+
+        canvasFill.SetActive(false);
+        canvasFillMaterial.SetColor("_Color", backgroundColor);
+
+        canvasMaterial.SetTexture("_BaseMap", renderTexture);
+    }
+
     private void StartDrawing()
     {
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        if (!drawingCollider.Raycast(ray, out RaycastHit hitInfo, 100f))
+        if (!drawingCollider.Raycast(ray, out RaycastHit hitInfo, mainCamera.farClipPlane))
             return;
 
-        brush.transform.position = hitInfo.point + drawingCamera.transform.forward;
-        brush.SetActive(true);
+        lastPosition = hitInfo.point + drawingCamera.transform.forward;
+
+        brushLine.SetPositions(new Vector3[] { lastPosition, lastPosition });
+        brushObject.SetActive(true);
 
         isDrawing = true;
     }
 
     private void StopDrawing()
     {
-        brush.SetActive(false);
+        brushObject.SetActive(false);
 
         isDrawing = false;
     }
@@ -109,36 +111,17 @@ public class DrawingTutorial : MonoBehaviour
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         if (drawingCollider.Raycast(ray, out RaycastHit hitInfo, mainCamera.farClipPlane))
-        {
-            lastPosition = hitInfo.point + drawingCamera.transform.forward;
-        }
-
-        MoveBrush(lastPosition);
+            MoveBrush(hitInfo.point + drawingCamera.transform.forward);
     }
 
     private void MoveBrush(Vector3 targetPosition)
     {
-        float distance = Vector3.Distance(brush.transform.position, targetPosition);
+        float distance = Vector3.Distance(lastPosition, targetPosition);
         if (distance < stopDistance)
             return;
 
-        float brushTranslation = BrushSize / brushSizeCoefficient;
-
-        Vector3 direction = (targetPosition - brush.transform.position).normalized;
-        Vector3 newPosition = brush.transform.position + brushTranslation * direction;
-        
-        float distance1 = (newPosition - targetPosition).magnitude;
-
-        if (brushTranslation > distance1)
-            newPosition = targetPosition;
-
-        brush.transform.position = newPosition;
-
-        // brush.transform.position = Vector3.Lerp(brush.transform.position, targetPosition,
-        //                                         (Time.deltaTime * lerpRate) *
-        //                                         (fpsManager.CurrentFPS / idealFPS) *
-        //                                         (distanceCoefficient / distance) *
-        //                                         BrushSize);
+        brushLine.SetPositions(new Vector3[] { lastPosition, targetPosition });
+        lastPosition = targetPosition;
     }
 
     [ContextMenu("Enable")]
@@ -169,19 +152,12 @@ public class DrawingTutorial : MonoBehaviour
         canvasFillMaterial.SetColor("_Color", backgroundColor);
     }
 
-    private IEnumerator ClearCanvasCoroutine()
-    {
-        canvasFill.SetActive(true);
-
-        yield return new WaitForEndOfFrame();
-
-        canvasFill.SetActive(false);
-    }
-
     [ContextMenu("Clear Canvas")]
     public void ClearCanvas()
     {
-        StartCoroutine(ClearCanvasCoroutine());
+        canvasFill.SetActive(true);
+        drawingCamera.Render();
+        canvasFill.SetActive(false);
     }
 
     public void FillCanvas(Color color)
