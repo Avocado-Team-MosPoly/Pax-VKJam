@@ -311,7 +311,7 @@ public class GameManager : NetworkBehaviour
     private void ActivateGuessMonsterStage()
     {
         Stage = Stage.MonsterGuess;
-        paint.ClearCanvas();
+        paint.ClearCanvasGlobal();
 
         bestiaryIngredients.gameObject.SetActive(false);
 
@@ -413,7 +413,7 @@ public class GameManager : NetworkBehaviour
     {
         timer.SetIngredientGuessTime();
         timer.StartTimer();
-        paint.ClearCanvas();
+        paint.ClearCanvasGlobal();
 
         OnIngredientSwitchedClientRpc(ingredientIndex);
     }

@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(storeSection))]
+[CustomEditor(typeof(StoreSection))]
 public class StoreSectionEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        storeSection section = (storeSection)target;
+        StoreSection section = (StoreSection)target;
         if (section.products != null)
         {
             for (int i = 0; i < section.products.Count; i++)

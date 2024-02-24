@@ -9,9 +9,9 @@ public class PlayersDataManager : NetworkBehaviour
 
     public IReadOnlyDictionary<ulong, PlayerData> PlayerDatas => playerDatas;
 
-    public storeSection AvatarsAndFramesStorage => avatarsAndFramesStorage;
+    public StoreSection AvatarsAndFramesStorage => avatarsAndFramesStorage;
 
-    [SerializeField] private storeSection avatarsAndFramesStorage;
+    [SerializeField] private StoreSection avatarsAndFramesStorage;
 
     private Dictionary<ulong, PlayerData> playerDatas = new();
     private NetworkList<NetworkTuple_PlayerData> playerDatasList = new();
@@ -54,7 +54,7 @@ public class PlayersDataManager : NetworkBehaviour
         else if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Value)
         {
             playerDatas[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
-            Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data added: {changeEvent.Value.PlayerData} {changeEvent.Type}");
+            Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data updated: {changeEvent.Value.PlayerData}");
         }
         else
         {

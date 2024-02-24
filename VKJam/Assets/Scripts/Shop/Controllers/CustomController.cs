@@ -6,7 +6,7 @@ using UnityEngine;
 public class CustomController : TaskExecutor<CustomController>
 {
     [SerializeField] private int FreeIndex;
-    public storeSection[] Categories = new storeSection[Enum.GetNames(typeof(ShopFilters)).Length];
+    public StoreSection[] Categories = new StoreSection[Enum.GetNames(typeof(ShopFilters)).Length];
     public WareData[] Custom = new WareData[Enum.GetNames(typeof(ItemType)).Length];
     public WareData[] Standart = new WareData[Enum.GetNames(typeof(ItemType)).Length];
 

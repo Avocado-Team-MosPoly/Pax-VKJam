@@ -59,8 +59,6 @@ public class LobbyManager : MonoBehaviour
             yield break;
         }
 
-        //yield return Authentication.Authenticate();
-
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
             if (clientId != NetworkManager.Singleton.LocalClientId)
@@ -75,7 +73,6 @@ public class LobbyManager : MonoBehaviour
 
         NetworkManager.Singleton.OnClientStopped += async (bool isHost) =>
         {
-            //Logger.Instance.LogError(this, "Me");
             await DisconnectAsync();
         };
 
@@ -132,7 +129,7 @@ public class LobbyManager : MonoBehaviour
         if (CurrentLobby == null)
             return true;
 
-        NotificationSystem.Instance.SendLocal("Вы уже в лобби: " + CurrentLobby.Name);
+        NotificationSystem.Instance.SendLocal("пїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ: " + CurrentLobby.Name);
         return false;
     }
 
@@ -254,9 +251,9 @@ public class LobbyManager : MonoBehaviour
                 options: createLobbyOptions
             );
 
-            StartHeartBeatPing();
-
             Logger.Instance.Log(this, $"Created lobby: {CurrentLobby.Name}, max players: {CurrentLobby.MaxPlayers}, lobby code: {CurrentLobby.LobbyCode}");
+
+            StartHeartBeatPing();
 
             string relayJoinCode = await RelayManager.Instance.CreateRelay();
 
@@ -271,7 +268,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Lobby");
+            NotificationSystem.Instance.SendLocal("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Unity Lobby");
         }
     }
 
@@ -303,7 +300,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Lobby");
+            NotificationSystem.Instance.SendLocal("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Unity Lobby");
         }
     }
 
@@ -335,7 +332,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Lobby");
+            NotificationSystem.Instance.SendLocal("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Unity Lobby");
         }
     }
 
@@ -351,14 +348,6 @@ public class LobbyManager : MonoBehaviour
             if (!CheckCurrentLobbyIsNull())
                 return;
 
-            QueryLobbiesOptions options = new QueryLobbiesOptions();
-            options.Filters = new List<QueryFilter>()
-            {
-                new QueryFilter(
-                    field: QueryFilter.FieldOptions.AvailableSlots,
-                    op: QueryFilter.OpOptions.GT,
-                    value: "0")
-            };
             QuickJoinLobbyOptions quickJoinLobbyOptions = new()
             {
                 Player = GetPlayer(),
@@ -381,7 +370,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Lobby");
+            NotificationSystem.Instance.SendLocal("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Unity Lobby");
         }
     }
 
@@ -402,9 +391,10 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.Log(this, ex);
-            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Lobby");
+            NotificationSystem.Instance.SendLocal("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Unity Lobby");
         }
     }
+
     public async void ListLobbiesWithFilter()
     {
         try
@@ -464,7 +454,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Lobby");
+            NotificationSystem.Instance.SendLocal("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Unity Lobby");
         }
     }
 
@@ -537,12 +527,5 @@ public class LobbyManager : MonoBehaviour
         }
         else
             Logger.Instance.LogWarning(this, "You are not in the lobby");
-    }
-
-    public void OnServerEnded()
-    {
-        //Debug.Log("On Server Ended");
-        //playerUlongIdList.Clear();
-        //LeaveLobbyAsync();
     }
 }

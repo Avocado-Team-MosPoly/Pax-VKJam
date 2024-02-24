@@ -66,18 +66,14 @@ public class NotificationSystem : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SendGlobalServerRpc(string message, float showTime, ServerRpcParams serverRpcParams)
     {
-        if (serverRpcParams.Receive.SenderClientId != NetworkManager.LocalClientId)
-            SendLocal(message, showTime);
-
+        SendLocal(message, showTime);
         SendGlobalClientRpc(message, showTime, (byte)serverRpcParams.Receive.SenderClientId);
     }
 
     [ClientRpc]
     private void SendGlobalClientRpc(string message, float showTime, byte senderClientId)
     {
-        if (IsServer)
-            return;
-        if (senderClientId == NetworkManager.LocalClientId)
+        if (IsServer || senderClientId == NetworkManager.LocalClientId)
             return;
 
         SendLocal(message, showTime);

@@ -24,7 +24,7 @@ public static class PrefabUtilityEditor
         for (int i = 0; i < folderPaths.Length; i++)
         {
             string folderPath = folderPaths[i];
-            storeSection section = AssetDatabase.LoadAssetAtPath<storeSection>(sectionAssetPaths[i]);
+            StoreSection section = AssetDatabase.LoadAssetAtPath<StoreSection>(sectionAssetPaths[i]);
 
             if (section == null)
             {
@@ -59,6 +59,6 @@ public static class PrefabUtilityEditor
             }
         }
 
-        AssetDatabase.SaveAssets(); // Сохранение всех изменений
+        AssetDatabase.SaveAssets(); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     }
 }

@@ -1,8 +1,9 @@
-using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using System;
+using UnityEngine.EventSystems;
 
 public struct Vector3Short : INetworkSerializable
 {
@@ -63,15 +64,21 @@ public struct Vector3Short : INetworkSerializable
     }
 }
 
+[Serializable]
+public struct RenderTextureSettings
+{
+    public int width;
+    public int height;
+    public RenderTextureFormat format;
+    public TextureWrapMode wrapMode;
+    public FilterMode filterMode;
+}
+
 public class DrawingMultiplayer : NetworkBehaviour
 {
-    #region Multiplayer Fields
-
     private NetworkVariable<Vector3> painterMousePosition = new(new Vector3(), NetworkVariableReadPermission.Everyone);
 
     [HideInInspector] public UnityEvent OnNetworkSpawned;
-
-    #endregion
 
     [SerializeField] private BrushMode brushMode = BrushMode.Draw;
 
@@ -85,31 +92,45 @@ public class DrawingMultiplayer : NetworkBehaviour
     {
         get
         {
-            return brushTransform.localScale.z;
+            return brushSize;
         }
         set
         {
-            brushTransform.localScale = value * Vector3.one;
+            brushSize = value;
+            brushLine.startWidth = brushLine.endWidth = brushSize;
         }
     }
+    private float brushSize;
 
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Camera drawingCamera;
-    //[SerializeField] private FPSManager fpsManager;
+    
     [SerializeField] private float raycastMaxDistance = 10f;
 
     [Header("Canvas Settings")]
+
+    [Tooltip("In-game size: 2048x1308. Lobby size: 2048x2048")]
+    [SerializeField] private RenderTextureSettings renderTextureSettings = new()
+    {
+        width = 2048,
+        height = 2048,
+        format = RenderTextureFormat.ARGB32,
+        wrapMode = TextureWrapMode.Clamp,
+        filterMode = FilterMode.Bilinear
+    };
+
     [SerializeField] private Collider drawingCollider;
     [SerializeField] private Material canvasMaterial;
-    [SerializeField] private RenderTexture renderTexture;
     [SerializeField] private Color backgroundColor = Color.white;
 
+    private RenderTexture renderTexture;
+
     [Header("Brush Settings")]
-    [SerializeField] private GameObject brush;
-    private Transform brushTransform;
-    private MeshRenderer brushRenderer;
+    [SerializeField] private LineRenderer brushLine;
+    [SerializeField] private float initialBrushSize = 0.05f;
     [SerializeField] private float stopDistance = 0.02f;
-    //[SerializeField, Range(0.1f, 10f)] private float lerpRate = 5f;
+
+    private GameObject brushObject;
 
     [Header("Brush Material Settings")]
     [SerializeField] private Material brushMaterial;
@@ -121,42 +142,43 @@ public class DrawingMultiplayer : NetworkBehaviour
 
     private bool isDrawing;
     private Vector3 lastPosition;
-    // private Vector3 offset = Vector3.forward;
+    
+    protected bool isEnabled;
 
-    // private const float idealFPS = 60f;
-    // private const float distanceCoefficient = 0.33f;
-    private const float brushSizeCoefficient = 50f;
-
-    private bool isEnabled;
-
-    private bool IsPainter => GameManager.Instance.IsPainter;
+    private bool IsPainter => GameManager.Instance != null && GameManager.Instance.IsPainter;
+    private bool IsMouseOverUI => EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
 
     public override void OnNetworkSpawn()
     {
         painterMousePosition.OnValueChanged += OnMousePositionValueChanged;
 
         isEnabled = IsServer;
-        ClearCanvas();
         OnNetworkSpawned?.Invoke();
     }
 
-    private void OnMousePositionValueChanged(Vector3 previousValue, Vector3 newValue)
+    protected virtual void OnMousePositionValueChanged(Vector3 previousValue, Vector3 newValue)
     {
         if (IsPainter)
             return;
 
-        lastPosition = newValue;
-        //MoveBrush(newValue);
+        MoveBrush(newValue);
     }
 
     private void Init()
     {
-        brushTransform = brush.transform;
+        renderTexture = new RenderTexture(renderTextureSettings.width, renderTextureSettings.height, 0, renderTextureSettings.format)
+        {
+            wrapMode = renderTextureSettings.wrapMode,
+            filterMode = renderTextureSettings.filterMode
+        };
+        drawingCamera.targetTexture = renderTexture;
+        canvasMaterial.mainTexture = renderTexture;
 
-        brush.SetActive(false);
-        brushRenderer = brush.GetComponent<MeshRenderer>();
-        BrushSize = 0.5f;
-        lastPosition = brushTransform.localPosition;
+        brushObject = brushLine.gameObject;
+
+        brushObject.SetActive(false);
+        BrushSize = initialBrushSize;
+
         brushMaterial.SetColor("_Color", brushColor);
 
         canvasFill.SetActive(false);
@@ -164,32 +186,24 @@ public class DrawingMultiplayer : NetworkBehaviour
 
         canvasMaterial.SetTexture("_BaseMap", renderTexture);
 
-        // new
-
         switchBrushModeButton.onClick.AddListener(SwitchBrushMode);
         switchBrushModeButtonImage = switchBrushModeButton.GetComponent<Image>();
+
     }
 
     private void Awake()
     {
         Init();
-        GameManager.Instance.StartCoroutine(ClearCanvasCoroutine());
     }
 
     private void Update()
     {
         if (!isEnabled)
-        {
-            if (isDrawing)
-            {
-                MoveBrush(lastPosition);
-            }
-
             return;
-        }
+
         if (Input.GetKeyDown(KeyCode.Mouse0))
             StartDrawing();
-        else if (Input.GetKeyUp(KeyCode.Mouse0))
+        else if (isDrawing && Input.GetKeyUp(KeyCode.Mouse0))
             StopDrawing();
 
         Draw();
@@ -197,32 +211,43 @@ public class DrawingMultiplayer : NetworkBehaviour
 
     #region Start/Stop Drawing
 
-    [ClientRpc] private void StartDrawingClientRpc(Vector3 startPos)
+    [ServerRpc(RequireOwnership = false)]
+    protected virtual void StartDrawingServerRpc(Vector3 startPos, ServerRpcParams rpcParams)
+    {
+        StartDrawingClientRpc(startPos);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    protected virtual void StopDrawingServerRpc()
+    {
+        StopDrawingClientRpc();
+    }
+
+    [ClientRpc]
+    private void StartDrawingClientRpc(Vector3 startPos)
     {
         if (IsPainter)
             return;
 
         lastPosition = startPos + drawingCamera.transform.position + drawingCamera.transform.forward;
-        brushTransform.position = lastPosition;
-        brush.SetActive(true);
+        brushLine.SetPositions(new Vector3[] { lastPosition, lastPosition });
+        brushObject.SetActive(true);
         isDrawing = true;
     }
 
-    [ClientRpc] private void StopDrawingClientRpc()
+    [ClientRpc]
+    private void StopDrawingClientRpc()
     {
         if (IsPainter)
             return;
 
-        brush.SetActive(false);
+        brushObject.SetActive(false);
         isDrawing = false;
     }
 
-    [ServerRpc(RequireOwnership = false)] private void StartDrawingServerRpc(Vector3 startPos) => StartDrawingClientRpc(startPos);
-    [ServerRpc(RequireOwnership = false)] private void StopDrawingServerRpc() => StopDrawingClientRpc();
-
     private void StartDrawing()
     {
-        if (isDrawing)
+        if (isDrawing || IsMouseOverUI)
             return;
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -230,15 +255,14 @@ public class DrawingMultiplayer : NetworkBehaviour
             return;
 
         lastPosition = hitInfo.point + drawingCamera.transform.forward;
-        brushTransform.position = lastPosition;
-
-        brush.SetActive(true);
+        brushLine.SetPositions(new Vector3[] { lastPosition, lastPosition });
+        brushObject.SetActive(true);
         isDrawing = true;
 
-        if (IsServer)
-            StartDrawingClientRpc(hitInfo.point - drawingCamera.transform.position);
-        else
-            StartDrawingServerRpc(hitInfo.point - drawingCamera.transform.position);
+        // if (IsServer)
+        //     StartDrawingClientRpc(hitInfo.point - drawingCamera.transform.position);
+        // else
+        StartDrawingServerRpc(hitInfo.point - drawingCamera.transform.position, new ServerRpcParams());
     }
 
     private void StopDrawing()
@@ -246,26 +270,21 @@ public class DrawingMultiplayer : NetworkBehaviour
         if (!isDrawing)
             return;
 
-        brush.SetActive(false);
+        brushObject.SetActive(false);
         isDrawing = false;
 
-        if (IsServer)
-            StopDrawingClientRpc();
-        else
-            StopDrawingServerRpc();
+        // if (IsServer)
+        //     StopDrawingClientRpc();
+        // else
+        StopDrawingServerRpc();
     }
 
     #endregion
 
-    #region Send Painter Mouse Position
+    #region Drawing
 
     [ServerRpc(RequireOwnership = false)]
-    private void SendPainterMousePositionServerRpc(Vector3 position)
-    {
-        painterMousePosition.Value = position;
-    }
-
-    #endregion
+    private void SendPainterMousePositionServerRpc(Vector3 position) => painterMousePosition.Value = position;
 
     private void Draw()
     {
@@ -275,48 +294,29 @@ public class DrawingMultiplayer : NetworkBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         if (drawingCollider.Raycast(ray, out RaycastHit hitInfo, raycastMaxDistance))
         {
-            Vector3 newPosition = hitInfo.point - drawingCamera.transform.position; // + drawingCamera.transform.forward
+            Vector3 newPosition = hitInfo.point - drawingCamera.transform.position;
 
-            if (!(Vector3.Distance(lastPosition, newPosition) <= stopDistance))
+            if (Vector3.Distance(lastPosition, newPosition) > stopDistance)
             {
-                lastPosition = newPosition;
+                MoveBrush(newPosition);
 
                 if (IsServer)
-                    painterMousePosition.Value = lastPosition;
+                    painterMousePosition.Value = newPosition;
                 else
-                    SendPainterMousePositionServerRpc(lastPosition);
+                    SendPainterMousePositionServerRpc(newPosition);
             }
         }
-
-        MoveBrush(lastPosition);
     }
 
-    private void MoveBrush(Vector3 targetPosition)
+    protected void MoveBrush(Vector3 targetPosition)
     {
-        //Debug.Log(targetPosition);
         targetPosition += drawingCamera.transform.position + drawingCamera.transform.forward;
-        float distance = Vector3.Distance(brushTransform.position, targetPosition);
-        if (distance < stopDistance)
-            return;
 
-        float brushTranslation = BrushSize / brushSizeCoefficient;
-
-        Vector3 direction = (targetPosition - brushTransform.position).normalized;
-        Vector3 newPosition = brushTransform.position + brushTranslation * direction;
-        
-        float distance1 = Vector3.Distance(newPosition, targetPosition);
-
-        if (brushTranslation > distance1)
-            newPosition = targetPosition;
-
-        brushTransform.position = newPosition;
-
-        // brushTransform.position = Vector3.Lerp(brushTransform.position, targetPosition,
-        //                                         (Time.deltaTime * lerpRate) *
-        //                                         (fpsManager.CurrentFPS / idealFPS) *
-        //                                         (distanceCoefficient / distance) *
-        //                                         BrushSize);
+        brushLine.SetPositions(new Vector3[] { lastPosition, targetPosition });
+        lastPosition = targetPosition;
     }
+
+    #endregion
 
     #region Enable/Disable
 
@@ -324,17 +324,13 @@ public class DrawingMultiplayer : NetworkBehaviour
     {
         isEnabled = true;
 
-        Debug.LogError("Painter");
-
         if (clearCanvas)
-            ClearCanvas();
+            ClearCanvasGlobal();
     }
 
     public void Disable()
     {
         isEnabled = false;
-
-        Debug.LogError("Guesser");
     }
 
     #endregion
@@ -365,12 +361,12 @@ public class DrawingMultiplayer : NetworkBehaviour
 
         if (brushMode == BrushMode.Draw)
         {
-            brushRenderer.sharedMaterial = brushMaterial;
+            // brushRenderer.sharedMaterial = brushMaterial;
             switchBrushModeButtonImage.sprite = eraserSprite;
         }
         else
         {
-            brushRenderer.sharedMaterial = canvasFillMaterial;
+            // brushRenderer.sharedMaterial = canvasFillMaterial;
             switchBrushModeButtonImage.sprite = chalkSprite;
         }
     }
@@ -393,34 +389,40 @@ public class DrawingMultiplayer : NetworkBehaviour
 
     #region Clear Canvas
 
-    private IEnumerator ClearCanvasCoroutine()
-    {
-        canvasFill.SetActive(true);
-
-        yield return new WaitForSeconds(0.2f);
-
-        canvasFill.SetActive(false);
-    }
-
     [ClientRpc]
-    private void ClearCanvasClientRpc()
+    private void ClearCanvasClientRpc(byte senderClientId)
     {
-        GameManager.Instance.StartCoroutine(ClearCanvasCoroutine());
+        if (IsServer || senderClientId == NetworkManager.LocalClientId)
+            return;
+
+        ClearCanvasLocal();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ClearCanvasServerRpc()
+    private void ClearCanvasServerRpc(ServerRpcParams rpcParams)
     {
-        ClearCanvasClientRpc();
+        ClearCanvasLocal();
+        ClearCanvasClientRpc((byte)rpcParams.Receive.SenderClientId);
     }
 
-    [ContextMenu("Clear Canvas")]
-    public void ClearCanvas()
+    [ContextMenu("Clear Canvas Global")]
+    public void ClearCanvasGlobal()
     {
+        ClearCanvasLocal();
+
         if (IsServer)
-            ClearCanvasClientRpc();
+            ClearCanvasClientRpc((byte)NetworkManager.LocalClientId);
         else
-            ClearCanvasServerRpc();
+            ClearCanvasServerRpc(new ServerRpcParams());
+    }
+
+    [ContextMenu("Clear Canvas Local")]
+    public void ClearCanvasLocal()
+    {
+        Debug.Log("Clearing Canvas...");
+        canvasFill.SetActive(true);
+        drawingCamera.Render();
+        canvasFill.SetActive(false);
     }
 
     #endregion
@@ -428,24 +430,33 @@ public class DrawingMultiplayer : NetworkBehaviour
     #region Fill Canvas
 
     [ClientRpc]
-    private void FillCanvasClientRpc(Color color)
+    private void FillCanvasClientRpc(Color color, byte senderClientId)
     {
-        SetBackgroundColor(color);
-        GameManager.Instance.StartCoroutine(ClearCanvasCoroutine());
+        if (IsServer || senderClientId == NetworkManager.LocalClientId)
+            return;
+
+        FillCanvasLocal(color);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void FillCanvasServerRpc(Color color)
+    private void FillCanvasServerRpc(Color color, ServerRpcParams rpcParams)
     {
-        ClearCanvasClientRpc();
+        FillCanvasLocal(color);
+        FillCanvasClientRpc(color, (byte)rpcParams.Receive.SenderClientId);
     }
 
-    public void FillCanvas(Color color)
+    public void FillCanvasGlobal(Color color)
     {
         if (IsServer)
-            FillCanvasClientRpc(color);
+            FillCanvasClientRpc(color, (byte)NetworkManager.LocalClientId);
         else
-            FillCanvasServerRpc(color);
+            FillCanvasServerRpc(color, new ServerRpcParams());
+    }
+
+    public void FillCanvasLocal(Color color)
+    {
+        SetBackgroundColor(color);
+        ClearCanvasLocal();
     }
 
     #endregion

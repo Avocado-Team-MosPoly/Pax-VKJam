@@ -8,7 +8,7 @@ public class SceneObjectsManager : MonoBehaviour
     [SerializeField] private GameObject[] painterGameObjects;
     [SerializeField] private GameObject[] guesserGameObjects;
 
-    [SerializeField] private GuesserPainting guesserPaint;
+    [SerializeField] private GameObject guesserPaint;
     [SerializeField] private Interactable painterBook;
     [SerializeField] private Bestiary bestiary;
     [SerializeField] private MoveCamera moveCamera;
@@ -65,6 +65,7 @@ public class SceneObjectsManager : MonoBehaviour
 
         GameManager.Instance.SceneMonster.SetActive(false);
         GameManager.Instance.CardManager.ResetMonsterSprite();
+        GameManager.Instance.Paint.ClearCanvasLocal();
     }
 
     private void OnPainterSetted()
@@ -100,7 +101,7 @@ public class SceneObjectsManager : MonoBehaviour
         chatView.HidePainterObjects();
         chat.Enable();
         painterBook.SetInteractable(true);
-        // guesserPaint.gameObject.SetActive(true);
+        guesserPaint.gameObject.SetActive(true);
         guesserPreRoundCanvas.SetActive(true);
         guesserPreRoundLabel.text = $"{PlayersDataManager.Instance.PlayerDatas[GameManager.Instance.PainterId].Name} {chooseCardText}";
         GameManager.Instance.Paint.Disable();
@@ -139,7 +140,7 @@ public class SceneObjectsManager : MonoBehaviour
         }
         else
         {
-            // guesserPaint.gameObject.SetActive(false);
+            guesserPaint.gameObject.SetActive(false);
 
             //bestiary.gameObject.SetActive(true);
             //guesserUI.SetActive(false);

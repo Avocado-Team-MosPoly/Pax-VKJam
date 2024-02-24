@@ -32,7 +32,6 @@ public class DrawingTutorial : MonoBehaviour
     [SerializeField] private float stopDistance = 0.02f;
 
     private GameObject brushObject;
-    private Transform brushTransform;
 
 
     [Header("Brush Material Settings")]
@@ -70,7 +69,6 @@ public class DrawingTutorial : MonoBehaviour
     private void Init()
     {
         brushObject = brushLine.gameObject;
-        brushTransform = brushLine.transform;
 
         brushObject.SetActive(false);
 
