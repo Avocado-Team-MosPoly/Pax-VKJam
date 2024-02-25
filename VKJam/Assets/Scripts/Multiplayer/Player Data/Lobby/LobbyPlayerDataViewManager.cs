@@ -25,7 +25,7 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
     private bool canKick = true;
 
     private IReadOnlyDictionary<ulong, PlayerData> playerData => PlayersDataManager.Instance.PlayerDatas;
-    private storeSection avatarsAndFramesStorage => PlayersDataManager.Instance.AvatarsAndFramesStorage;
+    private StoreSection avatarsAndFramesStorage => PlayersDataManager.Instance.AvatarsAndFramesStorage;
 
     private void Awake()
     {

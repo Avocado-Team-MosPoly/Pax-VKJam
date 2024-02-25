@@ -18,7 +18,7 @@ public class PlayersStatusManager : NetworkBehaviour
     private Dictionary<ulong, PlayerStatus> playerStatuses = new();
 
     private IReadOnlyDictionary<ulong, PlayerData> playerData => PlayersDataManager.Instance.PlayerDatas;
-    private storeSection avatarsAndFramesStorage => PlayersDataManager.Instance.AvatarsAndFramesStorage;
+    private StoreSection avatarsAndFramesStorage => PlayersDataManager.Instance.AvatarsAndFramesStorage;
 
     public override void OnNetworkSpawn()
     {

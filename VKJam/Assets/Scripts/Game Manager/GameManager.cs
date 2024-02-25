@@ -25,7 +25,7 @@ public class GameManager : NetworkBehaviour
     public bool IsDangerousCard => answerCardSO.Difficulty == CardDifficulty.Dangerous;
     public int CurrentRound => currentRound;
 
-    public Paint Paint => paint;
+    public DrawingMultiplayer Paint => paint;
     public IngredientManager IngredientManager => ingredientManager;
     public RoundManager RoundManager => roundManager;
     public RoleManager RoleManager => roleManager;
@@ -55,7 +55,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private BestiaryIngredients bestiaryIngredients;
 
     [Header("Paint")]
-    [SerializeField] private Paint paint;
+    [SerializeField] private DrawingMultiplayer paint;
 
     [Header("Buttons")]
     [SerializeField] private Button nextRoundButton;
@@ -234,7 +234,7 @@ public class GameManager : NetworkBehaviour
     private void ShowMonsterGuessedClientRpc(byte clientId)
     {
         if (clientId == NetworkManager.LocalClientId)
-            NotificationSystem.Instance.SendLocal("Вы угадали монстра!");
+            NotificationSystem.Instance.SendLocal("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!");
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -287,7 +287,7 @@ public class GameManager : NetworkBehaviour
 
         if (IsPainter)
         {
-            paint.SetActive(false);
+            paint.Disable();
             if (paint.enabled)
                 paint.GetComponent<Animator>().Play("NoteBookClose");
 
@@ -311,7 +311,7 @@ public class GameManager : NetworkBehaviour
     private void ActivateGuessMonsterStage()
     {
         Stage = Stage.MonsterGuess;
-        paint.ClearCanvas();
+        paint.ClearCanvasGlobal();
 
         bestiaryIngredients.gameObject.SetActive(false);
 
@@ -413,7 +413,7 @@ public class GameManager : NetworkBehaviour
     {
         timer.SetIngredientGuessTime();
         timer.StartTimer();
-        paint.ClearCanvas();
+        paint.ClearCanvasGlobal();
 
         OnIngredientSwitchedClientRpc(ingredientIndex);
     }
@@ -460,7 +460,7 @@ public class GameManager : NetworkBehaviour
             int winnerClientTokens;
             (winnerClientId, winnerClientTokens) = TokenManager.GetClientIdWithMaxTokens();
 
-            NotificationSystem.Instance.SendLocal("Выиграл " + PlayersDataManager.Instance.PlayerDatas[winnerClientId].Name + "со счетом " + winnerClientTokens);
+            NotificationSystem.Instance.SendLocal("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ " + PlayersDataManager.Instance.PlayerDatas[winnerClientId].Name + "пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ " + winnerClientTokens);
         }
 
         TokenManager.ResetData();

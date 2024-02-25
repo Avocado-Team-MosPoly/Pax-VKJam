@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 [System.Serializable]
 [CreateAssetMenu()]
-public class storeSection : ScriptableObject
+public class StoreSection : ScriptableObject
 {
     public List<WareData> products;
     public ShopFilters sectionType;

@@ -12,12 +12,12 @@ public class Paint : NetworkBehaviour
     [Serializable]
     private struct TextureSettings
     {
-        [Range(2, 2048)] public int sizeX;
-        [Range(2, 2048)] public int sizeY;
+        [Range(2, 2048)] public int width;
+        [Range(2, 2048)] public int height;
         public TextureWrapMode wrapMode;
         public FilterMode filterMode;
     }
-    private struct Vector2Short : INetworkSerializable
+    public struct Vector2Short : INetworkSerializable
     {
         public short x;
         public short y;
@@ -49,6 +49,16 @@ public class Paint : NetworkBehaviour
                 y = (short)(b.y - a.y)
             };
         }
+
+        public static explicit operator Vector2Short(Vector3 vector3)
+        {
+            return new Vector2Short((short)vector3.x, (short)vector3.y);
+        }
+        public static implicit operator Vector3(Vector2Short vector2Short)
+        {
+            return new Vector3(vector2Short.x, vector2Short.y, 0f);
+        }
+
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             serializer.SerializeValue(ref x);
@@ -92,8 +102,8 @@ public class Paint : NetworkBehaviour
 
     [SerializeField] private TextureSettings textureSettings = new TextureSettings
     {
-        sizeX = 512,
-        sizeY = 1024,
+        width = 512,
+        height = 1024,
         wrapMode = TextureWrapMode.Clamp,
         filterMode = FilterMode.Point
     };
@@ -217,7 +227,7 @@ public class Paint : NetworkBehaviour
             return;
         }
 
-        texture = new Texture2D(textureSettings.sizeX, textureSettings.sizeY);
+        texture = new Texture2D(textureSettings.width, textureSettings.height);
         texture.wrapMode = textureSettings.wrapMode;
         texture.filterMode = textureSettings.filterMode;
 
@@ -292,8 +302,8 @@ public class Paint : NetworkBehaviour
 
             if (_collider.Raycast(ray, out RaycastHit hitInfo, 100f))
             {
-                int rayX = (int)(hitInfo.textureCoord.x * textureSettings.sizeX);
-                int rayY = (int)(hitInfo.textureCoord.y * textureSettings.sizeY);
+                int rayX = (int)(hitInfo.textureCoord.x * textureSettings.width);
+                int rayY = (int)(hitInfo.textureCoord.y * textureSettings.height);
 
                 Vector2Short newRayPos = new Vector2Short(rayX, rayY);
 
@@ -332,9 +342,9 @@ public class Paint : NetworkBehaviour
 
     private void Fill(Color color)
     {
-        for (int x = 0; x < textureSettings.sizeX; x++)
+        for (int x = 0; x < textureSettings.width; x++)
         {
-            for (int y = 0; y < textureSettings.sizeY; y++)
+            for (int y = 0; y < textureSettings.height; y++)
             {
                 texture.SetPixel(x, y, color);
             }

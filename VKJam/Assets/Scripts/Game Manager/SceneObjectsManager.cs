@@ -1,6 +1,5 @@
 using UnityEngine;
 using Unity.Netcode;
-using System;
 using CartoonFX;
 using TMPro;
 
@@ -9,7 +8,7 @@ public class SceneObjectsManager : MonoBehaviour
     [SerializeField] private GameObject[] painterGameObjects;
     [SerializeField] private GameObject[] guesserGameObjects;
 
-    [SerializeField] private GuesserPainting guesserPaint;
+    [SerializeField] private GameObject guesserPaint;
     [SerializeField] private Interactable painterBook;
     [SerializeField] private Bestiary bestiary;
     [SerializeField] private MoveCamera moveCamera;
@@ -66,6 +65,7 @@ public class SceneObjectsManager : MonoBehaviour
 
         GameManager.Instance.SceneMonster.SetActive(false);
         GameManager.Instance.CardManager.ResetMonsterSprite();
+        GameManager.Instance.Paint.ClearCanvasLocal();
     }
 
     private void OnPainterSetted()
@@ -81,8 +81,8 @@ public class SceneObjectsManager : MonoBehaviour
 
         chatView.ShowPainterObjects();
         chat.Disable();
-        GameManager.Instance.Paint.ClearCanvas();
-        GameManager.Instance.Paint.SetActive(true);
+        //GameManager.Instance.Paint.ClearCanvas();
+        GameManager.Instance.Paint.Enable(true);
     }
 
     private void OnGuesserSetted()
@@ -104,7 +104,7 @@ public class SceneObjectsManager : MonoBehaviour
         guesserPaint.gameObject.SetActive(true);
         guesserPreRoundCanvas.SetActive(true);
         guesserPreRoundLabel.text = $"{PlayersDataManager.Instance.PlayerDatas[GameManager.Instance.PainterId].Name} {chooseCardText}";
-        GameManager.Instance.Paint.SetActive(false);
+        GameManager.Instance.Paint.Disable();
         GameManager.Instance.CardManager.enabled = false;
 
         isFirstSetted = true;

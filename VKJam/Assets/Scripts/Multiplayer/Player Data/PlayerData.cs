@@ -1,7 +1,6 @@
 using UnityEngine;
 using Unity.Collections;
 using Unity.Netcode;
-using Unity.Services.Authentication;
 
 public struct PlayerData : INetworkSerializable, System.IEquatable<PlayerData>
 {

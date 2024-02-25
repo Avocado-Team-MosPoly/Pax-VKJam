@@ -18,7 +18,7 @@ public class AnimateList : MonoBehaviour
     }
     private IEnumerator WaitAnimationEnd()
     {
-        Debug.Log(_animator.GetCurrentAnimatorClipInfo(0).Length);
+        //Debug.Log(_animator.GetCurrentAnimatorClipInfo(0).Length);
         yield return new WaitForSeconds(_animator.GetCurrentAnimatorClipInfo(0).Length);
     }
 }

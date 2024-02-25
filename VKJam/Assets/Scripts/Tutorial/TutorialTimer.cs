@@ -9,7 +9,7 @@ public class TutorialTimer : MonoBehaviour
     [SerializeField] private TMP_Text ShowTime;
     [SerializeField] private TMP_Text IngridientText;
     [SerializeField] private AnimateList _bookAnimator;
-    [SerializeField] private TutorialPaint paint;
+    [SerializeField] private DrawingTutorial paint;
     [SerializeField] private GameObject PaintUI;
 
     [SerializeField] private string ingredientName;
@@ -22,7 +22,7 @@ public class TutorialTimer : MonoBehaviour
             ingredientTimerCoroutine = StartCoroutine(IngridientTimer(30));
     }
 
-    IEnumerator IngridientTimer(int sec)
+    private IEnumerator IngridientTimer(int sec)
     {
         _timer = sec;
 
