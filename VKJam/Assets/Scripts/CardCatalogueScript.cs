@@ -71,7 +71,7 @@ public class CardCatalogueScript : MonoBehaviour
                 CardSystem temp = PackManager.Instance.Active.SearchCardSystemById(_bufferIdCard);
                 temp.CardIsInOwn = true;
 
-                CurrencyCatcher.Executor.Refresh();
+                CurrencyCatcher.Instance.Refresh();
                 UpdateUIPage();
             }
             else

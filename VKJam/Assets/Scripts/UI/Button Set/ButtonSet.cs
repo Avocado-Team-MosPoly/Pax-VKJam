@@ -7,7 +7,7 @@ public class ButtonSet<T> : MonoBehaviour
 {
     [Serializable] public struct ButtonValue
     {
-        public readonly static ButtonValue Null = new ButtonValue
+        public readonly static ButtonValue Null = new()
         {
             Button = null,
             Value = default

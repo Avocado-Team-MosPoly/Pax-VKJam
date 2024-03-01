@@ -1,20 +1,22 @@
 using System;
-using System.Buffers.Text;
 using System.Collections;
 using System.Runtime.InteropServices;
 using UnityEngine;
-using UnityEngine.Events;
+using TMPro;
 
-public class VK_Connect : TaskExecutor<VK_Connect>
+public class VK_Connect : BaseSingleton<VK_Connect>
 {
     public Action<bool> OnInterstitialAdTryWatched;
     public Action<int[]> OnFriendsGot;
 
-    public TMPro.TMP_Text DebugingText;
-    public TMPro.TMP_Text NameText;
-    //public URL_Image urlImage;
+    public VariableObserver<bool> IsJoinedVKGroupObserver { get; private set; } = new(false);
+    
+    [SerializeField] private TMP_Text DebugingText;
+    [SerializeField] private TMP_Text NameText;
 
     [SerializeField] private bool NeedDebuging;
+
+    #region External Methods
 
     [DllImport("__Internal")] private static extern void UnityPluginRequestJs();
     [DllImport("__Internal")] private static extern void UnityPluginRequestUserData();
@@ -26,17 +28,20 @@ public class VK_Connect : TaskExecutor<VK_Connect>
     [DllImport("__Internal")] private static extern void UnityPluginRequestBuyTry(int id);
     [DllImport("__Internal")] private static extern void UnityPluginRequestGetFriends();
     [DllImport("__Internal")] private static extern void UnityPluginRequestJoinGroup();
+    [DllImport("__Internal")] private static extern void UnityPluginRequestCheckSubscriptionVKGroup();
+
+    #endregion
 
     public IEnumerator Init()
     {
-        if (Executor == null)
+        if (Instance == null)
         {
-            Executor = this;
+            Instance = this;
         }
 
-        if (Executor == this)
+        if (Instance == this)
         {
-            DontDestroyOnLoad(Executor);
+            DontDestroyOnLoad(Instance);
         }
         else
         {
@@ -77,14 +82,14 @@ public class VK_Connect : TaskExecutor<VK_Connect>
 
     #region Requests
 
-    public void RequestJs() // вызываем из событий unity
+    public void RequestJs() // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ unity
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestJs();
 #endif
     }
 
-    public IEnumerator RequestShowInterstitialAd() // вызываем из событий unity
+    public IEnumerator RequestShowInterstitialAd() // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ unity
     {
         yield return new WaitForSeconds(3f);
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -92,7 +97,7 @@ public class VK_Connect : TaskExecutor<VK_Connect>
 #endif
     }
 
-    public void RequestShowRewardAd() // вызываем из событий unity
+    public void RequestShowRewardAd() // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ unity
     {
         if (!AdManager.CanShowAd())
             return;
@@ -101,32 +106,32 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         UnityPluginRequestAds();
 #endif
     }
-    public void RequestRepost() // вызываем из событий unity
+    public void RequestRepost() // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ unity
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestRepost();
 #endif
     }
-    public void RequestInvateNewPlayer() // вызываем из событий unity
+    public void RequestInvateNewPlayer() // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ unity
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestInviteNewPlayer();
 #endif
     }
-    public void RequestInvateOldPlayer(int id, string lobby_key) // вызываем из событий unity
+    public void RequestInvateOldPlayer(int id, string lobby_key) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ unity
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestInviteOldPlayer(id, lobby_key);
 #endif
     }
 
-    public void RequestUserData() // вызываем из событий unity
+    public void RequestUserData() // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ unity
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestUserData();
 #endif
     }
-    public void RequestBuyTry(int id) // вызываем из событий unity
+    public void RequestBuyTry(int id) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ unity
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestBuyTry(id);
@@ -144,6 +149,13 @@ public class VK_Connect : TaskExecutor<VK_Connect>
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestJoinGroup();
+#endif
+    }
+
+    public void RequestCheckSubscriptionVKGroup()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        UnityPluginRequestCheckSubscriptionVKGroup();
 #endif
     }
 
@@ -167,8 +179,8 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         int tokenCount = 30;
         Action successRequest = () =>
         {
-            StartCoroutine(DonatRouter.Executor?.DelayRefresh());
-            CurrencyCatcher.Executor?.Refresh();
+            StartCoroutine(DonatRouter.Instance?.DelayRefresh());
+            CurrencyCatcher.Instance?.Refresh();
         };
 
         StartCoroutine(Php_Connect.Request_TokenWin(tokenCount, successRequest, null));
@@ -184,7 +196,7 @@ public class VK_Connect : TaskExecutor<VK_Connect>
 
     public void ResponseSuccessBuyDonat()
     {
-        CurrencyCatcher.Executor?.Refresh();
+        CurrencyCatcher.Instance?.Refresh();
     }
 
     public void ResponseGetFriends(string Input)
@@ -192,12 +204,16 @@ public class VK_Connect : TaskExecutor<VK_Connect>
         string[] splittedUids = Input.Split(' ');
         int[] uidsArray = new int[splittedUids.Length - 1];
 
-        Logger.Instance.LogError(this, splittedUids[^1]);
-
         for (int i = 0; i < uidsArray.Length; i++)
             uidsArray[i] = int.Parse(splittedUids[i]);
 
         OnFriendsGot?.Invoke(uidsArray);
+    }
+
+    /// <summary> isSubscribed: 0 - false, else true </summary>
+    public void ResponseJoinedVKGroup(int isSubscribed)
+    {
+        IsJoinedVKGroupObserver.Value = isSubscribed != 0;
     }
 
     public void UserData_Processing(string Input)
@@ -219,7 +235,7 @@ public class VK_Connect : TaskExecutor<VK_Connect>
     {
         byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(toEncode);
 
-        string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
+        string returnValue = Convert.ToBase64String(toEncodeAsBytes);
 
         return returnValue;
     }

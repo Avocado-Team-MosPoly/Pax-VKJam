@@ -5,7 +5,8 @@ using System.Collections;
 [Serializable]
 public struct Audio
 {
-    [Tooltip("This used for detecting this elements for Play function")] public string KeyName;
+    [Tooltip("This used for detecting this elements for Play function")]
+    public string KeyName;
     public AudioClip[] Sounds;
 }
 
@@ -24,8 +25,8 @@ public class SoundList : MonoBehaviour
 
     private bool NowPlaying;
 
-    public static VariableObserver<float> VolumeObserver = new(1f);
-    public static VariableObserver<bool> MuteObserver = new(false);
+    public static VariableObserver<float> VolumeObserver { get; private set; } = new(1f);
+    public static VariableObserver<bool> MuteObserver { get; private set; } = new(false);
 
     public const string KEY_VOLUME = "Audio_Volume";
 
@@ -40,14 +41,23 @@ public class SoundList : MonoBehaviour
         if (useSettings)
         {
             // static observer
-            VolumeObserver.OnValueChanged.AddListener(ChangeVolume);
+            VolumeObserver.ValueChanged += ChangeVolume;
         }
 
-        // static observers
+        // static observer
         VolumeObserver.Value = PlayerPrefs.GetFloat(KEY_VOLUME, 0.5f);
         
         _source.mute = MuteObserver.Value;
-        MuteObserver.OnValueChanged.AddListener(Mute);
+        MuteObserver.ValueChanged += Mute;
+    }
+
+    private void OnDestroy()
+    {
+        if (useSettings)
+            VolumeObserver.ValueChanged -= ChangeVolume;
+
+        MuteObserver.ValueChanged -= Mute;
+
     }
 
     public void Mute(bool value)

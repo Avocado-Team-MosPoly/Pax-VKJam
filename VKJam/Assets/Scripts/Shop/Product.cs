@@ -60,7 +60,7 @@ public class Product : MonoBehaviour
     }
     public void RemoveFromWarehouse()
     {
-        WarehouseScript.Executor.RemoveProduct(this);
+        WarehouseScript.Instance.RemoveProduct(this);
         //Destroy(gameObject);
     }
 
@@ -76,7 +76,7 @@ public class Product : MonoBehaviour
                     {
                         Data.Data.InOwn = true;
                         RemoveFromWarehouse();
-                        CurrencyCatcher.Executor.Refresh();
+                        CurrencyCatcher.Instance.Refresh();
                     }
                     else
                     {

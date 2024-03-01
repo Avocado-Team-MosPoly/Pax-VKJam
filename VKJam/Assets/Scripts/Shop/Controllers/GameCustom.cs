@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class GameCustom : TaskExecutor<GameCustom>
+public class GameCustom : BaseSingleton<GameCustom>
 {
     [SerializeField] private SwitchModule[] Custom = new SwitchModule[System.Enum.GetNames(typeof(ItemType)).Length];
     [SerializeField] private CustomController Data;
 
     private void Start()
     {
-        Data = CustomController.Executor;
+        Data = CustomController.Instance;
         Swap();
     }
 

@@ -11,7 +11,7 @@ public class Displayer : MonoBehaviour
 
     private void OnEnable()
     {
-        CurrencyCatcher.Executor.Refresh();
+        CurrencyCatcher.Instance.Refresh();
     }
 
     public void SetData(Sprite Pic,string Naming, string inputData)

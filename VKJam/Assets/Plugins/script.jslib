@@ -50,6 +50,11 @@ mergeInto(LibraryManager.library, {
         JSRequestJoinGroup();
     },
 
+    UnityPluginRequestCheckSubscriptionVKGroup: function () 
+    {
+        JSRequestCheckSubscriptionVKGroup();
+    },
+
     UnityPluginIsMobilePlatform: function () 
     {
         JSIsMobilePlatform();

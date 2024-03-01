@@ -37,9 +37,9 @@ public class TokenManager : NetworkBehaviour
 
     private void Awake()
     {
-        if(CustomController.Executor != null)
+        if(CustomController.Instance != null)
         {
-            tokenPrefab = CustomController.Executor.Custom[(int)ItemType.Token].Model;
+            tokenPrefab = CustomController.Instance.Custom[(int)ItemType.Token].Model;
         }
         if (instance)
         {

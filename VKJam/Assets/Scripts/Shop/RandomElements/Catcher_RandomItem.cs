@@ -1,7 +1,7 @@
 using Tiractor.Sound;
 using UnityEngine;
 
-public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
+public class Catcher_RandomItem : BaseSingleton<Catcher_RandomItem>
 {
     public static int Result;
 
@@ -22,7 +22,7 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
     public static void SetData(RandomItem Data)
     {
         DroppedItem = Data;
-        Executor.OnDroppingWhatever();
+        Instance.OnDroppingWhatever();
         Result = Data.DesignID;
     }
 
@@ -36,7 +36,7 @@ public class Catcher_RandomItem : TaskExecutor<Catcher_RandomItem>
 
     public void GenerateWin(DesignSelect Sel)
     {
-        WareData temp = CustomController.Executor.Search(Sel);
+        WareData temp = CustomController.Instance.Search(Sel);
         Debug.Log(Sel.type + " " + (Sel.type >= 8));
 
         ActiveWinObject(2);

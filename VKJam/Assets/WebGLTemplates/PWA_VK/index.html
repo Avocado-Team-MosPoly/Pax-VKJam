@@ -237,13 +237,41 @@
                     console.log(error);
                 });
         }
+        function JSRequestCheckSubscriptionVKGroup() {
+            bridge.send('VKWebAppGetGroupInfo', {
+                group_id: 221378705
+            })
+                .then((data) => {
+                    if (data.id)
+                    {
+                        if (data.is_member)
+                            unityGameInstance.SendMessage('Connects', 'ResponseJoinedVKGroup', 1);
+                        else
+                            unityGameInstance.SendMessage('Connects', 'ResponseJoinedVKGroup', 0);
+                    }
+                    else
+                    {
+                        console.log('[JS] Сообщества не существует');
+                    }
+                })
+                .catch((error) =>
+                {
+                    console.log(error);
+                });
+        }
         function JSRequestJoinGroup() {
             vkBridge.send('VKWebAppJoinGroup', {
                 group_id: 221378705
             })
                 .then((data) => {
-                    if (data.result) {
-                        console.log('[JS] Пользователь подписался на сообщество');
+                    if (data.result)
+                    {
+                        //console.log('[JS] Пользователь подписался на сообщество');
+                        unityGameInstance.SendMessage('Connects', 'ResponseJoinedVKGroup', 1);
+                    }
+                    else
+                    {
+                        //console.log('[JS] Пользователь не подписался на сообщество');
                     }
                 })
                 .catch((error) => {
@@ -311,9 +339,20 @@
 
         jQuery(document).ready(function ($)
         {
-            vkBridge.send('VKWebAppInit');
+            vkBridge.send('VKWebAppInit').then((data) => { 
+                if (data.result)
+                {
+                    console.log("[VK Bridge] Initialized");
+                }
+                else
+                {
+                    console.error("[VK Bridge] Not initialized");
+                }
+            })
+            .catch((error) => {
+                console.error("VKWebAppInit error: " + error);
+            });
         });
-
     </script>
   </body>
 </html>

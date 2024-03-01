@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
 
-public class WarehouseScript : TaskExecutor<WarehouseScript>
+public class WarehouseScript : BaseSingleton<WarehouseScript>
 {
 	private List<Product> productInstances = new();
 
@@ -49,7 +49,7 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
 
         currentSection = section;
         currentPage = 0;
-        int sectionPagesCount = (CustomController.Executor.Categories[currentSection].products.Count + maxInstancesCount - 1) / maxInstancesCount;
+        int sectionPagesCount = (CustomController.Instance.Categories[currentSection].products.Count + maxInstancesCount - 1) / maxInstancesCount;
 
         leftButton.gameObject.SetActive(false);
         rightButton.gameObject.SetActive(currentPage < sectionPagesCount - 1);
@@ -60,7 +60,7 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
     public void NextPage()
     {
         currentPage++;
-        int sectionPagesCount = (CustomController.Executor.Categories[currentSection].products.Count + maxInstancesCount - 1) / maxInstancesCount;
+        int sectionPagesCount = (CustomController.Instance.Categories[currentSection].products.Count + maxInstancesCount - 1) / maxInstancesCount;
         leftButton.gameObject.SetActive(true);
         rightButton.gameObject.SetActive(true);
 
@@ -94,21 +94,21 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
     {
         int startProductIndex = currentPage * maxInstancesCount;
 
-        if (startProductIndex >= CustomController.Executor.Categories[currentSection].products.Count)
+        if (startProductIndex >= CustomController.Instance.Categories[currentSection].products.Count)
         {
-            if (maxInstancesCount > CustomController.Executor.Categories[currentSection].products.Count)
+            if (maxInstancesCount > CustomController.Instance.Categories[currentSection].products.Count)
                 startProductIndex = 0;
         }
 
         for (int instanceIndex = 0, productIndex = startProductIndex; instanceIndex < maxInstancesCount; instanceIndex++, productIndex++)
         {
-            if (productIndex >= CustomController.Executor.Categories[currentSection].products.Count)
+            if (productIndex >= CustomController.Instance.Categories[currentSection].products.Count)
             {
                 //Logger.Instance.Log(this, productIndex + " " + CustomController.Executor.Categories[currentSection].products.Count);
                 productInstances[instanceIndex].gameObject.SetActive(false);
                 continue;
             }
-            if (CustomController.Executor.Categories[currentSection].products[productIndex].Data.productCode == 0)
+            if (CustomController.Instance.Categories[currentSection].products[productIndex].Data.productCode == 0)
             {
                 //Logger.Instance.Log(this, CustomController.Executor.Categories[currentSection].products[productIndex].Data.productName);
                 instanceIndex--;
@@ -118,7 +118,7 @@ public class WarehouseScript : TaskExecutor<WarehouseScript>
             UnityAction onClick = () => BackgroundMusic.Instance.GetComponentInChildren<SoundList>().Play("button-click");
 
             productInstances[instanceIndex].ChooseMode = false;
-            productInstances[instanceIndex].SetData(CustomController.Executor.Categories[currentSection].products[productIndex]);
+            productInstances[instanceIndex].SetData(CustomController.Instance.Categories[currentSection].products[productIndex]);
             if (productInstances[instanceIndex].Button)
             {
                 if (!productInstances[instanceIndex].Data.Data.InOwn || productInstances[instanceIndex].ChooseMode)

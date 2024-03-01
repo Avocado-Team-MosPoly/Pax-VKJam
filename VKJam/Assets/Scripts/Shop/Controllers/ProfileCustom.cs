@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class ProfileCustom : TaskExecutor<ProfileCustom>
+public class ProfileCustom : BaseSingleton<ProfileCustom>
 {
     public SwitchModule[] Custom = new SwitchModule[System.Enum.GetNames(typeof(ItemType)).Length];
 
@@ -18,14 +18,14 @@ public class ProfileCustom : TaskExecutor<ProfileCustom>
 
     private void Start()
     {
-        Data = CustomController.Executor;
+        Data = CustomController.Instance;
     }
     public static void ProductChoosen(Product Target)
     {
         //Logger.Instance.LogError(this, "name : " + Target.Data.Data.productName + "; model : " + Target.Data.Model);
-        Executor.Custom[(int)Target.Data.Data.Type].SwitchItem(Target.Data);
+        Instance.Custom[(int)Target.Data.Data.Type].SwitchItem(Target.Data);
 
-        CustomController.Executor.Save(Target.Data);
+        CustomController.Instance.Save(Target.Data);
     }
 
     public void Drop()

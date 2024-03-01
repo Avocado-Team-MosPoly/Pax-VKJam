@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CustomController : TaskExecutor<CustomController>
+public class CustomController : BaseSingleton<CustomController>
 {
     [SerializeField] private int FreeIndex;
     public StoreSection[] Categories = new StoreSection[Enum.GetNames(typeof(ShopFilters)).Length];
@@ -296,7 +296,7 @@ public class CustomController : TaskExecutor<CustomController>
     [ContextMenu("Forced set static Executor by this")]
     protected void MenuDenote()
     {
-        Executor = this;
+        Instance = this;
         Debug.Log("Success Denote");
     }
 }

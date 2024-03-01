@@ -1,11 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
 
 [Serializable]
 public class Currency
@@ -15,7 +12,7 @@ public class Currency
     public int CardPiece;
 }
 
-public class Php_Connect : TaskExecutor<Php_Connect>
+public class Php_Connect : BaseSingleton<Php_Connect>
 {
     public static bool PHPisOnline { get; private set; }
     public static int Nickname {  get; private set; }
@@ -26,7 +23,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         CardPiece = 100
     };
 
-    public static RandomItemList RandomBase => Executor.randomBase;
+    public static RandomItemList RandomBase => Instance.randomBase;
 
     [SerializeField] private string Link;
     [SerializeField] private RandomItemList randomBase;
@@ -156,34 +153,34 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             if (response == null)
             {
                 PHPisOnline = false;
-                Logger.Instance.LogError(Executor, "Unable to authenticate on server");
+                Logger.Instance.LogError(Instance, "Unable to authenticate on server");
                 unsuccessRequest?.Invoke("Unable to authenticate on server exception");
             }
             else if (response == "can not log into one account from several devices")
             {
                 PHPisOnline = false;
-                Logger.Instance.LogError(Executor, "Unable to authenticate on server");
+                Logger.Instance.LogError(Instance, "Unable to authenticate on server");
                 unsuccessRequest?.Invoke("LogIn through several devices exception");
             }
             else if (response == "registered")
             {
                 PHPisOnline = true;
 
-                Logger.Instance.Log(Executor, "Registered on server");
+                Logger.Instance.Log(Instance, "Registered on server");
                 successRequest?.Invoke(true);
             }
             else if (response == "authenticated")
             {
                 PHPisOnline = true;
 
-                Logger.Instance.Log(Executor, "Authenticated on server");
+                Logger.Instance.Log(Instance, "Authenticated on server");
                 successRequest?.Invoke(false);
             }
             else
             {
                 PHPisOnline = false;
 
-                Logger.Instance.LogError(Executor, "Unable to authenticate on server");
+                Logger.Instance.LogError(Instance, "Unable to authenticate on server");
                 unsuccessRequest?.Invoke("Unexpected exception");
             }
 
@@ -193,7 +190,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             }
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("Auth.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("Auth.php", form, completed));
     }
 
     public static IEnumerator Request_WhichCardInPackOwnering(int idPack, Action<string> successRequest) // ���������� ��� ���, �� �����
@@ -213,7 +210,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             successRequest?.Invoke(response);
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("WhichCardInPackOwnering.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("WhichCardInPackOwnering.php", form, completed));
     }
 
     public static IEnumerator Request_TokenBuy(int id, Action<string> successRequest, Action unsuccessRequest) // ���������� ��� ���, �� �����
@@ -239,7 +236,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             successRequest?.Invoke(response);
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("TokenBuy.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("TokenBuy.php", form, completed));
     }
 
     public static IEnumerator Request_SaveCastom(ItemType itemType, int idDesign, Action<string> successRequest)
@@ -260,7 +257,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             successRequest?.Invoke(response);
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("SaveCastom.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("SaveCastom.php", form, completed));
     }
 
     public static IEnumerator Request_LoadCastom(Action<string> successRequest)
@@ -279,7 +276,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             successRequest?.Invoke(response);
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("LoadCastom.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("LoadCastom.php", form, completed));
     }
 
     public static IEnumerator Request_CraftCardTry(int idCard, bool ForThePieces, Action<string> successRequest, Action unsuccessRequest)
@@ -306,7 +303,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             successRequest?.Invoke(response);
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("CraftCardTry.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("CraftCardTry.php", form, completed));
     }
 
     public static IEnumerator Request_UploadData(Design Upload, Action<string> successRequest, Action unsuccessRequest)
@@ -332,7 +329,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             successRequest?.Invoke(response);
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("UploadData.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("UploadData.php", form, completed));
     }
 
     public static IEnumerator Request_CheckOwningDesign(Action<string> onComplete)
@@ -355,7 +352,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 onComplete?.Invoke(null);
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("CheckOwningDesign.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("CheckOwningDesign.php", form, completed));
     }
 
     public static IEnumerator Request_WhatPackOwnering(Action<string> onComplete)
@@ -374,7 +371,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             onComplete?.Invoke(response ?? string.Empty);
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("WhatPackOwnering.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("WhatPackOwnering.php", form, completed));
     }
 
     public static IEnumerator Request_TokenWin(int Count, Action successRequest, Action unsuccessRequest)
@@ -397,7 +394,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 successRequest?.Invoke();
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("TokenWin.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("TokenWin.php", form, completed));
     }
 
     public static IEnumerator Request_BuyTry(int DesignID, Action<string> successRequest, Action unsuccessRequest)
@@ -420,7 +417,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 successRequest?.Invoke(response);
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("BuyTry.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("BuyTry.php", form, completed));
     }
 
     private static IEnumerator Request_CardWin(Action<string> successRequest, Action unsuccessRequest)
@@ -442,7 +439,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 successRequest?.Invoke(response);
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("CardWin.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("CardWin.php", form, completed));
     }
 
     private static IEnumerator Request_DesignWin(Action<string> successRequest, Action unsuccessRequest)
@@ -464,7 +461,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 successRequest?.Invoke(response);
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("DesignWin.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("DesignWin.php", form, completed));
     }
 
     private static IEnumerator Response_Gift(int DesignID, int TargetNickname)
@@ -478,7 +475,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
         //Action<string> completed = (string response) => { };
 
-        yield return Executor.StartCoroutine(PostToUserModule("Gift.php", form, null));
+        yield return Instance.StartCoroutine(PostToUserModule("Gift.php", form, null));
 
     }
 
@@ -503,7 +500,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             onComplete?.Invoke(Current);
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("CurrentCurrency.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("CurrentCurrency.php", form, completed));
     }
 
     public static IEnumerator Request_DesignCount(Action<int> onComplete)
@@ -525,7 +522,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 onComplete?.Invoke(int.Parse(response));
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("DesignCount.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("DesignCount.php", form, completed));
     }
 
     public static IEnumerator Request_DataAboutDesign(int idDesign, Action<Design> onComplete)
@@ -548,7 +545,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                 onComplete?.Invoke(JsonUtility.FromJson<Design>(response));
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("DesignOutput_JSON.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("DesignOutput_JSON.php", form, completed));
     }
 
     public static IEnumerator Request_Gift(int DesignID, int TargetNickname)
@@ -559,11 +556,11 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         bool flag = true;
         Action<string> stringSuccessRequest = (string response) =>
         {
-            CurrencyCatcher.Executor.Refresh();
+            CurrencyCatcher.Instance.Refresh();
             flag = response != "success";
         };
 
-        yield return Executor.StartCoroutine(Request_BuyTry(DesignID, stringSuccessRequest, null));
+        yield return Instance.StartCoroutine(Request_BuyTry(DesignID, stringSuccessRequest, null));
         if (flag)
         {
             NotificationSystem.Instance.SendLocal("Не хватает жетонов");
@@ -577,9 +574,9 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             if (ID >= -5 && ID < 0)
             {
                 int tokenCount = RandomToken(ID);
-                Action successRequest = () => Catcher_RandomItem.Executor.UIWin(RandomType.Token, tokenCount);
+                Action successRequest = () => Catcher_RandomItem.Instance.UIWin(RandomType.Token, tokenCount);
 
-                Executor.StartCoroutine(Request_TokenWin(tokenCount, successRequest, null));
+                Instance.StartCoroutine(Request_TokenWin(tokenCount, successRequest, null));
             }
             else
             {
@@ -590,26 +587,26 @@ public class Php_Connect : TaskExecutor<Php_Connect>
                         stringSuccessRequest = (string response) =>
                         {
                             DesignSelect temp = JsonUtility.FromJson<DesignSelect>(response);
-                            Catcher_RandomItem.Executor.GenerateWin(temp);
+                            Catcher_RandomItem.Instance.GenerateWin(temp);
                         };
 
-                        Executor.StartCoroutine(Request_DesignWin(stringSuccessRequest, null));
+                        Instance.StartCoroutine(Request_DesignWin(stringSuccessRequest, null));
                         break;
                     case -7:
                         stringSuccessRequest = (string response) =>
                         {
                             if (int.TryParse(response, out int cardId))
-                                Catcher_RandomItem.Executor.UIWin(RandomType.Card, cardId);
+                                Catcher_RandomItem.Instance.UIWin(RandomType.Card, cardId);
                         };
 
-                        Executor.StartCoroutine(Request_CardWin(stringSuccessRequest, null));
+                        Instance.StartCoroutine(Request_CardWin(stringSuccessRequest, null));
                         break;
                 }
             }
         }
         else
         {
-            Executor.StartCoroutine(Response_Gift(DesignID, TargetNickname));
+            Instance.StartCoroutine(Response_Gift(DesignID, TargetNickname));
         }
     }
 
@@ -629,7 +626,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
             }
         };
 
-        yield return Executor.StartCoroutine(PostToUserModule("Exit.php", form, completed));
+        yield return Instance.StartCoroutine(PostToUserModule("Exit.php", form, completed));
     }
 
     public static IEnumerator Request_MonsterTextures(string[] monsterTextureNames, Action<List<Texture2D>> onComplete)
@@ -639,12 +636,12 @@ public class Php_Connect : TaskExecutor<Php_Connect>
 
         if (monsterTextureNames == null)
         {
-            Logger.Instance.LogError(Executor, new NullReferenceException($"{nameof(monsterTextureNames)} is null"));
+            Logger.Instance.LogError(Instance, new NullReferenceException($"{nameof(monsterTextureNames)} is null"));
             yield break;
         }
         else if (monsterTextureNames.Length != 3)
         {
-            Logger.Instance.LogError(Executor, new FormatException($"{nameof(monsterTextureNames)} has incorrect Length ({monsterTextureNames.Length}). Should be 3"));
+            Logger.Instance.LogError(Instance, new FormatException($"{nameof(monsterTextureNames)} has incorrect Length ({monsterTextureNames.Length}). Should be 3"));
             yield break;
         }
 
@@ -652,7 +649,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         Action<Texture2D> completed = (Texture2D response) =>
         {
             if (response == null)
-                Logger.Instance.LogWarning(Executor, "Texture is null");
+                Logger.Instance.LogWarning(Instance, "Texture is null");
 
             textures.Add(response);
         };
@@ -662,9 +659,9 @@ public class Php_Connect : TaskExecutor<Php_Connect>
          * 1 - Monster In Bestiary Texture (Resources/Monsters/MonsterTexture/)
          * 2 - Monster Texture (Resources/Monsters/MonsterInBestiaryTexture/)
          */
-        yield return Executor.StartCoroutine(GetTexture($"Monsters/CardTexture/{monsterTextureNames[0]}", completed));
-        yield return Executor.StartCoroutine(GetTexture($"Monsters/MonsterTexture/{monsterTextureNames[1]}", completed));
-        yield return Executor.StartCoroutine(GetTexture($"Monsters/MonsterInBestiaryTexture/{monsterTextureNames[2]}", completed));
+        yield return Instance.StartCoroutine(GetTexture($"Monsters/CardTexture/{monsterTextureNames[0]}", completed));
+        yield return Instance.StartCoroutine(GetTexture($"Monsters/MonsterTexture/{monsterTextureNames[1]}", completed));
+        yield return Instance.StartCoroutine(GetTexture($"Monsters/MonsterInBestiaryTexture/{monsterTextureNames[2]}", completed));
 
         onComplete?.Invoke(textures);
     }
@@ -681,7 +678,7 @@ public class Php_Connect : TaskExecutor<Php_Connect>
         Current.IGCurrency += TokenManager.TokensCount;
         if (PHPisOnline)
         {
-            Action successRequest = () => Catcher_RandomItem.Executor.UIWin(RandomType.Token, TokenManager.TokensCount);
+            Action successRequest = () => Catcher_RandomItem.Instance.UIWin(RandomType.Token, TokenManager.TokensCount);
 
             StartCoroutine(Request_TokenWin(TokenManager.TokensCount, successRequest, null));
         }

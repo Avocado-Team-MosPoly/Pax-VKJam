@@ -93,14 +93,14 @@ public class PlayersDataManager : NetworkBehaviour
     {
         (byte, byte) result = (7, 0);
 
-        if (CustomController.Executor == null)
+        if (CustomController.Instance == null)
             return result;
 
         for (int i = 0; i < avatarsAndFramesStorage.products.Count; i++)
         {
             if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.Avatars)
             {
-                if (CustomController.Executor.Custom[(int)ItemType.Avatars].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
+                if (CustomController.Instance.Custom[(int)ItemType.Avatars].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
                 {
                     result.Item1 = (byte)i;
                     break;
@@ -112,7 +112,7 @@ public class PlayersDataManager : NetworkBehaviour
         {
             if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.AvatarFrame)
             {
-                if (CustomController.Executor.Custom[(int)ItemType.AvatarFrame].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
+                if (CustomController.Instance.Custom[(int)ItemType.AvatarFrame].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
                 {
                     result.Item2 = (byte)i;
                     break;

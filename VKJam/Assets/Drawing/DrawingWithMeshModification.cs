@@ -1,9 +1,5 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using Unity.VisualScripting;
 
 public class DrawingWithMeshModification : MonoBehaviour
 {
@@ -176,9 +172,6 @@ public class DrawingWithMeshModification : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-            EditorApplication.isPaused = true;
-
         if (Input.GetKeyDown(KeyCode.Alpha9))
             Enable(true);
         else if (Input.GetKeyDown(KeyCode.Alpha0))

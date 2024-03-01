@@ -1,26 +1,21 @@
-using UnityEngine.Events;
-
 public class VariableObserver<T>
 {
-    public VariableObserver(T value)
-    {
-        this.value = value;
-    }
+    public event System.Action<T> ValueChanged;
 
     private T value;
-
     public T Value
     {
-        get
-        {
-            return value;
-        }
+        get => value;
         set
         {
             this.value = value;
-            OnValueChanged?.Invoke(value);
+            ValueChanged?.Invoke(value);
         }
     }
 
-    public UnityEvent<T> OnValueChanged { get; private set; } = new();
+    public VariableObserver(T value, System.Action<T> valueChanged = null)
+    {
+        this.value = value;
+        ValueChanged = valueChanged;
+    }
 }

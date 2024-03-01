@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using System;
 
-public class CurrencyCatcher : TaskExecutor<CurrencyCatcher>
+public class CurrencyCatcher : BaseSingleton<CurrencyCatcher>
 {
     [SerializeField] private TextMeshProUGUI Donat_General;
     [SerializeField] private TextMeshProUGUI Donat_Card;

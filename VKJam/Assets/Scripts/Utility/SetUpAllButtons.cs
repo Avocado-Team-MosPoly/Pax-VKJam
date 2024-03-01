@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class SetUpAllButtons : MonoBehaviour
 {
+    [SerializeField] private bool destroyOnStart = true;
+
     [Header("Search Options")]
     [SerializeField] private List<string> ignoreNames;
 
@@ -21,6 +23,9 @@ public class SetUpAllButtons : MonoBehaviour
         {
             button.onClick.AddListener(onClick);
         }
+
+        if (destroyOnStart)
+            Destroy(gameObject);
     }
 
     [ContextMenu("Find all buttons on scene")]
