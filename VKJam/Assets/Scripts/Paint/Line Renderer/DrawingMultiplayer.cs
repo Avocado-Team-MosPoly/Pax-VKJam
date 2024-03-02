@@ -97,10 +97,10 @@ public class DrawingMultiplayer : NetworkBehaviour
         set
         {
             brushSize = value;
-            brushLine.startWidth = brushLine.endWidth = brushSize;
+            brushLine.startWidth = brushLine.endWidth = brushSize * initialBrushSize;
         }
     }
-    private float brushSize;
+    private float brushSize = 1f;
 
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Camera drawingCamera;
@@ -177,24 +177,20 @@ public class DrawingMultiplayer : NetworkBehaviour
         brushObject = brushLine.gameObject;
 
         brushObject.SetActive(false);
-        BrushSize = initialBrushSize;
+        BrushSize = 1f;
 
-        brushMaterial.SetColor("_Color", brushColor);
+        brushMaterial.color = brushColor;
 
         canvasFill.SetActive(false);
-        canvasFillMaterial.SetColor("_Color", backgroundColor);
+        canvasFillMaterial.color = backgroundColor;
 
-        canvasMaterial.SetTexture("_BaseMap", renderTexture);
+        canvasMaterial.mainTexture = renderTexture;
 
         switchBrushModeButton.onClick.AddListener(SwitchBrushMode);
         switchBrushModeButtonImage = switchBrushModeButton.GetComponent<Image>();
-
     }
 
-    private void Awake()
-    {
-        Init();
-    }
+    private void Awake() => Init();
 
     private void Update()
     {
@@ -212,16 +208,10 @@ public class DrawingMultiplayer : NetworkBehaviour
     #region Start/Stop Drawing
 
     [ServerRpc(RequireOwnership = false)]
-    protected virtual void StartDrawingServerRpc(Vector3 startPos, ServerRpcParams rpcParams)
-    {
-        StartDrawingClientRpc(startPos);
-    }
+    protected virtual void StartDrawingServerRpc(Vector3 startPos, ServerRpcParams rpcParams) => StartDrawingClientRpc(startPos);
 
     [ServerRpc(RequireOwnership = false)]
-    protected virtual void StopDrawingServerRpc()
-    {
-        StopDrawingClientRpc();
-    }
+    protected virtual void StopDrawingServerRpc() => StopDrawingClientRpc();
 
     [ClientRpc]
     private void StartDrawingClientRpc(Vector3 startPos)
@@ -229,8 +219,8 @@ public class DrawingMultiplayer : NetworkBehaviour
         if (IsPainter)
             return;
 
-        lastPosition = startPos + drawingCamera.transform.position + drawingCamera.transform.forward;
-        brushLine.SetPositions(new Vector3[] { lastPosition, lastPosition });
+        lastPosition = startPos;
+        MoveBrush(lastPosition);
         brushObject.SetActive(true);
         isDrawing = true;
     }
@@ -254,15 +244,15 @@ public class DrawingMultiplayer : NetworkBehaviour
         if (!drawingCollider.Raycast(ray, out RaycastHit hitInfo, raycastMaxDistance))
             return;
 
-        lastPosition = hitInfo.point + drawingCamera.transform.forward;
-        brushLine.SetPositions(new Vector3[] { lastPosition, lastPosition });
+        lastPosition = hitInfo.point - drawingCamera.transform.position;
+        MoveBrush(lastPosition);
         brushObject.SetActive(true);
         isDrawing = true;
 
         // if (IsServer)
         //     StartDrawingClientRpc(hitInfo.point - drawingCamera.transform.position);
         // else
-        StartDrawingServerRpc(hitInfo.point - drawingCamera.transform.position, new ServerRpcParams());
+        StartDrawingServerRpc(lastPosition, new ServerRpcParams());
     }
 
     private void StopDrawing()
@@ -298,6 +288,7 @@ public class DrawingMultiplayer : NetworkBehaviour
 
             if (Vector3.Distance(lastPosition, newPosition) > stopDistance)
             {
+                Logger.Instance.Log(this, lastPosition);
                 MoveBrush(newPosition);
 
                 if (IsServer)
@@ -310,9 +301,9 @@ public class DrawingMultiplayer : NetworkBehaviour
 
     protected void MoveBrush(Vector3 targetPosition)
     {
-        targetPosition += drawingCamera.transform.position + drawingCamera.transform.forward;
+        Vector3 offset = drawingCamera.transform.position + drawingCamera.transform.forward;
 
-        brushLine.SetPositions(new Vector3[] { lastPosition, targetPosition });
+        brushLine.SetPositions(new Vector3[] { lastPosition + offset, targetPosition + offset });
         lastPosition = targetPosition;
     }
 
@@ -337,17 +328,61 @@ public class DrawingMultiplayer : NetworkBehaviour
 
     #region Set Color
 
-    public void SetBrushColor(Color color)
+    [ClientRpc]
+    private void SetBrushColorClientRpc(Color32 color)
     {
         brushColor = color;
-        brushMaterial.SetColor("_Color", brushColor);
+        brushMaterial.color = brushColor;
+        //brushMaterial.SetColor("_Color", brushColor);
     }
 
-    public void SetBackgroundColor(Color color)
+    [ServerRpc(RequireOwnership = false)]
+    private void SetBrushColorServerRpc(Color32 color) => SetBrushColorClientRpc(color);
+
+    public void SetBrushColor(Color32 color)
+    {
+        if (IsServer)
+            SetBrushColorClientRpc(color);
+        else
+            SetBrushColorServerRpc(color);
+    }
+
+    [ClientRpc]
+    private void SetBackgroundColorClientRpc(Color32 color)
     {
         backgroundColor = color;
-        canvasMaterial.SetColor("_BackgroundColor", backgroundColor);
-        canvasFillMaterial.SetColor("_Color", backgroundColor);
+        canvasFillMaterial.color = backgroundColor;
+        // canvasMaterial.SetColor("_BackgroundColor", backgroundColor);
+        // canvasFillMaterial.SetColor("_Color", backgroundColor);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetBackgroundColorServerRpc(Color32 color) => SetBrushColorClientRpc(color);
+
+    public void SetBackgroundColor(Color32 color)
+    {
+        if (IsServer)
+            SetBackgroundColorClientRpc(color);
+        else
+            SetBackgroundColorServerRpc(color);
+    }
+
+    #endregion
+
+    #region Set Brush Size
+
+    [ClientRpc]
+    private void SetBrushSizeClientRpc(float value) => BrushSize = value;
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetBrushSizeServerRpc(float value) => SetBrushSizeClientRpc(value);
+
+    public void SetBrushSize(float value)
+    {
+        if (IsServer)
+            SetBrushSizeClientRpc(value);
+        else
+            SetBrushSizeServerRpc(value);
     }
 
     #endregion
@@ -361,21 +396,18 @@ public class DrawingMultiplayer : NetworkBehaviour
 
         if (brushMode == BrushMode.Draw)
         {
-            // brushRenderer.sharedMaterial = brushMaterial;
+            brushLine.sharedMaterial = brushMaterial;
             switchBrushModeButtonImage.sprite = eraserSprite;
         }
         else
         {
-            // brushRenderer.sharedMaterial = canvasFillMaterial;
+            brushLine.sharedMaterial = canvasFillMaterial;
             switchBrushModeButtonImage.sprite = chalkSprite;
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void SwitchBrushServerRpc(BrushMode brushMode)
-    {
-        SwitchBrushClientRpc(brushMode);
-    }
+    private void SwitchBrushServerRpc(BrushMode brushMode) => SwitchBrushClientRpc(brushMode);
 
     public void SwitchBrushMode()
     {

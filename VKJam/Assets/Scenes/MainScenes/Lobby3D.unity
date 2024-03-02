@@ -1740,6 +1740,7 @@ GameObject:
   - component: {fileID: 330455451}
   - component: {fileID: 330455452}
   - component: {fileID: 330455453}
+  - component: {fileID: 330455454}
   m_Layer: 0
   m_Name: Paint
   m_TagString: Untagged
@@ -1821,6 +1822,22 @@ MonoBehaviour:
   brushColor: {r: 1, g: 1, b: 1, a: 1}
   canvasFill: {fileID: 1143761323}
   canvasFillMaterial: {fileID: 2100000, guid: bc8202ee0fb371a439d13eda16b0604a, type: 2}
+--- !u!114 &330455454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330455450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98a294519c6cd8648b28ae4fc2db2037, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawing: {fileID: 330455453}
+  sizeLerpRate: 0.5
+  minDiff: 0.25
+  sizeConfirmationTime: 0.5
 --- !u!1 &371409366
 GameObject:
   m_ObjectHideFlags: 0
@@ -7268,6 +7285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff3acd8bcaeff2747aa1838a619c8a5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  destroyOnStart: 1
   ignoreNames: []
   buttons:
   - {fileID: 315983003}
@@ -8317,15 +8335,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3da5c7c041aaafc4c95d3e217347061b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.022816233
+      value: 0.029
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3da5c7c041aaafc4c95d3e217347061b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.20030916
+      value: -0.124
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3da5c7c041aaafc4c95d3e217347061b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.9678865
+      value: -0.968
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3da5c7c041aaafc4c95d3e217347061b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -8524,12 +8542,12 @@ GameObject:
   - component: {fileID: 2125049144}
   - component: {fileID: 2125049143}
   m_Layer: 5
-  m_Name: Paint
+  m_Name: Switch Brush Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2125049142
 RectTransform:
   m_ObjectHideFlags: 0

@@ -40,7 +40,7 @@ public class GameManager : NetworkBehaviour
     #endregion
 
     [SerializeField] private GameConfigSO gameConfig;
-    [SerializeField] private Timer timer;
+    [SerializeField] private MainGameTimer timer;
 
     [Header("Managers")]
     [SerializeField] private RoleManager roleManager;

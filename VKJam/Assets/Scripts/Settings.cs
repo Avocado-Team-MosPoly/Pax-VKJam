@@ -11,8 +11,6 @@ public class Settings : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private Slider audioVolumeSlider;
 
-    private readonly string KEY_AUDIO_VOLUME = "Audio_Volume";
-
     private void Start()
     {
         if (BackgroundMusic.Instance != null)
@@ -26,14 +24,6 @@ public class Settings : MonoBehaviour
 
         audioVolumeSlider.value = SoundList.VolumeObserver.Value;
         audioVolumeSlider.onValueChanged.AddListener(ChangeAudioVolume);
-    }
-
-    private void OnDisable()
-    {
-        if (BackgroundMusic.Instance != null)
-            PlayerPrefs.SetFloat(BackgroundMusic.KEY_VOLUME, BackgroundMusic.Instance.Volume);
-
-        PlayerPrefs.SetFloat(SoundList.KEY_VOLUME, SoundList.VolumeObserver.Value);
     }
 
     private void ChangeMusicVolume(float value)

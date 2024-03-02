@@ -4,7 +4,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine.Events;
 
-public class Timer : NetworkBehaviour
+public class MainGameTimer : NetworkBehaviour
 {
     [SerializeField] private TMP_Text ShowTime;
     public NetworkVariable<int> NetworkTime = new(0);
