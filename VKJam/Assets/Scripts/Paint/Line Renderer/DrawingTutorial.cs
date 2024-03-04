@@ -21,10 +21,19 @@ public class DrawingTutorial : MonoBehaviour
     [SerializeField] private Camera drawingCamera;
 
     [Header("Canvas Settings")]
+    [Tooltip("Default size: 2048x1308")]
+    [SerializeField] private RenderTextureSettings renderTextureSettings = new()
+    {
+        width = 2048,
+        height = 1308,
+        format = RenderTextureFormat.ARGB32,
+        wrapMode = TextureWrapMode.Clamp,
+        filterMode = FilterMode.Bilinear
+    };
     [SerializeField] private Collider drawingCollider;
     [SerializeField] private Material canvasMaterial;
-    [SerializeField] private RenderTexture renderTexture;
     [SerializeField] private Color backgroundColor = Color.white;
+    private RenderTexture renderTexture;
 
     [Header("Brush Settings")]
     [SerializeField] private LineRenderer brushLine;
@@ -68,17 +77,24 @@ public class DrawingTutorial : MonoBehaviour
 
     private void Init()
     {
-        brushObject = brushLine.gameObject;
+        renderTexture = new RenderTexture(renderTextureSettings.width, renderTextureSettings.height, 0, renderTextureSettings.format)
+        {
+            wrapMode = renderTextureSettings.wrapMode,
+            filterMode = renderTextureSettings.filterMode
+        };
 
+        drawingCamera.targetTexture = renderTexture;
+
+        brushObject = brushLine.gameObject;
         brushObject.SetActive(false);
 
         BrushSize = initialBrushSize;
-        brushMaterial.SetColor("_Color", brushColor);
+        brushMaterial.color = brushColor;
 
         canvasFill.SetActive(false);
-        canvasFillMaterial.SetColor("_Color", backgroundColor);
+        canvasFillMaterial.color = backgroundColor;
 
-        canvasMaterial.SetTexture("_BaseMap", renderTexture);
+        canvasMaterial.mainTexture = renderTexture;
     }
 
     private void StartDrawing()
