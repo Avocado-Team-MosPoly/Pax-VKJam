@@ -238,7 +238,7 @@
                 });
         }
         function JSRequestCheckSubscriptionVKGroup() {
-            bridge.send('VKWebAppGetGroupInfo', {
+            vkBridge.send('VKWebAppGetGroupInfo', {
                 group_id: 221378705
             })
                 .then((data) => {
