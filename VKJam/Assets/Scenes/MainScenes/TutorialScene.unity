@@ -28495,9 +28495,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 1288566335}
   drawingCamera: {fileID: 1504990412}
+  clearCanvasButton: {fileID: 866044336}
+  switchBrushModeButton: {fileID: 1469634290}
+  chalkSprite: {fileID: 21300000, guid: cdd086b372f4e1f48b26dbcb052a2af4, type: 3}
+  eraserSprite: {fileID: 21300000, guid: dd9c9d78fe00c5b4ca340fa16342e354, type: 3}
+  renderTextureSettings:
+    width: 2048
+    height: 1308
+    format: 0
+    wrapMode: 1
+    filterMode: 1
   drawingCollider: {fileID: 1311518411}
   canvasMaterial: {fileID: 2100000, guid: 7253b78397ef6a240b9899cdab493662, type: 2}
-  renderTexture: {fileID: 8400000, guid: f08a4997730e8a441b2926c8df8982a3, type: 2}
   backgroundColor: {r: 1, g: 1, b: 1, a: 1}
   brushLine: {fileID: 1294601335}
   initialBrushSize: 0.05
@@ -35416,6 +35425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff3acd8bcaeff2747aa1838a619c8a5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  destroyOnStart: 1
   ignoreNames: []
   buttons:
   - {fileID: 38819398}

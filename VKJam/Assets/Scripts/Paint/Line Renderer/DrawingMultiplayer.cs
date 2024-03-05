@@ -2,92 +2,19 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using System;
 using UnityEngine.EventSystems;
 
-public struct Vector3Short : INetworkSerializable
-{
-    public short x;
-    public short y;
-    public short z;
-
-    public Vector3Short(int x, int y, int z)
-    {
-        this.x = (short)x;
-        this.y = (short)y;
-        this.z = (short)z;
-    }
-    public Vector3Short(short x, short y, short z)
-    {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
-    public static float Distance(Vector3Short a, Vector3Short b)
-    {
-        Vector3Short direction = b - a;
-        float distance = Mathf.Sqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
-        
-        return distance;
-    }
-
-    public static Vector3Short operator - (Vector3Short a, Vector3Short b)
-    {
-        return new Vector3Short
-        {
-            x = (short)(b.x - a.x),
-            y = (short)(b.y - a.y),
-            z = (short)(b.z - a.z)
-        };
-    }
-
-    public static explicit operator Vector3Short(Vector3 vector3)
-    {
-        return new Vector3Short((short)vector3.x, (short)vector3.y, (short)vector3.z);
-    }
-    public static implicit operator Vector3(Vector3Short vector3Short)
-    {
-        return new Vector3(vector3Short.x, vector3Short.y, vector3Short.z);
-    }
-
-    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-    {
-        serializer.SerializeValue(ref x);
-        serializer.SerializeValue(ref y);
-        serializer.SerializeValue(ref z);
-    }
-
-    public override string ToString()
-    {
-        return $"({nameof(Vector3Short)}({x}, {y}, {z})";
-    }
-}
-
-[Serializable]
-public struct RenderTextureSettings
-{
-    public int width;
-    public int height;
-    public RenderTextureFormat format;
-    public TextureWrapMode wrapMode;
-    public FilterMode filterMode;
-}
 
 public class DrawingMultiplayer : NetworkBehaviour
 {
+    #region Netcode Fields
+
+    public UnityEvent OnNetworkSpawned { get; private set; }
     private NetworkVariable<Vector3> painterMousePosition = new(new Vector3(), NetworkVariableReadPermission.Everyone);
 
-    [HideInInspector] public UnityEvent OnNetworkSpawned;
+    #endregion
 
-    [SerializeField] private BrushMode brushMode = BrushMode.Draw;
-
-    [SerializeField] private Button switchBrushModeButton;
-    private Image switchBrushModeButtonImage;
-    
-    [SerializeField] private Sprite chalkSprite;
-    [SerializeField] private Sprite eraserSprite;
-
+    // with Netcode use "Set Brush Size" method
     public float BrushSize
     {
         get
@@ -101,6 +28,17 @@ public class DrawingMultiplayer : NetworkBehaviour
         }
     }
     private float brushSize = 1f;
+
+    [Header("Buttons")]
+
+    [SerializeField] private Button clearCanvasButton;
+    [SerializeField] private Button switchBrushModeButton;
+    private Image switchBrushModeButtonImage;
+    
+    [SerializeField] private Sprite chalkSprite;
+    [SerializeField] private Sprite eraserSprite;
+
+    [Header("Cameras")]
 
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Camera drawingCamera;
@@ -131,6 +69,7 @@ public class DrawingMultiplayer : NetworkBehaviour
     [SerializeField] private float stopDistance = 0.02f;
 
     private GameObject brushObject;
+    private BrushMode brushMode = BrushMode.Draw;
 
     [Header("Brush Material Settings")]
     [SerializeField] private Material brushMaterial;
@@ -171,6 +110,7 @@ public class DrawingMultiplayer : NetworkBehaviour
             wrapMode = renderTextureSettings.wrapMode,
             filterMode = renderTextureSettings.filterMode
         };
+
         drawingCamera.targetTexture = renderTexture;
         canvasMaterial.mainTexture = renderTexture;
 
@@ -186,8 +126,10 @@ public class DrawingMultiplayer : NetworkBehaviour
 
         canvasMaterial.mainTexture = renderTexture;
 
-        switchBrushModeButton.onClick.AddListener(SwitchBrushMode);
         switchBrushModeButtonImage = switchBrushModeButton.GetComponent<Image>();
+
+        clearCanvasButton.onClick.AddListener(ClearCanvasGlobal);
+        switchBrushModeButton.onClick.AddListener(SwitchBrushMode);
     }
 
     private void Awake() => Init();

@@ -1,5 +1,5 @@
-using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DrawingTutorial : MonoBehaviour
 {
@@ -17,8 +17,19 @@ public class DrawingTutorial : MonoBehaviour
     }
     private float brushSize;
 
+    [Header("Cameras")]
+
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Camera drawingCamera;
+
+    [Header("Controls")]
+
+    [SerializeField] private Button clearCanvasButton;
+    [SerializeField] private Button switchBrushModeButton;
+    private Image switchBrushModeButtonImage;
+    
+    [SerializeField] private Sprite chalkSprite;
+    [SerializeField] private Sprite eraserSprite;
 
     [Header("Canvas Settings")]
     [Tooltip("Default size: 2048x1308")]
@@ -41,7 +52,7 @@ public class DrawingTutorial : MonoBehaviour
     [SerializeField] private float stopDistance = 0.02f;
 
     private GameObject brushObject;
-
+    private BrushMode brushMode = BrushMode.Draw;
 
     [Header("Brush Material Settings")]
     [SerializeField] private Material brushMaterial;
@@ -95,6 +106,11 @@ public class DrawingTutorial : MonoBehaviour
         canvasFillMaterial.color = backgroundColor;
 
         canvasMaterial.mainTexture = renderTexture;
+
+        switchBrushModeButtonImage = switchBrushModeButton.GetComponent<Image>();
+
+        clearCanvasButton.onClick.AddListener(ClearCanvas);
+        switchBrushModeButton.onClick.AddListener(SwitchBrushMode);
     }
 
     private void StartDrawing()
@@ -153,17 +169,33 @@ public class DrawingTutorial : MonoBehaviour
         isEnabled = false;
     }
 
+    public void SwitchBrushMode()
+    {
+        if (brushMode == BrushMode.Draw)
+        {
+            brushLine.sharedMaterial = canvasFillMaterial;
+            switchBrushModeButtonImage.sprite = chalkSprite;
+            brushMode = BrushMode.Erase;
+        }
+        else
+        {
+            brushLine.sharedMaterial = brushMaterial;
+            switchBrushModeButtonImage.sprite = eraserSprite;
+            brushMode = BrushMode.Draw;
+        }
+    }
+
     public void SetBrushColor(Color color)
     {
         brushColor = color;
-        brushMaterial.SetColor("_Color", brushColor);
+        brushMaterial.color = brushColor;
     }
 
     public void SetBackgroundColor(Color color)
     {
         backgroundColor = color;
-        canvasMaterial.SetColor("_BackgroundColor", backgroundColor);
-        canvasFillMaterial.SetColor("_Color", backgroundColor);
+        canvasMaterial.color = backgroundColor;
+        canvasFillMaterial.color = backgroundColor;
     }
 
     [ContextMenu("Clear Canvas")]
