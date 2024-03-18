@@ -16,7 +16,7 @@ public class VKUtility : MonoBehaviour
 
     public void ShowInterstitialAd()
     {
-        VK_Connect.Instance.RequestShowInterstitialAd();
+        StartCoroutine(VK_Connect.Instance.RequestShowInterstitialAd());
     }
 
     public void JoinGroup()

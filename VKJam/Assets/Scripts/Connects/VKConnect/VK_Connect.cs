@@ -10,11 +10,12 @@ public class VK_Connect : BaseSingleton<VK_Connect>
     public Action<int[]> OnFriendsGot;
 
     public VariableObserver<bool> IsJoinedVKGroupObserver { get; private set; } = new(false);
-    
-    [SerializeField] private TMP_Text DebugingText;
-    [SerializeField] private TMP_Text NameText;
+
+    [Header("Debug")]
 
     [SerializeField] private bool NeedDebuging;
+    [SerializeField] private TMP_Text DebugingText;
+    [SerializeField] private TMP_Text NameText;
 
     #region External Methods
 

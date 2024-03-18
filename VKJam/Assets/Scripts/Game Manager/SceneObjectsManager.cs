@@ -9,7 +9,7 @@ public class SceneObjectsManager : MonoBehaviour
     [SerializeField] private GameObject[] guesserGameObjects;
 
     [SerializeField] private GameObject guesserPaint;
-    [SerializeField] private Interactable painterBook;
+    [SerializeField] private GameObject painterBook;
     [SerializeField] private Bestiary bestiary;
     [SerializeField] private MoveCamera moveCamera;
     [SerializeField] private ChatView chatView;
@@ -100,7 +100,7 @@ public class SceneObjectsManager : MonoBehaviour
 
         chatView.HidePainterObjects();
         chat.Enable();
-        painterBook.SetInteractable(true);
+        painterBook.GetComponentInChildren<Interactable>().SetInteractable(true);
         guesserPaint.gameObject.SetActive(true);
         guesserPreRoundCanvas.SetActive(true);
         guesserPreRoundLabel.text = $"{PlayersDataManager.Instance.PlayerDatas[GameManager.Instance.PainterId].Name} {chooseCardText}";
@@ -134,7 +134,7 @@ public class SceneObjectsManager : MonoBehaviour
             bookHint.SetActive(false);
 
             guessMonsterStageUI.SetActive(true);
-            painterBook.SetInteractable(false);
+            painterBook.GetComponentInChildren<Interactable>().SetInteractable(false);
             paintUI.SetActive(false);
             moveCamera.SetActivity(false);
         }
@@ -157,7 +157,7 @@ public class SceneObjectsManager : MonoBehaviour
 
         tokensSummary.SetActive(true);
         
-        painterBook.SetInteractable(false);
+        painterBook.GetComponentInChildren<Interactable>().SetInteractable(false);
         paintUI.SetActive(false);
 
         bestiary.Close();

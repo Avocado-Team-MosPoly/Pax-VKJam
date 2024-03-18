@@ -9,7 +9,7 @@ public class DrawingMultiplayer : NetworkBehaviour
 {
     #region Netcode Fields
 
-    public UnityEvent OnNetworkSpawned { get; private set; }
+    public UnityEvent OnNetworkSpawned { get; private set; } = new();
     private NetworkVariable<Vector3> painterMousePosition = new(new Vector3(), NetworkVariableReadPermission.Everyone);
 
     #endregion
@@ -126,10 +126,14 @@ public class DrawingMultiplayer : NetworkBehaviour
 
         canvasMaterial.mainTexture = renderTexture;
 
-        switchBrushModeButtonImage = switchBrushModeButton.GetComponent<Image>();
+        if (clearCanvasButton != null)
+            clearCanvasButton.onClick.AddListener(ClearCanvasGlobal);
 
-        clearCanvasButton.onClick.AddListener(ClearCanvasGlobal);
-        switchBrushModeButton.onClick.AddListener(SwitchBrushMode);
+        if (switchBrushModeButton != null)
+        {
+            switchBrushModeButtonImage = switchBrushModeButton.GetComponent<Image>();
+            switchBrushModeButton.onClick.AddListener(SwitchBrushMode);
+        }
     }
 
     private void Awake() => Init();
@@ -230,7 +234,6 @@ public class DrawingMultiplayer : NetworkBehaviour
 
             if (Vector3.Distance(lastPosition, newPosition) > stopDistance)
             {
-                Logger.Instance.Log(this, lastPosition);
                 MoveBrush(newPosition);
 
                 if (IsServer)

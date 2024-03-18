@@ -1,21 +1,20 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Button))]
 public class LockButton : MonoBehaviour
 {
-    [SerializeField] private float timeToLock;
+    [SerializeField] private float timeToLock = 1.5f;
     private Button btn;
 
     private void Awake()
     {
         btn = GetComponent<Button>();
-        btn.onClick.AddListener(FrozeButton);
+        btn.onClick.AddListener(FreezeButton);
     }
 
-    public void FrozeButton()
+    public void FreezeButton()
     {
         StartCoroutine(DisableButtonForSeconds(timeToLock));
     }

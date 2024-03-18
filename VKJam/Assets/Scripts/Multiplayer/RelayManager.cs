@@ -243,8 +243,6 @@ public class RelayManager : MonoBehaviour
 
     private void OnClientStopped(bool isHost)
     {
-        Logger.Instance.Log(this, "Client Stopped");
-
         if (isHost)
         {
             //Logger.Instance.Log(this, "Host unsub");
@@ -265,7 +263,8 @@ public class RelayManager : MonoBehaviour
         }
 
         //await LobbyManager.Instance.DisconnectAsync();
-        Logger.Instance.Log(this, "Disconnected");
+        //Logger.Instance.Log(this, "Disconnected");
+        Logger.Instance.Log(this, "Client Stopped");
     }
 
     // server

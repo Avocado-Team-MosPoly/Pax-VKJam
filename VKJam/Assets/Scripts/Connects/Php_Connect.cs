@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -608,6 +609,65 @@ public class Php_Connect : BaseSingleton<Php_Connect>
         {
             Instance.StartCoroutine(Response_Gift(DesignID, TargetNickname));
         }
+    }
+
+    /// <summary> Warn: increase count of watched ads on server </summary>
+    public static IEnumerator Request_AdWatched(Action successRequest, Action unsuccessRequest)
+    {
+        if (!PHPisOnline)
+            yield break;
+
+        WWWForm form = new();
+        form.AddField("Nickname", Nickname);
+
+        Action<string> completed = (string response) =>
+        {
+            switch (response)
+            {
+                case "0":
+                    Logger.Instance.Log(Instance, "[Request_AdWatched] User watched ad");
+                    successRequest?.Invoke();
+                    break;
+                case "1":
+                    Logger.Instance.Log(Instance, "[Request_AdWatched] User can't watch ads");
+                    unsuccessRequest?.Invoke();
+                    break;
+                case "2":
+                    Logger.Instance.LogWarning(Instance, "[Request_AdWatched] User doesn't exist in database");
+                    unsuccessRequest?.Invoke();
+                    break;
+                default:
+                    Logger.Instance.LogError(Instance, "[Request_AdWatched] Unexpected response received");
+                    unsuccessRequest?.Invoke();
+                    break;
+            }
+        };
+
+        yield return Instance.StartCoroutine(PostToUserModule("AdWatched.php", form, completed));
+    }
+
+    /// <summary> onComplete is invoked with the number of ads viewed. In case of error, called with -1 </summary>
+    public static IEnumerator Request_AdsCount(Action<int> onComplete)
+    {
+        if (!PHPisOnline)
+            yield break;
+
+        WWWForm form = new();
+        form.AddField("Nickname", Nickname);
+
+        Action<string> completed = (string response) =>
+        {
+            if (int.TryParse(response, out int value))
+            {
+                onComplete?.Invoke(value);
+            }
+            else
+            {
+                onComplete?.Invoke(-1);
+            }
+        };
+
+        yield return Instance.StartCoroutine(PostToUserModule("AdsCount.php", form, completed));
     }
 
     public static IEnumerator Request_Exit()

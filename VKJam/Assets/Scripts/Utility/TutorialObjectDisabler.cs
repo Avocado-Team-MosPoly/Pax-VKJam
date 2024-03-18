@@ -8,19 +8,15 @@ public class TutorialObjectDisabler : MonoBehaviour
     {
         if (string.IsNullOrEmpty(uniqueId))
         {
-            Logger.Instance.LogWarning(this, $"{nameof(uniqueId)} Is null or empty");
+            Logger.Instance.LogWarning(this, $"{nameof(uniqueId)} is null or empty (object: {this.name})");
             Destroy(this);
             return;
         }
 
         if (PlayerPrefs.GetInt(uniqueId, 0) == 0)
-        {
             PlayerPrefs.SetInt(uniqueId, 1);
-        }
         else
-        {
             gameObject.SetActive(false);
-        }
 
         Destroy(this);
     }

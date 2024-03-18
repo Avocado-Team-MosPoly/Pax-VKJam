@@ -54,14 +54,13 @@ public class SwitchModule : MonoBehaviour
             if (SwitchTarget._Anim != null)
             {
                 if (NewItem._Anim == null)
-                {
                     NewItem._Anim = NewItem.gameObject.AddComponent<Animator>();
-                }
-
-                if(NewItem._Anim.runtimeAnimatorController != SwitchTarget._Anim.runtimeAnimatorController)
+                if (NewItem._Anim.runtimeAnimatorController != SwitchTarget._Anim.runtimeAnimatorController)
                     NewItem._Anim.runtimeAnimatorController = SwitchTarget._Anim.runtimeAnimatorController;
             }
-            if (SwitchTarget.Data != null) NewItem.Data.Set(SwitchTarget.Data);
+            if (SwitchTarget.Data != null)
+                NewItem.Data.Set(SwitchTarget.Data);
+
             Destroy(SwitchTarget.Object);
         }
         SwitchTarget = NewItem;

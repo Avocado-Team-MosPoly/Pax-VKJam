@@ -2,7 +2,6 @@ public class VariableObserver<T>
 {
     public event System.Action<T> ValueChanged;
 
-    private T value;
     public T Value
     {
         get => value;
@@ -12,6 +11,7 @@ public class VariableObserver<T>
             ValueChanged?.Invoke(value);
         }
     }
+    private T value;
 
     public VariableObserver(T value, System.Action<T> valueChanged = null)
     {
