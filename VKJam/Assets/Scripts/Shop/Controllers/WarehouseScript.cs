@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public class WarehouseScript : BaseSingleton<WarehouseScript>
 {
-	private List<Product> productInstances = new();
+    private List<Product> productInstances = new();
 
     [SerializeField] private CurrencyCatcher Display;
     [SerializeField] private Product Template;
@@ -26,6 +26,7 @@ public class WarehouseScript : BaseSingleton<WarehouseScript>
 
     private int currentSection = -1;
     private int currentPage = 0;
+    private int startProductIndex = 0;
 
     private void Start()
     {
@@ -49,7 +50,8 @@ public class WarehouseScript : BaseSingleton<WarehouseScript>
 
         currentSection = section;
         currentPage = 0;
-        int sectionPagesCount = (CustomController.Instance.Categories[currentSection].products.Count + maxInstancesCount - 1) / maxInstancesCount;
+        startProductIndex = 0;
+        int sectionPagesCount = (CustomController.Instance.Categories[currentSection].products.Count - CountDefaults(0, CustomController.Instance.Categories[currentSection].products.Count - 1) + maxInstancesCount - 1) / maxInstancesCount;
 
         leftButton.gameObject.SetActive(false);
         rightButton.gameObject.SetActive(currentPage < sectionPagesCount - 1);
@@ -60,7 +62,7 @@ public class WarehouseScript : BaseSingleton<WarehouseScript>
     public void NextPage()
     {
         currentPage++;
-        int sectionPagesCount = (CustomController.Instance.Categories[currentSection].products.Count + maxInstancesCount - 1) / maxInstancesCount;
+        int sectionPagesCount = (CustomController.Instance.Categories[currentSection].products.Count - CountDefaults(0, CustomController.Instance.Categories[currentSection].products.Count - 1) + maxInstancesCount - 1) / maxInstancesCount;
         leftButton.gameObject.SetActive(true);
         rightButton.gameObject.SetActive(true);
 
@@ -92,12 +94,15 @@ public class WarehouseScript : BaseSingleton<WarehouseScript>
     }
     public void RefreshView()
     {
-        int startProductIndex = currentPage * maxInstancesCount;
+        startProductIndex = currentPage == 0 ? 0 : currentPage * maxInstancesCount + CountDefaults(0, startProductIndex);
 
         if (startProductIndex >= CustomController.Instance.Categories[currentSection].products.Count)
         {
             if (maxInstancesCount > CustomController.Instance.Categories[currentSection].products.Count)
+            {
                 startProductIndex = 0;
+            }
+
         }
 
         for (int instanceIndex = 0, productIndex = startProductIndex; instanceIndex < maxInstancesCount; instanceIndex++, productIndex++)
@@ -130,7 +135,23 @@ public class WarehouseScript : BaseSingleton<WarehouseScript>
                     productInstances[instanceIndex].Button.GetComponentInChildren<TextMeshProUGUI>().text = inOwnText;
             }
             productInstances[instanceIndex].gameObject.SetActive(true);
+
+            startProductIndex = productIndex;
         }
+    }
+
+    public int CountDefaults(int startIndex, int endIndex)
+    {
+        int sum = 0;
+        for(int i = startIndex; i <= endIndex; i++)
+        {
+            if(CustomController.Instance.Categories[currentSection].products[i].Data.productCode == 0)
+            {
+                sum++;
+            }
+        }
+
+        return sum;
     }
 
     public void RemoveProduct(Product productToRemove)
