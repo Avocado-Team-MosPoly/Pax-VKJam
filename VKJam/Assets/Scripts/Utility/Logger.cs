@@ -1,26 +1,19 @@
 using System;
-using System.ComponentModel;
-using System.Reflection;
 using TMPro;
 using UnityEngine;
 
-public class Logger : MonoBehaviour
+public class Logger : BaseSingleton<Logger>
 {
-    public static Logger Instance { get; private set; }
-
     [SerializeField] private TextMeshProUGUI output;
 
-    private void Awake()
+    protected override void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
+        base.Awake();
+
+        if (Instance == this)
             DontDestroyOnLoad(gameObject);
-        }
         else
-        {
             Destroy(gameObject);
-        }
     }
 
     private string GetClassName(object obj)

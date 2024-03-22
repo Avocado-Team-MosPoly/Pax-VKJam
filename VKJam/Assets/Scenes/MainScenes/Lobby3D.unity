@@ -1796,10 +1796,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b4e9655c29d42b49b21dbb63ec0bfd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnNetworkSpawned:
-    m_PersistentCalls:
-      m_Calls: []
-  brushMode: 0
+  clearCanvasButton: {fileID: 0}
   switchBrushModeButton: {fileID: 2125049143}
   chalkSprite: {fileID: 21300000, guid: cdd086b372f4e1f48b26dbcb052a2af4, type: 3}
   eraserSprite: {fileID: 21300000, guid: dd9c9d78fe00c5b4ca340fa16342e354, type: 3}
@@ -1807,8 +1804,8 @@ MonoBehaviour:
   drawingCamera: {fileID: 952334923}
   raycastMaxDistance: 10
   renderTextureSettings:
-    width: 2048
-    height: 2048
+    width: 1024
+    height: 1024
     format: 0
     wrapMode: 1
     filterMode: 1
@@ -1816,7 +1813,7 @@ MonoBehaviour:
   canvasMaterial: {fileID: 2100000, guid: 1079aede8cfc3d54c82c348a318f07af, type: 2}
   backgroundColor: {r: 0, g: 0, b: 0, a: 0}
   brushLine: {fileID: 937733852}
-  initialBrushSize: 0.05
+  initialBrushSize: 0.03
   stopDistance: 0.02
   brushMaterial: {fileID: 2100000, guid: 6cf38b358d99ba249a46da9367d228ea, type: 2}
   brushColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1835,8 +1832,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   drawing: {fileID: 330455453}
+  minSize: 0.5
+  maxSize: 5
   sizeLerpRate: 0.5
-  minDiff: 0.25
+  minSizeDiff: 0.25
   sizeConfirmationTime: 0.5
 --- !u!1 &371409366
 GameObject:

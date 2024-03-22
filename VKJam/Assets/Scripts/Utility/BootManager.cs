@@ -149,6 +149,10 @@ public class BootManager : MonoBehaviour
         UpdateLoadingStatus(customController_Initialization);
         yield return StartCoroutine(customController.Init());
 
+        // Load Ads Data
+
+        yield return StartCoroutine(AdManager.Init());
+
         // Unity Services
 
         UpdateLoadingStatus(authentication_Authentication);

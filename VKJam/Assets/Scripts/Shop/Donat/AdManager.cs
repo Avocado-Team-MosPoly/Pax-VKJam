@@ -1,26 +1,59 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class AdManager
 {
+    public static int WatchedAdsThisDay { get; private set; } = 0;
+    public static int MaxAdsToWatchPerDay { get; private set; } = 5;
+
     private const string AdsWatchedKey = "AdsWatched";
     private const string AdLastWatchedTimeKey = "AdLastWatchedTime";
     private const int MaxAdsPerDay = 5;
 
+    public static IEnumerator Init()
+    {
+        yield return Php_Connect.Instance.StartCoroutine(Php_Connect.Request_AdsCount((response) =>
+        {
+            string[] nums = response.Split("/");
+            switch (nums.Length)
+            {
+                case 1:
+                {
+                    if (int.TryParse(nums[0], out int value11))
+                        WatchedAdsThisDay = value11;
+
+                    break;
+                }
+                case 2:
+                {
+                    if (int.TryParse(nums[0], out int value21) && int.TryParse(nums[1], out int value22))
+                    {
+                        WatchedAdsThisDay = value21;
+                        MaxAdsToWatchPerDay = value22;
+                    }
+
+                    break;
+                }
+            }
+        }, null));
+    }
+
     public static bool CanShowAd()
     {
-        int adsWatchedToday = PlayerPrefs.GetInt(AdsWatchedKey, 0);
-        DateTime lastWatched = GetLastAdWatchedTime();
+        return WatchedAdsThisDay < MaxAdsToWatchPerDay;
+        //int adsWatchedToday = PlayerPrefs.GetInt(AdsWatchedKey, 0);
+        //DateTime lastWatched = GetLastAdWatchedTime();
 
-        // ≈сли текущий день не совпадает с датой последнего просмотра, сбросить счетчик
-        if (lastWatched.Date != DateTime.UtcNow.Date)
-        {
-            PlayerPrefs.SetInt(AdsWatchedKey, 0);
-            adsWatchedToday = 0;
-        }
+        //// ≈сли текущий день не совпадает с датой последнего просмотра, сбросить счетчик
+        //if (lastWatched.Date != DateTime.UtcNow.Date)
+        //{
+        //    PlayerPrefs.SetInt(AdsWatchedKey, 0);
+        //    adsWatchedToday = 0;
+        //}
 
-        // ѕровер€ем, не превысили ли мы максимальное количество просмотров
-        return adsWatchedToday < MaxAdsPerDay;
+        //// ѕровер€ем, не превысили ли мы максимальное количество просмотров
+        //return adsWatchedToday < MaxAdsPerDay;
     }
     public static int GetAdsWatchedToday()
     {
@@ -28,9 +61,13 @@ public class AdManager
     }
     public static void OnAdWatched()
     {
-        int adsWatchedToday = PlayerPrefs.GetInt(AdsWatchedKey, 0);
-        PlayerPrefs.SetInt(AdsWatchedKey, adsWatchedToday + 1);
-        SetLastAdWatchedTime(DateTime.UtcNow);
+        WatchedAdsThisDay++;
+        if (WatchedAdsThisDay > MaxAdsPerDay)
+            WatchedAdsThisDay = MaxAdsPerDay;
+
+        //int adsWatchedToday = PlayerPrefs.GetInt(AdsWatchedKey, 0);
+        //PlayerPrefs.SetInt(AdsWatchedKey, adsWatchedToday + 1);
+        //SetLastAdWatchedTime(DateTime.UtcNow);
     }
 
     private static DateTime GetLastAdWatchedTime()

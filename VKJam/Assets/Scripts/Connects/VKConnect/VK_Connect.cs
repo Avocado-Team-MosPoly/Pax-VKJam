@@ -97,16 +97,16 @@ public class VK_Connect : BaseSingleton<VK_Connect>
         UnityPluginRequest_ShowInterstitialAd();
 #endif
     }
-
     public void RequestShowRewardAd() // �������� �� ������� unity
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
         if (!AdManager.CanShowAd())
             return;
 
-#if UNITY_WEBGL && !UNITY_EDITOR
         UnityPluginRequestAds();
 #endif
     }
+
     public void RequestRepost() // �������� �� ������� unity
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -175,16 +175,26 @@ public class VK_Connect : BaseSingleton<VK_Connect>
 
     public void ResponseSuccessAds()
     {
-        AdManager.OnAdWatched();
-
-        int tokenCount = 30;
-        Action successRequest = () =>
+        StartCoroutine(Php_Connect.Request_AdWatched(() =>
         {
-            StartCoroutine(DonatRouter.Instance?.DelayRefresh());
-            CurrencyCatcher.Instance?.Refresh();
-        };
+            if (DonatRouter.Instance != null)
+                StartCoroutine(DonatRouter.Instance.DelayRefresh());
+            if (CurrencyCatcher.Instance != null)
+                CurrencyCatcher.Instance.Refresh();
 
-        StartCoroutine(Php_Connect.Request_TokenWin(tokenCount, successRequest, null));
+            AdManager.OnAdWatched();
+        }, null));
+
+        //int tokenCount = 30;
+        //Action successRequest = () =>
+        //{
+        //    if (DonatRouter.Instance != null)
+        //        StartCoroutine(DonatRouter.Instance.DelayRefresh());
+        //    if (CurrencyCatcher.Instance != null)
+        //        CurrencyCatcher.Instance.Refresh();
+        //};
+
+        //StartCoroutine(Php_Connect.Request_TokenWin(tokenCount, successRequest, null));
     }
 
     public void Response_ShowInterstitialAd(int watchedAdsCount)
@@ -197,7 +207,8 @@ public class VK_Connect : BaseSingleton<VK_Connect>
 
     public void ResponseSuccessBuyDonat()
     {
-        CurrencyCatcher.Instance?.Refresh();
+        if (CurrencyCatcher.Instance != null)
+            CurrencyCatcher.Instance.Refresh();
     }
 
     public void ResponseGetFriends(string Input)

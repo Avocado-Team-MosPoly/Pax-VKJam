@@ -12,30 +12,42 @@ public class DonatRouter : BaseSingleton<DonatRouter>
     {
         StartCoroutine(DelayRefresh());
     }
+
     public void BuyCross(int id)
     {
         VK_Connect.Instance.RequestBuyTry(id);
-        StartCoroutine(DelayRefresh());
+        StartCoroutine(DelayRefresh()); // QUESTION - refreshed to quickly and request refreshes it after buy
     }
+
     public void Ads()
     {
         VK_Connect.Instance.RequestShowRewardAd();
     }
+
     public IEnumerator DelayRefresh()
     {
-        yield return new WaitForSeconds(1);
-        AdsCounterTest.text = "Реклама " + AdManager.GetAdsWatchedToday() + "/5";
-        buyText.text = buyTextString;
-        CurrencyCatcher.Instance.Refresh();
-        
+        yield return new WaitForSeconds(1); // QUESTION - is it really requred?
+
+        StartCoroutine(Php_Connect.Request_AdsCount((count) =>
+        {
+            AdsCounterTest.text = "Реклама " + count;
+            buyText.text = buyTextString;
+            if (CurrencyCatcher.Instance != null)
+                CurrencyCatcher.Instance.Refresh();
+        }, null));
+
+        //AdsCounterTest.text = "Реклама " + AdManager.GetAdsWatchedToday() + "/5";
+        //buyText.text = buyTextString;
+        //CurrencyCatcher.Instance.Refresh();
     }
+
     public void BuyTokens(int id)
     {
         Action<string> successRequest = (string response) =>
         {
-            CurrencyCatcher.Instance.Refresh();
+            if (CurrencyCatcher.Instance != null)
+                CurrencyCatcher.Instance.Refresh();
         };
-        //Action unsuccessRequest = () => { };
 
         StartCoroutine(Php_Connect.Request_TokenBuy(id, successRequest, null));
     }

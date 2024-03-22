@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -633,7 +634,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
                     unsuccessRequest?.Invoke();
                     break;
                 case "2":
-                    Logger.Instance.LogWarning(Instance, "[Request_AdWatched] User doesn't exist in database");
+                    Logger.Instance.LogError(Instance, "[Request_AdWatched] User doesn't exist in database");
                     unsuccessRequest?.Invoke();
                     break;
                 default:
@@ -646,8 +647,8 @@ public class Php_Connect : BaseSingleton<Php_Connect>
         yield return Instance.StartCoroutine(PostToUserModule("AdWatched.php", form, completed));
     }
 
-    /// <summary> onComplete is invoked with the number of ads viewed. In case of error, called with -1 </summary>
-    public static IEnumerator Request_AdsCount(Action<int> onComplete)
+    /// <summary> successRequest invokes with watched ads count in format: 1/5 - (watched ads count) / (max ads count to watch per day) </summary>
+    public static IEnumerator Request_AdsCount(Action<string> successRequest, Action unsuccessRequest)
     {
         if (!PHPisOnline)
             yield break;
@@ -657,14 +658,34 @@ public class Php_Connect : BaseSingleton<Php_Connect>
 
         Action<string> completed = (string response) =>
         {
-            if (int.TryParse(response, out int value))
+            string[] nums = response.Split('/');
+            switch (nums.Length)
             {
-                onComplete?.Invoke(value);
+                case 1:
+                    if (int.TryParse(nums[0], out int value11))
+                        successRequest?.Invoke(response);
+                    else
+                        unsuccessRequest?.Invoke();
+                    break;
+                case 2:
+                    if (int.TryParse(nums[0], out int value21) && int.TryParse(nums[1], out int value22))
+                        successRequest?.Invoke(response);
+                    else
+                        unsuccessRequest?.Invoke();
+                    break;
+                default:
+                    unsuccessRequest?.Invoke();
+                    break;
             }
-            else
-            {
-                onComplete?.Invoke(-1);
-            }
+
+            //if (int.TryParse(response, out int value))
+            //{
+            //    successRequest?.Invoke(value);
+            //}
+            //else
+            //{
+            //    successRequest?.Invoke(-1);
+            //}
         };
 
         yield return Instance.StartCoroutine(PostToUserModule("AdsCount.php", form, completed));

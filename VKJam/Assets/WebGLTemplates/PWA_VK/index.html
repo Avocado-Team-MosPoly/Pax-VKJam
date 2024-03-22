@@ -160,11 +160,11 @@
                 .then((data) => {
                     console.log(data);
                     if (data.result) {
-                        console.log('[JS] Показ завершён');
+                        console.log('[JS] Показ рекламы завершён');
                         unityGameInstance.SendMessage('Connects', 'ResponseSuccessAds');
                     }
                     else {
-                        console.log('[JS] Ошибка при показе');
+                        console.error('[JS] Ошибка при показе рекламы');
                     }
                 })
                 .catch((error) => {
