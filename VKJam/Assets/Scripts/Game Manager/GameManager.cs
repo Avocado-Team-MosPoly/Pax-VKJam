@@ -234,7 +234,7 @@ public class GameManager : NetworkBehaviour
     private void ShowMonsterGuessedClientRpc(byte clientId)
     {
         if (clientId == NetworkManager.LocalClientId)
-            NotificationSystem.Instance.SendLocal("�� ������� �������!");
+            NotificationSystem.Instance.SendLocal("Вы отгадали монстра!");
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -460,7 +460,7 @@ public class GameManager : NetworkBehaviour
             int winnerClientTokens;
             (winnerClientId, winnerClientTokens) = TokenManager.GetClientIdWithMaxTokens();
 
-            NotificationSystem.Instance.SendLocal("������� " + PlayersDataManager.Instance.PlayerDatas[winnerClientId].Name + "�� ������ " + winnerClientTokens);
+            NotificationSystem.Instance.SendLocal("Выиграл " + PlayersDataManager.Instance.PlayerDatas[winnerClientId].Name + "со счетом " + winnerClientTokens);
         }
 
         TokenManager.ResetData();

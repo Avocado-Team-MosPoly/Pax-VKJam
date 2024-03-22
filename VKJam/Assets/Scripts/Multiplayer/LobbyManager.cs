@@ -44,6 +44,7 @@ public class LobbyManager : MonoBehaviour
 
     private bool isSendHeartBeatPing = false;
     private const float heartBeatTime = 15f;
+    private const string errorText = "Ошибка соединения: Не получилось подключиться к серверам Unity Lobby";
     private float heartBeatTimer;
 
     public IEnumerator Init()
@@ -129,7 +130,7 @@ public class LobbyManager : MonoBehaviour
         if (CurrentLobby == null)
             return true;
 
-        NotificationSystem.Instance.SendLocal("�� ��� � �����: " + CurrentLobby.Name);
+        NotificationSystem.Instance.SendLocal("Вы уже в лобби: " + CurrentLobby.Name);
         return false;
     }
 
@@ -268,7 +269,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("������ ����������: �� ���������� ������������ � �������� Unity Lobby");
+            NotificationSystem.Instance.SendLocal(errorText);
         }
     }
 
@@ -300,7 +301,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("������ ����������: �� ���������� ������������ � �������� Unity Lobby");
+            NotificationSystem.Instance.SendLocal(errorText);
         }
     }
 
@@ -332,7 +333,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("������ ����������: �� ���������� ������������ � �������� Unity Lobby");
+            NotificationSystem.Instance.SendLocal(errorText);
         }
     }
 
@@ -370,7 +371,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("������ ����������: �� ���������� ������������ � �������� Unity Lobby");
+            NotificationSystem.Instance.SendLocal(errorText);
         }
     }
 
@@ -391,7 +392,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.Log(this, ex);
-            NotificationSystem.Instance.SendLocal("������ ����������: �� ���������� ������������ � �������� Unity Lobby");
+            NotificationSystem.Instance.SendLocal(errorText);
         }
     }
 
@@ -454,7 +455,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("������ ����������: �� ���������� ������������ � �������� Unity Lobby");
+            NotificationSystem.Instance.SendLocal(errorText);
         }
     }
 
