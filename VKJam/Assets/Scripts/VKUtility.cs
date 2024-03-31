@@ -26,7 +26,17 @@ public class VKUtility : MonoBehaviour
 
     public void InviteToGame()
     {
-        VK_Connect.Instance.RequestInvateNewPlayer();
+        //VK_Connect.Instance.RequestInvateNewPlayer();
+        VK_Connect.Instance.RequestGetFriends();
+        VK_Connect.Instance.OnFriendsGot += OnFriendsGot_InviteToGame;
+    }
+
+    public void OnFriendsGot_InviteToGame(int[] uids)
+    {
+        foreach (var uid in uids)
+            VK_Connect.Instance.RequestInvateOldPlayer(uid, string.Empty);
+
+        VK_Connect.Instance.OnFriendsGot -= OnFriendsGot_InviteToGame;
     }
 
     public void InviteToLobby()

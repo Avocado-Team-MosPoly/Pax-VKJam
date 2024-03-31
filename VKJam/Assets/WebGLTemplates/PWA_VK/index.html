@@ -185,9 +185,13 @@
                 });
         }
         function JSRequestInviteOldPlayer(id, lobby_key) {
+            let msg = "Заходи ко мне в игру!";
+            if (lobby_key !== "")
+                msg += " Код лобби: " + lobby_key;
+
             vkBridge.send("VKWebAppShowRequestBox", {
                 uid: id,
-                message: "Заходи ко мне в игру! Код лобби: " + lobby_key
+                message: msg
                 //requestKey: "key-12345"
             })
                 .then((data) => {
