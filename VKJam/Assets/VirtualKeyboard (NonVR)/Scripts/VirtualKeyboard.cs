@@ -13,8 +13,6 @@ public class VirtualKeyboard : MonoBehaviour
     private TMP_InputField targetText;
 	private Coroutine deletionCoroutine;
 
-    [DllImport("__Internal")] private static extern bool UnityPluginIsMobilePlatform();
-
     private void Start()
     {
 		if (Instance == null)
@@ -104,7 +102,7 @@ public class VirtualKeyboard : MonoBehaviour
 			return false;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-        if (UnityPluginIsMobilePlatform() || Application.isMobilePlatform)
+        if (Application.isMobilePlatform)
         {
 			this.targetText = targetText;
 			inputTextView.text = targetText.text;

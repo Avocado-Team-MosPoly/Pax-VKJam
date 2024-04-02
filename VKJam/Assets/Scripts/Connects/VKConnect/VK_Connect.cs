@@ -16,22 +16,7 @@ public class VK_Connect : BaseSingleton<VK_Connect>
     [SerializeField] private bool NeedDebuging;
     [SerializeField] private TMP_Text DebugingText;
     [SerializeField] private TMP_Text NameText;
-
-    #region External Methods
-
-    [DllImport("__Internal")] private static extern void UnityPluginRequestJs();
-    [DllImport("__Internal")] private static extern void UnityPluginRequestUserData();
-    [DllImport("__Internal")] private static extern void UnityPluginRequestAds();
-    [DllImport("__Internal")] private static extern void UnityPluginRequest_ShowInterstitialAd();
-    [DllImport("__Internal")] private static extern void UnityPluginRequestRepost();
-    [DllImport("__Internal")] private static extern void UnityPluginRequestInviteNewPlayer();
-    [DllImport("__Internal")] private static extern void UnityPluginRequestInviteOldPlayer(int id, string lobby_key);
-    [DllImport("__Internal")] private static extern void UnityPluginRequestBuyTry(int id);
-    [DllImport("__Internal")] private static extern void UnityPluginRequestGetFriends();
-    [DllImport("__Internal")] private static extern void UnityPluginRequestJoinGroup();
-    [DllImport("__Internal")] private static extern void UnityPluginRequestCheckSubscriptionVKGroup();
-
-    #endregion
+   
 
     public IEnumerator Init()
     {

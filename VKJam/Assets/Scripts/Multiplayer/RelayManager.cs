@@ -128,11 +128,33 @@ public class RelayManager : MonoBehaviour
 
             unityTransport.UseWebSockets = true;
             unityTransport.SetRelayServerData(relayServerData);
+
+#elif UNITY_ANDROID
+            NotificationSystem.Instance.SendLocal("UNITY_ANDROID_1");
+
+            unityTransport.SetRelayServerData
+            (
+                allocation.RelayServer.IpV4,
+                (ushort)allocation.RelayServer.Port,
+                allocation.AllocationIdBytes,
+                allocation.Key,
+                allocation.ConnectionData
+            );
+
 #else
             Logger.Instance.LogError(this, "Unsupported Platform. Supprted Platforms: UNITY_WEBGL, UNITY_STANDALONE_WIN");
             return "0";
 #endif
 #endif
+            unityTransport.SetRelayServerData
+            (
+                allocation.RelayServer.IpV4,
+                (ushort)allocation.RelayServer.Port,
+                allocation.AllocationIdBytes,
+                allocation.Key,
+                allocation.ConnectionData
+            );
+
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallbackServer;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallbackServer;
             NetworkManager.Singleton.OnServerStarted += OnServerStartedServer;
@@ -204,7 +226,32 @@ public class RelayManager : MonoBehaviour
             unityTransport.UseWebSockets = true;
             unityTransport.SetRelayServerData(relayServerData);
 #endif
+#if UNITY_ANDROID
+            Logger.Instance.Log(this, "Windows");
+            
+            NotificationSystem.Instance.SendLocal("UNITY_ANDROID");
+            unityTransport.SetRelayServerData
+            (
+                joinAllocation.RelayServer.IpV4,
+                (ushort)joinAllocation.RelayServer.Port,
+                joinAllocation.AllocationIdBytes,
+                joinAllocation.Key,
+                joinAllocation.ConnectionData,
+                joinAllocation.HostConnectionData
+            );
 #endif
+#endif
+            NotificationSystem.Instance.SendLocal("Android");
+
+            unityTransport.SetRelayServerData
+            (
+                joinAllocation.RelayServer.IpV4,
+                (ushort)joinAllocation.RelayServer.Port,
+                joinAllocation.AllocationIdBytes,
+                joinAllocation.Key,
+                joinAllocation.ConnectionData,
+                joinAllocation.HostConnectionData
+            );
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallbackClient;
             NetworkManager.Singleton.OnClientStarted += OnClientStartedClient;
             NetworkManager.Singleton.OnClientStopped += OnClientStoppedClient;

@@ -3,12 +3,10 @@ using UnityEngine;
 
 public class MobileKeyboard : MonoBehaviour
 {
-    [DllImport("__Internal")] private static extern bool UnityPluginIsMobilePlatform();
-
     public void Open()
     {
 #if !UNITY_EDITOR
-        if (Application.isMobilePlatform || UnityPluginIsMobilePlatform())
+        if (Application.isMobilePlatform)
             TouchScreenKeyboard.Open(string.Empty, TouchScreenKeyboardType.Default);
 #endif
         return;
