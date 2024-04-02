@@ -7,7 +7,7 @@ public class MobilePlatformSettings : MonoBehaviour
 
     private void Awake()
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if !UNITY_EDITOR
         if (UnityPluginIsMobilePlatform() || Application.isMobilePlatform)
         {
             Application.targetFrameRate = 60;
