@@ -85,7 +85,7 @@ public class BootManager : MonoBehaviour
         int connectionAttemptNumber = 0;
         Action<bool> successAuthentication = (bool isFirstTime) =>
         {
-            Authentication.IsLoggedInThroughVK = !useDefaultNickname;
+            //Authentication.IsLoggedInThroughVK = !useDefaultNickname;
             loadTutorial = isFirstTime;
         };
         Action<string> unsuccesAuthentication = (string exception) =>

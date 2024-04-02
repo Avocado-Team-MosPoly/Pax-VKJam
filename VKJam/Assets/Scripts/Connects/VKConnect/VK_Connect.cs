@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using TMPro;
 
@@ -12,11 +11,9 @@ public class VK_Connect : BaseSingleton<VK_Connect>
     public VariableObserver<bool> IsJoinedVKGroupObserver { get; private set; } = new(false);
 
     [Header("Debug")]
-
     [SerializeField] private bool NeedDebuging;
     [SerializeField] private TMP_Text DebugingText;
     [SerializeField] private TMP_Text NameText;
-   
 
     public IEnumerator Init()
     {
@@ -70,79 +67,54 @@ public class VK_Connect : BaseSingleton<VK_Connect>
 
     public void RequestJs() // �������� �� ������� unity
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-        UnityPluginRequestJs();
-#endif
+
     }
 
     public IEnumerator RequestShowInterstitialAd() // �������� �� ������� unity
     {
-        yield return new WaitForSeconds(3f);
-#if UNITY_WEBGL && !UNITY_EDITOR
-        UnityPluginRequest_ShowInterstitialAd();
-#endif
+        yield return new WaitForSeconds(0f); // 3f
     }
+
     public void RequestShowRewardAd() // �������� �� ������� unity
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-        if (!AdManager.CanShowAd())
-            return;
 
-        UnityPluginRequestAds();
-#endif
     }
 
     public void RequestRepost() // �������� �� ������� unity
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-        UnityPluginRequestRepost();
-#endif
+
     }
     public void RequestInvateNewPlayer() // �������� �� ������� unity
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-        UnityPluginRequestInviteNewPlayer();
-#endif
+
     }
     public void RequestInvateOldPlayer(int id, string lobby_key) // �������� �� ������� unity
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-        UnityPluginRequestInviteOldPlayer(id, lobby_key);
-#endif
+
     }
 
     public void RequestUserData() // �������� �� ������� unity
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-        UnityPluginRequestUserData();
-#endif
+
     }
     public void RequestBuyTry(int id) // �������� �� ������� unity
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-        UnityPluginRequestBuyTry(id);
-#endif
+
     }
 
     public void RequestGetFriends()
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-        UnityPluginRequestGetFriends();
-#endif
+
     }
 
     public void RequestJoinGroup()
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-        UnityPluginRequestJoinGroup();
-#endif
+
     }
 
     public void RequestCheckSubscriptionVKGroup()
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-        UnityPluginRequestCheckSubscriptionVKGroup();
-#endif
+
     }
 
     #endregion

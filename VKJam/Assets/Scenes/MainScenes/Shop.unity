@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.000999221, g: 0.00093978294, b: 0.000932836, a: 1}
+  m_IndirectSpecularColor: {r: 0.0010147502, g: 0.0009699385, b: 0.00095360936, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -16215,6 +16215,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 572307326177520556, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 646804585275176261, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: Price
       value: 
@@ -16379,6 +16383,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: d82f520a0f0a5e945a8367b20379ed9d, type: 3}
+    - target: {fileID: 5568308232365092102, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5675283397221495551, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_SizeDelta.x
       value: 900
@@ -16434,6 +16442,10 @@ PrefabInstance:
     - target: {fileID: 6721189462465861427, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6728269037160789075, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_Interactable
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6728269037160789075, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
@@ -16556,12 +16568,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 6f721f1d055b3d6479698f74d3e5cbe3, type: 3}
     - target: {fileID: 8282941001654366741, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8282941001654366741, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8876167168696362897, guid: a04f2fe9f62600841927d104302807be, type: 3}
       propertyPath: m_HorizontalAlignment
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9092821398270454691, guid: a04f2fe9f62600841927d104302807be, type: 3}
+      propertyPath: m_Interactable
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -39186,6 +39206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff3acd8bcaeff2747aa1838a619c8a5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  destroyOnStart: 1
   ignoreNames:
   - arrow
   - left button

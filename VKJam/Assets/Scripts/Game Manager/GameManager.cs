@@ -427,15 +427,15 @@ public class GameManager : NetworkBehaviour
 
         EndGameClientRpc();
 
-        if (Authentication.IsLoggedInThroughVK)
-        {
-            nextRoundButton.gameObject.SetActive(false);
-            VK_Connect.Instance.OnInterstitialAdTryWatched += SetNRBLobbyWithInterstitialAd;
-            StartCoroutine(VK_Connect.Instance.RequestShowInterstitialAd());
-            ShowInterstitialAdOnGameEndedClientRpc();
-        }
-        else
-            SetNRBLobby();
+        //if (Authentication.IsLoggedInThroughVK)
+        //{
+        //    nextRoundButton.gameObject.SetActive(false);
+        //    VK_Connect.Instance.OnInterstitialAdTryWatched += SetNRBLobbyWithInterstitialAd;
+        //    StartCoroutine(VK_Connect.Instance.RequestShowInterstitialAd());
+        //    ShowInterstitialAdOnGameEndedClientRpc();
+        //}
+        //else
+        SetNRBLobby();
     }
 
     [ClientRpc]

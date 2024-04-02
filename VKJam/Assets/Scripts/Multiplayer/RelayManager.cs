@@ -128,7 +128,7 @@ public class RelayManager : MonoBehaviour
             unityTransport.SetRelayServerData(relayServerData);
 
 #elif UNITY_ANDROID
-            NotificationSystem.Instance.SendLocal("UNITY_ANDROID_1");
+            //NotificationSystem.Instance.SendLocal("UNITY_ANDROID_1");
 
             unityTransport.SetRelayServerData
             (
@@ -144,7 +144,7 @@ public class RelayManager : MonoBehaviour
             return "0";
 #endif
 #endif
-            NotificationSystem.Instance.SendLocal("UNITY_ANDROID_1");
+            //NotificationSystem.Instance.SendLocal("UNITY_ANDROID_1");
             unityTransport.SetRelayServerData
             (
                 allocation.RelayServer.IpV4,
@@ -240,7 +240,7 @@ public class RelayManager : MonoBehaviour
             );
 #endif
 #endif
-            NotificationSystem.Instance.SendLocal("Android");
+            //NotificationSystem.Instance.SendLocal("Android");
 
             unityTransport.SetRelayServerData
             (
