@@ -70,13 +70,11 @@ public class RelayManager : MonoBehaviour
 
     private bool PlatformNotSupportedException()
     {
-#if UNITY_EDITOR
-#if UNITY_WEBGL
+#if UNITY_EDITOR && UNITY_WEBGL
         Logger.Instance.LogError(this, new PlatformNotSupportedException("Multiplyer doesn't work in editor on \"WebGL\" platform. You should change platform to \"Windows, Mac, Linux\""));
         NotificationSystem.Instance.SendLocal("Platform not supporteed");
         UnityEditor.EditorApplication.isPaused = true;
         return true;
-#endif
 #endif
 #pragma warning disable CS0162
         return false;
@@ -146,6 +144,7 @@ public class RelayManager : MonoBehaviour
             return "0";
 #endif
 #endif
+            NotificationSystem.Instance.SendLocal("UNITY_ANDROID_1");
             unityTransport.SetRelayServerData
             (
                 allocation.RelayServer.IpV4,
