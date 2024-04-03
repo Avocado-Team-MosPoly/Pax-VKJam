@@ -38,8 +38,8 @@ public class Settings : MonoBehaviour
 
     private void MuteMusic()
     {
-        musicOffButton.interactable = false;
-        musicOnButton.interactable = true;
+        musicOffButton.interactable = true;
+        musicOnButton.interactable = false;
 
         SoundList.MuteObserver.Value = true;
         BackgroundMusic.Instance.Mute = true;
@@ -47,8 +47,8 @@ public class Settings : MonoBehaviour
 
     private void UnmuteMusic()
     {
-        musicOffButton.interactable = true;
-        musicOnButton.interactable = false;
+        musicOffButton.interactable = false;
+        musicOnButton.interactable = true;
 
         SoundList.MuteObserver.Value = false;
         BackgroundMusic.Instance.Mute = false;
