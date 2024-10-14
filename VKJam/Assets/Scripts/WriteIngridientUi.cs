@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-//using DG.Tweening; // Подключаем библиотеку DOTween для анимаций
+using DG.Tweening; // Подключаем библиотеку DOTween для анимаций
 
 public class WriteIngridientUi : MonoBehaviour
 {
@@ -60,10 +60,10 @@ public class WriteIngridientUi : MonoBehaviour
         if (uiTransform != null)
         {
             // Устанавливаем начальную позицию ниже стартовой на moveDistance по Y
-            //uiTransform.position = new Vector3(initialPosition.x, initialPosition.y - moveDistance, initialPosition.z);
+            uiTransform.position = new Vector3(initialPosition.x, initialPosition.y - moveDistance, initialPosition.z);
 
             // Анимируем движение вверх на moveDistance, возвращаясь к начальной позиции
-            //uiTransform.DOMove(initialPosition, animationDuration).SetEase(Ease.OutQuad);
+            uiTransform.DOMove(initialPosition, animationDuration).SetEase(Ease.OutQuad);
         }
     }
 
@@ -75,7 +75,7 @@ public class WriteIngridientUi : MonoBehaviour
             // Анимация вниз и после завершения деактивация объекта
             //uiTransform.DOMove(targetPosition, animationDuration).SetEase(Ease.InQuad).OnComplete(() =>
             //{
-                gameObject.SetActive(false);
+            //    gameObject.SetActive(false);
             //});
         }
     }
