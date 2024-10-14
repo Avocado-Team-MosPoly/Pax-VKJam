@@ -10,6 +10,6 @@ public class VKNameParcer : MonoBehaviour
         nameText = GetComponent<TMP_Text>();
 
         if(nameText != null)
-            nameText.text = Authentication.PlayerName;
+            nameText.text = UnityServicesAuthentication.PlayerName;
     }
 }

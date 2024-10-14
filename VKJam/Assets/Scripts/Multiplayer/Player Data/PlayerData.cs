@@ -43,7 +43,7 @@ public struct PlayerData : INetworkSerializable, System.IEquatable<PlayerData>
     public PlayerData(byte avatarIndex, byte avatarFrameIndex)
     {
         lobbyPlayerId = LobbyManager.Instance.PlayerId;
-        name = Authentication.PlayerName;
+        name = UnityServicesAuthentication.PlayerName;
 
         AvatarIndex = avatarIndex;
         AvatarFrameIndex = avatarFrameIndex;

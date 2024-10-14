@@ -3,18 +3,16 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine;
 
-public class Authentication : MonoBehaviour
+public class UnityServicesAuthentication : MonoBehaviour
 {
     public static string PlayerName { get; private set; }
     public static string UserId { get; private set; }
-
-    public static bool IsLoggedInThroughVK;// { get; private set; }
 
     public static async Task Authenticate(string userId, string playerName)
     {
         if (UnityServices.State == ServicesInitializationState.Initialized)
         {
-            Logger.Instance.Log(typeof(Authentication), "Unity Services alredy initialized");
+            Logger.Instance.Log(typeof(UnityServicesAuthentication), "Unity Services alredy initialized");
         }
         else
         {
@@ -36,16 +34,16 @@ public class Authentication : MonoBehaviour
 
         if (AuthenticationService.Instance.IsAuthorized)
         {
-            Logger.Instance.Log(typeof(Authentication), "You alredy authorized");
+            Logger.Instance.Log(typeof(UnityServicesAuthentication), "You alredy authorized");
             return;
         }
 
         AuthenticationService.Instance.SignedIn += () =>
         {
-            Logger.Instance.Log(typeof(Authentication), $"Signed in. Your id is {AuthenticationService.Instance.PlayerId}, player name is {PlayerName}");
+            Logger.Instance.Log(typeof(UnityServicesAuthentication), $"Signed in. Your id is {AuthenticationService.Instance.PlayerId}, player name is {PlayerName}");
         };
 
-        Logger.Instance.Log(typeof(Authentication), "Sign in in progress...");
+        Logger.Instance.Log(typeof(UnityServicesAuthentication), "Sign in in progress...");
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 

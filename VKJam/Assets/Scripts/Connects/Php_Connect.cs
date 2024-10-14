@@ -17,7 +17,9 @@ public class Currency
 public class Php_Connect : BaseSingleton<Php_Connect>
 {
     public static bool PHPisOnline { get; private set; }
-    public static int Nickname {  get; private set; }
+
+    public static string Login => login;
+
     public static Currency Current { get; private set; } = new Currency()
     {
         IGCurrency = 100,
@@ -33,6 +35,10 @@ public class Php_Connect : BaseSingleton<Php_Connect>
     private static string link;
     private static string userModulesLink;
     private static string resourcesLink;
+
+    private static string login;
+    private static string password;
+
     private static void ErrorProcessor(string error)
     {
         if (error == "Cannot connect to destination host")
@@ -145,10 +151,11 @@ public class Php_Connect : BaseSingleton<Php_Connect>
     }
 
     /// <summary> successRequest - Sends true if the user has just registered, and false if not </summary>
-    public static IEnumerator Request_Auth(int external_Nickname, Action<bool> successRequest, Action<string> unsuccessRequest)
+    public static IEnumerator Request_Auth(string login, string password, Action<bool> successRequest, Action<string> unsuccessRequest)
     {
         WWWForm form = new();
-        form.AddField("Nickname", external_Nickname);
+        form.AddField("Login", login);
+        form.AddField("Password", password);
 
         Action<string> completed = (string response) =>
         {
@@ -188,7 +195,8 @@ public class Php_Connect : BaseSingleton<Php_Connect>
 
             if (PHPisOnline)
             {
-                Nickname = external_Nickname;
+                Php_Connect.login = login;
+                Php_Connect.password = password;
             }
         };
 
@@ -201,7 +209,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
             yield break;
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
         form.AddField("PackId", idPack);
 
         Action<string> completed = (response) =>
@@ -224,7 +232,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
         }
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
         form.AddField("id", id);
 
         Action<string> completed = (string response) =>
@@ -247,7 +255,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
             yield break;
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
         form.AddField("ProductType", (int)itemType);
         form.AddField("idDesign", idDesign);
 
@@ -268,7 +276,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
             yield break;
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
 
         Action<string> completed = (response) =>
         {
@@ -290,7 +298,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
         }
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
         form.AddField("ForThePieces", ForThePieces ? "1" : "0");
         form.AddField("idCard", idCard.ToString());
 
@@ -344,7 +352,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
         }
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
 
         Action<string> completed = (string response) =>
         {
@@ -366,7 +374,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
         }
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
 
         Action<string> completed = (string response) =>
         {
@@ -385,7 +393,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
         }
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
         form.AddField("Count", Count);
 
         Action<string> completed = (string response) =>
@@ -408,7 +416,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
         }
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
         form.AddField("DesignID", DesignID);
 
         Action<string> completed = (string response) =>
@@ -431,7 +439,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
         }
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
 
         Action<string> completed = (string response) =>
         {
@@ -453,7 +461,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
         }
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
 
         Action<string> completed = (string response) =>
         {
@@ -466,7 +474,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
         yield return Instance.StartCoroutine(PostToUserModule("DesignWin.php", form, completed));
     }
 
-    private static IEnumerator Response_Gift(int DesignID, int TargetNickname)
+    private static IEnumerator Response_Gift(int DesignID, string TargetNickname)
     {
         if (!PHPisOnline)
             yield break;
@@ -490,7 +498,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
         }
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
 
         Action<string> completed = (string response) =>
         {
@@ -537,7 +545,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
 
         WWWForm form = new();
         form.AddField("idDesign", idDesign);
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
 
         Action<string> completed = (string response) =>
         {
@@ -550,7 +558,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
         yield return Instance.StartCoroutine(PostToUserModule("DesignOutput_JSON.php", form, completed));
     }
 
-    public static IEnumerator Request_Gift(int DesignID, int TargetNickname)
+    public static IEnumerator Request_Gift(int DesignID, string TargetNickname)
     {
         if (!PHPisOnline)
             yield break;
@@ -619,7 +627,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
             yield break;
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
 
         Action<string> completed = (string response) =>
         {
@@ -654,7 +662,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
             yield break;
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
 
         Action<string> completed = (string response) =>
         {
@@ -697,7 +705,7 @@ public class Php_Connect : BaseSingleton<Php_Connect>
             yield break;
 
         WWWForm form = new();
-        form.AddField("Nickname", Nickname);
+        form.AddField("Nickname", login);
 
         Action<string> completed = (string response) =>
         {

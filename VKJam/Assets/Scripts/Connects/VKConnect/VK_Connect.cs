@@ -17,6 +17,8 @@ public class VK_Connect : BaseSingleton<VK_Connect>
     [SerializeField] private TMP_Text DebugingText;
     [SerializeField] private TMP_Text NameText;
 
+    public bool IsLoggedInThroughVK;
+
     #region External Methods
 
     [DllImport("__Internal")] private static extern void UnityPluginRequestJs();

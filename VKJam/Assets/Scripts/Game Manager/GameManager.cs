@@ -427,7 +427,7 @@ public class GameManager : NetworkBehaviour
 
         EndGameClientRpc();
 
-        if (Authentication.IsLoggedInThroughVK)
+        if (VK_Connect.Instance.IsLoggedInThroughVK)
         {
             nextRoundButton.gameObject.SetActive(false);
             VK_Connect.Instance.OnInterstitialAdTryWatched += SetNRBLobbyWithInterstitialAd;

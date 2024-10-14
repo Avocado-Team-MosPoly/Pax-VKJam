@@ -198,7 +198,7 @@ public class LobbyManager : MonoBehaviour
         {
             Data = new Dictionary<string, PlayerDataObject>
             {
-                { "Player Name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, Authentication.PlayerName) }
+                { "Player Name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, UnityServicesAuthentication.PlayerName) }
             }
         };
     }
@@ -247,7 +247,7 @@ public class LobbyManager : MonoBehaviour
 
             CurrentLobby = await LobbyService.Instance.CreateLobbyAsync
             (
-                lobbyName: string.IsNullOrEmpty(LobbyDataInput.Instance.LobbyName) ? Authentication.PlayerName : LobbyDataInput.Instance.LobbyName,
+                lobbyName: string.IsNullOrEmpty(LobbyDataInput.Instance.LobbyName) ? UnityServicesAuthentication.PlayerName : LobbyDataInput.Instance.LobbyName,
                 maxPlayers: LobbyDataInput.Instance.MaxPlayers,
                 options: createLobbyOptions
             );

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Runtime.ConstrainedExecution;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,17 +8,20 @@ using UnityEngine.UI;
 public class BootManager : MonoBehaviour
 {
     [Header("Server Connection Data")]
-    [SerializeField] private bool useDefaultNickname;
-    [SerializeField] private int defaultNickname = 333; // default = 333
+    //[SerializeField] private bool useDefaultNickname;
+    //[SerializeField] private int defaultNickname = 333; // default = 333
 
     [SerializeField, Tooltip("Time between connection attempts in seconds"), Min(0f)] private float connectionTimeout = 1f;
     [SerializeField] private int maxConnectionAttempts = 10;
 
-    [Header("VK")]
-    [SerializeField] private VK_Connect vkConnect;
+    //[Header("VK")]
+    //[SerializeField] private VK_Connect vkConnect;
 
     [Header("Server")]
     [SerializeField] private Php_Connect phpConnect;
+
+    [Header("LogIn")]
+    [SerializeField] private LogInView logInView;
 
     [Header("Multiplayer")]
     [SerializeField] private RelayManager relayManager;
@@ -36,6 +40,7 @@ public class BootManager : MonoBehaviour
     [Header("Loading Statuses")]
     [SerializeField] private string vkConnect_Initialization;
     [SerializeField] private string phpConnect_Initialization;
+    [SerializeField] private string logIn_Input;
     [SerializeField] private string phpConnect_Authentication;
     [SerializeField] private string getBDCardPacksData;
     [SerializeField] private string packManager_Initialization;
@@ -61,17 +66,35 @@ public class BootManager : MonoBehaviour
         StartLoading();
     }
 
+    private void StartLoading()
+    {
+        if (loadingCoroutine != null)
+            return;
+
+        loadingCoroutine = StartCoroutine(Loading());
+    }
+
+    private void StopLoading()
+    {
+        if (loadingCoroutine == null)
+            return;
+
+        StopCoroutine(loadingCoroutine);
+        loadingCoroutine = null;
+    }
+
     private IEnumerator Loading()
     {
         // Disclaimer
 
-        StartCoroutine(ShowDisclaimer(showDisclaimer));
+        yield return StartCoroutine(ShowDisclaimer(showDisclaimer));
 
-        // VK
+        // LogIn
 
         loadingSlider.value = 0f;
-        statusLabel.text = vkConnect_Initialization;
-        yield return StartCoroutine(vkConnect.Init());
+
+        //statusLabel.text = vkConnect_Initialization;
+        //yield return StartCoroutine(vkConnect.Init());
 
         // Dedicated Server
 
@@ -85,7 +108,7 @@ public class BootManager : MonoBehaviour
         int connectionAttemptNumber = 0;
         Action<bool> successAuthentication = (bool isFirstTime) =>
         {
-            Authentication.IsLoggedInThroughVK = !useDefaultNickname;
+            //vkConnect.IsLoggedInThroughVK = !useDefaultNickname;
             loadTutorial = isFirstTime;
         };
         Action<string> unsuccesAuthentication = (string exception) =>
@@ -106,17 +129,31 @@ public class BootManager : MonoBehaviour
             Destroy(this);
         };
 
+        UpdateLoadingStatus(logIn_Input);
+        string login = string.Empty, password = string.Empty;
+        logInView.Submitted += (loginInput, passwordInput) =>
+        {
+            login = loginInput;
+            password = passwordInput;
+
+            logInView.Hide();
+        };
+        logInView.Show();
+
+        yield return new WaitUntil(() => login != string.Empty);
+
         UpdateLoadingStatus(phpConnect_Authentication);
         for (connectionAttemptNumber = 0; connectionAttemptNumber < maxConnectionAttempts; connectionAttemptNumber++)
         {
-            if (!useDefaultNickname && UserData.UserId < 0)
-            {
-                yield return new WaitForSeconds(connectionTimeout);
-                continue;
-            }
+            //if (!useDefaultNickname && UserData.UserId < 0)
+            //{
+            //    yield return new WaitForSeconds(connectionTimeout);
+            //    continue;
+            //}
 
             yield return StartCoroutine(Php_Connect.Request_Auth(
-                useDefaultNickname ? defaultNickname : UserData.UserId,
+                /*useDefaultNickname ? defaultNickname : UserData.UserId*/
+                login, password,
                 successAuthentication, unsuccesAuthentication));
 
             if (Php_Connect.PHPisOnline)
@@ -126,8 +163,8 @@ public class BootManager : MonoBehaviour
         }
         if (connectionAttemptNumber >= maxConnectionAttempts - 1 && !Php_Connect.PHPisOnline)
         {
-            Logger.Instance.LogError(this, $"Unable to connect to dedicated server using {(useDefaultNickname ? "Default nickname" : "VK uid")}");
-            NotificationSystem.Instance.SendLocal($"Не удалось подключиться к серверам используя {(useDefaultNickname ? "стандартный логин" : "ВК uid")}");
+            Logger.Instance.LogError(this, $"Unable to connect to dedicated server");/*using {(useDefaultNickname ? "Default nickname" : "VK uid")}*/
+            NotificationSystem.Instance.SendLocal($"Не удалось подключиться к серверам");/*используя {(useDefaultNickname ? "стандартный логин" : "ВК uid")}*/
         }
 
         #endregion
@@ -156,9 +193,9 @@ public class BootManager : MonoBehaviour
         // Unity Services
 
         UpdateLoadingStatus(authentication_Authentication);
-        string unityServicesId = (useDefaultNickname ? defaultNickname : UserData.UserId).ToString();
-        string unityServicesNickname = useDefaultNickname ? defaultNickname.ToString() : UserData.UserName;
-        yield return Authentication.Authenticate(unityServicesId, unityServicesNickname);
+        string unityServicesId = login;//(useDefaultNickname ? defaultNickname : UserData.UserId).ToString();
+        string unityServicesNickname = login;//useDefaultNickname ? defaultNickname.ToString() : UserData.UserName;
+        yield return UnityServicesAuthentication.Authenticate(unityServicesId, unityServicesNickname);
 
         UpdateLoadingStatus(relayManager_Initialization);
         yield return StartCoroutine(relayManager.Init());
@@ -168,33 +205,6 @@ public class BootManager : MonoBehaviour
 
         UpdateLoadingStatus(sceneLoading);
         LoadStartScene(loadTutorial);
-    }
-
-    private void DestroyManagers()
-    {
-        Destroy(vkConnect);
-        Destroy(phpConnect);
-        Destroy(relayManager);
-        Destroy(lobbyManager);
-        Destroy(packManager);
-        Destroy(customController);
-    }
-
-    private void StartLoading()
-    {
-        if (loadingCoroutine != null)
-            return;
-
-        loadingCoroutine = StartCoroutine(Loading());
-    }
-
-    private void StopLoading()
-    {
-        if (loadingCoroutine == null)
-            return;
-
-        StopCoroutine(loadingCoroutine);
-        loadingCoroutine = null;
     }
 
     private void UpdateLoadingStatus(string status)
@@ -222,5 +232,15 @@ public class BootManager : MonoBehaviour
         }
         else
             disclaimerPanel.SetActive(false);
+    }
+
+    private void DestroyManagers()
+    {
+        //Destroy(vkConnect);
+        Destroy(phpConnect);
+        Destroy(relayManager);
+        Destroy(lobbyManager);
+        Destroy(packManager);
+        Destroy(customController);
     }
 }

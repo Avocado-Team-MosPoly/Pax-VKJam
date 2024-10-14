@@ -30,7 +30,7 @@ public class Catcher_RandomItem : BaseSingleton<Catcher_RandomItem>
     {
         if (Php_Connect.PHPisOnline)
         {
-            StartCoroutine(Php_Connect.Request_Gift(0, Php_Connect.Nickname));
+            StartCoroutine(Php_Connect.Request_Gift(0, Php_Connect.Login));
         }
     }
 
