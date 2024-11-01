@@ -15,7 +15,7 @@ public class PromocodeView : MonoBehaviour
 
         promocodeInputField.onValidateInput += ValidatePromocodeInput;
 
-        activateButton.onClick.AddListener(OnActivateButtonClicked);
+        activateButton.onClick.AddListener(ActivateButton);
     }
 
     private char ValidatePromocodeInput(string text, int charIndex, char addedChar)
@@ -30,7 +30,7 @@ public class PromocodeView : MonoBehaviour
         }
     }
 
-    private void OnActivateButtonClicked()
+    private void ActivateButton()
     {
         promocode = promocodeInputField.text;
 
@@ -52,6 +52,7 @@ public class PromocodeView : MonoBehaviour
     private void OnSuccess()
     {
         Debug.Log("Promocode activated successfully!");
+        //вывести пользователю ответ
     }
 
     private void OnFailure()
