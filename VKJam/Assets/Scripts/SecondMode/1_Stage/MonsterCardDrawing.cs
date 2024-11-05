@@ -63,9 +63,6 @@ public class MonsterCardDrawing : MonoBehaviour
 
     public void Init()
     {
-        baseColor.a = 1f;
-        drawColor.a = 1f;
-
         halfBrushSize = brushSize / 2;
 
         CreateTexture();
@@ -80,6 +77,7 @@ public class MonsterCardDrawing : MonoBehaviour
         switchBrushModeButton?.onClick.AddListener(SwitchBrushMode);
         switchBrushModeButtonImage = switchBrushModeButton?.GetComponent<Image>();
 
+        brushSizeSlider.value = brushSize;
         brushSizeSlider?.onValueChanged.AddListener(ChangeSize);
     }
 

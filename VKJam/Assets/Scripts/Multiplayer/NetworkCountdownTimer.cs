@@ -10,11 +10,10 @@ public class NetworkCountdownTimer : NetworkBehaviour
     public event Action<float> ValueChanged;
     public event Action Finished;
 
-    private NetworkVariable<float> remainingTime;
+    private NetworkVariable<float> remainingTime = new(0);
 
     public override void OnNetworkSpawn()
     {
-        remainingTime = new NetworkVariable<float>(0);
         remainingTime.OnValueChanged += OnValueChanged;
     }
 
@@ -49,6 +48,14 @@ public class NetworkCountdownTimer : NetworkBehaviour
             return;
 
         IsPlaying = true;
+    }
+
+    public void Finish()
+    {
+        if (!IsPlaying)
+            return;
+
+        remainingTime.Value = 0f;
     }
 
     public void ClearFinishedEvent()

@@ -1,34 +1,41 @@
 using Unity.Netcode;
+using UnityEditor;
 using UnityEngine;
 
 public class SecondModeManager : BaseSingleton<SecondModeManager>
 {
-    [SerializeField] private IStageManager[] stageManagers;
+    [SerializeField] private BaseStageManager[] stageManagers;
 
     private int currentStageIndex = -1;
 
     private void Start()
     {
-        stageManagers[0].StartStage();
-        currentStageIndex = 0;
+        NetworkManager.Singleton.OnClientStarted += delegate
+        {
+            stageManagers[0].StartStage();
+            currentStageIndex = 0;
+        };
+    }
+
+    public void SetStage(int stageIndex)
+    {
+        if (stageIndex < 0 || stageIndex >= stageManagers.Length - 1)
+            return;
+
+        stageManagers[currentStageIndex].FinishStage();
+        stageManagers[stageIndex].StartStage();
+
+        currentStageIndex = stageIndex;
     }
 
     public void NextStage()
     {
-        if (currentStageIndex < 0 || currentStageIndex >= stageManagers.Length - 1)
-            return;
-
-        stageManagers[currentStageIndex].FinishStage();
-        stageManagers[++currentStageIndex].StartStage();
+        SetStage(currentStageIndex + 1);
     }
 
     public void PreviousStage()
     {
-        if (currentStageIndex < 1 || currentStageIndex >= stageManagers.Length)
-            return;
-
-        stageManagers[currentStageIndex].FinishStage();
-        stageManagers[--currentStageIndex].StartStage();
+        SetStage(currentStageIndex - 1);
     }
 
     public void ReturnToLobby()

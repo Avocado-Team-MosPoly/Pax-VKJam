@@ -2,73 +2,102 @@ using System;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class FirstStageManager : MonoBehaviour, IStageManager
+public class FirstStageManager : BaseStageManager
 {
-    public event Action Started;
-    public event Action Finished;
-
     [Header("First Part (Monster Texture and Description)")]
+    [SerializeField] private float firstPartDuration = 30f;
     [SerializeField] private GameObject firstContainer;
-    [SerializeField] private float firstPartTime = 30f;
+    [SerializeField] private GameObject painterControlsContainer;
 
     [Header("Second Part (Ingredients)")]
+    [SerializeField] private float secondPartDuration = 30f;
     [SerializeField] private GameObject secondContainer;
-    [SerializeField] private float secondPartTime = 30f;
+    [Space(10)]
+    [SerializeField] private RawImage monsterPainting;
+    [SerializeField] private TextMeshProUGUI monsterName;
+    [SerializeField] private TextMeshProUGUI monsterDescription;
 
-    [Header("References")]
+    [Header("General")]
+    [SerializeField] private NetworkCountdownTimer countdownTimer;
     [SerializeField] private ReadinessSystem readinessSystem;
     [SerializeField] private MonsterCardDrawing monsterCardDrawing;
     [SerializeField] private MonsterInfoInput monsterInfoInput;
-    [SerializeField] private TextMeshProUGUI timerLabel;
     [Space(10)]
-    [SerializeField] private NetworkCountdownTimer countdownTimer;
+    [SerializeField] private TextMeshProUGUI timerLabel;
 
-    public void StartStage()
+    public override void StartStage()
     {
         firstContainer.SetActive(true);
 
+        monsterCardDrawing.Init();
         monsterCardDrawing.Enable();
+
 
         countdownTimer.ValueChanged += OnTimerTick;
         countdownTimer.Finished += OnFirstTimerFinished;
         if (NetworkManager.Singleton.IsServer)
-            countdownTimer.Play(firstPartTime);
+        {
+            countdownTimer.Play(firstPartDuration);
 
-        Started?.Invoke();
+            readinessSystem.SetAllUnready();
+            readinessSystem.AllReady += OnAllReady;
+        }
+
+        gameObject.SetActive(true);
+        base.StartStage();
     }
 
-    public void FinishStage()
+    public override void FinishStage()
     {
         secondContainer.SetActive(false);
 
         monsterCardDrawing.Disable();
+
         countdownTimer.ValueChanged -= OnTimerTick;
 
         SendCardInfo();
 
         if (NetworkManager.Singleton.IsServer)
-            readinessSystem.SetAllUnready();
+        {
+            readinessSystem.AllReady -= OnAllReady;
+        }
 
-        Finished?.Invoke();
+        gameObject.SetActive(false);
+        base.FinishStage();
+    }
+
+    private void OnAllReady()
+    {
+        countdownTimer.Finish();
+        readinessSystem.SetAllUnready();
     }
 
     private void OnTimerTick(float value)
     {
-        timerLabel.text = value.ToString();
+        timerLabel.text = ((int)value).ToString();
     }
 
     private void OnFirstTimerFinished()
     {
         monsterCardDrawing.Disable();
 
+        monsterName.text = monsterInfoInput.Name;
+        monsterDescription.text = monsterInfoInput.Description;
+        monsterPainting.texture = monsterCardDrawing.GetTexture();
+
         firstContainer.SetActive(false);
+        painterControlsContainer.SetActive(false);
         secondContainer.SetActive(true);
 
         countdownTimer.Finished -= OnFirstTimerFinished;
         countdownTimer.Finished += OnSecondTimerFinished;
         if (NetworkManager.Singleton.IsServer)
-            countdownTimer.Play(secondPartTime);
+        {
+            readinessSystem.SetAllUnready();
+            countdownTimer.Play(secondPartDuration);
+        }
     }
 
     private void OnSecondTimerFinished()
@@ -80,7 +109,7 @@ public class FirstStageManager : MonoBehaviour, IStageManager
 
     private void SendCardInfo()
     {
-        string monsterName = monsterInfoInput.MonsterName;
+        string monsterName = monsterInfoInput.Name;
         string monsterDescription = monsterInfoInput.Description;
         string[] monsterIngredients = monsterInfoInput.Ingredients;
         Texture2D monsterTexture = monsterCardDrawing.GetTexture();

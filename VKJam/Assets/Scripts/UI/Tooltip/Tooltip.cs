@@ -31,7 +31,7 @@ public class Tooltip : MonoBehaviour
         if (newPosition.y + rectTransform.sizeDelta.y > Screen.height)
             newPosition.y = Input.mousePosition.y - positionOffset.y - rectTransform.sizeDelta.y;
 
-        rectTransform.position = newPosition;
+        rectTransform.anchoredPosition = newPosition;
     }
 
     public void Show(string text)

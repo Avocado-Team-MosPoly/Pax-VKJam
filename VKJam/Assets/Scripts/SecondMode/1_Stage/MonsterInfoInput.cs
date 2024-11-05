@@ -7,7 +7,7 @@ public class MonsterInfoInput : MonoBehaviour
     [SerializeField] private TMP_InputField descriptionInputField;
     [SerializeField] private TMP_InputField[] ingredientInputFields;
 
-    public string MonsterName => string.IsNullOrEmpty(nameInputField.text) ? GetDefaultName() : nameInputField.text;
+    public string Name => string.IsNullOrEmpty(nameInputField.text) ? GetDefaultName() : nameInputField.text;
     public string Description => string.IsNullOrEmpty(descriptionInputField.text) ? GetDefaultDescription() : descriptionInputField.text;
     public string[] Ingredients
     {

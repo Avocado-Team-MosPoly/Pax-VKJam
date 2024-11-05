@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class ReadinessSystem : NetworkBehaviour
 {
     public event Action AllReady;
-    public event Action<ulong> Ready;
+    public event Action<bool> LocalReady;
 
     [SerializeField] private Toggle toggle;
     [SerializeField] private TextMeshProUGUI readyClientsCountLabel;
@@ -25,11 +25,21 @@ public class ReadinessSystem : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        clientsReadiness = new()
+        {
+            new ClientReadiness(NetworkManager.LocalClientId, false)
+        };
+
+        UpdateView();
+
+        return;
         clientsReadiness = new(PlayersDataManager.Instance.PlayerDatas.Count);
         IEnumerable<ulong> connectedClients = PlayersDataManager.Instance.PlayerDatas.Keys;
 
         foreach (ulong clientId in connectedClients)
             clientsReadiness.Add(new ClientReadiness(clientId, false));
+
+        UpdateView();
 
         PlayersDataManager.Instance.PlayerConnected += OnClientConnected;
         PlayersDataManager.Instance.PlayerDisconnected += OnClientDisconnected;
@@ -37,6 +47,7 @@ public class ReadinessSystem : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
+        return;
         PlayersDataManager.Instance.PlayerConnected += OnClientConnected;
         PlayersDataManager.Instance.PlayerDisconnected += OnClientDisconnected;
     }
@@ -56,13 +67,20 @@ public class ReadinessSystem : NetworkBehaviour
     private void SetAllUnreadyClientRpc()
     {
         foreach (ClientReadiness client in clientsReadiness)
+        {
             client.isReady = false;
+
+            if (client.id == NetworkManager.LocalClientId)
+                LocalReady?.Invoke(false);
+        }
     }
 
     [ServerRpc]
     private void SendReadyServerRpc(bool value, ServerRpcParams rpcParams)
     {
-        SetReady(rpcParams.Receive.SenderClientId, value);
+        if (rpcParams.Receive.SenderClientId != NetworkManager.LocalClientId)
+            SetReady(rpcParams.Receive.SenderClientId, value);
+
         SendReadyClientRpc(rpcParams.Receive.SenderClientId, value);
     }
 
@@ -90,6 +108,10 @@ public class ReadinessSystem : NetworkBehaviour
                     else
                         ReadyClientsCount--;
 
+                    if (clientId == NetworkManager.LocalClientId)
+                        LocalReady?.Invoke(value);
+
+                    CheckAllReady();
                     UpdateView();
 
                     return;
@@ -139,6 +161,12 @@ public class ReadinessSystem : NetworkBehaviour
         yield return new WaitForSeconds(1f);
 
         toggle.interactable = true;
+    }
+
+    private void CheckAllReady()
+    {
+        if (ReadyClientsCount >= clientsReadiness.Count)
+            AllReady?.Invoke();
     }
 
     private class ClientReadiness
