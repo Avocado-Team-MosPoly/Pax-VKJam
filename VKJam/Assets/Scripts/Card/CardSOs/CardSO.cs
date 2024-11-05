@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu()]
-public class CardSO : ScriptableObject
+public class CardSO : ScriptableObject, ICard
 {
     public string id;
 
@@ -15,6 +15,18 @@ public class CardSO : ScriptableObject
 
     [SerializeField] private Ingredient[] ingredientsSO;
     public Ingredient[] IngredientsSO => ingredientsSO;
+    public string[] Ingredients
+    {
+        get
+        {
+            string[] ingredients = new string[ingredientsSO.Length];
+
+            for (int i = 0; i < ingredients.Length; i++)
+                ingredients[i] = ingredientsSO[i].Name;
+
+            return ingredients;
+        }
+    }
 
     public string Id => id;
     public CardDifficulty Difficulty => difficulty;

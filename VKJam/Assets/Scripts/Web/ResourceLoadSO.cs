@@ -21,7 +21,7 @@ public class ResourceLoadSO : ScriptableObject
         public string monsterInBestiaryTextureURL;
     }
 
-    public PackCardSO[] cardPacks;
+    public CardPackSO[] cardPacks;
 
     public List<CardURLs> cardURLs;
 

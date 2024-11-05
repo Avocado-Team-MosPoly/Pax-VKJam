@@ -5,16 +5,18 @@ using UnityEngine;
 
 public class PlayersDataManager : NetworkBehaviour
 {
-    public static PlayersDataManager Instance { get; private set; }
-
-    public IReadOnlyDictionary<ulong, PlayerData> PlayerDatas => playerDatas;
-
-    public StoreSection AvatarsAndFramesStorage => avatarsAndFramesStorage;
+    public event Action<ulong> PlayerConnected;
+    public event Action<ulong> PlayerDisconnected;
 
     [SerializeField] private StoreSection avatarsAndFramesStorage;
 
     private Dictionary<ulong, PlayerData> playerDatas = new();
     private NetworkList<NetworkTuple_PlayerData> playerDatasList = new();
+
+    public static PlayersDataManager Instance { get; private set; }
+
+    public IReadOnlyDictionary<ulong, PlayerData> PlayerDatas => playerDatas;
+    public StoreSection AvatarsAndFramesStorage => avatarsAndFramesStorage;
 
     private void Init()
     {
@@ -44,11 +46,13 @@ public class PlayersDataManager : NetworkBehaviour
         {
             Logger.Instance.Log(this, $"change event id {changeEvent.PreviousValue.Id} {changeEvent.Value.Id}");
             playerDatas.Remove(changeEvent.Value.Id);
+            PlayerDisconnected?.Invoke(changeEvent.Value.Id);
             Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data removed");
         }
         else if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Add)
         {
             playerDatas[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
+            PlayerConnected?.Invoke(changeEvent.Value.Id);
             Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data added: {changeEvent.Value.PlayerData}");
         }
         else if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Value)

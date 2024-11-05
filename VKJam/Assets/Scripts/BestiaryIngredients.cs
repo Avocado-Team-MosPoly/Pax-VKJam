@@ -73,12 +73,16 @@ public class BestiaryIngredients : MonoBehaviour
         {
             if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i] == true)
             {
-                foreach (Ingredient ingridient in PackManager.Instance.Active.CardInPack[i].Card.IngredientsSO)
+                if (PackManager.Instance.Active.CardInPack[i].Card is CardSO cardSO)
                 {
-                    if (IngredientList.Contains(ingridient) != true)
-                    {
-                        IngredientList.Add(ingridient);
-                    }
+                    foreach (Ingredient ingridient in cardSO.IngredientsSO)
+                        if (IngredientList.Contains(ingridient) != true)
+                            IngredientList.Add(ingridient);
+                }
+                else
+                {
+                    Logger.Instance.LogError(this, $"Invalid type of card. Must be {nameof(CardSO)}");
+                    return;
                 }
             }
         }

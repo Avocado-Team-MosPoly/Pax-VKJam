@@ -117,7 +117,15 @@ public class Bestiary : MonoBehaviour
         {
             if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i] == true)
             {
-                Monsters.Add(PackManager.Instance.Active.CardInPack[i].Card);
+                if (PackManager.Instance.Active.CardInPack[i].Card is CardSO cardSO)
+                {
+                    Monsters.Add(cardSO);
+                }
+                else
+                {
+                    Logger.Instance.LogError(this, $"Invalid type of card. Must be {nameof(CardSO)}");
+                    return;
+                }
             }
         }
 

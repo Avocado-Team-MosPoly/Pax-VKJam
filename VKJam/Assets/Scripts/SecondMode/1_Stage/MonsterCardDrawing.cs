@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class MonsterCardDrawing : MonoBehaviour
 {
+    public bool IsEnabled { get; private set; }
+
     [Serializable]
     private struct TextureSettings
     {
@@ -59,11 +61,14 @@ public class MonsterCardDrawing : MonoBehaviour
     [SerializeField] private Sprite eraserSprite;
     private Image switchBrushModeButtonImage;
 
-    private void Awake()
+    public void Init()
     {
         baseColor.a = 1f;
         drawColor.a = 1f;
 
+        halfBrushSize = brushSize / 2;
+
+        CreateTexture();
         InitControlUI();
     }
 
@@ -76,12 +81,6 @@ public class MonsterCardDrawing : MonoBehaviour
         switchBrushModeButtonImage = switchBrushModeButton?.GetComponent<Image>();
 
         brushSizeSlider?.onValueChanged.AddListener(ChangeSize);
-    }
-
-    private void Start()
-    {
-        CreateTexture();
-        halfBrushSize = brushSize / 2;
     }
 
     private void CreateTexture()
@@ -102,6 +101,9 @@ public class MonsterCardDrawing : MonoBehaviour
 
     private void Update()
     {
+        if (!IsEnabled)
+            return;
+
         Draw();
 
         //int scrollDelta = (int)Input.mouseScrollDelta.y;
@@ -129,7 +131,6 @@ public class MonsterCardDrawing : MonoBehaviour
 
         if (isDraw)
         {
-            Debug.Log("Draw");
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
             if (_collider.Raycast(ray, out RaycastHit hitInfo, 1000f))
@@ -248,9 +249,18 @@ public class MonsterCardDrawing : MonoBehaviour
         isConnectedToPrevious = false;
     }
 
-    public void SetActive(bool value)
+    public Texture2D GetTexture()
     {
-        enabled = value;
+        return texture;
     }
 
+    public void Enable()
+    {
+        IsEnabled = true;
+    }
+
+    public void Disable()
+    {
+        IsEnabled = false;
+    }
 }
