@@ -398,7 +398,26 @@ public class Php_Connect : BaseSingleton<Php_Connect>
 
         yield return Instance.StartCoroutine(PostToUserModule("TokenWin.php", form, completed));
     }
+    public static IEnumerator Request_ActivatePromocod(string promocod, Action successRequest, Action unsuccessRequest)
+    {
+        WWWForm form = new();
+        form.AddField("Promocod", promocod);
+        form.AddField("Nickname", Nickname);
 
+        Action<string> completed = (string response) =>
+        {
+            if (response == "Activate")
+            {
+                successRequest?.Invoke();
+            }
+            else 
+            {              
+                unsuccessRequest?.Invoke();
+            }
+        };
+
+        yield return Instance.StartCoroutine(PostToUserModule("PromocodActivation.php", form, completed));
+    }
     public static IEnumerator Request_BuyTry(int DesignID, Action<string> successRequest, Action unsuccessRequest)
     {
         if (!PHPisOnline)
