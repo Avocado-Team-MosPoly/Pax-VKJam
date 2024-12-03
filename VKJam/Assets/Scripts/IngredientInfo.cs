@@ -10,12 +10,12 @@ public class IngredientInfo : MonoBehaviour
     public TextMeshProUGUI IngridientName;
     [HideInInspector] public UnityEvent<int> OnGuess;
 
-    private CompareSystem compareSystem;
+    private FirstModeGuessSystem compareSystem;
     private int index;
 
     private Button closeBestiaryButton;
 
-    public void SetIngridient(string name, int index, CompareSystem compareSystem, Button close)
+    public void SetIngridient(string name, int index, FirstModeGuessSystem compareSystem, Button close)
     {
         IngridientName.text = name;
         this.index = index;
@@ -31,7 +31,7 @@ public class IngredientInfo : MonoBehaviour
     {
         if (GameManager.Instance.Stage == Stage.IngredientGuess)
         {
-            compareSystem.CompareAnswerServerRpc(index, new ServerRpcParams());
+            compareSystem.SendAnswerServerRpc(index, new ServerRpcParams());
             OnGuess?.Invoke(index);
             closeBestiaryButton.OnPointerClick(new PointerEventData(EventSystem.current));
         }

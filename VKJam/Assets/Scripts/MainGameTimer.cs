@@ -88,7 +88,7 @@ public class MainGameTimer : NetworkBehaviour
 
     public void StartTimer()
     {
-        if (serverClockCoroutine == null)
+        if (IsServer && serverClockCoroutine == null)
         {
             ResetToDefault();
             serverClockCoroutine = StartCoroutine(Clock());
@@ -99,7 +99,7 @@ public class MainGameTimer : NetworkBehaviour
 
     public void StopTimer()
     {
-        if (serverClockCoroutine != null)
+        if (IsServer && serverClockCoroutine != null)
         {
             StopCoroutine(serverClockCoroutine);
             serverClockCoroutine = null;

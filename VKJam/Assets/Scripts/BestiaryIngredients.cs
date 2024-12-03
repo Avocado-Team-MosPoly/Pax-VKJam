@@ -8,7 +8,7 @@ public class BestiaryIngredients : MonoBehaviour
     public List<Ingredient> IngredientList = new();
     //[HideInInspector] public List<string> IngredientName = new();
 
-    [SerializeField] private CompareSystem compareSystem;
+    [SerializeField] private FirstModeGuessSystem compareSystem;
     [SerializeField] private IngredientInfo ingredientInfoTemplate;
     [SerializeField] private RectTransform leftIngredientsPage;
     [SerializeField] private RectTransform rightIngredientsPage;

@@ -36,11 +36,12 @@ public class LobbyManager : MonoBehaviour
     public string LobbyName => CurrentLobby != null ? CurrentLobby.Name : string.Empty;
     public string PlayerId => AuthenticationService.Instance.PlayerId;
 
-    public readonly string KEY_RELAY_CODE = "RelayCode";
-    public readonly string KEY_TEAM_MODE = "IsTeamMode";
-    public readonly string KEY_ROUND_AMOUNT = "RoundAmount";
-    public readonly string KEY_TIMER_AMOUNT = "TimerAmount";
-    public readonly string KEY_RECIPE_MODE = "RecipeMode";
+    public const string KEY_RELAY_CODE = "RelayCode";
+    public const string KEY_TEAM_MODE = "IsTeamMode";
+    public const string KEY_SECOND_MODE = "IsTeamMode";
+    public const string KEY_ROUND_AMOUNT = "RoundAmount";
+    public const string KEY_TIMER_AMOUNT = "TimerAmount";
+    public const string KEY_RECIPE_MODE = "RecipeMode";
 
     private bool isSendHeartBeatPing = false;
     private const float heartBeatTime = 15f;
@@ -164,32 +165,14 @@ public class LobbyManager : MonoBehaviour
 
     private Dictionary<string, DataObject> GetLobbyData()
     {
-        Dictionary<string, DataObject> lobbyData;
-
-        if (LobbyDataInput.Instance)
+        return new Dictionary<string, DataObject>
         {
-            lobbyData = new Dictionary<string, DataObject>
-            {
-                { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.GameMode.ToString(), DataObject.IndexOptions.S1) },
-                { KEY_ROUND_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.RoundAmount.ToString()) },
-                { KEY_TIMER_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.TimerAmount.ToString()) },
-                { KEY_RECIPE_MODE, new DataObject(DataObject.VisibilityOptions.Public, ((int)LobbyDataInput.Instance.RecipeMode).ToString()) },
-            };
-        }
-        else
-        {
-            // default lobby data
-            lobbyData = new Dictionary<string, DataObject>
-            {
-                { KEY_RELAY_CODE, new DataObject(DataObject.VisibilityOptions.Member, "0") },
-                { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Public, "True") },
-                { KEY_ROUND_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, "4") },
-                { KEY_TIMER_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, "40") },
-                { KEY_RECIPE_MODE, new DataObject(DataObject.VisibilityOptions.Public, "0") },
-            };
-        }
-
-        return lobbyData;
+            { KEY_SECOND_MODE, new DataObject(DataObject.VisibilityOptions.Public, "False") },
+            { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.GameMode.ToString(), DataObject.IndexOptions.S1) },
+            { KEY_ROUND_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.RoundAmount.ToString()) },
+            { KEY_TIMER_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.TimerAmount.ToString()) },
+            { KEY_RECIPE_MODE, new DataObject(DataObject.VisibilityOptions.Public, ((int)LobbyDataInput.Instance.RecipeMode).ToString()) },
+        };
     }
 
     private Player GetPlayer()

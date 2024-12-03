@@ -5,7 +5,7 @@ using System.Collections;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class GameManager : NetworkBehaviour
+public class GameManager : NetworkBehaviour, IGameManager
 {
     public static GameManager Instance { get; private set; }
 
@@ -16,36 +16,13 @@ public class GameManager : NetworkBehaviour
     [HideInInspector] public UnityEvent<bool> OnGuessMonsterStageActivatedOnClient;
     [HideInInspector] public UnityEvent OnGameEnded;
 
-    #region Properties
-
-    public Stage Stage { get; private set; } = Stage.Waiting;
-    public bool IsTeamMode { get; private set; }
-
-    public int IngredientsCount => answerCardSO.IngredientsSO.Length;
-    public bool IsDangerousCard => answerCardSO.Difficulty == CardDifficulty.Dangerous;
-    public int CurrentRound => currentRound;
-
-    public DrawingMultiplayer Paint => paint;
-    public IngredientManager IngredientManager => ingredientManager;
-    public RoundManager RoundManager => roundManager;
-    public RoleManager RoleManager => roleManager;
-    public CardManager CardManager => cardManager;
-    public GameObject SceneMonster => sceneMonster;
-    public Animator SceneMonsterAnimator => sceneMonsterAnimator;
-    public SoundList SoundList => soundList;
-
-    public byte PainterId => roleManager.PainterId;
-    public bool IsPainter => roleManager.IsPainter;
-
-    #endregion
-
     [SerializeField] private GameConfigSO gameConfig;
     [SerializeField] private MainGameTimer timer;
 
     [Header("Managers")]
     [SerializeField] private RoleManager roleManager;
     [SerializeField] private CardManager cardManager;
-    [SerializeField] private CompareSystem compareSystem;
+    [SerializeField] private FirstModeGuessSystem compareSystem;
     [SerializeField] private PlayersStatusManager playersStatusManager;
     [SerializeField] private SceneObjectsManager sceneObjectsManager;
     [SerializeField] private HintManager hintManager;
@@ -80,32 +57,57 @@ public class GameManager : NetworkBehaviour
 
     private CardSO answerCardSO;
 
+    #region Properties
+
+    public Stage Stage { get; private set; } = Stage.Waiting;
+    public bool IsSecondMode { get; private set; }
+    public bool IsTeamMode { get; private set; }
+    public int CurrentRound => currentRound;
+
+    public bool IsDangerousCard => answerCardSO.Difficulty == CardDifficulty.Dangerous;
+    public string CurrentMonsterName => GetCurrentMonster();
+    
+    public string CurrentIngredientName => GetCurrentIngredient();
+    public int IngredientsCount => answerCardSO.IngredientsSO.Length;
+
+    public DrawingMultiplayer Paint => paint;
+    public IngredientManager IngredientManager => ingredientManager;
+    public RoundManager RoundManager => roundManager;
+    public RoleManager RoleManager => roleManager;
+    public CardManager CardManager => cardManager;
+    public GameObject SceneMonster => sceneMonster;
+    public Animator SceneMonsterAnimator => sceneMonsterAnimator;
+    public SoundList SoundList => soundList;
+
+    public byte PainterId => roleManager.PainterId;
+    public bool IsPainter => roleManager.IsPainter;
+
+    #endregion
+
     private void Awake()
     {
-        if (Instance == null)
-            Instance = this;
+        if (Instance == null) Instance = this;
         else
+        {
             LogError($"Two GameManagers on scene:\n{Instance}, {this}");
+            return;
+        }
 
         sceneMonsterMaterial = sceneMonster.GetComponent<Renderer>().material;
-    }
-
-    private void Start()
-    {
-        cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
-
         sceneMonsterAnimator = sceneMonster.GetComponent<Animator>();
+
+        cardManager.OnChooseCard.AddListener(SetAnswerCardSO);
     }
 
     public override void OnNetworkSpawn()
     {
-        StartCoroutine(TakePack());
+        StartCoroutine(TakePack()); // modify for second mode
         timer.Init(gameConfig);
 
-        if (LobbyManager.Instance.CurrentLobby != null)
-            IsTeamMode = LobbyManager.Instance.CurrentLobby.Data[LobbyManager.Instance.KEY_TEAM_MODE].Value == "True";
+        IsSecondMode = LobbyManager.Instance.CurrentLobby.Data[LobbyManager.KEY_SECOND_MODE].Value == "True";
+        IsTeamMode = LobbyManager.Instance.CurrentLobby.Data[LobbyManager.KEY_TEAM_MODE].Value == "True";
 
-        if (!IsTeamMode)
+        if (IsSecondMode || !IsTeamMode)
         {
             roleManager.OnGuesserSetted.AddListener(() => playersStatusManager.SetActive(false));
             roleManager.OnPainterSetted.AddListener(() => playersStatusManager.SetActive(true));
@@ -120,19 +122,27 @@ public class GameManager : NetworkBehaviour
         {
             timer.OnExpired.AddListener(OnTimeExpired);
 
-            if (IsTeamMode)
+            if (IsSecondMode)
             {
-                Log("TEAM MODE");
-
-                ingredientManager = new TeamIngredientManager(gameConfig, compareSystem);
-                roundManager = new TeamRoundManager(gameConfig, compareSystem, ingredientManager);
+                ingredientManager = new SecondModeIngredientManager(this, gameConfig, compareSystem);
+                roundManager = new SecondModeRoundManager(this, gameConfig, compareSystem, ingredientManager);
             }
             else
             {
-                Log("COMPETITIVE MODE");
+                if (IsTeamMode)
+                {
+                    Log("TEAM MODE");
 
-                ingredientManager = new CompetitiveIngredientManager(gameConfig, compareSystem);
-                roundManager = new CompetitiveRoundManager(gameConfig, compareSystem, ingredientManager);
+                    ingredientManager = new TeamIngredientManager(this, gameConfig, compareSystem);
+                    roundManager = new TeamRoundManager(this, gameConfig, compareSystem, ingredientManager);
+                }
+                else
+                {
+                    Log("COMPETITIVE MODE");
+
+                    ingredientManager = new CompetitiveIngredientManager(this, gameConfig, compareSystem);
+                    roundManager = new CompetitiveRoundManager(this, gameConfig, compareSystem, ingredientManager);
+                }
             }
 
             roundManager.OnMonsterGuessed.AddListener(OnMonsterGuessedClientRpc);
@@ -327,7 +337,6 @@ public class GameManager : NetworkBehaviour
         SceneMonster.SetActive(true);
         SceneMonsterAnimator.Play("Win");
     }
-
 
     [ClientRpc]
     private void OnMonsterNotGuessedClientRpc()

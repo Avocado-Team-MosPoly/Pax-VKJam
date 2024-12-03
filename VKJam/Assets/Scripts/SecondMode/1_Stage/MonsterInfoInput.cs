@@ -36,6 +36,8 @@ public class MonsterInfoInput : MonoBehaviour
         }
     }
 
+    // TODO: Get random from config for name, description and ingredients(use existing)
+
     private string GetDefaultName()
     {
         return "Name";

@@ -1,11 +1,10 @@
-using UnityEngine;
-using TMPro;
-using System.Collections.Generic;
-using UnityEngine.Events;
-using Unity.Netcode;
-using System.Collections;
 using System;
-using Unity.VisualScripting;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.Events;
 
 // needs rework
 public class TokenManager : NetworkBehaviour
@@ -121,7 +120,7 @@ public class TokenManager : NetworkBehaviour
                     UnityEngine.Random.Range(-halfTokenSpawn.x, halfTokenSpawn.x),
                     0f,
                     UnityEngine.Random.Range(-halfTokenSpawn.y, halfTokenSpawn.y)
-                    );
+                );
 
                 tokenGameObject = Instantiate(tokenPrefab, tokenSpawnTransform);
                 tokenGameObject.transform.localPosition = localPosition;
@@ -314,8 +313,7 @@ public class TokenManager : NetworkBehaviour
         TokensCountWinnedCurrentRound = 0;
         TokensCountLosedCurrentRound = 0;
 
-        if (tokensOnScene != null)
-            tokensOnScene.Clear();
+        tokensOnScene?.Clear();
     }
 
     #region Log

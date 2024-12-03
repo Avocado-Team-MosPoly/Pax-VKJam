@@ -68,7 +68,7 @@ public class PackCrafter : NetworkBehaviour
 
     private void AddCard(SecondModeCardInfo cardInfo)
     {
-        cardPackSO.CardInPack[cardInfo.CreatorId].Card = cardInfo;
+        //cardPackSO.CardInPack[cardInfo.CreatorId].Card = cardInfo;
         cardPackSO.CardInPack[cardInfo.CreatorId].CardIsInOwn = true;
         cardPackSO.CardInPack[cardInfo.CreatorId].CardDBIndex = -1;
     }

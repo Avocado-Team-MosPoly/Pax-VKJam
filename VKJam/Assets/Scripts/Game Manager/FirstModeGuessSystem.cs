@@ -3,10 +3,10 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class CompareSystem : NetworkBehaviour
+public class FirstModeGuessSystem : NetworkBehaviour, IGuessSystem
 {
-    [HideInInspector] public UnityEvent<string, ulong> OnIngredientGuess;
-    [HideInInspector] public UnityEvent<string, ulong> OnMonsterGuess;
+    public UnityEvent<string, ulong> OnIngredientGuess { get; private set; }
+    public UnityEvent<string, ulong> OnMonsterGuess { get; private set; }
 
     [SerializeField] private string[] chooseNotificationText;
     [SerializeField] private BestiaryIngredients bestiaryIngredients;
@@ -18,14 +18,14 @@ public class CompareSystem : NetworkBehaviour
     private void SendNotificationClientRpc(int guessId, byte senderClientId)
     {
         if (NotificationSystem.Instance == null)
-            throw new System.NullReferenceException("Add a Notification System Prefab to the Menu scene to avoid this exception");
+            throw new NullReferenceException("Add a Notification System Prefab to the Menu scene to avoid this exception");
 
         string choosedThing = GameManager.Instance.Stage == Stage.IngredientGuess ? bestiaryIngredients.IngredientList[guessId].Name : bestiary.Monsters[guessId].id;
         NotificationSystem.Instance.SendLocal($"{chooseNotificationText[0]} {PlayersDataManager.Instance.PlayerDatas[senderClientId].Name} {chooseNotificationText[1]} {choosedThing}");
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void CompareAnswerServerRpc(int guessId, ServerRpcParams serverRpcParams)
+    public void SendAnswerServerRpc(int guessId, ServerRpcParams serverRpcParams)
     {
         if (GameManager.Instance.Stage == Stage.Waiting)
             return;
@@ -34,8 +34,6 @@ public class CompareSystem : NetworkBehaviour
             return;
 
         byte byteClientId = (byte)serverRpcParams.Receive.SenderClientId;
-
-
         string guess = GameManager.Instance.Stage == Stage.IngredientGuess ? bestiaryIngredients.IngredientList[guessId].Name : bestiary.Monsters[guessId].id;
 
         if (playersStatusManager == null)

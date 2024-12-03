@@ -37,24 +37,26 @@ public abstract class IngredientManager
 
     protected bool isIngredientGuessed;
 
+    protected IGameManager gameManager;
     protected readonly GameConfigSO config;
     
     protected int playersCount => NetworkManager.Singleton.ConnectedClientsIds.Count;
 
-    public IngredientManager(GameConfigSO config, CompareSystem compareSystem)
+    public IngredientManager(IGameManager gameManager, GameConfigSO config, IGuessSystem guessSystem)
     {
         if (NetworkManager.Singleton == null)
             throw new System.Exception("Ingredient Manager needs Network Manager instance on scene");
 
+        this.gameManager = gameManager;
         this.config = config;
-        compareSystem.OnIngredientGuess.AddListener(CompareIngredient);
+        guessSystem.OnIngredientGuess.AddListener(CompareIngredient);
 
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
             correctGuesserAllIds[clientId] = true;
 
         NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) =>
         {
-            correctGuesserAllIds[clientId] = GameManager.Instance.CurrentRound == 1;
+            correctGuesserAllIds[clientId] = gameManager.CurrentRound == 1;
         };
         NetworkManager.Singleton.OnClientDisconnectCallback += (ulong clientId) =>
         {
@@ -66,7 +68,7 @@ public abstract class IngredientManager
     {
         currentIngredientIndex++;
 
-        if (currentIngredientIndex >= GameManager.Instance.IngredientsCount)
+        if (currentIngredientIndex >= gameManager.IngredientsCount)
         {
             OnIngredientsEnded?.Invoke();
             currentIngredientIndex = 0;
@@ -80,22 +82,22 @@ public abstract class IngredientManager
     {
         isIngredientGuessed = true;
 
-        if(failedGuesses.ContainsKey(clientId) && failedGuesses[clientId] == currentIngredientIndex)
+        if (failedGuesses.ContainsKey(clientId) && failedGuesses[clientId] == currentIngredientIndex)
         {
             Logger.Instance.LogWarning(this, "Removed wrong ingredient");
             failedGuesses.Remove(clientId);
             correctGuesserAllIds[clientId] = true;
 
-            if(CorrectGuesserAllIds.Count > 0 && correctGuesserAllIds[GameManager.Instance.PainterId] == false)
+            if (CorrectGuesserAllIds.Count > 0 && correctGuesserAllIds[gameManager.PainterId] == false)
             {
-                correctGuesserAllIds[GameManager.Instance.PainterId] = true;
+                correctGuesserAllIds[gameManager.PainterId] = true;
             }
         }
     }
 
     protected virtual void OnWrongIngredientGuess(ulong clientId)
     {
-        if(!failedGuesses.ContainsKey(clientId))
+        if (!failedGuesses.ContainsKey(clientId))
         {
             Logger.Instance.LogWarning(this, "Added new wrong ingredient");
             failedGuesses.Add(clientId, currentIngredientIndex);
@@ -108,9 +110,9 @@ public abstract class IngredientManager
 
         correctGuesserAllIds[clientId] = false;
 
-        if(CorrectGuesserAllIds.Count == 1 && CorrectGuesserAllIds[0] == GameManager.Instance.PainterId)
+        if(CorrectGuesserAllIds.Count == 1 && CorrectGuesserAllIds[0] == gameManager.PainterId)
         {
-            correctGuesserAllIds[GameManager.Instance.PainterId] = false;
+            correctGuesserAllIds[gameManager.PainterId] = false;
         }
     }
 
@@ -146,7 +148,7 @@ public abstract class IngredientManager
 
     public void CompareIngredient(string guess, ulong guesserId)
     {
-        string currentIngredient = GameManager.Instance.GetCurrentIngredient();
+        string currentIngredient = gameManager.CurrentIngredientName;
 
         Log($"Current Ingredient: {currentIngredient}, Guess: {guess}, Guesser Id: {guesserId}");
 
@@ -162,7 +164,7 @@ public abstract class IngredientManager
 
         List<int> temp;
 
-        if (count > 4.5)
+        if (count > 4)
         {
             temp = new List<int> { 0, 1, 2, 3, 4 };
         }
@@ -172,17 +174,12 @@ public abstract class IngredientManager
         }
         
 
-        for(int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
             var random = Random.Range(0, temp.Count);
             var randomValue = temp[random];
             temp.RemoveAt(random);
             ingredientIndexes.Add(randomValue);
-        }
-
-        foreach(var index in ingredientIndexes)
-        {
-            Debug.LogWarning(index);
         }
     }
 

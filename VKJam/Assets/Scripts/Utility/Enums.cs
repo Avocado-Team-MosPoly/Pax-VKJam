@@ -23,6 +23,16 @@ public enum Stage
     MonsterGuess
 }
 
+public enum SecondModeStage
+{
+    Waiting,
+    CardCreation,
+    IngredientGuess,
+    MonsterGuess,
+    Voting,
+    Results
+}
+
 public enum BrushMode
 {
     Draw,

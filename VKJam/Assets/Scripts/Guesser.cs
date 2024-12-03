@@ -5,7 +5,7 @@ using Unity.Netcode;
 
 public class Guesser : MonoBehaviour
 {
-    [SerializeField] private CompareSystem compareSystem;
+    [SerializeField] private FirstModeGuessSystem compareSystem;
     
     [SerializeField] private TMP_InputField guessInputField;
     [SerializeField] private Button guessButton;

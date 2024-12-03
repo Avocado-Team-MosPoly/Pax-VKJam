@@ -58,13 +58,13 @@ public class GameConfigSO : ScriptableObject
     [Serializable]
     public struct SetOf<T>
     {
-        public T Players_2 => players_2;
-        public T Players_3 => players_3;
-        public T Players_4 => players_4;
-
         [SerializeField] private T players_2;
         [SerializeField] private T players_3;
         [SerializeField] private T players_4;
+
+        public T Players_2 => players_2;
+        public T Players_3 => players_3;
+        public T Players_4 => players_4;
 
         public SetOf(T p2, T p3, T p4)
         {
@@ -75,17 +75,13 @@ public class GameConfigSO : ScriptableObject
 
         public T GetValue(int playersCount)
         {
-            switch (playersCount)
+            return playersCount switch
             {
-                case 2:
-                    return Players_2;
-                case 3:
-                    return Players_3;
-                case 4:
-                    return Players_4;
-            }
-
-            throw new ArgumentOutOfRangeException("PlayersCount count be less than 2 and more than 4.");
+                2 => Players_2,
+                3 => Players_3,
+                4 => Players_4,
+                _ => throw new ArgumentOutOfRangeException("PlayersCount count be less than 2 and more than 4."),
+            };
         }
     }
 }

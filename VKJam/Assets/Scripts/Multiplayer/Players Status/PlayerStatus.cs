@@ -31,7 +31,7 @@ public class PlayerStatus : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         return this;
     }
 
-    public void ResetStatus(string defaultStatus)
+    public void ResetStatus(string defaultStatus = "")
     {
         GuessStatusText = defaultStatus;
         checkBoxImage.sprite = uncheckedSprite;

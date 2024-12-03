@@ -1,7 +1,8 @@
 /// <summary> All logic on server </summary>
 public class TeamIngredientManager : IngredientManager
 {
-    public TeamIngredientManager(GameConfigSO config, CompareSystem compareSystem) : base(config, compareSystem) { }
+    public TeamIngredientManager(IGameManager gameManager, GameConfigSO config, IGuessSystem guessSystem) :
+        base(gameManager, config, guessSystem) { }
 
     protected override void CorrectIngredient()
     {
@@ -25,12 +26,7 @@ public class TeamIngredientManager : IngredientManager
             correctGuesserIds.Add(clientId);
         }
         
-        if (!correctGuesserIds.Contains(GameManager.Instance.PainterId))
-            correctGuesserIds.Add(GameManager.Instance.PainterId);
-    }
-
-    protected override void OnWrongIngredientGuess(ulong clientId)
-    {
-        base.OnWrongIngredientGuess(clientId);
+        if (!correctGuesserIds.Contains(gameManager.PainterId))
+            correctGuesserIds.Add(gameManager.PainterId);
     }
 }

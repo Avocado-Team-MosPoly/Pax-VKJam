@@ -6,7 +6,7 @@ public class CardSystem
 {
     public int CardDBIndex;
     public bool CardIsInOwn;
-    public ICard Card;
+    public CardSO Card;
 }
 
 [CreateAssetMenu()]
@@ -18,7 +18,7 @@ public class CardPackSO : ScriptableObject
 
     public CardSystem[] CardInPack;
 
-    public ICard SearchCardById(int idCard)
+    public BaseCardInfo SearchCardById(int idCard)
     {
         foreach (var card in CardInPack)
             if (card.CardDBIndex == idCard)

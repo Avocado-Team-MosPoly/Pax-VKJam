@@ -5,8 +5,8 @@ using Unity.Netcode;
 /// <summary> All logic on server </summary>
 public class CompetitiveRoundManager : RoundManager
 {
-    public CompetitiveRoundManager(GameConfigSO gameConfig, CompareSystem compareSystem, IngredientManager ingredientManager)
-        : base(gameConfig, compareSystem, ingredientManager) { }
+    public CompetitiveRoundManager(IGameManager gameManager, GameConfigSO gameConfig, IGuessSystem guessSystem, IngredientManager ingredientManager)
+        : base(gameManager, gameConfig, guessSystem, ingredientManager) { }
 
     protected override void LoseRound()
     {
@@ -14,7 +14,7 @@ public class CompetitiveRoundManager : RoundManager
 
         foreach (byte clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            if (clientId != GameManager.Instance.PainterId)
+            if (clientId != gameManager.PainterId)
                 TokenManager.RemoveTokensToClient(config.PenaltyIfMonsterIsNotGuessed_CM_G.GetValue(playersCount), clientId);
             else
             {
@@ -55,7 +55,7 @@ public class CompetitiveRoundManager : RoundManager
         int tokensIfAllIngredientsGuessed_P; // use this value
         int tokensIfMoreThanOnePlayerGuessedMonster_P = correctGuesserIds.Count > 1 ? config.BonusIfMonsterGuessedMoreThanOnePlayer_CM_P.GetValue(correctGuesserIds.Count) : 0; // check condition
 
-        if (GameManager.Instance.IsDangerousCard)
+        if (gameManager.IsDangerousCard)
         {
             baseTokensIfMonsterGuessed_G = config.BonusIfMonsterGuessed_CM_DM_G.GetValue(playersCount);
             baseTokensIfMonsterGuessed_P = config.BonusIfMonsterGuessed_CM_DM_P.GetValue(playersCount);
@@ -79,7 +79,7 @@ public class CompetitiveRoundManager : RoundManager
 
             if (correctGuesserIds.Contains(clientId)) // guessed monster
             {
-                if (clientId != GameManager.Instance.PainterId) // guesser
+                if (clientId != gameManager.PainterId) // guesser
                 {
                     tokesToAdd += baseTokensIfMonsterGuessed_G;
                     tokesToAdd += correctGuesserAllIds.Contains(clientId) ? tokensIfAllIngredientsGuessed_G : 0; // add logic for all ingredients guessed
@@ -92,7 +92,7 @@ public class CompetitiveRoundManager : RoundManager
             }
             else // missed monster
             {
-                if (clientId != GameManager.Instance.PainterId) // guesser
+                if (clientId != gameManager.PainterId) // guesser
                 {
                     tokesToAdd += correctGuesserAllIds.Contains(clientId) ? tokensIfAllIngredientsGuessed_G : 0; // add logic for all ingredients guessed
                     TokenManager.RemoveTokensToClient(config.PenaltyIfMonsterIsNotGuessed_CM_G.GetValue(playersCount), clientId);
@@ -104,7 +104,7 @@ public class CompetitiveRoundManager : RoundManager
 
         int tokensToRemovePainter = CalculatePenalty(correctGuesserIds.Count);
 
-        TokenManager.RemoveTokensToClient(tokensToRemovePainter, GameManager.Instance.PainterId);
+        TokenManager.RemoveTokensToClient(tokensToRemovePainter, gameManager.PainterId);
 
         correctGuesserIds.Clear();
     }

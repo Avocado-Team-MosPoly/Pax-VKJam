@@ -2,14 +2,14 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class SecondModeCardInfo : ICard, INetworkSerializable
+public class SecondModeCardInfo : BaseCardInfo, INetworkSerializable
 {
     public ulong CreatorId => creatorId;
-    public string Id => id;
-    public string Description => description;
-    public string[] Ingredients => ingredients;
-    public Texture2D CardTexture => cardTexture;
-    public CardDifficulty Difficulty => difficulty;
+    public override string Id => id;
+    public override string Description => description;
+    public override string[] Ingredients => ingredients;
+    public override Texture2D CardTexture => cardTexture;
+    public override CardDifficulty Difficulty => difficulty;
 
     private byte creatorId;
     private string id;

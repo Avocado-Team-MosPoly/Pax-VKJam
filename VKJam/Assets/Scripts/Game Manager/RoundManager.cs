@@ -20,16 +20,18 @@ public abstract class RoundManager
 
     protected readonly IngredientManager ingredientManager;
 
+    protected readonly IGameManager gameManager;
     protected readonly GameConfigSO config;
 
     protected int playersCount => NetworkManager.Singleton.ConnectedClientsIds.Count;
 
-    public RoundManager(GameConfigSO gameConfig, CompareSystem compareSystem, IngredientManager ingredientManager)
+    public RoundManager(IGameManager gameManager, GameConfigSO gameConfig, IGuessSystem guessSystem, IngredientManager ingredientManager)
     {
+        this.gameManager = gameManager;
         config = gameConfig;
         this.ingredientManager = ingredientManager;
 
-        compareSystem.OnMonsterGuess.AddListener(CompareMonster);
+        guessSystem.OnMonsterGuess.AddListener(CompareMonster);
     }
 
     protected abstract void OnWrongMonsterGuess(ulong clientId);
@@ -71,7 +73,7 @@ public abstract class RoundManager
 
     public void CompareMonster(string guess, ulong guesserId)
     {
-        string currentMonster = GameManager.Instance.GetCurrentMonster();
+        string currentMonster = gameManager.CurrentMonsterName;
 
         Log($"Current Monster: {currentMonster}; Guess: {guess}; Guesser Id: {guesserId}");
 
@@ -84,7 +86,7 @@ public abstract class RoundManager
             guesserIds.Add(guesserId);
 
         if (guesserIds.Count >= playersCount - 1)
-            GameManager.Instance.AllPlayersGuessed();
+            GameManager.Instance.AllPlayersGuessed(); // TODO: ??
     }
 
     private void Log(object message) => Logger.Instance.Log(this, message);

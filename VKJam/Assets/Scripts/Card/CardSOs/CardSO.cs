@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu()]
-public class CardSO : ScriptableObject, ICard
+public class CardSO : BaseCardInfo
 {
     public string id;
 
@@ -15,7 +15,7 @@ public class CardSO : ScriptableObject, ICard
 
     [SerializeField] private Ingredient[] ingredientsSO;
     public Ingredient[] IngredientsSO => ingredientsSO;
-    public string[] Ingredients
+    public override string[] Ingredients
     {
         get
         {
@@ -28,13 +28,13 @@ public class CardSO : ScriptableObject, ICard
         }
     }
 
-    public string Id => id;
-    public CardDifficulty Difficulty => difficulty;
-    public Texture2D CardTexture => cardTexture;
+    public override string Id => id;
+    public override CardDifficulty Difficulty => difficulty;
+    public override Texture2D CardTexture => cardTexture;
     public Texture MonsterTexture => monsterTexture;
     public Sprite MonsterInBestiarySprite => monsterInBestiarySprite;
 
-    public string Description => description;
+    public override string Description => description;
 
     /*private void OnValidate()
     {

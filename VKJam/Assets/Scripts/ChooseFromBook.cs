@@ -10,7 +10,7 @@ public class ChooseFromBook : MonoBehaviour
     [HideInInspector] public bool Selected;
     [HideInInspector] public Action<int> OnSelected;
 
-    [SerializeField] private CompareSystem compareSystem;
+    [SerializeField] private FirstModeGuessSystem compareSystem;
     [SerializeField] private GameObject checkTic;
     
     public void Start()
@@ -20,7 +20,7 @@ public class ChooseFromBook : MonoBehaviour
     
     public void Guess()
     {
-        compareSystem.CompareAnswerServerRpc(MonsterId, new ServerRpcParams());
+        compareSystem.SendAnswerServerRpc(MonsterId, new ServerRpcParams());
         OnSelected?.Invoke(MonsterId);
         Selected = true;
         Show(Selected);
