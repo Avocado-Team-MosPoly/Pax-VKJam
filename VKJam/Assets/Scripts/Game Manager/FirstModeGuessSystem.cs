@@ -20,7 +20,7 @@ public class FirstModeGuessSystem : NetworkBehaviour, IGuessSystem
         if (NotificationSystem.Instance == null)
             throw new NullReferenceException("Add a Notification System Prefab to the Menu scene to avoid this exception");
 
-        string choosedThing = GameManager.Instance.Stage == Stage.IngredientGuess ? bestiaryIngredients.IngredientList[guessId].Name : bestiary.Monsters[guessId].id;
+        string choosedThing = GameManager.Instance.Stage == Stage.IngredientGuess ? bestiaryIngredients.IngredientList[guessId].Name : bestiary.Monsters[guessId].Id;
         NotificationSystem.Instance.SendLocal($"{chooseNotificationText[0]} {PlayersDataManager.Instance.PlayerDatas[senderClientId].Name} {chooseNotificationText[1]} {choosedThing}");
     }
 
@@ -33,14 +33,13 @@ public class FirstModeGuessSystem : NetworkBehaviour, IGuessSystem
         if (guessId < 0)
             return;
 
-        byte byteClientId = (byte)serverRpcParams.Receive.SenderClientId;
-        string guess = GameManager.Instance.Stage == Stage.IngredientGuess ? bestiaryIngredients.IngredientList[guessId].Name : bestiary.Monsters[guessId].id;
+        string guess = GameManager.Instance.Stage == Stage.IngredientGuess ? bestiaryIngredients.IngredientList[guessId].Name : bestiary.Monsters[guessId].Id;
 
         if (playersStatusManager == null)
             Logger.Instance.LogError(this, new NullReferenceException($"{nameof(playersStatusManager)} is null"));
         else
         {
-            if (guess == playersStatusManager.GetPlayerStatus(byteClientId))
+            if (guess == playersStatusManager.GetPlayerStatus(serverRpcParams.Receive.SenderClientId))
                 return;
 
             playersStatusManager.SendStatus(guess, serverRpcParams.Receive.SenderClientId);

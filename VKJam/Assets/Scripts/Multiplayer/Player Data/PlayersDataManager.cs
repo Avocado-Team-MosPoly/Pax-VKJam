@@ -5,6 +5,30 @@ using UnityEngine;
 
 public class PlayersDataManager : NetworkBehaviour
 {
+    private struct NetworkTuple_PlayerData : INetworkSerializable, IEquatable<NetworkTuple_PlayerData>
+    {
+        public byte Id;
+        public PlayerData PlayerData;
+
+        public NetworkTuple_PlayerData(byte id, PlayerData playerData)
+        {
+            Id = id;
+            PlayerData = playerData;
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref Id);
+            serializer.SerializeValue(ref PlayerData);
+        }
+
+        public bool Equals(NetworkTuple_PlayerData other)
+        {
+            return this.Id == other.Id
+                && this.PlayerData.Equals(other.PlayerData);
+        }
+    }
+
     public event Action<ulong> PlayerConnected;
     public event Action<ulong> PlayerDisconnected;
 
@@ -18,6 +42,20 @@ public class PlayersDataManager : NetworkBehaviour
     public IReadOnlyDictionary<ulong, PlayerData> PlayerDatas => playerDatas;
     public StoreSection AvatarsAndFramesStorage => avatarsAndFramesStorage;
 
+    public override void OnNetworkSpawn()
+    {
+        Logger.Instance.Log(this, "Spawned");
+
+        Init();
+
+        var avatarAndFrameIndexes = GetAvatarAndFrameIndexes();
+        AddPlayerData(new PlayerData(avatarAndFrameIndexes.avatarIndex, avatarAndFrameIndexes.frameIndex));
+
+        if (IsServer)
+            RelayManager.Instance.OnClientDisconnect.AddListener(OnClientDisconnect);
+        //NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
+    }
+
     private void Init()
     {
         if (Instance == null)
@@ -30,125 +68,13 @@ public class PlayersDataManager : NetworkBehaviour
                 Logger.Instance.Log(this, $"Player {tuple.Id} data added: {tuple.PlayerData})");
             }
 
-            playerDatasList.OnListChanged += PlayerDatasList_OnListChanged;
+            playerDatasList.OnListChanged += OnPlayerDatasListChanged;
         }
         else
         {
             Logger.Instance.LogError(this, $"Second {nameof(PlayersDataManager)} spawned");
             return;
         }
-    }
-
-    private void PlayerDatasList_OnListChanged(NetworkListEvent<NetworkTuple_PlayerData> changeEvent)
-    {
-        if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.RemoveAt ||
-            changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Remove)
-        {
-            Logger.Instance.Log(this, $"change event id {changeEvent.PreviousValue.Id} {changeEvent.Value.Id}");
-            playerDatas.Remove(changeEvent.Value.Id);
-            PlayerDisconnected?.Invoke(changeEvent.Value.Id);
-            Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data removed");
-        }
-        else if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Add)
-        {
-            playerDatas[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
-            PlayerConnected?.Invoke(changeEvent.Value.Id);
-            Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data added: {changeEvent.Value.PlayerData}");
-        }
-        else if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Value)
-        {
-            playerDatas[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
-            Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data updated: {changeEvent.Value.PlayerData}");
-        }
-        else
-        {
-            Logger.Instance.LogError(this, $"Unexpected change event type: {changeEvent.Type}");
-        }
-    }
-
-    public override void OnNetworkSpawn()
-    {
-        Logger.Instance.Log(this, "Spawned");
-
-        Init();
-
-        (byte, byte) avatarAndFrameIndexes = GetAvatarAndFrameIndexes();
-        AddPlayerData(new PlayerData(avatarAndFrameIndexes.Item1, avatarAndFrameIndexes.Item2));
-
-        if (IsServer)
-            RelayManager.Instance.OnClientDisconnect.AddListener(OnClientDisconnect);
-            //NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
-    }
-
-    private void OnClientDisconnect(ulong clientId)
-    {
-        // server
-
-        //for (int i = 0; i < playerDatasList.Count; i++)
-        //{
-        //    if (playerDatasList[i].Id == clientId)
-        //        playerDatasList.RemoveAt(i);
-        //}
-    }
-
-    /// <summary> </summary>
-    /// <returns> First is Avatar index, second is Frame index </returns>
-    private (byte, byte) GetAvatarAndFrameIndexes()
-    {
-        (byte, byte) result = (7, 0);
-
-        if (CustomController.Instance == null)
-            return result;
-
-        for (int i = 0; i < avatarsAndFramesStorage.products.Count; i++)
-        {
-            if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.Avatars)
-            {
-                if (CustomController.Instance.Custom[(int)ItemType.Avatars].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
-                {
-                    result.Item1 = (byte)i;
-                    break;
-                }
-            }
-        }
-
-        for (int i = 0; i < avatarsAndFramesStorage.products.Count; i++)
-        {
-            if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.AvatarFrame)
-            {
-                if (CustomController.Instance.Custom[(int)ItemType.AvatarFrame].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
-                {
-                    result.Item2 = (byte)i;
-                    break;
-                }
-            }
-        }
-
-        return result;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void AddPlayerDataServerRpc(PlayerData playerData, ServerRpcParams rpcParams)
-    {
-        playerDatasList.Add(new NetworkTuple_PlayerData((byte)rpcParams.Receive.SenderClientId, playerData));
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void ChangePlayerDataServerRpc(PlayerData playerData, ServerRpcParams rpcParams)
-    {
-        int index = 0;
-        for (; index < playerDatasList.Count; index++)
-            if (playerDatasList[index].Id == rpcParams.Receive.SenderClientId)
-                break;
-
-        if (index > playerDatasList.Count)
-        {
-            Logger.Instance.LogWarning(this, $"{nameof(playerDatasList)} doesn't contain player {rpcParams.Receive.SenderClientId} data");
-            return;
-        }
-
-        playerDatas[rpcParams.Receive.SenderClientId] = playerData;
-        playerDatasList[index] = new NetworkTuple_PlayerData((byte)rpcParams.Receive.SenderClientId, playerData);
     }
 
     public void AddPlayerData(PlayerData playerData)
@@ -185,27 +111,101 @@ public class PlayersDataManager : NetworkBehaviour
             ChangePlayerDataServerRpc(playerData, new ServerRpcParams());
     }
 
-    private struct NetworkTuple_PlayerData : INetworkSerializable, IEquatable<NetworkTuple_PlayerData>
+    private (byte avatarIndex, byte frameIndex) GetAvatarAndFrameIndexes()
     {
-        public byte Id;
-        public PlayerData PlayerData;
+        (byte avatarIndex, byte frameIndex) result = (7, 0);
 
-        public NetworkTuple_PlayerData(byte id, PlayerData playerData)
+        if (CustomController.Instance == null)
+            return result;
+
+        for (int i = 0; i < avatarsAndFramesStorage.products.Count; i++)
         {
-            Id = id;
-            PlayerData = playerData;
+            if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.Avatars)
+            {
+                if (CustomController.Instance.Custom[(int)ItemType.Avatars].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
+                {
+                    result.avatarIndex = (byte)i;
+                    break;
+                }
+            }
         }
 
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        for (int i = 0; i < avatarsAndFramesStorage.products.Count; i++)
         {
-            serializer.SerializeValue(ref Id);
-            serializer.SerializeValue(ref PlayerData);
+            if (avatarsAndFramesStorage.products[i].Data.Type == ItemType.AvatarFrame)
+            {
+                if (CustomController.Instance.Custom[(int)ItemType.AvatarFrame].Data.productName == avatarsAndFramesStorage.products[i].Data.productName)
+                {
+                    result.frameIndex = (byte)i;
+                    break;
+                }
+            }
         }
 
-        public bool Equals(NetworkTuple_PlayerData other)
+        return result;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void AddPlayerDataServerRpc(PlayerData playerData, ServerRpcParams rpcParams)
+    {
+        playerDatasList.Add(new NetworkTuple_PlayerData((byte)rpcParams.Receive.SenderClientId, playerData));
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ChangePlayerDataServerRpc(PlayerData playerData, ServerRpcParams rpcParams)
+    {
+        int index = 0;
+        for (; index < playerDatasList.Count; index++)
+            if (playerDatasList[index].Id == rpcParams.Receive.SenderClientId)
+                break;
+
+        if (index > playerDatasList.Count)
         {
-            return this.Id == other.Id
-                && this.PlayerData.Equals(other.PlayerData);
+            Logger.Instance.LogWarning(this, $"{nameof(playerDatasList)} doesn't contain player {rpcParams.Receive.SenderClientId} data");
+            return;
+        }
+
+        playerDatas[rpcParams.Receive.SenderClientId] = playerData;
+        playerDatasList[index] = new NetworkTuple_PlayerData((byte)rpcParams.Receive.SenderClientId, playerData);
+    }
+
+    private void OnPlayerDatasListChanged(NetworkListEvent<NetworkTuple_PlayerData> changeEvent)
+    {
+        if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.RemoveAt ||
+            changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Remove)
+        {
+            Logger.Instance.Log(this, $"change event id {changeEvent.PreviousValue.Id} {changeEvent.Value.Id}");
+            playerDatas.Remove(changeEvent.Value.Id);
+            PlayerDisconnected?.Invoke(changeEvent.Value.Id);
+            Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data removed");
+        }
+        else if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Add)
+        {
+            playerDatas[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
+            PlayerConnected?.Invoke(changeEvent.Value.Id);
+            Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data added: {changeEvent.Value.PlayerData}");
+        }
+        else if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Value)
+        {
+            playerDatas[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
+            Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data updated: {changeEvent.Value.PlayerData}");
+        }
+        else
+        {
+            Logger.Instance.LogError(this, $"Unexpected change event type: {changeEvent.Type}");
+        }
+    }
+
+    // server
+    private void OnClientDisconnect(ulong clientId)
+    {
+        if (!IsServer)
+            return;
+
+        for (int i = 0; i < playerDatasList.Count; i++)
+        {
+            if (playerDatasList[i].Id == clientId)
+                playerDatasList.RemoveAt(i);
         }
     }
 }

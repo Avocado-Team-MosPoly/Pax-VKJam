@@ -1,9 +1,9 @@
 using UnityEngine;
 
 [CreateAssetMenu()]
-public class CardSO : BaseCardInfo
+public class CardSO : BaseCardSO
 {
-    public string id;
+    [SerializeField] private string id;
 
     [SerializeField] private CardDifficulty difficulty;
 
@@ -14,15 +14,21 @@ public class CardSO : BaseCardInfo
     [SerializeField] private string description;
 
     [SerializeField] private Ingredient[] ingredientsSO;
+
+    private string[] ingredients;
+
     public Ingredient[] IngredientsSO => ingredientsSO;
     public override string[] Ingredients
     {
         get
         {
-            string[] ingredients = new string[ingredientsSO.Length];
+            if (ingredients == null)
+            {
+                ingredients = new string[ingredientsSO.Length];
 
-            for (int i = 0; i < ingredients.Length; i++)
-                ingredients[i] = ingredientsSO[i].Name;
+                for (int i = 0; i < ingredients.Length; i++)
+                    ingredients[i] = ingredientsSO[i].Name;
+            }
 
             return ingredients;
         }
@@ -31,8 +37,8 @@ public class CardSO : BaseCardInfo
     public override string Id => id;
     public override CardDifficulty Difficulty => difficulty;
     public override Texture2D CardTexture => cardTexture;
-    public Texture MonsterTexture => monsterTexture;
-    public Sprite MonsterInBestiarySprite => monsterInBestiarySprite;
+    public override Texture MonsterTexture => monsterTexture;
+    public override Sprite MonsterInBestiarySprite => monsterInBestiarySprite;
 
     public override string Description => description;
 

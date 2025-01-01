@@ -16,7 +16,7 @@ public class LobbyManager : MonoBehaviour
     [HideInInspector] public UnityEvent<List<Lobby>> OnLobbyListed = new();
     [HideInInspector] public UnityEvent<List<Player>> OnPlayerListed = new();
 
-    [HideInInspector] public int IsTeamModeFilter
+    public int IsTeamModeFilter
     {
         get
         {

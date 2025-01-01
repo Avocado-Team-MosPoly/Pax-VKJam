@@ -289,12 +289,10 @@ public class TokenManager : NetworkBehaviour
 
     public static IEnumerator OnGameEnded()
     {
-        Action OnCompleted = () =>
-        {
-            Debug.Log("Coins saved to DB");
-        };
+        Action onSuccess = () => Debug.Log("Successful saved coins to database");
+        Action onUnsuccess = () => Debug.LogError("Failed to save coins to database");
 
-        yield return instance.StartCoroutine(Php_Connect.Request_TokenWin(TokensCount, OnCompleted, null));
+        yield return instance.StartCoroutine(Php_Connect.Request_TokenWin(TokensCount, onSuccess, onUnsuccess));
     }
 
     /// <summary> Dont use in Update </summary>

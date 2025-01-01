@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UIElements;
 
 public class CardManager : MonoBehaviour
 {
@@ -18,13 +17,12 @@ public class CardManager : MonoBehaviour
         CardDifficulty.Murderous
     };
 
-    [Header("Scriptable Objects")]
-    private List<CardSO> cardSOArray=new();
-    private Dictionary<CardDifficulty, List<CardSO>> cardSODictionary = new();
-    private List<CardSO> usedCardSO = new();
-    private int cardSOCount;
+    //[Header("Scriptable Objects")]
+    private List<BaseCardSO> cardInfos = new();
+    private List<BaseCardSO> usedCardInfos = new();
+    private Dictionary<CardDifficulty, List<BaseCardSO>> cardInfoDictionary = new();
 
-    private CardSO choosedCardSO;
+    private BaseCardSO choosedCardInfo;
     
     [Header("Where cards should spawn")]
     [SerializeField] private Transform[] spawnTransforms;
@@ -36,16 +34,13 @@ public class CardManager : MonoBehaviour
     private void OnValidate()
     {
         if (spawnedCardDifficulties.Length != spawnTransforms.Length)
-            LogWarning($"Please set the same number of elements in [{nameof(spawnedCardDifficulties)}] and [{nameof(spawnTransforms)}] arrays.");
+            LogWarning($"Set the same number of elements in [{nameof(spawnedCardDifficulties)}] and [{nameof(spawnTransforms)}] arrays.");
     }
 
     private void Awake()
     {
         StartCoroutine(InitCards());
-        //Array.Clear(cardSOArray, 0, cardSOCount);
 
-        Card.OnChoose.AddListener(ChooseCardInstance);
-        Card.OnSelect.AddListener(DisableInteractable);
         GameManager.Instance.RoleManager.OnGuesserSetted.AddListener(TakePack);
         GameManager.Instance.RoleManager.OnPainterSetted.AddListener(TakePack);
     }
@@ -58,30 +53,21 @@ public class CardManager : MonoBehaviour
 
     public void TakePack()
     {
-        cardSOArray.Clear();
+        cardInfos.Clear();
+        cardInfoDictionary.Clear();
+
+        foreach (CardDifficulty cardDifficulty in Enum.GetValues(typeof(CardDifficulty)))
+            cardInfoDictionary.Add(cardDifficulty, new List<BaseCardSO>());
+
         for (int i = 0; i < PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId].Count; i++)
         {
             if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i] == true)
             {
-                if (PackManager.Instance.Active.CardInPack[i].Card is CardSO cardSO)
-                {
-                    cardSOArray.Add(cardSO);
-                }
-                else
-                {
-                    Logger.Instance.LogError(this, $"Invalid type of card. Must be {nameof(CardSO)}");
-                    return;
-                }
+                BaseCardSO cardInfo = PackManager.Instance.Active.CardInPack[i].Card;
+                cardInfos.Add(cardInfo);
+                cardInfoDictionary[cardInfo.Difficulty].Add(cardInfo);
             }
         }
-
-        cardSODictionary.Clear();
-        foreach (CardDifficulty cardDifficulty in Enum.GetValues(typeof(CardDifficulty)))
-            cardSODictionary.Add(cardDifficulty, new List<CardSO>());
-        foreach (CardSO cardSO in cardSOArray)
-            cardSODictionary[cardSO.Difficulty].Add(cardSO);
-
-        cardSOCount = cardSOArray.Count;
     }
 
     private void OnEnable()
@@ -94,12 +80,12 @@ public class CardManager : MonoBehaviour
 
     private void SpawnCard(CardDifficulty cardDifficulty)
     {
-        SpawnCard(GetUnusedCardSO(cardDifficulty));
+        SpawnCard(GetUnusedCardInfo(cardDifficulty));
     }
 
-    private void SpawnCard(CardSO cardSO)
+    private void SpawnCard(BaseCardSO cardInfo)
     {
-        if (cardSO == null)
+        if (cardInfo == null)
         {
             LogWarning("Incorrect Card Scriptable Object");
             return;
@@ -114,12 +100,15 @@ public class CardManager : MonoBehaviour
         }
 
         Card cardInstance = Instantiate(cardPrefab, spawnTransform.position, spawnTransform.rotation, spawnTransform);
-        cardInstance.SetCardSO(cardSO);
+        cardInstance.SetCardInfo(cardInfo);
 
-        Log($"{cardInstance.CardSO.Id} spawned as {cardInstance.CardSO.Difficulty} card");
+        cardInstance.OnChoose.AddListener(ChooseCardInstance);
+        cardInstance.OnSelect.AddListener(DisableInteractable);
+
+        Log($"{cardInstance.CardInfo.Id} spawned as {cardInstance.CardInfo.Difficulty} card");
 
         occupiedSpawnTransforms.Add(spawnTransform);
-        usedCardSO.Add(cardSO);
+        usedCardInfos.Add(cardInfo);
         cardInstances.Add(cardInstance);
     }
 
@@ -142,34 +131,34 @@ public class CardManager : MonoBehaviour
         return spawnTransforms[transformIndex];
     }
 
-    private CardSO GetUnusedCardSO(CardDifficulty cardDifficulty)
+    private BaseCardSO GetUnusedCardInfo(CardDifficulty cardDifficulty)
     {
-        List<CardSO> cardSOs = cardSODictionary[cardDifficulty];
-        int otherCardSOCount = cardSOCount - cardSOs.Count;
+        List<BaseCardSO> sameDifficultyCardInfos = cardInfoDictionary[cardDifficulty];
+        int otherCardInfosCount = cardInfos.Count - sameDifficultyCardInfos.Count;
 
-        if (usedCardSO.Count - otherCardSOCount >= cardSOs.Count)
+        if (usedCardInfos.Count - otherCardInfosCount >= sameDifficultyCardInfos.Count)
             return null;
 
-        int startCardIndex = UnityEngine.Random.Range(0, cardSOs.Count);
+        int startCardIndex = UnityEngine.Random.Range(0, sameDifficultyCardInfos.Count);
         int cardIndex = startCardIndex;
         Log(cardIndex.ToString());
 
-        while (usedCardSO.Contains(cardSOs[cardIndex]))
+        while (usedCardInfos.Contains(sameDifficultyCardInfos[cardIndex]))
         {
             cardIndex++;
-            if (cardIndex >= cardSOs.Count)
+            if (cardIndex >= sameDifficultyCardInfos.Count)
                 cardIndex = 0;
 
             if (cardIndex == startCardIndex)
                 return null;
         }
 
-        return cardSOs[cardIndex];
+        return sameDifficultyCardInfos[cardIndex];
     }
 
-    public byte GetCardSOIndex(CardSO cardSO)
+    public byte GetCardInfoIndex(BaseCardSO cardInfo)
     {
-        int index = cardSOArray.IndexOf(cardSO);
+        int index = cardInfos.IndexOf(cardInfo);
 
         if (index < 0)
         {
@@ -179,13 +168,12 @@ public class CardManager : MonoBehaviour
         return (byte)index;
     }
 
-    public CardSO GetCardSOByIndex(ushort cardSOIndex)
+    public BaseCardSO GetCardInfoByIndex(ushort cardInfoIndex)
     {
+        if (cardInfoIndex < 0 || cardInfoIndex >= cardInfos.Count)
+            Logger.Instance.LogError(this, new ArgumentOutOfRangeException($"{nameof(cardInfoIndex)} below 0"));
 
-        if (cardSOIndex < 0 || cardSOIndex >= cardSOArray.Count)
-            Logger.Instance.LogError(this, new ArgumentOutOfRangeException($"{nameof(cardSOIndex)} below 0"));
-
-        return cardSOArray[cardSOIndex];
+        return cardInfos[cardInfoIndex];
     }
 
     #endregion
@@ -204,10 +192,10 @@ public class CardManager : MonoBehaviour
     }
 
     /// <summary> Disable [ Interactable ] on all spawned cards excluding parameter </summary>
-    private void DisableInteractable(Card excludedCard)
+    private void DisableInteractable(Card exclude)
     {
         foreach (Card cardInstance in cardInstances)
-            if (cardInstance != excludedCard)
+            if (cardInstance != exclude)
                 cardInstance.GetComponent<Interactable>().SetInteractable(false);
     }
 
@@ -215,12 +203,12 @@ public class CardManager : MonoBehaviour
     {
         if (cardInstances.Contains(card))
         {
-            choosedCardSO = card.CardSO;
-            usedCardSO.Add(card.CardSO);
-            //monsterSpriteRenderer.sprite = card.CardSO.MonsterTexture;
+            choosedCardInfo = card.CardInfo;
+            usedCardInfos.Add(card.CardInfo);
+            //monsterSpriteRenderer.sprite = card.CardInfo.MonsterTexture;
 
-            OnChooseCard.Invoke(GetCardSOIndex(card.CardSO));
-            Log(card.CardSO.Id);
+            OnChooseCard.Invoke(GetCardInfoIndex(card.CardInfo));
+            Log(card.CardInfo.Id);
 
             DestroyCardInstances();
             //CameraBackButton.SetActive(false);

@@ -3,27 +3,17 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
-using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class Chat : NetworkBehaviour
 {
-    public IReadOnlyList<Message> History => history;
-
-    [HideInInspector] public UnityEvent OnMessageSended = new();
-    [HideInInspector] public UnityEvent OnMessageReceived = new();
-
-    [SerializeField] private TMP_InputField messageInputField;
-    [SerializeField] private Button sendMessageButton;
-
-    private List<Message> history = new();
-    public Dictionary<ulong, string> playersNames;
-
     public struct Message : INetworkSerializable
     {
         public byte senderId;
         public FixedString64Bytes text;
+
+        public static int Capacity => FixedString64Bytes.UTF8MaxLengthInBytes;
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
@@ -43,12 +33,12 @@ public class Chat : NetworkBehaviour
             return HashCode.Combine(senderId, text);
         }
 
-        public static bool operator==(Message a, Message b)
+        public static bool operator ==(Message a, Message b)
         {
             if (a.senderId == b.senderId)
                 if (a.text == b.text)
                     return true;
-            
+
             return false;
         }
 
@@ -62,23 +52,44 @@ public class Chat : NetworkBehaviour
         }
     }
 
-    private void Start()
-    {
-        sendMessageButton.onClick.AddListener(SendMessage_);
+    public UnityEvent OnMessageSended { get; private set; } = new();
+    public UnityEvent OnMessageReceived { get; private set; } = new();
 
-        messageInputField.characterLimit = new Message().text.Capacity;
+    private List<TMP_InputField> inputFields;
+    private List<Button> buttons;
+
+    private List<Message> history = new();
+
+    public IReadOnlyList<Message> History => history;
+
+    public void Enable()
+    {
+        foreach (TMP_InputField inputField in inputFields)
+            inputField.interactable = true;
+
+        foreach (Button button in buttons)
+            button.interactable = true;
     }
 
-    public void SendMessage_()
+    public void Disable()
     {
+        foreach (TMP_InputField inputField in inputFields)
+            inputField.interactable = false;
+
+        foreach (Button button in buttons)
+            button.interactable = false;
+    }
+
+    public void Send(string message)
+    {
+        if (string.IsNullOrEmpty(message))
+            return;
+
         Message msg = new()
         {
             senderId = (byte)NetworkManager.Singleton.LocalClientId,
-            text = new FixedString64Bytes(messageInputField.text)
+            text = new FixedString64Bytes(message)
         };
-
-        if (msg.text.IsEmpty)
-            return;
 
         if (IsServer)
             SendMessageClientRpc(msg);
@@ -86,8 +97,32 @@ public class Chat : NetworkBehaviour
             SendMessageServerRpc(msg);
 
         history.Add(msg);
-        messageInputField.text = string.Empty;
         OnMessageSended?.Invoke();
+    }
+
+    public void AddInputs(TMP_InputField inputField, Button button)
+    {
+        SetupInputs(inputField, button);
+
+        inputFields.Add(inputField);
+        buttons.Add(button);
+    }
+
+    private void SetupInputs(TMP_InputField inputField, Button button)
+    {
+        button.onClick.AddListener(() =>
+        {
+            Send(inputField.text);
+            inputField.text = string.Empty;
+        });
+
+        inputField.onSubmit.AddListener(text =>
+        {
+            Send(text);
+            inputField.text = string.Empty;
+        });
+
+        inputField.characterLimit = Message.Capacity;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -104,17 +139,5 @@ public class Chat : NetworkBehaviour
             history.Add(message);
             OnMessageReceived?.Invoke();
         }
-    }
-
-    public void Disable()
-    {
-        messageInputField.interactable = false;
-        sendMessageButton.interactable = false;
-    }
-
-    public void Enable()
-    {
-        messageInputField.interactable = true;
-        sendMessageButton.interactable = true;
     }
 }

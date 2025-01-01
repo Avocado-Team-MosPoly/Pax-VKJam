@@ -6,17 +6,21 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
+// TODO: return real method realization after local tests
+
 public class ReadinessSystem : NetworkBehaviour
 {
     public event Action AllReady;
     public event Action<bool> LocalReady;
 
+    [SerializeField] private GameObject visual;
     [SerializeField] private Toggle toggle;
     [SerializeField] private TextMeshProUGUI readyClientsCountLabel;
 
     private List<ClientReadiness> clientsReadiness;
     
     public int ReadyClientsCount { get; private set; }
+    public bool IsVisualEnabled => visual.activeSelf;
 
     private void Start()
     {
@@ -33,7 +37,7 @@ public class ReadinessSystem : NetworkBehaviour
         UpdateView();
 
         return;
-        clientsReadiness = new(PlayersDataManager.Instance.PlayerDatas.Count);
+        clientsReadiness = new List<ClientReadiness>(PlayersDataManager.Instance.PlayerDatas.Count);
         IEnumerable<ulong> connectedClients = PlayersDataManager.Instance.PlayerDatas.Keys;
 
         foreach (ulong clientId in connectedClients)
@@ -48,13 +52,23 @@ public class ReadinessSystem : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         return;
-        PlayersDataManager.Instance.PlayerConnected += OnClientConnected;
-        PlayersDataManager.Instance.PlayerDisconnected += OnClientDisconnected;
+        PlayersDataManager.Instance.PlayerConnected -= OnClientConnected;
+        PlayersDataManager.Instance.PlayerDisconnected -= OnClientDisconnected;
     }
 
     public void SetAllUnready()
     {
         SetAllUnreadyServerRpc();
+    }
+
+    public void EnableVisual()
+    {
+        visual.SetActive(true);
+    }
+
+    public void DisableVisual()
+    {
+        visual.SetActive(false);
     }
 
     [ServerRpc]
@@ -68,9 +82,9 @@ public class ReadinessSystem : NetworkBehaviour
     {
         foreach (ClientReadiness client in clientsReadiness)
         {
-            client.isReady = false;
+            client.IsReady = false;
 
-            if (client.id == NetworkManager.LocalClientId)
+            if (client.Id == NetworkManager.LocalClientId)
                 LocalReady?.Invoke(false);
         }
     }
@@ -97,11 +111,11 @@ public class ReadinessSystem : NetworkBehaviour
     {
         for (int i = 0; i < clientsReadiness.Count; i++)
         {
-            if (clientsReadiness[i].id == clientId)
+            if (clientsReadiness[i].Id == clientId)
             {
-                if (clientsReadiness[i].isReady != value)
+                if (clientsReadiness[i].IsReady != value)
                 {
-                    clientsReadiness[i].isReady = value;
+                    clientsReadiness[i].IsReady = value;
 
                     if (value)
                         ReadyClientsCount++;
@@ -111,8 +125,8 @@ public class ReadinessSystem : NetworkBehaviour
                     if (clientId == NetworkManager.LocalClientId)
                         LocalReady?.Invoke(value);
 
-                    CheckAllReady();
                     UpdateView();
+                    CheckAllReady();
 
                     return;
                 }
@@ -138,7 +152,7 @@ public class ReadinessSystem : NetworkBehaviour
     {
         for (int i = 0; i < clientsReadiness.Count; i++)
         {
-            if (clientsReadiness[i].id == id)
+            if (clientsReadiness[i].Id == id)
             {
                 clientsReadiness.RemoveAt(i);
                 break;
@@ -167,17 +181,5 @@ public class ReadinessSystem : NetworkBehaviour
     {
         if (ReadyClientsCount >= clientsReadiness.Count)
             AllReady?.Invoke();
-    }
-
-    private class ClientReadiness
-    {
-        public readonly ulong id;
-        public bool isReady;
-
-        public ClientReadiness(ulong clientId, bool isReady)
-        {
-            this.id = clientId;
-            this.isReady = isReady;
-        }
     }
 }

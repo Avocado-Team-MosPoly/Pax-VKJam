@@ -1,16 +1,8 @@
-﻿using System;
-using Unity.Netcode;
+﻿using Unity.Netcode;
 using UnityEngine;
 
-public class SecondModeCardInfo : BaseCardInfo, INetworkSerializable
+public class SecondModeCardSO : BaseCardSO, INetworkSerializable
 {
-    public ulong CreatorId => creatorId;
-    public override string Id => id;
-    public override string Description => description;
-    public override string[] Ingredients => ingredients;
-    public override Texture2D CardTexture => cardTexture;
-    public override CardDifficulty Difficulty => difficulty;
-
     private byte creatorId;
     private string id;
     private string description;
@@ -18,7 +10,16 @@ public class SecondModeCardInfo : BaseCardInfo, INetworkSerializable
     private Texture2D cardTexture;
     private CardDifficulty difficulty;
 
-    public SecondModeCardInfo(string id, string description, string[] ingredients, Texture2D cardTexture, CardDifficulty difficulty = CardDifficulty.Dangerous)
+    public ulong CreatorId => creatorId;
+    public override string Id => id;
+    public override string Description => description;
+    public override string[] Ingredients => ingredients;
+    public override Texture2D CardTexture => cardTexture;
+    public override Texture MonsterTexture => null;
+    public override Sprite MonsterInBestiarySprite => null;
+    public override CardDifficulty Difficulty => difficulty;
+
+    public SecondModeCardSO(string id, string description, string[] ingredients, Texture2D cardTexture, CardDifficulty difficulty = CardDifficulty.Dangerous)
     {
         this.id = id;
         this.description = description;

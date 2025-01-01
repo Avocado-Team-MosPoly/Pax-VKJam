@@ -4,9 +4,6 @@ using UnityEngine.UI;
 
 public class PlayerStatus : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public ulong OwnerClientId { get; private set; }
-    public string GuessStatusText { get; private set; }
-
     [Header("Player status visual")]
     [SerializeField] private Image avatarImage;
     [SerializeField] private Image frameImage;
@@ -18,17 +15,18 @@ public class PlayerStatus : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     private PlayerStatusDescription statusDescription;
 
-    public PlayerStatus Init(ulong ownerClientId, Sprite avatarImage, Sprite frameImage, string guessStatusText, PlayerStatusDescription statusDescription)
+    public ulong OwnerClientId { get; private set; }
+    public string GuessStatusText { get; private set; }
+
+    public void Init(ulong ownerClientId, Sprite avatarImage, Sprite frameImage, string guessStatusText, PlayerStatusDescription statusDescription)
     {
         OwnerClientId = ownerClientId;
         this.avatarImage.sprite = avatarImage;
         this.frameImage.sprite = frameImage;
 
         checkBoxImage.sprite = uncheckedSprite;
-        this.GuessStatusText = guessStatusText;
+        GuessStatusText = guessStatusText;
         this.statusDescription = statusDescription;
-
-        return this;
     }
 
     public void ResetStatus(string defaultStatus = "")

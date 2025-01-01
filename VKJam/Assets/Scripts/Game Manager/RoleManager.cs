@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Unity.Netcode;
-using UnityEngine;
 using UnityEngine.Events;
 
 public class RoleManager : NetworkBehaviour
@@ -8,44 +7,21 @@ public class RoleManager : NetworkBehaviour
     private NetworkVariable<byte> painterId = new(byte.MaxValue);
     private List<ulong> lastPainterIds = new();
 
-    [HideInInspector] public UnityEvent OnPainterSetted;
-    [HideInInspector] public UnityEvent OnGuesserSetted;
+    public UnityEvent OnPainterSetted { get; private set; }
+    public UnityEvent OnGuesserSetted { get; private set; }
+
     public byte PainterId => painterId.Value;
     public bool IsPainter => PainterId == NetworkManager.Singleton.LocalClientId;
 
     public override void OnNetworkSpawn()
     {
-        painterId.OnValueChanged += PainterId_OnValueChanged;
+        painterId.OnValueChanged += OnPainterChanged;
 
         if (IsServer)
             painterId.Value = (byte)NetworkManager.ConnectedClientsIds[0];
         else
-            ChooseRole();
+            InvokeRoleEvent();
     }
-
-    private void PainterId_OnValueChanged(byte previousValue, byte newValue)
-    {
-        Log("PainterId_OnValueChanged");
-
-        lastPainterIds.Add(newValue);
-        ChooseRole();
-    }
-
-    private void ChooseRole()
-    {
-        if (IsPainter)
-            OnPainterSetted?.Invoke();
-        else
-            OnGuesserSetted?.Invoke();
-    }
-
-    [ClientRpc]
-    private void ClearLastPaintersClientRpc()
-    {
-        lastPainterIds.Clear();
-    }
-
-    private void Log(object message) => Debug.Log($"{name} {message}");
 
     public void ChangeRoles()
     {
@@ -61,5 +37,25 @@ public class RoleManager : NetworkBehaviour
         // runs if all played for painter
         ClearLastPaintersClientRpc();
         painterId.Value = (byte)NetworkManager.Singleton.ConnectedClientsIds[0];
+    }
+
+    [ClientRpc]
+    private void ClearLastPaintersClientRpc()
+    {
+        lastPainterIds.Clear();
+    }
+
+    private void InvokeRoleEvent()
+    {
+        if (IsPainter)
+            OnPainterSetted?.Invoke();
+        else
+            OnGuesserSetted?.Invoke();
+    }
+
+    private void OnPainterChanged(byte previousValue, byte newValue)
+    {
+        lastPainterIds.Add(newValue);
+        InvokeRoleEvent();
     }
 }

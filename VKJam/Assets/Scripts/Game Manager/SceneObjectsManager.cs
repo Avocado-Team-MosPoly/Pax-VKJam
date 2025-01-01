@@ -13,7 +13,7 @@ public class SceneObjectsManager : MonoBehaviour
     [SerializeField] private Bestiary bestiary;
     [SerializeField] private MoveCamera moveCamera;
     [SerializeField] private ChatView chatView;
-    private Chat chat;
+    [SerializeField] private Chat chat;
 
     [SerializeField] private ToggleBook toggleBook;
 
@@ -36,7 +36,6 @@ public class SceneObjectsManager : MonoBehaviour
 
     private void Awake()
     {
-        chat = chatView.GetComponent<Chat>();
         guesserPreRoundLabel = guesserPreRoundCanvas.GetComponentInChildren<TextMeshProUGUI>();
 
         GameManager.Instance.OnGuessMonsterStageActivatedOnClient.AddListener(OnGuessMonsterStageActivated);
@@ -110,7 +109,7 @@ public class SceneObjectsManager : MonoBehaviour
         isFirstSetted = true;
     }
 
-    private void OnCardChoosed(CardSO cardSO)
+    private void OnCardChoosed(BaseCardSO cardInfo)
     {
         guesserPreRoundCanvas.SetActive(false);
 

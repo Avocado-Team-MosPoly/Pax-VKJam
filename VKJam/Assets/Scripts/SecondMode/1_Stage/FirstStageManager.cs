@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -34,7 +33,6 @@ public class FirstStageManager : BaseStageManager
         monsterCardDrawing.Init();
         monsterCardDrawing.Enable();
 
-
         countdownTimer.ValueChanged += OnTimerTick;
         countdownTimer.Finished += OnFirstTimerFinished;
         if (NetworkManager.Singleton.IsServer)
@@ -46,6 +44,9 @@ public class FirstStageManager : BaseStageManager
         }
 
         gameObject.SetActive(true);
+
+        SecondModeManager.Instance.Stage = SecondModeStage.CardCreation;
+
         base.StartStage();
     }
 

@@ -21,7 +21,7 @@ public class DrawingMultiplayer : NetworkBehaviour
         {
             return brushSize;
         }
-        set
+        private set
         {
             brushSize = value;
             brushLine.startWidth = brushLine.endWidth = brushSize * initialBrushSize;
@@ -47,7 +47,7 @@ public class DrawingMultiplayer : NetworkBehaviour
 
     [Header("Canvas Settings")]
 
-    [Tooltip("In-game size: 2048x1308. Lobby size: 2048x2048")]
+    [Tooltip("Defaults\nIn-game size: 2048x1308.\nLobby size: 2048x2048")]
     [SerializeField] private RenderTextureSettings renderTextureSettings = new()
     {
         width = 2048,

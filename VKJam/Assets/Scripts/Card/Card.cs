@@ -4,17 +4,17 @@ using UnityEngine.Events;
 public class Card : MonoBehaviour
 {
     [SerializeField] private int frontMaterialIndex = 1;
-
-    public CardSO CardSO { get; private set; }
-
-    public static UnityEvent<Card> OnSelect = new();
-    public static UnityEvent<Card> OnChoose = new();
-
-    private Animator animator;
-    private MeshRenderer meshRenderer;
     [SerializeField] private string CameraBack_Buttons;
 
+    // TODO: replace animator with DOTween
+    private Animator animator;
+    private MeshRenderer meshRenderer;
+
     private static Card firstSelectedCard;
+
+    public UnityEvent<Card> OnSelect { get; private set; } = new();
+    public UnityEvent<Card> OnChoose { get; private set; } = new();
+    public BaseCardSO CardInfo { get; private set; }
 
     private void Awake()
     {
@@ -22,12 +22,12 @@ public class Card : MonoBehaviour
         meshRenderer = GetComponent<MeshRenderer>();
     }
 
-    private void UpdateCardSO()
+    private void UpdateVisual()
     {
-        gameObject.name = CardSO.Id + " (Instance)";
+        gameObject.name = CardInfo.Id + " (Instance)";
 
         if (meshRenderer != null || TryGetComponent(out meshRenderer))
-            meshRenderer.materials[frontMaterialIndex].mainTexture = CardSO.CardTexture;
+            meshRenderer.materials[frontMaterialIndex].mainTexture = CardInfo.CardTexture;
     }
 
     public void Choose()
@@ -47,9 +47,9 @@ public class Card : MonoBehaviour
         GameManager.Instance.SoundList.Play("Flip");
     }
 
-    public void SetCardSO(CardSO cardSO)
+    public void SetCardInfo(BaseCardSO cardInfo)
     {
-        CardSO = cardSO;
-        UpdateCardSO();
+        CardInfo = cardInfo;
+        UpdateVisual();
     }
 }

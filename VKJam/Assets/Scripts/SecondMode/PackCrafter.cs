@@ -45,12 +45,12 @@ public class PackCrafter : NetworkBehaviour
 
     public void SendCardInfo(string monsterName, string description, string[] ingredients, Texture2D texture)
     {
-        SecondModeCardInfo cardInfo = new(monsterName, description, ingredients, texture);
+        SecondModeCardSO cardInfo = new(monsterName, description, ingredients, texture);
         SendCardInfoServerRpc(cardInfo, new ServerRpcParams());
     }
 
     [ServerRpc]
-    private void SendCardInfoServerRpc(SecondModeCardInfo cardInfo, ServerRpcParams rpcParams)
+    private void SendCardInfoServerRpc(SecondModeCardSO cardInfo, ServerRpcParams rpcParams)
     {
         cardInfo.AssignCreatorId(rpcParams.Receive.SenderClientId);
         AddCard(cardInfo);
@@ -58,7 +58,7 @@ public class PackCrafter : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void SendCardInfoClientRpc(SecondModeCardInfo cardInfo)
+    private void SendCardInfoClientRpc(SecondModeCardSO cardInfo)
     {
         if (IsServer)
             return;
@@ -66,7 +66,7 @@ public class PackCrafter : NetworkBehaviour
         AddCard(cardInfo);
     }
 
-    private void AddCard(SecondModeCardInfo cardInfo)
+    private void AddCard(SecondModeCardSO cardInfo)
     {
         //cardPackSO.CardInPack[cardInfo.CreatorId].Card = cardInfo;
         cardPackSO.CardInPack[cardInfo.CreatorId].CardIsInOwn = true;

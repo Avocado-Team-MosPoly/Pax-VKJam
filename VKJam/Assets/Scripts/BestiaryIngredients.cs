@@ -6,7 +6,6 @@ using TMPro;
 public class BestiaryIngredients : MonoBehaviour
 {
     public List<Ingredient> IngredientList = new();
-    //[HideInInspector] public List<string> IngredientName = new();
 
     [SerializeField] private FirstModeGuessSystem compareSystem;
     [SerializeField] private IngredientInfo ingredientInfoTemplate;
@@ -20,7 +19,6 @@ public class BestiaryIngredients : MonoBehaviour
 
     [SerializeField] private Transform[] spawnPositions;
     [SerializeField] private Button closeBestiaryButton;
-
 
     private List<TMP_Text> ingredientsTexts = new();
     private List<GameObject> spawnedIngredientObjects = new();
@@ -67,7 +65,6 @@ public class BestiaryIngredients : MonoBehaviour
     public void TakePack()
     {
         IngredientList.Clear();
-        //IngredientName.Clear();
 
         for (int i = 0; i < PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId].Count; i++)
         {
@@ -88,7 +85,7 @@ public class BestiaryIngredients : MonoBehaviour
         }
         IngredientList.Sort((x, y) => x.Name.CompareTo(y.Name));
     }
-    public void UpdateIngredientList(bool up) // rework
+    public void UpdateIngredientList(bool up) // TODO: rework. use object pool instead of destroy and instantiate
     {
         foreach (Transform child in leftIngredientsPage)
             Destroy(child.gameObject);
@@ -108,7 +105,7 @@ public class BestiaryIngredients : MonoBehaviour
         }
         else
         {
-            firstShownIngredient -= elementsPerPage*3;
+            firstShownIngredient -= elementsPerPage * 3;
             lastShownIngridient = firstShownIngredient + elementsPerPage;
             UpdateIngredientList(leftIngredientsPage, firstShownIngredient, lastShownIngridient);
             firstShownIngredient = lastShownIngridient;

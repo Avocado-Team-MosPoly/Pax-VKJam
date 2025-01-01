@@ -1587,7 +1587,7 @@ GameObject:
   - component: {fileID: 3782522742571133370}
   - component: {fileID: 8519356375861679062}
   m_Layer: 5
-  m_Name: Chat
+  m_Name: Chat Logic and View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1632,7 +1632,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 1
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -1689,7 +1689,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3310280860
+  GlobalObjectIdHash: 2432838228
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -1709,14 +1709,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9637c4739dc3620469500e301515aed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnMessageSended:
-    m_PersistentCalls:
-      m_Calls: []
-  OnMessageReceived:
-    m_PersistentCalls:
-      m_Calls: []
-  messageInputField: {fileID: 5214710450047592472}
-  sendMessageButton: {fileID: 8134940757286262729}
 --- !u!114 &8519356375861679062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1729,6 +1721,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6e59845bdc44ce41bc3206f56082812, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chat: {fileID: 3782522742571133370}
+  inputField: {fileID: 5214710450047592472}
+  button: {fileID: 8134940757286262729}
   messageContainer: {fileID: 6614164240848740429}
   maxTogetherShownMessages: 20
   activeChatObject: {fileID: 5922891394240191384}

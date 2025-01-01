@@ -8,21 +8,21 @@ using UnityEngine.UI;
 public class IngredientInfo : MonoBehaviour
 {
     public TextMeshProUGUI IngridientName;
-    [HideInInspector] public UnityEvent<int> OnGuess;
+    public UnityEvent<int> OnGuess { get; private set; }
 
-    private FirstModeGuessSystem compareSystem;
+    private FirstModeGuessSystem guessSystem;
     private int index;
 
     private Button closeBestiaryButton;
 
-    public void SetIngridient(string name, int index, FirstModeGuessSystem compareSystem, Button close)
+    public void SetIngridient(string name, int index, FirstModeGuessSystem guessSystem, Button closeButton)
     {
         IngridientName.text = name;
         this.index = index;
-        this.compareSystem = compareSystem;
+        this.guessSystem = guessSystem;
         
         gameObject.SetActive(true);
-        closeBestiaryButton = close;
+        closeBestiaryButton = closeButton;
 
         GetComponent<Button>().onClick.AddListener(Guess);
     }
@@ -31,7 +31,7 @@ public class IngredientInfo : MonoBehaviour
     {
         if (GameManager.Instance.Stage == Stage.IngredientGuess)
         {
-            compareSystem.SendAnswerServerRpc(index, new ServerRpcParams());
+            guessSystem.SendAnswerServerRpc(index, new ServerRpcParams());
             OnGuess?.Invoke(index);
             closeBestiaryButton.OnPointerClick(new PointerEventData(EventSystem.current));
         }

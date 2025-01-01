@@ -1,53 +1,51 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-public class SecondModeManager : BaseSingleton<SecondModeManager>, IGameManager
+public class SecondModeManager : BaseSingleton<SecondModeManager>
 {
+    [Header("Network Behaviours")]
+    [SerializeField] private NetworkBehaviour[] networkBehaviours;
+
     [Header("Systems")]
-    [SerializeField] private SecondModeGuessSystem guessSystem;
     [SerializeField] private ReadinessSystem readinessSystem;
     [SerializeField] private BaseStageManager[] stageManagers;
-    [SerializeField] private TokenManager tokenManager;
 
     // [SerializeField] private <note manager>
 
-    [Header("Config")]
-    [SerializeField] private GameConfigSO gameConfig;
-
-    private IngredientManager ingredientManager;
-    private RoundManager roundManager;
+    [Header("Main Game Layout")]
+    [SerializeField] private GameObject mainGameRoot;
 
     private int currentStageIndex = -1;
 
-    #region Properties
+    private SecondModeGuessSystem guessSystem;
 
-    public SecondModeStage Stage { get; private set; }
-    public SecondModeGuessSystem GuessSystem => guessSystem;
+    public SecondModeStage Stage { get; set; }
     public ReadinessSystem ReadinessSystem => readinessSystem;
-
-    public bool IsTeamMode => throw new System.NotImplementedException();
-    public int CurrentRound => throw new System.NotImplementedException();
-
-    public bool IsDangerousCard => throw new System.NotImplementedException();
-    public string CurrentMonsterName => throw new System.NotImplementedException();
-
-    public string CurrentIngredientName => throw new System.NotImplementedException();
-    public int IngredientsCount => throw new System.NotImplementedException();
-
-    public bool IsPainter => throw new System.NotImplementedException();
-    public byte PainterId => throw new System.NotImplementedException();
-
-    #endregion
+    public SecondModeGuessSystem GuessSystem => guessSystem = guessSystem != null ? guessSystem : GameManager.Instance.GuessSystem as SecondModeGuessSystem;
+    public GameObject MainGameRoot => mainGameRoot;
 
     private void Start()
     {
-        NetworkManager.Singleton.OnClientStarted += Init;
+        // TODO: remove if statement and leave just init when mode develop ends
+        if (NetworkManager.Singleton.IsClient)
+            StartCoroutine(Init());
+        else
+            NetworkManager.Singleton.OnClientStarted += () => StartCoroutine(Init());
     }
 
-    private void Init()
+    private IEnumerator Init()
     {
-        //ingredientManager = new CompetitiveIngredientManager(this, gameConfig, guessSystem);
-        //roundManager = new CompetitiveRoundManager(this, gameConfig, guessSystem, ingredientManager);
+        int index = 0;
+        while (index < networkBehaviours.Length)
+        {
+            if (networkBehaviours[index].IsSpawned)
+                index++;
+            else
+                yield return null;
+        }
+
+        Stage = SecondModeStage.Waiting;
 
         stageManagers[0].StartStage();
         currentStageIndex = 0;
@@ -83,5 +81,10 @@ public class SecondModeManager : BaseSingleton<SecondModeManager>, IGameManager
         }
 
         RelayManager.Instance.ReturnToLobby();
+    }
+
+    public void SendAnswer(string answer)
+    {
+        GuessSystem.SendAnswerServerRpc(answer, new ServerRpcParams());
     }
 }

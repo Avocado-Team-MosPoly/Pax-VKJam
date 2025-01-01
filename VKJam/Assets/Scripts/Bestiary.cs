@@ -4,14 +4,14 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Linq;
+using System.Text;
 
 public class Bestiary : MonoBehaviour
 {
     public UnityEvent OnBestiaryOpened;
     public UnityEvent OnBestiaryClosed;
 
-    public List<CardSO> Monsters = new();
-    public List<CardSO> sortedMonsters = new();
+    public List<BaseCardSO> Monsters { get; private set; } = new();
 
     [SerializeField] private Button[] dangerousMonstersButtons;
     [SerializeField] private Button[] murderousMonstersButtons;
@@ -34,20 +34,24 @@ public class Bestiary : MonoBehaviour
 
     //[SerializeField] private GameObject MonsterBookmark; 
     //[SerializeField] private GameObject IngridientsBookmark;
+    [Header("Don't set in second mode")]
     [SerializeField] private GameObject MonstersCatalogue;
     [SerializeField] private GameObject IngridientsCatalouge;
 
     private int currentMonster;
-
     private int choosenMonster;
 
     private void Start()
     {
         previousMonsterButton.onClick.AddListener(PreviousMoster);
         nextMonsterButton.onClick.AddListener(NextMoster);
-        GameManager.Instance.OnGuessMonsterStageActivatedOnClient.AddListener(MonsterGuess);
-        GameManager.Instance.OnRoundStartedOnClient.AddListener(IngredientGuess);
-        IngredientGuess();
+
+        if (!GameManager.Instance.IsSecondMode)
+        {
+            GameManager.Instance.OnGuessMonsterStageActivatedOnClient.AddListener(MonsterGuess);
+            GameManager.Instance.OnRoundStartedOnClient.AddListener(IngredientGuess);
+            IngredientGuess();
+        }
 
         int dangerousMonstersCount = 0;
         int murderousMonstersCount = 0;
@@ -117,15 +121,7 @@ public class Bestiary : MonoBehaviour
         {
             if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i] == true)
             {
-                if (PackManager.Instance.Active.CardInPack[i].Card is CardSO cardSO)
-                {
-                    Monsters.Add(cardSO);
-                }
-                else
-                {
-                    Logger.Instance.LogError(this, $"Invalid type of card. Must be {nameof(CardSO)}");
-                    return;
-                }
+                Monsters.Add(PackManager.Instance.Active.CardInPack[i].Card);
             }
         }
 
@@ -196,7 +192,7 @@ public class Bestiary : MonoBehaviour
         }
 
         descriptionHolder.text = Monsters[currentMonster].Description;
-        ingredientsHolder.text = Monsters[currentMonster].GetIngredientsAsString();
+        ingredientsHolder.text = GetCombinedIngredients();
 
         GameManager.Instance.SoundList.Play("Turning the page");
     }
@@ -223,4 +219,17 @@ public class Bestiary : MonoBehaviour
         OnBestiaryClosed?.Invoke();
     }
 
+    private string GetCombinedIngredients()
+    {
+        string[] ingredients = Monsters[currentMonster].Ingredients;
+        StringBuilder sb = new(ingredients[0]);
+
+        for (int i = 1; i < ingredients.Length; i++)
+        {
+            sb.Append('\n');
+            sb.Append(ingredients[i]);
+        }
+
+        return sb.ToString();
+    }
 }
