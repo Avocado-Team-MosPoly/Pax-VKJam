@@ -101,6 +101,18 @@ public class Catcher_RandomItem : BaseSingleton<Catcher_RandomItem>
         }
     }
 
+    public void DropTokens(int tokenAmount) 
+    {
+        ActiveWinObject(0);
+        Hand.Play("GiveItem");
+        UIWin(RandomType.Token, tokenAmount);
+    }
+    public void CallFiga()
+    {
+        ActiveWinObject(-1);
+        Hand.Play("Figa");
+    }
+
     public void PlaySound()
     {
         soundList.Play("water-splash");
