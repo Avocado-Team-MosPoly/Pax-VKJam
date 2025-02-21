@@ -9,13 +9,13 @@ public class GameManager : NetworkBehaviour, IGameManager
 {
     public static GameManager Instance { get; private set; }
 
-    public UnityEvent OnRoundStartedOnClient { get; private set; }
-    public UnityEvent OnIngredientGuessStartedOnClient { get; private set; }
-    public UnityEvent<BaseCardSO> OnCardChoosedOnClient { get; private set; }
-    public UnityEvent<int> OnIngredientSwitchedOnClient { get; private set; }
+    public UnityEvent OnRoundStartedOnClient { get; private set; } = new();
+    public UnityEvent OnIngredientGuessStartedOnClient { get; private set; } = new();
+    public UnityEvent<BaseCardSO> OnCardChoosedOnClient { get; private set; } = new();
+    public UnityEvent<int> OnIngredientSwitchedOnClient { get; private set; } = new();
     /// <summary> Sends true if local player is painter, false if not </summary>
-    public UnityEvent<bool> OnGuessMonsterStageActivatedOnClient { get; private set; }
-    public UnityEvent OnGameEnded { get; private set; }
+    public UnityEvent<bool> OnGuessMonsterStageActivatedOnClient { get; private set; } = new();
+    public UnityEvent OnGameEnded { get; private set; } = new();
 
     [SerializeField] private GameConfigSO gameConfig;
     [SerializeField] private MainGameTimer timer;

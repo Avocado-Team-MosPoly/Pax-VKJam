@@ -34,10 +34,11 @@ public class SceneObjectsManager : MonoBehaviour
 
     private bool isFirstSetted = false;
 
-    private void Awake()
+    private void Start()
     {
         guesserPreRoundLabel = guesserPreRoundCanvas.GetComponentInChildren<TextMeshProUGUI>();
-
+        Debug.Assert(GameManager.Instance, "instance");
+        Debug.Assert(GameManager.Instance.OnGuessMonsterStageActivatedOnClient != null, "event");
         GameManager.Instance.OnGuessMonsterStageActivatedOnClient.AddListener(OnGuessMonsterStageActivated);
         GameManager.Instance.OnGameEnded.AddListener(OnGameEnded);
         GameManager.Instance.RoleManager.OnPainterSetted.AddListener(OnPainterSetted);

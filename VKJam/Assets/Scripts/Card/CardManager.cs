@@ -37,7 +37,7 @@ public class CardManager : MonoBehaviour
             LogWarning($"Set the same number of elements in [{nameof(spawnedCardDifficulties)}] and [{nameof(spawnTransforms)}] arrays.");
     }
 
-    private void Awake()
+    private void Start()
     {
         StartCoroutine(InitCards());
 
