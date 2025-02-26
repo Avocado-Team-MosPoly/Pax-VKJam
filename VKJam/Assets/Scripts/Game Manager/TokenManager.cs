@@ -13,8 +13,8 @@ public class TokenManager : NetworkBehaviour
     public static int TokensCountWinnedCurrentRound { get; private set; }
     public static int TokensCountLosedCurrentRound { get; private set; }
 
-    public static UnityEvent OnAddTokens;
-    public static UnityEvent OnRemoveTokens;
+    public static UnityEvent OnAddTokens = new();
+    public static UnityEvent OnRemoveTokens = new();
 
     [SerializeField] private GameObject table;
 

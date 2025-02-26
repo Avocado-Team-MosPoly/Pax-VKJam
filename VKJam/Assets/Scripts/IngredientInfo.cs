@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class IngredientInfo : MonoBehaviour
 {
     public TextMeshProUGUI IngridientName;
-    [HideInInspector] public UnityEvent<int> OnGuess;
+    [HideInInspector] public UnityEvent<int> OnGuess = new();
 
     private FirstModeGuessSystem compareSystem;
     private int index;

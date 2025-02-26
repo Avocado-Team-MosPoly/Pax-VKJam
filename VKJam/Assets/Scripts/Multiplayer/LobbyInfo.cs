@@ -17,7 +17,7 @@ public class LobbyInfo : MonoBehaviour
 
     private Lobby lobby;
 
-    [HideInInspector] public UnityEvent<Lobby> OnLobbyChoosed;
+    [HideInInspector] public UnityEvent<Lobby> OnLobbyChoosed = new();
 
     public static LobbyInfo Instance { get; private set; }
 

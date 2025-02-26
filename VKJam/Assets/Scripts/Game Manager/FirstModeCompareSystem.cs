@@ -5,8 +5,8 @@ using UnityEngine.Events;
 
 public class FirstModeCompareSystem : NetworkBehaviour
 {
-    [HideInInspector] public UnityEvent<string, ulong> OnIngredientGuess;
-    [HideInInspector] public UnityEvent<string, ulong> OnMonsterGuess;
+    [HideInInspector] public UnityEvent<string, ulong> OnIngredientGuess = new();
+    [HideInInspector] public UnityEvent<string, ulong> OnMonsterGuess = new();
 
     [SerializeField] private string[] chooseNotificationText;
     [SerializeField] private BestiaryIngredients bestiaryIngredients;

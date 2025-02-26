@@ -8,8 +8,8 @@ public class RoleManager : NetworkBehaviour
     private NetworkVariable<byte> painterId = new(byte.MaxValue);
     private List<ulong> lastPainterIds = new();
 
-    [HideInInspector] public UnityEvent OnPainterSetted;
-    [HideInInspector] public UnityEvent OnGuesserSetted;
+    [HideInInspector] public UnityEvent OnPainterSetted = new();
+    [HideInInspector] public UnityEvent OnGuesserSetted = new();
     public byte PainterId => painterId.Value;
     public bool IsPainter => PainterId == NetworkManager.Singleton.LocalClientId;
 

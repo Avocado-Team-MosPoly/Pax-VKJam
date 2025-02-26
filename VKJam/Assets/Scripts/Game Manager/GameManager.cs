@@ -9,12 +9,12 @@ public class GameManager : NetworkBehaviour, IGameManager
 {
     public static GameManager Instance { get; private set; }
 
-    [HideInInspector] public UnityEvent OnRoundStartedOnClient;
-    [HideInInspector] public UnityEvent<CardSO> OnCardChoosedOnClient;
-    [HideInInspector] public UnityEvent<int> OnIngredientSwitchedOnClient;
+    [HideInInspector] public UnityEvent OnRoundStartedOnClient = new();
+    [HideInInspector] public UnityEvent<CardSO> OnCardChoosedOnClient = new();
+    [HideInInspector] public UnityEvent<int> OnIngredientSwitchedOnClient = new();
     /// <summary> Sends true if local player is painter, false if not </summary>
-    [HideInInspector] public UnityEvent<bool> OnGuessMonsterStageActivatedOnClient;
-    [HideInInspector] public UnityEvent OnGameEnded;
+    [HideInInspector] public UnityEvent<bool> OnGuessMonsterStageActivatedOnClient = new();
+    [HideInInspector] public UnityEvent OnGameEnded = new();
 
     [SerializeField] private GameConfigSO gameConfig;
     [SerializeField] private MainGameTimer timer;
@@ -133,6 +133,7 @@ public class GameManager : NetworkBehaviour, IGameManager
                 {
                     Log("TEAM MODE");
 
+                    Debug.Assert(compareSystem != null);
                     ingredientManager = new TeamIngredientManager(this, gameConfig, compareSystem);
                     roundManager = new TeamRoundManager(this, gameConfig, compareSystem, ingredientManager);
                 }

@@ -7,8 +7,8 @@ using System.Linq;
 
 public class Bestiary : MonoBehaviour
 {
-    public UnityEvent OnBestiaryOpened;
-    public UnityEvent OnBestiaryClosed;
+    public UnityEvent OnBestiaryOpened = new();
+    public UnityEvent OnBestiaryClosed = new();
 
     public List<CardSO> Monsters = new();
     public List<CardSO> sortedMonsters = new();

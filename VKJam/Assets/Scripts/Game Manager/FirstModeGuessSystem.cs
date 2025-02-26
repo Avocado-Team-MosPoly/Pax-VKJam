@@ -5,8 +5,8 @@ using UnityEngine.Events;
 
 public class FirstModeGuessSystem : NetworkBehaviour, IGuessSystem
 {
-    public UnityEvent<string, ulong> OnIngredientGuess { get; private set; }
-    public UnityEvent<string, ulong> OnMonsterGuess { get; private set; }
+    public UnityEvent<string, ulong> OnIngredientGuess { get; private set; } = new();
+    public UnityEvent<string, ulong> OnMonsterGuess { get; private set; } = new();
 
     [SerializeField] private string[] chooseNotificationText;
     [SerializeField] private BestiaryIngredients bestiaryIngredients;

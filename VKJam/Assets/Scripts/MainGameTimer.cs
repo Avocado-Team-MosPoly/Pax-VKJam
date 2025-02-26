@@ -18,7 +18,7 @@ public class MainGameTimer : NetworkBehaviour
 
     private Coroutine serverClockCoroutine = null;
 
-    [HideInInspector] public UnityEvent OnExpired;
+    [HideInInspector] public UnityEvent OnExpired = new();
 
     public void Init(GameConfigSO gameConfig)
     {
