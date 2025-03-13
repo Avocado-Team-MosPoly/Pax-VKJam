@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Pax
@@ -5,15 +6,23 @@ namespace Pax
     public class TEST_Auth : MonoBehaviour
     {
         [SerializeField] private int id;
+        [SerializeField] private string promo = "TEST2025";
 
-        private void Start()
+        [ContextMenu(nameof(Authenticate))]
+        public IEnumerator Authenticate()
         {
-            StartCoroutine(Php_Connect.Instance.Init());
+            yield return StartCoroutine(Php_Connect.Instance.Init());
 
-            StartCoroutine(Php_Connect.Request_Auth(
+            yield return StartCoroutine(Php_Connect.Request_Auth(
                 id <= 0 ? Random.Range(0, 10000) : id,
                 registered => Debug.Log($"registered (with id - {id}): {registered}"),
                 null));
+        }
+
+        [ContextMenu(nameof(ActivatePromo))]
+        public void ActivatePromo()
+        {
+            StartCoroutine(Php_Connect.Request_ActivatePromocod(promo, () => Debug.Log("Success"), () => Debug.LogWarning("Unsuccess")));
         }
     }
 }

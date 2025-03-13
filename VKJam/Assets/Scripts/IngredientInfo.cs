@@ -8,7 +8,8 @@ using UnityEngine.UI;
 public class IngredientInfo : MonoBehaviour
 {
     public TextMeshProUGUI IngridientName;
-    public UnityEvent<int> OnGuess { get; private set; }
+
+    public UnityEvent<int> OnGuess { get; private set; } = new();
 
     private FirstModeGuessSystem guessSystem;
     private int index;

@@ -38,7 +38,7 @@ public class LobbyManager : MonoBehaviour
 
     public const string KEY_RELAY_CODE = "RelayCode";
     public const string KEY_TEAM_MODE = "IsTeamMode";
-    public const string KEY_SECOND_MODE = "IsTeamMode";
+    public const string KEY_SECOND_MODE = "IsSecondMode";
     public const string KEY_ROUND_AMOUNT = "RoundAmount";
     public const string KEY_TIMER_AMOUNT = "TimerAmount";
     public const string KEY_RECIPE_MODE = "RecipeMode";

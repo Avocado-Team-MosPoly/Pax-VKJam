@@ -5,9 +5,9 @@ using UnityEngine.EventSystems;
 public class MouseOnButton : MonoBehaviour,
     IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    public UnityEvent<PointerEventData> PoinerEnter;
-    public UnityEvent<PointerEventData> PointerExit;
-    public UnityEvent<PointerEventData> PointerClick;
+    public UnityEvent<PointerEventData> PoinerEnter = new();
+    public UnityEvent<PointerEventData> PointerExit = new();
+    public UnityEvent<PointerEventData> PointerClick = new();
 
     public void OnPointerEnter(PointerEventData eventData)
     {

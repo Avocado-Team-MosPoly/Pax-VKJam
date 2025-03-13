@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5775951274954988208}
   - component: {fileID: 7582449824443618904}
   - component: {fileID: 828082396033128136}
-  - component: {fileID: 9214864555369288271}
+  - component: {fileID: 5613541771399138531}
   m_Layer: 0
   m_Name: WitcherBook Variant
   m_TagString: Untagged
@@ -75,8 +75,8 @@ MonoBehaviour:
   Data: {fileID: 7582449824443618904}
   Object: {fileID: 4910148581437658101}
   _Anim: {fileID: 0}
---- !u!136 &9214864555369288271
-CapsuleCollider:
+--- !u!65 &5613541771399138531
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -93,11 +93,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1.9238733
-  m_Height: 5.372551
-  m_Direction: 1
-  m_Center: {x: -0.10176236, y: 2.1862843, z: 0.03736563}
+  serializedVersion: 3
+  m_Size: {x: 0.65, y: 0.2, z: 0.55}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &8647651089527013447
 PrefabInstance:
   m_ObjectHideFlags: 0

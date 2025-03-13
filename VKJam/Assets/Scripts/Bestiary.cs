@@ -8,8 +8,8 @@ using System.Text;
 
 public class Bestiary : MonoBehaviour
 {
-    public UnityEvent OnBestiaryOpened;
-    public UnityEvent OnBestiaryClosed;
+    public UnityEvent OnBestiaryOpened = new();
+    public UnityEvent OnBestiaryClosed = new();
 
     public List<BaseCardSO> Monsters { get; private set; } = new();
 
