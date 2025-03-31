@@ -7,9 +7,9 @@ using UnityEngine.UI;
 public class LobbyPlayerDataView : MonoBehaviour,
     IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
-    [HideInInspector] public UnityEvent<LobbyPlayerDataView> PointerEntered;
-    [HideInInspector] public UnityEvent<LobbyPlayerDataView> PointerExit;
-    [HideInInspector] public UnityEvent<LobbyPlayerDataView> Clicked;
+    [HideInInspector] public UnityEvent<LobbyPlayerDataView> PointerEntered = new();
+    [HideInInspector] public UnityEvent<LobbyPlayerDataView> PointerExit = new();
+    [HideInInspector] public UnityEvent<LobbyPlayerDataView> Clicked = new();
 
     public ulong ClientId { get; private set; }
     public string ClientName { get; private set; }
@@ -26,8 +26,8 @@ public class LobbyPlayerDataView : MonoBehaviour,
         if (!string.IsNullOrEmpty(ClientName))
             return;
 
-        if (PlayersDataManager.Instance.PlayerDatas.ContainsKey(ClientId))
-            ClientName = PlayersDataManager.Instance.PlayerDatas[ClientId].Name;
+        if (PlayersDataManager.Instance.PlayersData.ContainsKey(ClientId))
+            ClientName = PlayersDataManager.Instance.PlayersData[ClientId].Name;
     }
 
     public void SetData(string name, ulong clientId)

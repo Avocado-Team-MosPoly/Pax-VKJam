@@ -10,8 +10,8 @@ using UnityEngine.UI;
 
 public class ReadinessSystem : NetworkBehaviour
 {
-    public event Action AllReady;
-    public event Action<bool> LocalReady;
+    public event Action OnAllReady;
+    public event Action<bool> OnLocalReadyChanged;
 
     [SerializeField] private GameObject visual;
     [SerializeField] private Toggle toggle;
@@ -19,6 +19,7 @@ public class ReadinessSystem : NetworkBehaviour
 
     private List<ClientReadiness> clientsReadiness;
     
+    public bool LocalReadiness { get; private set; }
     public int ReadyClientsCount { get; private set; }
     public bool IsVisualEnabled => visual.activeSelf;
 
@@ -29,16 +30,8 @@ public class ReadinessSystem : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        clientsReadiness = new()
-        {
-            new ClientReadiness(NetworkManager.LocalClientId, false)
-        };
-
-        UpdateView();
-
-        return;
-        clientsReadiness = new List<ClientReadiness>(PlayersDataManager.Instance.PlayerDatas.Count);
-        IEnumerable<ulong> connectedClients = PlayersDataManager.Instance.PlayerDatas.Keys;
+        clientsReadiness = new List<ClientReadiness>(PlayersDataManager.Instance.PlayersData.Count);
+        IEnumerable<ulong> connectedClients = PlayersDataManager.Instance.PlayersData.Keys;
 
         foreach (ulong clientId in connectedClients)
             clientsReadiness.Add(new ClientReadiness(clientId, false));
@@ -85,8 +78,12 @@ public class ReadinessSystem : NetworkBehaviour
             client.IsReady = false;
 
             if (client.Id == NetworkManager.LocalClientId)
-                LocalReady?.Invoke(false);
+                OnLocalReadyChanged?.Invoke(false);
         }
+
+        LocalReadiness = false;
+        ReadyClientsCount = 0;
+        UpdateView();
     }
 
     [ServerRpc]
@@ -123,7 +120,10 @@ public class ReadinessSystem : NetworkBehaviour
                         ReadyClientsCount--;
 
                     if (clientId == NetworkManager.LocalClientId)
-                        LocalReady?.Invoke(value);
+                    {
+                        LocalReadiness = value;
+                        OnLocalReadyChanged?.Invoke(value);
+                    }
 
                     UpdateView();
                     CheckAllReady();
@@ -135,11 +135,12 @@ public class ReadinessSystem : NetworkBehaviour
             }
         }
 
-        Debug.LogError($"[{nameof(ReadinessSystem)}] Client ({clientId}) not found");
+        Debug.LogError($"[{nameof(ReadinessSystem)}] Client ({clientId}) has same ready flag or not found");
     }
 
     private void UpdateView()
     {
+        toggle.SetIsOnWithoutNotify(LocalReadiness);
         readyClientsCountLabel.text = $"{ReadyClientsCount} / {clientsReadiness.Count}";
     }
 
@@ -180,6 +181,6 @@ public class ReadinessSystem : NetworkBehaviour
     private void CheckAllReady()
     {
         if (ReadyClientsCount >= clientsReadiness.Count)
-            AllReady?.Invoke();
+            OnAllReady?.Invoke();
     }
 }

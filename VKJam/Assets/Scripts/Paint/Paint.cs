@@ -137,7 +137,7 @@ public class Paint : NetworkBehaviour
     [SerializeField] private Button switchBrushModeButton;
     [SerializeField] private Button saveAsPNGButton;
     [SerializeField] private Button clearCanvasButton;
-    [HideInInspector] public UnityEvent OnNetworkSpawned;
+    [HideInInspector] public UnityEvent OnNetworkSpawned = new();
 
     [SerializeField] private Sprite chalkSprite;
     [SerializeField] private Sprite eraserSprite;

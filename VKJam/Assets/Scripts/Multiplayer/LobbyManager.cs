@@ -471,8 +471,8 @@ public class LobbyManager : MonoBehaviour
         {
             try
             {
-                string playerName = PlayersDataManager.Instance.PlayerDatas[clientId].Name;
-                await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, PlayersDataManager.Instance.PlayerDatas[clientId].LobbyPlayerId);
+                string playerName = PlayersDataManager.Instance.PlayersData[clientId].Name;
+                await LobbyService.Instance.RemovePlayerAsync(CurrentLobby.Id, PlayersDataManager.Instance.PlayersData[clientId].LobbyPlayerId);
                 Logger.Instance.Log(this, "Disconnected player " + playerName);
             }
             catch (LobbyServiceException ex)

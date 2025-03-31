@@ -9,9 +9,9 @@ public class Interactable : MonoBehaviour
     private Color[] TargetColorMaterial;
     public Color NewColor;
     private Renderer Rend;
-    public UnityEvent m_OnClick;
-    public UnityEvent m_OnMouseEnter;
-    public UnityEvent m_OnMouseExit;
+    public UnityEvent m_OnClick = new();
+    public UnityEvent m_OnMouseEnter = new();
+    public UnityEvent m_OnMouseExit = new();
     public bool ActivityInteractable = true;
     public bool EnableMaterialSwitch = true;
 
@@ -38,7 +38,7 @@ public class Interactable : MonoBehaviour
     {
         if (Rend == null && !TryGetComponent(out Rend))
         {
-            Logger.Instance.LogWarning(this, $"GameObject doesn't contain Renderer component");
+            Logger.Instance.LogWarning(this, $"GameObject doesn't contain Renderer component ({name})");
             return;
         }
         else if (!EnableMaterialSwitch)

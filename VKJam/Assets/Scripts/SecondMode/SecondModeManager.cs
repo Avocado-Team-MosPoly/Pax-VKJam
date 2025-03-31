@@ -13,6 +13,9 @@ public class SecondModeManager : BaseSingleton<SecondModeManager>
 
     // [SerializeField] private <note manager>
 
+    [Header("Prefabs")]
+    [SerializeField] private PlayersDataManager playersDataManagerPrefab;
+    
     [Header("Main Game Layout")]
     [SerializeField] private GameObject mainGameRoot;
 
@@ -22,11 +25,17 @@ public class SecondModeManager : BaseSingleton<SecondModeManager>
 
     public SecondModeStage Stage { get; set; }
     public ReadinessSystem ReadinessSystem => readinessSystem;
-    public SecondModeGuessSystem GuessSystem => guessSystem = guessSystem != null ? guessSystem : GameManager.Instance.GuessSystem as SecondModeGuessSystem;
+    public SecondModeGuessSystem GuessSystem => guessSystem ??= GameManager.Instance.GuessSystem as SecondModeGuessSystem;
     public GameObject MainGameRoot => mainGameRoot;
 
     private void Start()
     {
+        NetworkManager.Singleton.OnServerStarted += () =>
+        {
+            PlayersDataManager pdmInstance = Instantiate(playersDataManagerPrefab);
+            pdmInstance.NetworkObject.Spawn();
+        };
+        
         // TODO: remove if statement and leave just init when mode develop ends
         if (NetworkManager.Singleton.IsClient)
             StartCoroutine(Init());
@@ -53,8 +62,10 @@ public class SecondModeManager : BaseSingleton<SecondModeManager>
 
     public void SetStage(int stageIndex)
     {
-        if (stageIndex < 0 || stageIndex >= stageManagers.Length - 1)
+        if (stageIndex < 0 || stageIndex > stageManagers.Length - 1)
             return;
+
+        Debug.Log($"Setted Stage {stageIndex}");
 
         stageManagers[currentStageIndex].FinishStage();
         stageManagers[stageIndex].StartStage();

@@ -1,7 +1,10 @@
+using UnityEngine;
+
 public class SecondThirdStageManager : BaseStageManager
 {
     public override void StartStage()
     {
+        Debug.Log("Second Stage Start");
         SecondModeManager.Instance.MainGameRoot.SetActive(true);
 
         SecondModeManager.Instance.Stage = SecondModeStage.Waiting;

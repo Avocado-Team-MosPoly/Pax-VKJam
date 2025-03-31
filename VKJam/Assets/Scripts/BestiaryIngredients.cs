@@ -135,7 +135,7 @@ public class BestiaryIngredients : MonoBehaviour
             }
 
             IngredientInfo ingredientInfoUI = Instantiate(ingredientInfoTemplate, ingredientListContainer);
-            ingredientInfoUI.SetIngridient(IngredientList[i].Name, i , compareSystem, closeBestiaryButton);
+            ingredientInfoUI.SetIngredient(IngredientList[i].Name, i , compareSystem, closeBestiaryButton);
             ingredientInfoUI.gameObject.SetActive(true);
             ingredientInfoUI.OnGuess.AddListener(OnIngredientSelected);
 

@@ -10,4 +10,9 @@
         Id = id;
         IsReady = isReady;
     }
+
+    public override string ToString()
+    {
+        return $"Client ({Id}) is {(IsReady ? "" : "not ")}ready";
+    }
 }

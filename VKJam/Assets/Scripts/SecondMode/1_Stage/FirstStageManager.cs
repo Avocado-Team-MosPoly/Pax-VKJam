@@ -40,7 +40,7 @@ public class FirstStageManager : BaseStageManager
             countdownTimer.Play(firstPartDuration);
 
             readinessSystem.SetAllUnready();
-            readinessSystem.AllReady += OnAllReady;
+            readinessSystem.OnAllReady += OnAllReady;
         }
 
         gameObject.SetActive(true);
@@ -62,7 +62,7 @@ public class FirstStageManager : BaseStageManager
 
         if (NetworkManager.Singleton.IsServer)
         {
-            readinessSystem.AllReady -= OnAllReady;
+            readinessSystem.OnAllReady -= OnAllReady;
         }
 
         gameObject.SetActive(false);

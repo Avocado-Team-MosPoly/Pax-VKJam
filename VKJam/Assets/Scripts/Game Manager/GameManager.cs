@@ -496,7 +496,7 @@ public class GameManager : NetworkBehaviour, IGameManager
                 int winnerClientTokens;
                 (winnerClientId, winnerClientTokens) = TokenManager.GetClientIdWithMaxTokens();
 
-                NotificationSystem.Instance.SendLocal("Выиграл " + PlayersDataManager.Instance.PlayerDatas[winnerClientId].Name + "со счетом " + winnerClientTokens);
+                NotificationSystem.Instance.SendLocal("Выиграл " + PlayersDataManager.Instance.PlayersData[winnerClientId].Name + "со счетом " + winnerClientTokens);
             }
 
             TokenManager.ResetData();

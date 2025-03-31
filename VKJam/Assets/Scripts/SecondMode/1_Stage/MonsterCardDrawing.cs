@@ -88,10 +88,11 @@ public class MonsterCardDrawing : MonoBehaviour
             Logger.Instance.LogError(this, "Material isn't set");
             return;
         }
-        texture = new Texture2D(textureSettings.sizeX, textureSettings.sizeY);
-
-        texture.wrapMode = textureSettings.wrapMode;
-        texture.filterMode = textureSettings.filterMode;
+        texture = new Texture2D(textureSettings.sizeX, textureSettings.sizeY)
+        {
+            wrapMode = textureSettings.wrapMode,
+            filterMode = textureSettings.filterMode
+        };
 
         material.mainTexture = texture;
         Fill(baseColor);
