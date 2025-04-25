@@ -103,7 +103,7 @@ public class SceneObjectsManager : MonoBehaviour
         painterBook.GetComponentInChildren<Interactable>().SetInteractable(true);
         guesserPaint.gameObject.SetActive(true);
         guesserPreRoundCanvas.SetActive(true);
-        guesserPreRoundLabel.text = $"{PlayersDataManager.Instance.PlayerDatas[GameManager.Instance.PainterId].Name} {chooseCardText}";
+        guesserPreRoundLabel.text = $"{PlayersDataManager.Instance.PlayersData[GameManager.Instance.PainterId].Name} {chooseCardText}";
         GameManager.Instance.Paint.Disable();
         GameManager.Instance.CardManager.enabled = false;
 

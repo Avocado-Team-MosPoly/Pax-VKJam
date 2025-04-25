@@ -157,6 +157,6 @@ public class ChatView : MonoBehaviour
         UpdateView();
     }
 
-    private string GetPlayerNameById(byte playerId) => PlayersDataManager.Instance.PlayerDatas[playerId].Name;
+    private string GetPlayerNameById(byte playerId) => PlayersDataManager.Instance.PlayersData[playerId].Name;
     private string MessageToText(Chat.Message message) => GetPlayerNameById(message.senderId) + ": " + message.text.ToString();
 }

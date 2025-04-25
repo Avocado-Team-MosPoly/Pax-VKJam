@@ -40,12 +40,18 @@ public class PackCrafter : NetworkBehaviour
         cardPackSO.PackName = "Second Mode Pack";
         cardPackSO.PackIsInOwn = true;
         cardPackSO.PackDBIndex = -1;
-        cardPackSO.CardInPack = new CardSystem[NetworkManager.Singleton.ConnectedClientsIds.Count];
+
+        int cardInPackCount = 2;
+        cardPackSO.CardInPack = new CardSystem[cardInPackCount];
+        for (int i = 0; i < cardInPackCount; i++)
+            cardPackSO.CardInPack[i] = new CardSystem();
     }
 
     public void SendCardInfo(string monsterName, string description, string[] ingredients, Texture2D texture)
     {
-        SecondModeCardSO cardInfo = new(monsterName, description, ingredients, texture);
+        SecondModeCardSO cardInfo = ScriptableObject.CreateInstance<SecondModeCardSO>();
+        cardInfo.Initialize(monsterName, description, ingredients, texture);
+
         SendCardInfoServerRpc(cardInfo, new ServerRpcParams());
     }
 
@@ -68,7 +74,7 @@ public class PackCrafter : NetworkBehaviour
 
     private void AddCard(SecondModeCardSO cardInfo)
     {
-        //cardPackSO.CardInPack[cardInfo.CreatorId].Card = cardInfo;
+        cardPackSO.CardInPack[cardInfo.CreatorId].Card = cardInfo;
         cardPackSO.CardInPack[cardInfo.CreatorId].CardIsInOwn = true;
         cardPackSO.CardInPack[cardInfo.CreatorId].CardDBIndex = -1;
     }

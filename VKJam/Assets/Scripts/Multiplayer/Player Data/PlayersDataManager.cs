@@ -34,12 +34,13 @@ public class PlayersDataManager : NetworkBehaviour
 
     [SerializeField] private StoreSection avatarsAndFramesStorage;
 
-    private Dictionary<ulong, PlayerData> playerDatas = new();
-    private NetworkList<NetworkTuple_PlayerData> playerDatasList = new();
+    private Dictionary<ulong, PlayerData> _playersData = new();
+    private NetworkList<NetworkTuple_PlayerData> playersDataList = new();
 
     public static PlayersDataManager Instance { get; private set; }
 
-    public IReadOnlyDictionary<ulong, PlayerData> PlayerDatas => playerDatas;
+    public IReadOnlyDictionary<ulong, PlayerData> PlayersData => _playersData;
+    public int PlayersCount => _playersData.Count;
     public StoreSection AvatarsAndFramesStorage => avatarsAndFramesStorage;
 
     public override void OnNetworkSpawn()
@@ -62,13 +63,13 @@ public class PlayersDataManager : NetworkBehaviour
         {
             Instance = this;
 
-            foreach (NetworkTuple_PlayerData tuple in playerDatasList)
+            foreach (NetworkTuple_PlayerData tuple in playersDataList)
             {
-                playerDatas[tuple.Id] = tuple.PlayerData;
+                _playersData[tuple.Id] = tuple.PlayerData;
                 Logger.Instance.Log(this, $"Player {tuple.Id} data added: {tuple.PlayerData})");
             }
 
-            playerDatasList.OnListChanged += OnPlayerDatasListChanged;
+            playersDataList.OnListChanged += OnPlayersDataListChanged;
         }
         else
         {
@@ -81,16 +82,14 @@ public class PlayersDataManager : NetworkBehaviour
     {
         ulong localClientId = NetworkManager.LocalClientId;
 
-        if (playerDatas.ContainsKey(localClientId))
+        if (!_playersData.TryAdd(localClientId, playerData))
         {
             Logger.Instance.LogWarning(this, $"Player data already stored. Use {nameof(ChangePlayerData)} instead");
             return;
         }
 
-        playerDatas[localClientId] = playerData;
-
         if (IsServer)
-            playerDatasList.Add(new NetworkTuple_PlayerData((byte)localClientId, playerData));
+            playersDataList.Add(new NetworkTuple_PlayerData((byte)localClientId, playerData));
         else
             AddPlayerDataServerRpc(playerData, new ServerRpcParams());
     }
@@ -99,14 +98,14 @@ public class PlayersDataManager : NetworkBehaviour
     {
         ulong localClientId = NetworkManager.LocalClientId;
 
-        if (!playerDatas.ContainsKey(localClientId))
+        if (!_playersData.ContainsKey(localClientId))
         {
-            Logger.Instance.LogWarning(this, $"{nameof(playerDatas)} doesn't contain player data. First you need to call {nameof(AddPlayerData)}");
+            Logger.Instance.LogWarning(this, $"{nameof(_playersData)} doesn't contain player data. First you need to call {nameof(AddPlayerData)}");
             return;
         }
 
         if (IsServer)
-            playerDatasList.Add(new NetworkTuple_PlayerData((byte)localClientId, playerData));
+            playersDataList.Add(new NetworkTuple_PlayerData((byte)localClientId, playerData));
         else
             ChangePlayerDataServerRpc(playerData, new ServerRpcParams());
     }
@@ -148,46 +147,46 @@ public class PlayersDataManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void AddPlayerDataServerRpc(PlayerData playerData, ServerRpcParams rpcParams)
     {
-        playerDatasList.Add(new NetworkTuple_PlayerData((byte)rpcParams.Receive.SenderClientId, playerData));
+        playersDataList.Add(new NetworkTuple_PlayerData((byte)rpcParams.Receive.SenderClientId, playerData));
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void ChangePlayerDataServerRpc(PlayerData playerData, ServerRpcParams rpcParams)
     {
         int index = 0;
-        for (; index < playerDatasList.Count; index++)
-            if (playerDatasList[index].Id == rpcParams.Receive.SenderClientId)
+        for (; index < playersDataList.Count; index++)
+            if (playersDataList[index].Id == rpcParams.Receive.SenderClientId)
                 break;
 
-        if (index > playerDatasList.Count)
+        if (index > playersDataList.Count)
         {
-            Logger.Instance.LogWarning(this, $"{nameof(playerDatasList)} doesn't contain player {rpcParams.Receive.SenderClientId} data");
+            Logger.Instance.LogWarning(this, $"{nameof(playersDataList)} doesn't contain player {rpcParams.Receive.SenderClientId} data");
             return;
         }
 
-        playerDatas[rpcParams.Receive.SenderClientId] = playerData;
-        playerDatasList[index] = new NetworkTuple_PlayerData((byte)rpcParams.Receive.SenderClientId, playerData);
+        _playersData[rpcParams.Receive.SenderClientId] = playerData;
+        playersDataList[index] = new NetworkTuple_PlayerData((byte)rpcParams.Receive.SenderClientId, playerData);
     }
 
-    private void OnPlayerDatasListChanged(NetworkListEvent<NetworkTuple_PlayerData> changeEvent)
+    private void OnPlayersDataListChanged(NetworkListEvent<NetworkTuple_PlayerData> changeEvent)
     {
         if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.RemoveAt ||
             changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Remove)
         {
             Logger.Instance.Log(this, $"change event id {changeEvent.PreviousValue.Id} {changeEvent.Value.Id}");
-            playerDatas.Remove(changeEvent.Value.Id);
+            _playersData.Remove(changeEvent.Value.Id);
             PlayerDisconnected?.Invoke(changeEvent.Value.Id);
             Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data removed");
         }
         else if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Add)
         {
-            playerDatas[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
+            _playersData[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
             PlayerConnected?.Invoke(changeEvent.Value.Id);
             Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data added: {changeEvent.Value.PlayerData}");
         }
         else if (changeEvent.Type == NetworkListEvent<NetworkTuple_PlayerData>.EventType.Value)
         {
-            playerDatas[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
+            _playersData[changeEvent.Value.Id] = changeEvent.Value.PlayerData;
             Logger.Instance.Log(this, $"Player {changeEvent.Value.Id} data updated: {changeEvent.Value.PlayerData}");
         }
         else
@@ -202,10 +201,10 @@ public class PlayersDataManager : NetworkBehaviour
         if (!IsServer)
             return;
 
-        for (int i = 0; i < playerDatasList.Count; i++)
+        for (int i = 0; i < playersDataList.Count; i++)
         {
-            if (playerDatasList[i].Id == clientId)
-                playerDatasList.RemoveAt(i);
+            if (playersDataList[i].Id == clientId)
+                playersDataList.RemoveAt(i);
         }
     }
 }

@@ -24,7 +24,7 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
     private RectTransform rectTransform;
     private bool canKick = true;
 
-    private IReadOnlyDictionary<ulong, PlayerData> playerData => PlayersDataManager.Instance.PlayerDatas;
+    private IReadOnlyDictionary<ulong, PlayerData> playerData => PlayersDataManager.Instance.PlayersData;
     private StoreSection avatarsAndFramesStorage => PlayersDataManager.Instance.AvatarsAndFramesStorage;
 
     private void Awake()
@@ -60,7 +60,7 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
                 AddPlayer(playerId);
         }
 
-        foreach (ulong playerId in PlayersDataManager.Instance.PlayerDatas.Keys)
+        foreach (ulong playerId in PlayersDataManager.Instance.PlayersData.Keys)
         {
             if (playerId != NetworkManager.Singleton.LocalClientId)
                 AddPlayer(playerId);
@@ -182,9 +182,9 @@ public class LobbyPlayerDataViewManager : MonoBehaviour
 
         playerDataView.gameObject.SetActive(true);
 
-        if (PlayersDataManager.Instance.PlayerDatas.ContainsKey(clientId))
+        if (PlayersDataManager.Instance.PlayersData.ContainsKey(clientId))
         {
-            playerDataView.SetData(PlayersDataManager.Instance.PlayerDatas[clientId].Name, clientId);
+            playerDataView.SetData(PlayersDataManager.Instance.PlayersData[clientId].Name, clientId);
 
             try
             {

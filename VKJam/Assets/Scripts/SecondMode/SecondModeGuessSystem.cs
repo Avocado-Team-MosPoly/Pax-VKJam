@@ -3,8 +3,8 @@ using UnityEngine.Events;
 
 public class SecondModeGuessSystem : NetworkBehaviour, IGuessSystem
 {
-    public UnityEvent<string, ulong> OnIngredientGuess { get; private set; }
-    public UnityEvent<string, ulong> OnMonsterGuess { get; private set; }
+    public UnityEvent<string, ulong> OnIngredientGuess { get; private set; } = new();
+    public UnityEvent<string, ulong> OnMonsterGuess { get; private set; } = new();
 
     [ServerRpc (RequireOwnership = false)]
     public void SendAnswerServerRpc(string guess, ServerRpcParams serverRpcParams)

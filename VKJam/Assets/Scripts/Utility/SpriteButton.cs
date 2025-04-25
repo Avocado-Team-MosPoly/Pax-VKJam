@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 public class SpriteButton : MonoBehaviour
 {
-    public UnityEvent OnClick;
+    public UnityEvent OnClick = new();
 
     private void OnMouseDown()
     {

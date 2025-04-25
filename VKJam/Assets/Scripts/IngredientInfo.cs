@@ -16,7 +16,7 @@ public class IngredientInfo : MonoBehaviour
 
     private Button closeBestiaryButton;
 
-    public void SetIngridient(string name, int index, FirstModeGuessSystem guessSystem, Button closeButton)
+    public void SetIngredient(string name, int index, FirstModeGuessSystem guessSystem, Button closeButton)
     {
         IngridientName.text = name;
         this.index = index;

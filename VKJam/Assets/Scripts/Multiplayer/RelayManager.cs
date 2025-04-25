@@ -11,8 +11,8 @@ using System.Collections;
 
 public class RelayManager : MonoBehaviour
 {
-    [HideInInspector] public UnityEvent<ulong> OnClientConnected;
-    [HideInInspector] public UnityEvent<ulong> OnClientDisconnect;
+    [HideInInspector] public UnityEvent<ulong> OnClientConnected = new();
+    [HideInInspector] public UnityEvent<ulong> OnClientDisconnect = new();
 
     public string LobbySceneName => lobbySceneName;
     public bool IsServer => NetworkManager.Singleton.IsServer;
@@ -283,7 +283,7 @@ public class RelayManager : MonoBehaviour
     private void OnServerStartedServer()
     {
         //Logger.Instance.Log(this, "OnServerStartedServer");
-
+        
         PlayersDataManager pdmInstance = Instantiate(playersDataManagerPrefab);
         pdmInstance.NetworkObject.Spawn();
 

@@ -43,7 +43,7 @@ public class PlayerStatus : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        statusDescription.Show(PlayersDataManager.Instance.PlayerDatas[OwnerClientId].Name, GuessStatusText);
+        statusDescription.Show(PlayersDataManager.Instance.PlayersData[OwnerClientId].Name, GuessStatusText);
     }
 
     public void OnPointerExit(PointerEventData eventData)
