@@ -74,4 +74,8 @@ public class NoteManager : NetworkBehaviour
         }
     }
 
+    public List<string> GetAllNotes()
+    {
+        return new List<string>(notes);
+    }
 }
