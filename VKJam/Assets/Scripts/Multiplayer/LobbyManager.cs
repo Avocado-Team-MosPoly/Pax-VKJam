@@ -16,12 +16,12 @@ public class LobbyManager : MonoBehaviour
     [HideInInspector] public UnityEvent<List<Lobby>> OnLobbyListed = new();
     [HideInInspector] public UnityEvent<List<Player>> OnPlayerListed = new();
 
+    [SerializeField] private string _mainGameScene = "Map_New";
+    [SerializeField] private string _secondGameScene = "SecondModeDrawing";
+    
     public int IsTeamModeFilter
     {
-        get
-        {
-            return isTeamModeFilter;
-        }
+        get => isTeamModeFilter;
         set
         {
             isTeamModeFilter = value;
@@ -35,10 +35,12 @@ public class LobbyManager : MonoBehaviour
     public bool IsServer => NetworkManager.Singleton.IsServer;
     public string LobbyName => CurrentLobby != null ? CurrentLobby.Name : string.Empty;
     public string PlayerId => AuthenticationService.Instance.PlayerId;
-
+    public string GameSceneName => CurrentLobby.Data[KEY_SCENE_NAME].Value;
+    
     public const string KEY_RELAY_CODE = "RelayCode";
     public const string KEY_TEAM_MODE = "IsTeamMode";
     public const string KEY_SECOND_MODE = "IsSecondMode";
+    public const string KEY_SCENE_NAME = "SceneName";
     public const string KEY_ROUND_AMOUNT = "RoundAmount";
     public const string KEY_TIMER_AMOUNT = "TimerAmount";
     public const string KEY_RECIPE_MODE = "RecipeMode";
@@ -167,7 +169,8 @@ public class LobbyManager : MonoBehaviour
     {
         return new Dictionary<string, DataObject>
         {
-            { KEY_SECOND_MODE, new DataObject(DataObject.VisibilityOptions.Public, "False") },
+            { KEY_SECOND_MODE, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.IsSecondMode.ToString()) },
+            { KEY_SCENE_NAME, new DataObject(DataObject.VisibilityOptions.Private, LobbyDataInput.Instance.IsSecondMode ? _secondGameScene : _mainGameScene) },
             { KEY_TEAM_MODE, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.GameMode.ToString(), DataObject.IndexOptions.S1) },
             { KEY_ROUND_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.RoundAmount.ToString()) },
             { KEY_TIMER_AMOUNT, new DataObject(DataObject.VisibilityOptions.Public, LobbyDataInput.Instance.TimerAmount.ToString()) },
@@ -230,12 +233,17 @@ public class LobbyManager : MonoBehaviour
 
             CurrentLobby = await LobbyService.Instance.CreateLobbyAsync
             (
-                lobbyName: string.IsNullOrEmpty(LobbyDataInput.Instance.LobbyName) ? Authentication.PlayerName : LobbyDataInput.Instance.LobbyName,
+                lobbyName: string.IsNullOrEmpty(LobbyDataInput.Instance.LobbyName)
+                    ? Authentication.PlayerName
+                    : LobbyDataInput.Instance.LobbyName,
                 maxPlayers: LobbyDataInput.Instance.MaxPlayers,
                 options: createLobbyOptions
             );
 
-            Logger.Instance.Log(this, $"Created lobby: {CurrentLobby.Name}, max players: {CurrentLobby.MaxPlayers}, lobby code: {CurrentLobby.LobbyCode}");
+            Logger.Instance.Log(this,
+                $"Created lobby: {CurrentLobby.Name}," +
+                $" max players: {CurrentLobby.MaxPlayers}," +
+                $" lobby code: {CurrentLobby.LobbyCode}");
 
             StartHeartBeatPing();
 
@@ -253,6 +261,10 @@ public class LobbyManager : MonoBehaviour
         {
             Logger.Instance.LogError(this, ex);
             NotificationSystem.Instance.SendLocal(errorText);
+        }
+        catch (Exception ex)
+        {
+            Logger.Instance.LogError(this, ex);
         }
     }
 

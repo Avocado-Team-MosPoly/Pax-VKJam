@@ -36,7 +36,6 @@ public class LeaderboardManager : NetworkBehaviour
             Sprite winnerAvatarSprite = Resources.Load<Sprite>(store.products[winnerData.AvatarIndex].Data.icon);
             Sprite winnerFrameSprite = Resources.Load<Sprite>(store.products[winnerData.AvatarFrameIndex].Data.icon);
 
-
             winnerAvatar.sprite = winnerAvatarSprite;
             winnerFrame.sprite = winnerFrameSprite;
             winnerName.text = winnerData.Name;

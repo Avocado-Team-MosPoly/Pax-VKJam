@@ -14,7 +14,7 @@ public class Authentication : MonoBehaviour
     {
         if (UnityServices.State == ServicesInitializationState.Initialized)
         {
-            Logger.Instance.Log(typeof(Authentication), "Unity Services alredy initialized");
+            Logger.Instance.Log(typeof(Authentication), "Unity Services already initialized");
         }
         else
         {
@@ -36,13 +36,14 @@ public class Authentication : MonoBehaviour
 
         if (AuthenticationService.Instance.IsAuthorized)
         {
-            Logger.Instance.Log(typeof(Authentication), "You alredy authorized");
+            Logger.Instance.Log(typeof(Authentication), "You already authorized");
             return;
         }
 
         AuthenticationService.Instance.SignedIn += () =>
         {
-            Logger.Instance.Log(typeof(Authentication), $"Signed in. Your id is {AuthenticationService.Instance.PlayerId}, player name is {PlayerName}");
+            Logger.Instance.Log(typeof(Authentication),
+                $"Signed in. Your id is {AuthenticationService.Instance.PlayerId}, player name is {PlayerName}");
         };
 
         Logger.Instance.Log(typeof(Authentication), "Sign in in progress...");

@@ -5,6 +5,9 @@ using System.Collections;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+// TODO:
+// Add second mode guess system to scene
+
 public class GameManager : NetworkBehaviour, IGameManager
 {
     public static GameManager Instance { get; private set; }

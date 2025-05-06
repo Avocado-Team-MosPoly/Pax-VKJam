@@ -7,7 +7,7 @@ public class ButtonSet<T> : MonoBehaviour
 {
     [Serializable] public struct ButtonValue
     {
-        public readonly static ButtonValue Null = new()
+        public static readonly ButtonValue Null = new()
         {
             Button = null,
             Value = default
@@ -29,7 +29,7 @@ public class ButtonSet<T> : MonoBehaviour
     private void Start()
     {
         hoverSelected.gameObject.SetActive(false);
-
+        
         hoverClicked.transform.position = buttonValues[0].Button.transform.position;
         hoverClicked.gameObject.SetActive(true);
 
@@ -87,7 +87,7 @@ public class ButtonSet<T> : MonoBehaviour
 
     private void Click(PointerEventData eventData)
     {
-        if (eventData == null || eventData.button != PointerEventData.InputButton.Left)
+        if (eventData is not { button: PointerEventData.InputButton.Left })
             return;
 
         if (!eventData.pointerEnter.TryGetComponent<MouseOnButton>(out var mouseOnButton))

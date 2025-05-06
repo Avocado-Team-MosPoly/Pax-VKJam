@@ -4,7 +4,6 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.Netcode.Transports.UTP;
 using System.Threading.Tasks;
-using Unity.Networking.Transport.Relay;
 using UnityEngine.Events;
 using System;
 using System.Collections;
@@ -147,7 +146,7 @@ public class RelayManager : MonoBehaviour
         catch (RelayServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Relay");
+            NotificationSystem.Instance.SendLocal("РћС€РёР±РєР° СЃРѕРµРґРёРЅРµРЅРёСЏ: РќРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ РїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ Рє СЃРµСЂРІРµСЂР°Рј Unity Relay");
 
             //await LobbyManager.Instance.DisconnectAsync();
 
@@ -218,7 +217,7 @@ public class RelayManager : MonoBehaviour
         catch (RelayServiceException ex)
         {
             Logger.Instance.LogError(this, ex);
-            NotificationSystem.Instance.SendLocal("Ошибка соединения: Не получилось подключиться к серверам Unity Relay");
+            NotificationSystem.Instance.SendLocal("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Unity Relay");
 
             return false;
         }
@@ -287,6 +286,7 @@ public class RelayManager : MonoBehaviour
         PlayersDataManager pdmInstance = Instantiate(playersDataManagerPrefab);
         pdmInstance.NetworkObject.Spawn();
 
+        GameLaunchParams.SceneName = LobbyManager.Instance.GameSceneName;
         SceneLoader.ServerLoad(lobbySceneName);
     }
 

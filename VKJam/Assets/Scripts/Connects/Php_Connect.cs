@@ -82,11 +82,9 @@ public class Php_Connect : BaseSingleton<Php_Connect>
             completed?.Invoke(request.downloadHandler.text);
             yield break;
         }
-        else
-        {
-            Logger.Instance.LogError(typeof(Php_Connect), $"Server error in request to user module {userModule}: {request.error}");
-            ErrorProcessor(request.error);
-        }
+
+        Logger.Instance.LogError(typeof(Php_Connect), $"Server error in request to user module {userModule}: {request.error}");
+        ErrorProcessor(request.error);
         completed?.Invoke(null);
     }
 

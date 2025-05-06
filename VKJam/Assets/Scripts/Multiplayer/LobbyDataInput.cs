@@ -4,14 +4,19 @@ using UnityEngine.UI;
 
 public class LobbyDataInput : MonoBehaviour
 {
-    [SerializeField] private ButtonSet<int> maxPlayers_ButtonSet;
+    [SerializeField] private ButtonSet<int> maxPlayers_ButtonSet_MainGame;
+    [SerializeField] private Slider maxPlayers_Slider_SecondMode;
     [SerializeField] private ButtonSet<bool> teamMode_ButtonSet;
     [SerializeField] private ButtonSet<bool> privacy_ButtonSet;
     [SerializeField] private TMP_Dropdown region;
+
+    [SerializeField] private Button toMainGameSettings;
+    [SerializeField] private Button toSecondModeSettings;
     //[SerializeField] private ButtonSet<RecipeMode> RecipeMode_ButtonSet;
     //[SerializeField] private Slider timerSlider;
     //[SerializeField] private TextMeshProUGUI timerText;
 
+    public bool IsSecondMode { get; private set; } = true;
     public string LobbyJoinCode { get; private set; }
     public string LobbyName { get; private set; } = "";
     public int MaxPlayers { get; private set; } = 2;
@@ -36,10 +41,14 @@ public class LobbyDataInput : MonoBehaviour
         }
 
         region.onValueChanged.AddListener(ChangeRegion);
-        maxPlayers_ButtonSet.OnClick.AddListener(ChangeMaxPlayers);
+        maxPlayers_ButtonSet_MainGame.OnClick.AddListener(ChangeMaxPlayers);
+        maxPlayers_Slider_SecondMode.onValueChanged.AddListener(v => ChangeMaxPlayers((int)v));
         teamMode_ButtonSet.OnClick.AddListener(ChangeTeamMode);
         privacy_ButtonSet.OnClick.AddListener(ChangePrivacy);
-
+        
+        toMainGameSettings.onClick.AddListener(() => IsSecondMode = false);
+        toSecondModeSettings.onClick.AddListener(() => IsSecondMode = true);
+        
         //RecipeMode_ButtonSet.OnClick.AddListener(ChangeRecipeMode);
         //timerSlider.onValueChanged.AddListener((v) => { timerText.text=v.ToString(); });
         //timerSlider.onValueChanged.AddListener(ChangeTimerAmount);

@@ -189,6 +189,8 @@ MonoBehaviour:
   OnPlayerListed:
     m_PersistentCalls:
       m_Calls: []
+  _mainGameScene: Map_New
+  _secondGameScene: SecondModeDrawing
 --- !u!4 &246585186
 Transform:
   m_ObjectHideFlags: 0
@@ -332,6 +334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefaultNickname: 1
   defaultNickname: 333
+  canPlaySingle: 1
   connectionTimeout: 1
   maxConnectionAttempts: 10
   vkConnect: {fileID: 1638310269}

@@ -9,7 +9,8 @@ public class BootManager : MonoBehaviour
     [Header("Server Connection Data")]
     [SerializeField] private bool useDefaultNickname;
     [SerializeField] private int defaultNickname = 333; // default = 333
-
+    [SerializeField] private bool canPlaySingle;
+    
     [SerializeField, Tooltip("Time between connection attempts in seconds"), Min(0f)] private float connectionTimeout = 1f;
     [SerializeField] private int maxConnectionAttempts = 10;
 
@@ -167,6 +168,10 @@ public class BootManager : MonoBehaviour
         yield return StartCoroutine(lobbyManager.Init());
 
         UpdateLoadingStatus(sceneLoading);
+
+        if (canPlaySingle)
+            GameLaunchParams.MinPlayersToLaunchCount = 1;
+        
         LoadStartScene(loadTutorial);
     }
 
@@ -209,7 +214,7 @@ public class BootManager : MonoBehaviour
         if (loadTutorial)
             SceneLoader.Load("TutorialScene");
         else
-            SceneLoader.Load("SecondModeDrawing");
+            SceneLoader.Load("Menu");
     }
 
     private IEnumerator ShowDisclaimer(bool status)

@@ -54,6 +54,8 @@ public class PackManager : MonoBehaviour
             }
         }
 
+        
+        
         Logger.Instance.Log(this, "Initialized");
         yield break;
     }
