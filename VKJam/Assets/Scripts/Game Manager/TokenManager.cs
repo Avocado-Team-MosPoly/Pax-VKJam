@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -28,6 +29,7 @@ public class TokenManager : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI tokensWinned;
     [SerializeField] private TextMeshProUGUI tokensLoosed;
     [SerializeField] private TextMeshProUGUI tokensTotal;
+    [SerializeField] private TextMeshProUGUI gameStatus;
 
     private Dictionary<ulong, int> playersTokens = new();
     private static List<GameObject> tokensOnScene;
@@ -80,23 +82,28 @@ public class TokenManager : NetworkBehaviour
         foreach (int tokenCount in playersTokens.Values)
             tokens.Add(tokenCount);
 
+        if (GameManager.Instance.RoundManager.CorrectGuesserIds.Any(id => id == NetworkManager.Singleton.LocalClientId))
+            gameStatus.text = ("œŒ¡≈ƒ¿");
+        else
+            gameStatus.text = ("œ–Œ»√–€ÿ");
+
         for (int i = 0; i < tokens.Count - 1; i++)
-        {
-            for (int j = i + 1; j < tokens.Count; j++)
             {
-                if (tokens[i] > tokens[j])
-                    continue;
+                for (int j = i + 1; j < tokens.Count; j++)
+                {
+                    if (tokens[i] > tokens[j])
+                        continue;
 
-                int tokensCount = tokens[i];
-                ulong clientId = clientIds[i];
+                    int tokensCount = tokens[i];
+                    ulong clientId = clientIds[i];
 
-                tokens[i] = tokens[j];
-                clientIds[i] = clientIds[j];
+                    tokens[i] = tokens[j];
+                    clientIds[i] = clientIds[j];
 
-                tokens[j] = tokensCount;
-                clientIds[j] = clientId;
+                    tokens[j] = tokensCount;
+                    clientIds[j] = clientId;
+                }
             }
-        }
 
         return (clientIds, tokens);
     }

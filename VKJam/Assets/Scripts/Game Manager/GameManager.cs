@@ -32,6 +32,7 @@ public class GameManager : NetworkBehaviour, IGameManager
     [Space(10)]
     [SerializeField] private FirstModeGuessSystem firstModeGuessSystem;
     [SerializeField] private SecondModeGuessSystem secondModeGuessSystem;
+    [SerializeField] private ReadinessSystem readinessSystem;
 
     [Header("Bestiary")]
     [SerializeField] private Bestiary bestiary;
@@ -292,6 +293,8 @@ public class GameManager : NetworkBehaviour, IGameManager
         BackgroundMusic.Instance.Play("tokens_take-card");
 
         answerCardInfo = null;
+
+        readinessSystem.DisableVisual();
     }
 
     // server side
@@ -330,6 +333,8 @@ public class GameManager : NetworkBehaviour, IGameManager
             SceneMonsterAnimator.Play("Idle");
         }
 
+        readinessSystem.EnableVisual();
+
         playersStatusManager.ResetStatuses();
         BackgroundMusic.Instance.Play("monsterGuess");
         OnGuessMonsterStageActivatedOnClient?.Invoke(IsPainter);
@@ -344,10 +349,20 @@ public class GameManager : NetworkBehaviour, IGameManager
         if (!IsSecondMode)
             bestiaryIngredients.gameObject.SetActive(false);
 
+        readinessSystem.SetAllUnready();
+        readinessSystem.OnAllReady += OnAllGuessedMonster;
+
         ActivateGuessMonsterStageClientRpc();
 
         timer.SetMonsterGuessTime();
         timer.StartTimer();
+    }
+
+    private void OnAllGuessedMonster()
+    {
+        readinessSystem.OnAllReady -= OnAllGuessedMonster;
+        roundManager.OnTimeExpired();
+
     }
 
     [ClientRpc]
