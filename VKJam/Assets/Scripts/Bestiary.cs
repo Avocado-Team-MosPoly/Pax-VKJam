@@ -119,7 +119,7 @@ public class Bestiary : MonoBehaviour
 
         for (int i = 0; i < PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId].Count; i++)
         {
-            if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i] == true)
+            if (PackManager.Instance.PlayersOwnedCard[GameManager.Instance.PainterId][i])
             {
                 Monsters.Add(PackManager.Instance.Active.CardInPack[i].Card);
             }
@@ -178,7 +178,7 @@ public class Bestiary : MonoBehaviour
             chooseMonster.SetActive(true);
             ChooseFromBook chooseFromBook = chooseMonster.GetComponent<ChooseFromBook>();
 
-            chooseFromBook.OnSelected += (int monsterID) => choosenMonster = monsterID;
+            chooseFromBook.OnSelected += monsterID => choosenMonster = monsterID;
 
             chooseFromBook.GuessedMonster = Monsters[currentMonster].Id;
             chooseFromBook.MonsterId = currentMonster;
@@ -199,7 +199,6 @@ public class Bestiary : MonoBehaviour
 
     private void GoToPage(int pageIndex)
     {
-        Debug.LogWarning(pageIndex);
         if (pageIndex >= 0 && pageIndex < Monsters.Count)
         {
             catalougeCanvas.SetActive(false);
@@ -222,6 +221,9 @@ public class Bestiary : MonoBehaviour
     private string GetCombinedIngredients()
     {
         string[] ingredients = Monsters[currentMonster].Ingredients;
+        if (ingredients == null || ingredients.Length == 0)
+            return "No ingredients";
+        
         StringBuilder sb = new(ingredients[0]);
 
         for (int i = 1; i < ingredients.Length; i++)

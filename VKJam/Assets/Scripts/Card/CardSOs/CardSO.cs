@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu()]
@@ -15,7 +16,7 @@ public class CardSO : BaseCardSO
 
     [SerializeField] private Ingredient[] ingredientsSO;
 
-    private string[] ingredients;
+    [NonSerialized] private string[] ingredients;
 
     public Ingredient[] IngredientsSO => ingredientsSO;
     public override string[] Ingredients

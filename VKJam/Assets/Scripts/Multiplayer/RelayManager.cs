@@ -286,7 +286,6 @@ public class RelayManager : MonoBehaviour
         PlayersDataManager pdmInstance = Instantiate(playersDataManagerPrefab);
         pdmInstance.NetworkObject.Spawn();
 
-        Debug.LogWarning("scene name: " + LobbyManager.Instance.GameSceneName);
         GameLaunchParams.SceneName = LobbyManager.Instance.GameSceneName;
         SceneLoader.ServerLoad(lobbySceneName);
     }

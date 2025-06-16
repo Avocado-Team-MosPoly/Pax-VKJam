@@ -50,8 +50,6 @@ public abstract class IngredientManager
         this.gameManager = gameManager;
         this.config = config;
 
-        Debug.Log(guessSystem.OnIngredientGuess);
-
         guessSystem.OnIngredientGuess.AddListener(CompareIngredient);
 
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)

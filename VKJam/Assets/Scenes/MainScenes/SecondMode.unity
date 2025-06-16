@@ -5927,6 +5927,7 @@ MonoBehaviour:
   tokensWinned: {fileID: 1420772964}
   tokensLoosed: {fileID: 1483649156}
   tokensTotal: {fileID: 661197394}
+  gameStatus: {fileID: 0}
 --- !u!114 &279706608
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26258,7 +26259,6 @@ Transform:
   - {fileID: 391215104}
   - {fileID: 2111961200}
   - {fileID: 2134719150}
-  - {fileID: 1913111576}
   - {fileID: 949973552}
   - {fileID: 458256093}
   - {fileID: 834709668}
@@ -37875,6 +37875,7 @@ MonoBehaviour:
   hintManager: {fileID: 384567648}
   firstModeGuessSystem: {fileID: 0}
   secondModeGuessSystem: {fileID: 0}
+  readinessSystem: {fileID: 0}
   bestiary: {fileID: 1328332183}
   bestiaryIngredients: {fileID: 0}
   paint: {fileID: 379631413}
@@ -37923,7 +37924,7 @@ Transform:
   - {fileID: 69966149}
   - {fileID: 11090222}
   - {fileID: 736754888}
-  m_Father: {fileID: 1329377203}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1916361898
 GameObject:
@@ -42449,6 +42450,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1178574300709151808, guid: fe890db44a1b75342b716eaa72797a24, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.001086541
+      objectReference: {fileID: 0}
     - target: {fileID: 2961110519702405222, guid: fe890db44a1b75342b716eaa72797a24, type: 3}
       propertyPath: m_fontSize
       value: 45
@@ -42810,6 +42815,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1329377203}
+  - {fileID: 1913111576}
   - {fileID: 273381080}
   - {fileID: 903279482}
   - {fileID: 404999749}

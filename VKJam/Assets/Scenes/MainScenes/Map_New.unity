@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731715, g: 0.13414735, b: 0.121078536, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5425,7 +5425,7 @@ GameObject:
   - component: {fileID: 451229182}
   - component: {fileID: 451229183}
   m_Layer: 5
-  m_Name: Readyness
+  m_Name: RedinessSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5463,9 +5463,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e5f1fe4c76a2a54f9846918f61596dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visual: {fileID: 0}
-  toggle: {fileID: 0}
-  readyClientsCountLabel: {fileID: 0}
+  visual: {fileID: 1518207177}
+  toggle: {fileID: 1518207178}
+  readyClientsCountLabel: {fileID: 651081118}
 --- !u!1 &456447976
 GameObject:
   m_ObjectHideFlags: 0
@@ -18845,7 +18845,7 @@ MonoBehaviour:
   playersStatusManager: {fileID: 6563706299505534986}
   sceneObjectsManager: {fileID: 1599721547}
   hintManager: {fileID: 2059909896}
-  firstModeGuessSystem: {fileID: 0}
+  firstModeGuessSystem: {fileID: 385257337}
   secondModeGuessSystem: {fileID: 0}
   readinessSystem: {fileID: 1118590388}
   bestiary: {fileID: 375007726}
@@ -18858,7 +18858,7 @@ MonoBehaviour:
   sceneMonsterMaterial: {fileID: 2100000, guid: b72b645da8fabef40b672d31e4581140, type: 2}
   hiddenMonsterTexture: {fileID: 2800000, guid: 6d0ad448bb87a1b44be804e4ca2c46e7, type: 3}
   soundList: {fileID: 9523475}
-  rootObject: {fileID: 0}
+  rootObject: {fileID: 567612751}
 --- !u!4 &1443419630
 Transform:
   m_ObjectHideFlags: 0
