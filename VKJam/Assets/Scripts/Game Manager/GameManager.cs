@@ -89,7 +89,8 @@ public class GameManager : NetworkBehaviour, IGameManager
     public GameObject SceneMonster => sceneMonster;
     public Animator SceneMonsterAnimator => sceneMonsterAnimator;
     public SoundList SoundList => soundList;
-
+    public SceneObjectsManager SceneObjectsManager => sceneObjectsManager;
+    
     public GameObject RootObject => rootObject;
     
     public byte PainterId => roleManager.PainterId;
@@ -114,6 +115,7 @@ public class GameManager : NetworkBehaviour, IGameManager
 
     public override void OnNetworkSpawn()
     {
+        Debug.LogWarning("ASDASDASDAS");
         StartCoroutine(TakePack());
         timer.Init(gameConfig);
 

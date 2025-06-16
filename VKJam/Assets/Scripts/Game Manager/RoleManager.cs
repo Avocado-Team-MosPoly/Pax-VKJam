@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class RoleManager : NetworkBehaviour
@@ -13,8 +15,10 @@ public class RoleManager : NetworkBehaviour
     public byte PainterId => painterId.Value;
     public bool IsPainter => PainterId == NetworkManager.Singleton.LocalClientId;
 
-    public override void OnNetworkSpawn()
+    private IEnumerator Start()
     {
+        yield return new WaitUntil(() => IsSpawned && GameManager.Instance.SceneObjectsManager.IsInitialized);
+        
         painterId.OnValueChanged += OnPainterChanged;
 
         if (IsServer)
@@ -22,7 +26,7 @@ public class RoleManager : NetworkBehaviour
         else
             InvokeRoleEvent();
     }
-
+    
     public void ChangeRoles()
     {
         foreach (byte clientId in NetworkManager.Singleton.ConnectedClientsIds)
@@ -47,6 +51,7 @@ public class RoleManager : NetworkBehaviour
 
     private void InvokeRoleEvent()
     {
+        Debug.LogWarning("fefe");
         if (IsPainter)
             OnPainterSetted?.Invoke();
         else

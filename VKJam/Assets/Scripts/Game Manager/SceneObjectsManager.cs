@@ -34,6 +34,8 @@ public class SceneObjectsManager : MonoBehaviour
 
     private bool isFirstSetted = false;
 
+    public bool IsInitialized { get; private set; }
+    
     private void Start()
     {
         guesserPreRoundLabel = guesserPreRoundCanvas.GetComponentInChildren<TextMeshProUGUI>();
@@ -53,6 +55,8 @@ public class SceneObjectsManager : MonoBehaviour
                     obj.SetActive(false);
             });
         }
+        
+        IsInitialized = true;
     }
 
     private void OnRoleSetted()
