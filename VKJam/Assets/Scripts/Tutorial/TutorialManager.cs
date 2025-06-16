@@ -42,7 +42,7 @@ public class TutorialManager : MonoBehaviour
     public void EndDialogue_7()
     {
         StartCoroutine(NextDialogueStage(1.5f, 7));
-        TokenText.text = "6";   
+        TokenText.text = "X6";   
     }
 
     public void EndDialogue_8()
@@ -60,7 +60,7 @@ public class TutorialManager : MonoBehaviour
     public void EndDialogue_15()
     {
         StartCoroutine(NextDialogueStage(1f, 15));
-        TokenText.text = "13";
+        TokenText.text = "X13";
     }
 
     IEnumerator NextDialogueStage(float Seconds, int DialogueID)
