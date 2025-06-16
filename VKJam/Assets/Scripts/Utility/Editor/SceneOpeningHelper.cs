@@ -21,12 +21,18 @@ public static class SceneOpeningHelper
         OpenScene("Assets/Scenes/MainScenes/Map_New.unity");
     }
     
-    [MenuItem("Scenes/Second Mode", priority = 3)]
-    public static void OpenSecondModeScene()
+    [MenuItem("Scenes/Second Mode Draft", priority = 4)]
+    public static void OpenSecondDraftModeScene()
     {
         OpenScene("Assets/Scenes/InProgress/SecondModeDrawing.unity");
     }
 
+    [MenuItem("Scenes/Second Mode", priority = 3)]
+    public static void OpenSecondModeScene()
+    {
+        OpenScene("Assets/Scenes/MainScenes/SecondMode.unity");
+    }
+    
     public static void OpenScene(string sceneName)
     {
         if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())

@@ -65,10 +65,11 @@ public abstract class RoundManager
             LoseRound();
 
         isMonsterGuessed = false;
-        correctGuesserIds.Clear();
         guesserIds.Clear();
-
+        
         OnRoundEnded?.Invoke();
+
+        correctGuesserIds.Clear();
     }
 
     public void CompareMonster(string guess, ulong guesserId)
