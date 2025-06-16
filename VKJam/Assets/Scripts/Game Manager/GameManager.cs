@@ -90,6 +90,8 @@ public class GameManager : NetworkBehaviour, IGameManager
     public Animator SceneMonsterAnimator => sceneMonsterAnimator;
     public SoundList SoundList => soundList;
 
+    public GameObject RootObject => rootObject;
+    
     public byte PainterId => roleManager.PainterId;
     public bool IsPainter => roleManager.IsPainter;
 

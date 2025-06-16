@@ -16,9 +16,6 @@ public class SecondModeManager : BaseSingleton<SecondModeManager>
     [Header("Prefabs")]
     [SerializeField] private PlayersDataManager playersDataManagerPrefab;
     
-    [Header("Main Game Layout")]
-    [SerializeField] private GameObject mainGameRoot;
-
     private int currentStageIndex = -1;
 
     private SecondModeGuessSystem guessSystem;
@@ -26,7 +23,6 @@ public class SecondModeManager : BaseSingleton<SecondModeManager>
     public SecondModeStage Stage { get; set; }
     public ReadinessSystem ReadinessSystem => readinessSystem;
     public SecondModeGuessSystem GuessSystem => guessSystem ??= GameManager.Instance.GuessSystem as SecondModeGuessSystem;
-    public GameObject MainGameRoot => mainGameRoot;
 
     private void Start()
     {

@@ -16,7 +16,7 @@ public class LobbyDataInput : MonoBehaviour
     //[SerializeField] private Slider timerSlider;
     //[SerializeField] private TextMeshProUGUI timerText;
 
-    public bool IsSecondMode { get; private set; } = true;
+    public bool IsSecondMode { get; private set; }
     public string LobbyJoinCode { get; private set; }
     public string LobbyName { get; private set; } = "";
     public int MaxPlayers { get; private set; } = 2;

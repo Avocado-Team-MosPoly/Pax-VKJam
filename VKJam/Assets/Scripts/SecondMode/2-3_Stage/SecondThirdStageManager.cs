@@ -4,8 +4,8 @@ public class SecondThirdStageManager : BaseStageManager
 {
     public override void StartStage()
     {
-        Debug.Log("Second Stage Start");
-        SecondModeManager.Instance.MainGameRoot.SetActive(true);
+        Debug.Log("Second Stage Started");
+        GameManager.Instance.RootObject.SetActive(true);
 
         SecondModeManager.Instance.Stage = SecondModeStage.Waiting;
 
@@ -20,7 +20,8 @@ public class SecondThirdStageManager : BaseStageManager
 
     public override void FinishStage()
     {
-        SecondModeManager.Instance.MainGameRoot.SetActive(false);
+        Debug.Log("Second Stage Finished");
+        GameManager.Instance.RootObject.SetActive(false);
 
         GameManager.Instance.OnIngredientGuessStartedOnClient.RemoveListener(OnIngredientGuessStarted);
         GameManager.Instance.OnGuessMonsterStageActivatedOnClient.RemoveListener(OnMonsterGuessStarted);
