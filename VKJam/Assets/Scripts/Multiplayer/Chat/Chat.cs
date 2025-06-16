@@ -55,8 +55,8 @@ public class Chat : NetworkBehaviour
     public UnityEvent OnMessageSended { get; private set; } = new();
     public UnityEvent OnMessageReceived { get; private set; } = new();
 
-    private List<TMP_InputField> inputFields;
-    private List<Button> buttons;
+    private List<TMP_InputField> inputFields = new();
+    private List<Button> buttons = new();
 
     private List<Message> history = new();
 
