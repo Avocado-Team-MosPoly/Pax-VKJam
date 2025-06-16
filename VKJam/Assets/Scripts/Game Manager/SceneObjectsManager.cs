@@ -37,8 +37,6 @@ public class SceneObjectsManager : MonoBehaviour
     private void Start()
     {
         guesserPreRoundLabel = guesserPreRoundCanvas.GetComponentInChildren<TextMeshProUGUI>();
-        Debug.Assert(GameManager.Instance, "instance");
-        Debug.Assert(GameManager.Instance.OnGuessMonsterStageActivatedOnClient != null, "event");
         GameManager.Instance.OnGuessMonsterStageActivatedOnClient.AddListener(OnGuessMonsterStageActivated);
         GameManager.Instance.OnGameEnded.AddListener(OnGameEnded);
         GameManager.Instance.RoleManager.OnPainterSetted.AddListener(OnPainterSetted);
@@ -59,6 +57,7 @@ public class SceneObjectsManager : MonoBehaviour
 
     private void OnRoleSetted()
     {
+        Debug.Log("Role Setted: " + (GameManager.Instance.IsPainter ? "Painter" : "Guesser"));
         bestiary.gameObject.SetActive(false);
         tokensSummary.SetActive(false);
         moveCamera.SetActivity(true);

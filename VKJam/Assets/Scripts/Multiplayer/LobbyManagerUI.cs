@@ -144,6 +144,8 @@ public class LobbyManagerUI : NetworkBehaviour
     {
         int clientIdIndex = GetClientIdIndex(NetworkManager.Singleton.LocalClientId);
 
+        Debug.LogWarning(allPlayerReady[clientIdIndex]);
+
         playerReady[clientIdIndex].SetActive(!allPlayerReady[clientIdIndex]);
         readyButtonTextLabel.text = !allPlayerReady[clientIdIndex] ? readyText : notReadyText;
         
@@ -161,11 +163,14 @@ public class LobbyManagerUI : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SwitchPlayerReadyServerRpc(int clientIdIndex)
     {
+        //Debug.LogError("Server");
         allPlayerReady[clientIdIndex] = !allPlayerReady[clientIdIndex];
+        Debug.LogWarning(allPlayerReady[clientIdIndex]);
     }
 
     private void AllPlayerReady_OnListChanged(NetworkListEvent<bool> changeEvent)
     {
+        //Debug.LogError("AllPlayerReady_OnListChanged");
         playerReady[changeEvent.Index].SetActive(changeEvent.Value);
 
         if (NetworkManager.Singleton.IsServer)
@@ -178,6 +183,7 @@ public class LobbyManagerUI : NetworkBehaviour
                 {
                     if (playerGameObjectList[i].activeSelf)
                     {
+                        Debug.LogWarning("Not all players ready");
                         allReady = false;
                     }
                 }
@@ -186,10 +192,8 @@ public class LobbyManagerUI : NetworkBehaviour
                     howManyPlayerReady += 1;
                 }
             }
-
-            allReady = howManyPlayerReady >= GameLaunchParams.MinPlayersToLaunchCount;
-
-            if (allReady) //  && howManyPlayerReady >= 2
+            
+            if (allReady && howManyPlayerReady >= 2)
             {
                 playerDataViewManager.LockKick();
                 SendPack();
@@ -210,7 +214,7 @@ public class LobbyManagerUI : NetworkBehaviour
 
         playerSendAllDataId.Add(NetworkManager.LocalClientId);
         playerGetAllDataId.Add(NetworkManager.LocalClientId);
-        
+        //Debug.Log("SendPack");
         PrepareToSendDataClientRpc();
         SendToHostClientRpc();
     }
@@ -235,49 +239,43 @@ public class LobbyManagerUI : NetworkBehaviour
 
     private IEnumerator SendToHost()
     {
-        if (IsServer && GameLaunchParams.MinPlayersToLaunchCount == 1)
+        if (!IsServer)
         {
-            if (playerGetAllDataId.Count == allPlayerReady.Count)
+            List<bool> bools = new List<bool>();
+            for (int i = 0; i < PackManager.Instance.Active.CardInPack.Length; i++)
             {
-                LobbyManager.Instance.StopHeartBeatPing();
-                SceneLoader.ServerLoad(GameLaunchParams.SceneName);
+                bools.Add(PackManager.Instance.Active.CardInPack[i].CardIsInOwn);
             }
-            yield break;
-        }
-        
-        List<bool> bools = new List<bool>();
-        for (int i = 0; i < PackManager.Instance.Active.CardInPack.Length; i++)
-        {
-            bools.Add(PackManager.Instance.Active.CardInPack[i].CardIsInOwn);
-        }
 
-        PackManager.Instance.PlayersOwnedCard.Clear();
-        PackManager.Instance.PlayersOwnedCard.Add(NetworkManager.LocalClientId, bools);
+            PackManager.Instance.PlayersOwnedCard.Clear();
+            PackManager.Instance.PlayersOwnedCard.Add(NetworkManager.LocalClientId, bools);
 
-        //Debug.Log("SendToHostClientRpc");
+            //Debug.Log("SendToHostClientRpc");
 
-        for (int i = 0; i < bools.Count; i++)
-        {
+            for (int i = 0; i < bools.Count; i++)
+            {
+                try
+                {
+                    GetPackFromPlayersServerRpc(bools[i], new ServerRpcParams());
+                }
+                catch (Exception e)
+                {
+                    exit.SetActive(true);
+                    Logger.Instance.LogError(this, e);
+                }
+                
+                yield return new WaitForSeconds(0.1f);
+            }
             try
             {
-                GetPackFromPlayersServerRpc(bools[i], new ServerRpcParams());
+                SendAllServerRpc(new ServerRpcParams());
             }
             catch (Exception e)
             {
                 exit.SetActive(true);
                 Logger.Instance.LogError(this, e);
             }
-                
-            yield return new WaitForSeconds(0.1f);
-        }
-        try
-        {
-            SendAllServerRpc(new ServerRpcParams());
-        }
-        catch (Exception e)
-        {
-            exit.SetActive(true);
-            Logger.Instance.LogError(this, e);
+
         }
 
     }
@@ -344,7 +342,6 @@ public class LobbyManagerUI : NetworkBehaviour
             }
 
             yield return new WaitForSeconds(0.1f);
-            Debug.Log(PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]].Count);
             for (int j = 0; j < PackManager.Instance.PlayersOwnedCard[playerSendAllDataId[i]].Count; j++)
             {
                 try
@@ -388,6 +385,7 @@ public class LobbyManagerUI : NetworkBehaviour
     {
         try
         {
+            //Debug.Log("GetPackFromHostClientRpc");
             if (!IsServer)
             {
                 if (sendedPlayerId != NetworkManager.LocalClientId)
@@ -424,17 +422,18 @@ public class LobbyManagerUI : NetworkBehaviour
     {
         try
         {
+            Debug.Log("GetAllServerRpc");
             //for (int i = 0; i < PackManager.Instance.PlayersOwnedCard.Count; i++)
             //{
             //    Debug.Log("PlayersOwnedCard[PlayersId[" + i + "]].Count =" + PackManager.Instance.PlayersOwnedCard[PlayersId[i]].Count);
             //}
             playerGetAllDataId.Add(serverRpcParams.Receive.SenderClientId);
             //loadingSlider.value = playerGetAllDataId.Count / allPlayerReady.Count;
-            
+
             if (playerGetAllDataId.Count == allPlayerReady.Count)
             {
                 LobbyManager.Instance.StopHeartBeatPing();
-                SceneLoader.ServerLoad(GameLaunchParams.SceneName);
+                SceneLoader.ServerLoad("Map_New");
             }
         }
         catch (Exception e)
