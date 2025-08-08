@@ -11,6 +11,8 @@ public class TutorialTimer : MonoBehaviour
     [SerializeField] private AnimateList _bookAnimator;
     [SerializeField] private DrawingTutorial paint;
     [SerializeField] private GameObject PaintUI;
+    [SerializeField] private GameObject fire1;
+    [SerializeField] private GameObject fire2;
 
     [SerializeField] private string ingredientName;
 
@@ -34,9 +36,11 @@ public class TutorialTimer : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
 
+        fire1.SetActive(true);
         IngridientText.text = ingredientName;
         _timer = sec;
         paint.ClearCanvas();
+
 
         for (int i = 0; i < sec && _timer > 0; i++)
         {
@@ -46,6 +50,7 @@ public class TutorialTimer : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
 
+        fire2.SetActive(true);
         paint.ClearCanvas();
         _bookAnimator.Play("NoteBookClose");
         DialogueManager.Instance.StartDialogue(6);
